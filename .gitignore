@@ -1,0 +1,12 @@
+/.idea/
+/.env
+/govuk_modules/
+/logs/
+/node_modules/
+/reports/
+/.start.pid
+/public/
+/.nyc_output/
+/npm-debug.log
+/stdout
+/data-returns-pi-frontend.iml

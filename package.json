@@ -1,0 +1,54 @@
+{
+  "name": "data-returns-pi-frontend",
+  "version": "1.0.0",
+  "description": "Data Returns: Pollution Inventory Service",
+  "main": "server.js",
+  "engines": {
+    "node": "8.6.0"
+  },
+  "dependencies": {
+    "dotenv": "^4.0.0",
+    "js-yaml": "^3.10.0",
+    "winston": "^2.4.0",
+    "hapi": "^16.6.2",
+    "good": "^7.3.0",
+    "good-winston": "^4.0.0",
+    "catbox-redis": "^3.1.1",
+    "hapi-auth-cookie": "^7.0.0",
+    "uuid": "^3.1.0",
+    "time-stamp": "^2.0.0"
+  },
+  "devDependencies": {
+    "eslint": "4.8.0",
+    "eslint-config-standard": "10.2.1",
+    "eslint-plugin-import": "2.3.0",
+    "eslint-plugin-node": "5.0.0",
+    "eslint-plugin-promise": "3.5.0",
+    "eslint-plugin-standard": "3.0.1",
+    "lab": "^14.3.1",
+    "nyc": "11.0.2"
+  },
+  "nyc": {
+    "include": [
+      "app/**"
+    ],
+    "reporter": [
+      "text",
+      "text-summary"
+    ]
+  },
+  "scripts": {
+    "start": "npm test && node server.js",
+    "lint": "./node_modules/eslint/bin/eslint.js .",
+    "test": "./node_modules/lab/bin/lab -e local",
+    "coverage": "nyc --all npm start",
+    "coverage-unittest": "nyc --all npm test"
+  },
+  "keywords": [
+    "Data Returns",
+    "Pollution Inventory",
+    "GDS"
+  ],
+  "author": "Druid Wood Limited / Sam Gardner-Dell",
+  "license": "ISC"
+}

@@ -1,0 +1,7 @@
+application:
+  name: Data Returns - Pollution Inventory
+
+server:
+  session:
+    timeToLive: 145440000 # The session cookie and the session cache ttl in milliseconds
+    ironCookiePassword: 'vghu87VkhjgvTG796kjhbOHsqa&^(*&gsVJ'
