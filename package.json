@@ -11,6 +11,7 @@
     "js-yaml": "^3.10.0",
     "winston": "^2.4.0",
     "hapi": "^16.6.2",
+    "inert": "^4.2.1",
     "good": "^7.3.0",
     "good-winston": "^4.0.0",
     "catbox-redis": "^3.1.1",

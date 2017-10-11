@@ -2,6 +2,11 @@ application:
   name: Data Returns - Pollution Inventory
 
 server:
-  session:
-    timeToLive: 145440000 # The session cookie and the session cache ttl in milliseconds
-    ironCookiePassword: 'vghu87VkhjgvTG796kjhbOHsqa&^(*&gsVJ'
+  cache:
+    authorization:
+      timeToLive: 145440000 # The session cookie and the session cache ttl in milliseconds
+
+  authorization:
+    cookie:
+      timeToLive:
+      ironCookiePassword: 'vghu87VkhjgvTG796kjhbOHsqa&^(*&gsVJ'
