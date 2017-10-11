@@ -9,4 +9,5 @@
 /.nyc_output/
 /npm-debug.log
 /stdout
+/tmp
 /data-returns-pi-frontend.iml

@@ -7,9 +7,14 @@ const hapi = require('hapi');
 const fs = require('fs');
 
 const system = require('./app/lib/system.js');
+const templateBuilder = require('./app/assembly/templateBuilder');
+
 const srvcfg = system.configuration.server;
 
 system.logger.info(fs.readFileSync('./banner.txt', 'utf8'));
+
+// Build gov.uk templates and start the asset manager
+templateBuilder.build();
 
 // Create a Hapi server with a redis cache
 // as the main client cache

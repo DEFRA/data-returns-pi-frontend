@@ -17,15 +17,20 @@
     "catbox-redis": "^3.1.1",
     "hapi-auth-cookie": "^7.0.0",
     "uuid": "^3.1.0",
-    "time-stamp": "^2.0.0"
+    "time-stamp": "^2.0.0",
+    "fs-extra": "^4.0.2",
+    "nunjucks": "^3.0.1"
+    "govuk-elements-sass": "^3.1.2",
+    "govuk_frontend_toolkit": "^7.1.0",
+    "govuk_template_mustache": "^0.23.0"
   },
   "devDependencies": {
     "eslint": "4.8.0",
-    "eslint-config-standard": "10.2.1",
-    "eslint-plugin-import": "2.3.0",
-    "eslint-plugin-node": "5.0.0",
-    "eslint-plugin-promise": "3.5.0",
-    "eslint-plugin-standard": "3.0.1",
+    "eslint-config-standard": "^10.2.1",
+    "eslint-plugin-import": "^2.7.0",
+    "eslint-plugin-node": "^5.2.0",
+    "eslint-plugin-promise": "^3.5.0",
+    "eslint-plugin-standard": "^3.0.1",
     "lab": "^14.3.1",
     "nyc": "11.0.2"
   },
@@ -51,5 +56,6 @@
     "GDS"
   ],
   "author": "Druid Wood Limited / Sam Gardner-Dell",
-  "license": "ISC"
+  "license": "ISC",
+  "repository": "https://github.com/DEFRA/data-returns-pi-frontend.git"
 }
