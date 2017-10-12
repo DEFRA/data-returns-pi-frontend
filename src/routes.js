@@ -9,6 +9,21 @@ const home = require('./handlers/home.js');
  */
 const handlers = [
 
+    // The landing page
+    {
+        method: 'GET',
+        path: '/start',
+        config: {
+            handler: (request, reply) => {
+                reply.view('start', {
+                    title: 'Hapi ' + request.server.version,
+                    message: 'Index - Hello World!'
+                });
+            }
+        }
+    }
+
+  /*
     {
         method: 'GET',
         path: '/',
@@ -40,6 +55,7 @@ const handlers = [
             handler: home.home
         }
     }
+    */
 ];
 
 module.exports = handlers;

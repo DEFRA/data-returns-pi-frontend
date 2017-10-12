@@ -9,5 +9,5 @@
 /.nyc_output/
 /npm-debug.log
 /stdout
-/tmp
+/web/templates/govuk
 /data-returns-pi-frontend.iml

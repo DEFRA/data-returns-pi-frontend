@@ -15,7 +15,7 @@ const before = lab.before;
 const after = lab.after;
 const expect = lab.expect;
 
-const system = require('../app/lib/system.js');
+const system = require('../src/lib/system.js');
 
 describe('Testing Framework', () => {
     before((done) => {

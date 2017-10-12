@@ -5,9 +5,14 @@
  */
 const hapi = require('hapi');
 const fs = require('fs');
+const nunjucks = require('nunjucks');
+const path = require('path');
 
-const system = require('./app/lib/system.js');
-const templateBuilder = require('./app/assembly/templateBuilder');
+const system = require('./src/lib/system');
+const authorization = require('./src/lib/authorization');
+const serverMethods = require('./src/lib/server-methods');
+const templateBuilder = require('./assembly/templateBuilder');
+const assetManager = require('./assembly/assetManager');
 
 const srvcfg = system.configuration.server;
 
@@ -15,6 +20,7 @@ system.logger.info(fs.readFileSync('./banner.txt', 'utf8'));
 
 // Build gov.uk templates and start the asset manager
 templateBuilder.build();
+assetManager.start();
 
 // Create a Hapi server with a redis cache
 // as the main client cache
@@ -47,34 +53,40 @@ server.connection({
             }
         });
 
+        // Register the static data server
         await server.register({
             register: require('inert')
         });
 
-        // Register the server methods
-        server.method([{
-            name: 'sessionData',
-            // the 'next' callback must be used to return values
-            method: function (sid, data, next) {
-                next(null, 'Welcome: ' + data);
-            },
-            options: {
-                cache: {
-                    segment: 'session-data',
-                    expiresIn: 60000,
-                    staleIn: 30000,
-                    staleTimeout: 10000,
-                    generateTimeout: 100
-                },
-                generateKey: function (sid) {
-                    return sid + '_sessionData';
-                }
-            }
-        }]);
+        // Register rendering plugin support
+        await server.register({
+            register: require('vision')
+        });
 
         // Register Hapi Authorization cookies
         await server.register({
             register: require('hapi-auth-cookie')
+        });
+
+        // Configure nunjucks
+        server.views({
+            engines: {
+                html: {
+                    compile: function (src, options) {
+                        system.logger.info(`Compiling template ${src}`);
+                        const template = nunjucks.compile(src, options.environment);
+                        return function (context) {
+                            return template.render(context);
+                        };
+                    },
+
+                    prepare: function (options, next) {
+                        options.compileOptions.environment = nunjucks.configure(options.path, { watch: false });
+                        return next();
+                    }
+                }
+            },
+            path: path.join(__dirname, 'web/views')
         });
 
         // Create a Hapi-server cache policy
@@ -87,35 +99,20 @@ server.connection({
 
         server.app.cache = cache;
 
-        server.auth.strategy('session', 'cookie', true, {
+        // TODO Enable
+        server.auth.strategy('session', 'cookie', false, {
             password: srvcfg.authorization.cookie.ironCookiePassword,
             cookie: 'sid',
             redirectTo: '/login',
             isSecure: false,
-            // An optional validation function used to validate the content
-            // of the session cookie on each request
-            validateFunc: function (request, session, callback) {
-                server.app.cache.get(session.sid, (err, cached) => {
-
-                    if (err) {
-                        return callback(err, false);
-                    }
-
-                    if (!cached) {
-                        return callback(null, false);
-                    }
-
-                    // If we are validated add the sid to the request object
-                    server.app.sid = session.sid;
-
-                    // Return a validated callback function
-                    return callback(null, true, cached.account);
-                });
-            }
+            validateFunc: authorization.validate
         });
 
+        // Register the server methods
+        server.method(serverMethods.methods);
+
         // Set up the routing
-        server.route(require('./app/routes'));
+        server.route(require('./src/routes'));
 
         // Start the server
         await server.start();

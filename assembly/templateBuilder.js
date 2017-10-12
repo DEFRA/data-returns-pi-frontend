@@ -6,13 +6,14 @@
  */
 const fs = require('fs-extra');
 const path = require('path');
-const rootPath = path.resolve(__dirname, '../../');
-const govukTemplateSourcePath = `${rootPath}/node_modules/govuk_template_jinja/views/layouts/govuk_template.html`;
-const targetPath = `${rootPath}/tmp/templates`;
-const govukTemplateTargetPath = `${targetPath}/govuk_template.html`;
-const nunjucks = require('nunjucks');
 
-const system = require('../lib/system.js');
+const nunjucks = require('nunjucks');
+const system = require('../src/lib/system.js');
+
+const rootPath = path.resolve(__dirname, '../');
+const targetPath = path.join(rootPath, '/web/views/templates/govuk');
+const govukTemplateSourcePath = path.join(rootPath, '/node_modules/govuk_template_jinja/views/layouts/govuk_template.html');
+const govukTemplateTargetPath = path.join(targetPath, 'govuk_template.html');
 
 module.exports = {
     build: async function () {
@@ -20,8 +21,7 @@ module.exports = {
             system.logger.info('Building gov.uk templates');
             fs.emptyDirSync(targetPath);
             fs.copySync(govukTemplateSourcePath, govukTemplateTargetPath);
-            const compiledTemplate = nunjucks.precompile(govukTemplateTargetPath);
-            fs.writeFileSync(govukTemplateTargetPath, nunjucks.render(compiledTemplate, templateConfig), { encoding: 'utf-8' });
+            nunjucks.precompile(govukTemplateTargetPath);
         } catch (err) {
             system.logger.log('error', `Error building gov.uk templates: ${err}`);
             process.exit(1);
