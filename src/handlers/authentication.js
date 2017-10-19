@@ -21,23 +21,13 @@ module.exports = {
    * @param {function} reply - The server reply function
    * @return {undefined}
    */
-    landing: (request, reply) => {
-        reply('<html><head><title>Login page</title></head><body><h3>Welcome ' +
-        request.auth.credentials.name +
-        '!</h3><br/><form method="get" action="/logout">' +
-        '<input type="submit" value="Logout">' +
-        '</form></body></html>');
-    },
-
-    /**
-   * Landing page handler
-   * @param {internals.Request} request - The server request object
-   * @param {function} reply - The server reply function
-   * @return {undefined}
-   */
     login: (request, reply) => {
         if (request.auth.isAuthenticated) {
             return reply.redirect('/');
+        }
+
+        if (request.method === 'get') {
+            return reply.view('login');
         }
 
         let message = '';
@@ -54,17 +44,13 @@ module.exports = {
             }
         }
 
-        if (request.method === 'get' || message) {
-            return reply('<html><head><title>Login page</title></head><body>' +
-          (message ? '<h3>' + message + '</h3><br/>' : '') +
-          '<form method="post" action="/login">' +
-          'Username: <input type="text" name="username"><br>' +
-          'Password: <input type="password" name="password"><br/>' +
-          '<input type="submit" value="Login"></form></body></html>');
+        if (message) {
+            return reply.view('login', { message: message });
         }
 
         const sid = uuid.v4();
 
+        // TODO Move to system
         account.loggedInAt = timestamp('YYYY/MM/DD HH:mm:ss');
 
         request.server.app.cache.set(sid, { account: account }, 0, (err) => {
@@ -74,7 +60,7 @@ module.exports = {
             }
 
             request.cookieAuth.set({ sid: sid });
-            return reply.redirect('/home');
+            return reply.redirect('/');
         });
     },
 

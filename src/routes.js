@@ -4,31 +4,53 @@ const authentication = require('./handlers/authentication.js');
 const home = require('./handlers/home.js');
 
 /**
- * The routing
+ * Returns routes for the static assets
+ * @param type
+ * @param paths
+ * @return {{method: string, path: string, handler: {directory: {path: *, etagMethod: string}}}}
+ */
+const staticAssetDir = function (type, paths) {
+    return {
+        method: 'GET',
+        path: `/public/${type}/{param*}`,
+        config: {
+            auth: false
+        },
+        handler: {
+            directory: {
+                path: paths,
+                etagMethod: 'hash' // Allows assets to be cached by the client.
+            }
+        }
+    };
+};
+
+/**
+ * The dynamic routing
  * @type {[null]}
  */
 const handlers = [
 
-    // The landing page
-    {
-        method: 'GET',
-        path: '/start',
-        config: {
-            handler: (request, reply) => {
-                reply.view('start', {
-                    title: 'Hapi ' + request.server.version,
-                    message: 'Index - Hello World!'
-                });
-            }
-        }
-    }
+    // Images
+    staticAssetDir('images', [
+        'public/images',
+        'node_modules/govuk_template_jinja/assets/images',
+        'node_modules/govuk_frontend_toolkit/images'
+    ]),
 
-  /*
-    {
-        method: 'GET',
-        path: '/',
-        config: { handler: authentication.landing }
-    },
+    // Javascripts
+    staticAssetDir('javascripts', [
+        'public/javascripts',
+        'node_modules/govuk_template_jinja/assets/javascripts',
+        'node_modules/govuk_frontend_toolkit/javascripts'
+    ]),
+
+    // Stylesheets
+    staticAssetDir('stylesheets', [
+        'public/stylesheets',
+        'node_modules/govuk_template_jinja/assets/stylesheets',
+        'node_modules/govuk_frontend_toolkit/stylesheets'
+    ]),
 
     {
         method: ['GET', 'POST'],
@@ -50,12 +72,11 @@ const handlers = [
 
     {
         method: 'GET',
-        path: '/home',
+        path: '/',
         config: {
-            handler: home.home
+            handler: home.start
         }
     }
-    */
 ];
 
 module.exports = handlers;

@@ -1,0 +1,24 @@
+{% extends 'layout/layout.html' %}
+
+{% block content %}
+
+<form action="/login" method="post">
+
+    {% if message %} {{ message }} {% endif %}
+
+    <div class="container">
+        <label><b>Username</b></label>
+        <input placeholder="Enter Username" name="username" required>
+
+        <label><b>Password</b></label>
+        <input type="password" placeholder="Enter Password" name="password" required>
+
+        <button>Login</button>
+    </div>
+
+    <div class="container">
+        <span>Forgot <a href="#">password?</a></span>
+    </div>
+</form>
+
+{% endblock %}

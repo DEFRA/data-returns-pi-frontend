@@ -11,8 +11,8 @@ const path = require('path');
 const system = require('./src/lib/system');
 const authorization = require('./src/lib/authorization');
 const serverMethods = require('./src/lib/server-methods');
-const templateBuilder = require('./assembly/templateBuilder');
-const assetManager = require('./assembly/assetManager');
+const templateBuilder = require('./assembly/template-builder');
+const assetManager = require('./assembly/asset-manager');
 
 const srvcfg = system.configuration.server;
 
@@ -39,6 +39,7 @@ server.connection({
     port: process.env.PORT
 });
 
+// TODO Add Boom
 // A function to provision and start the Hapi server
 (async () => {
     try {
@@ -86,7 +87,15 @@ server.connection({
                     }
                 }
             },
-            path: path.join(__dirname, 'web/views')
+
+            // Set up the location of the template resources
+            relativeTo: __dirname,
+            path: 'web/templates',
+            layoutPath: 'web/layout',
+            helpersPath: 'web/helpers',
+
+            // Set up the common data
+            context: require('./src/lib/common-view-data')
         });
 
         // Create a Hapi-server cache policy
@@ -99,8 +108,7 @@ server.connection({
 
         server.app.cache = cache;
 
-        // TODO Enable
-        server.auth.strategy('session', 'cookie', false, {
+        server.auth.strategy('session', 'cookie', true, {
             password: srvcfg.authorization.cookie.ironCookiePassword,
             cookie: 'sid',
             redirectTo: '/login',

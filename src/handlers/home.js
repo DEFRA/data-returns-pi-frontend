@@ -7,7 +7,7 @@ module.exports = {
    * @param {function} reply - The server reply function
    * @return {undefined}
    */
-    home: (request, reply) => {
+    start: (request, reply) => {
 
         const sid = request.server.app.sid;
 
