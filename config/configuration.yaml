@@ -4,9 +4,12 @@ application:
 server:
   cache:
     authorization:
-      timeToLive: 145440000 # The session cookie and the session cache ttl in milliseconds
+      timeToLive: 145440000 # The session cache time to live in milliseconds
 
   authorization:
     cookie:
       timeToLive:
       ironCookiePassword: 'vghu87VkhjgvTG796kjhbOHsqa&^(*&gsVJ'
+
+  timeout: 60000 # Time out requests after one minute and return a 503 error - Service Unavailable
+

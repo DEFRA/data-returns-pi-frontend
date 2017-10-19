@@ -30,13 +30,20 @@ const server = new hapi.Server({
         host: process.env.REDIS_HOSTNAME,
         port: process.env.REDIS_PORT,
         partition: 'cache'
-    }]
+    }],
+    app: {
+        foo: 'bar'
+    }
 });
 
 // Set the server connection details
 server.connection({
     host: process.env.HOSTNAME,
-    port: process.env.PORT
+    port: process.env.PORT,
+    routes: {
+        cors: false,
+        timeout: { server: srvcfg.timeout }
+    }
 });
 
 // TODO Add Boom
@@ -69,12 +76,17 @@ server.connection({
             register: require('hapi-auth-cookie')
         });
 
+        // Register Crumb - looks like this is broken with the current
+        // version of hapi
+        // await server.register({
+        //    register: require('crumb')
+        // });
+
         // Configure nunjucks
         server.views({
             engines: {
                 html: {
                     compile: function (src, options) {
-                        system.logger.info(`Compiling template ${src}`);
                         const template = nunjucks.compile(src, options.environment);
                         return function (context) {
                             return template.render(context);
@@ -113,6 +125,7 @@ server.connection({
             cookie: 'sid',
             redirectTo: '/login',
             isSecure: false,
+            clearInvalid: true,
             validateFunc: authorization.validate
         });
 

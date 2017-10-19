@@ -58,7 +58,10 @@ const handlers = [
         config: {
             handler: authentication.login,
             auth: { mode: 'try' },
-            plugins: { 'hapi-auth-cookie': { redirectTo: false } }
+            plugins: {
+                'hapi-auth-cookie': { redirectTo: false },
+                crumb: {}
+            }
         }
     },
 
