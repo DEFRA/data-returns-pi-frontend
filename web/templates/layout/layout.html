@@ -1,5 +1,16 @@
 {% extends 'govuk/govuk_template.html' %}
 
+{% block head %}
+{% if css.compressed %}
+<link href="/public/stylesheets/main-min.css" rel="stylesheet" type="text/css" />
+{% else %}
+<link href="/public/stylesheets/main.css" rel="stylesheet" type="text/css" />
+{% endif %}
+<meta http-equiv="Cache-Control" content="no-store" />
+<meta http-equiv="Pragma" content="no-cache">
+<meta http-equiv="Expires" content="-1">
+{% endblock %}
+
 {% block proposition_header %}
     {% include "includes/proposition_header.html" %}
 {% endblock %}

@@ -8,7 +8,7 @@ const sass = require('node-sass');
 const path = require('path');
 const compressor = require('node-minify');
 const rootPath = path.resolve(__dirname, '..');
-
+const logging = require('../src/lib/logging');
 const system = require('../src/lib/system');
 
 const minifyTypes = {
@@ -42,23 +42,23 @@ class AssetManager {
     constructor (config) {
         this.config = config;
 
-        system.logger.info(`Registering asset directory ${config.sourceDir} for changes.`);
+        logging.logger.info(`Registering asset directory ${config.sourceDir} for changes.`);
         const match = config.pattern || '**/*';
 
         const watcher = this;
         // listen for subsequent changes
         gaze(match, {'cwd': config.sourceDir}, function (err) {
             if (err) {
-                return system.logger.error(`AssetManager: Failed to gaze at asset directory ${config.sourceDir}, reason ${err.message}`, err);
+                return logging.logger.error(`AssetManager: Failed to gaze at asset directory ${config.sourceDir}, reason ${err.message}`, err);
             }
             // On changed/added/deleted
             this.on('all', function (event, absolutePath) {
                 try {
                     const relPath = path.relative(config.sourceDir, absolutePath);
-                    system.logger.info(`AssetManager: Detected a change to ${relPath} inside ${config.sourceDir} (${event})`);
+                    logging.logger.info(`AssetManager: Detected a change to ${relPath} inside ${config.sourceDir} (${event})`);
                     this.onChange(event, absolutePath, relPath);
                 } catch (e) {
-                    system.logger.error(`AssetManager: Change handler reported an error: ${e.message}`, e);
+                    logging.logger.error(`AssetManager: Change handler reported an error: ${e.message}`, e);
                 }
             }.bind(watcher));
         });
@@ -73,10 +73,10 @@ class AssetManager {
     static empty (targetDir, onComplete) {
         fs.emptyDir(targetDir, function (err) {
             if (err) {
-                return system.logger.error(`AssetManager: Unable to empty target directory ${targetDir}, reason ${err.message}`, err);
+                return logging.logger.error(`AssetManager: Unable to empty target directory ${targetDir}, reason ${err.message}`, err);
             }
 
-            system.logger.info(`AssetManager: Emptied ${targetDir}`);
+            logging.logger.info(`AssetManager: Emptied ${targetDir}`);
             if (onComplete) onComplete();
         });
     }
@@ -91,9 +91,9 @@ class AssetManager {
     static copy (sourcePath, targetPath, onComplete) {
         fs.copy(sourcePath, targetPath, {'clobber': true}, function (err) {
             if (err) {
-                return system.logger.error(`AssetManager: Failed to copy ${sourcePath} to ${targetPath}, reason ${err.message}`, err);
+                return logging.logger.error(`AssetManager: Failed to copy ${sourcePath} to ${targetPath}, reason ${err.message}`, err);
             }
-            system.logger.info(`AssetManager: Copied ${sourcePath} to ${targetPath}`);
+            logging.logger.info(`AssetManager: Copied ${sourcePath} to ${targetPath}`);
             if (onComplete) onComplete();
         });
     }
@@ -117,14 +117,14 @@ class AssetManager {
                 options: minifyType.options,
                 callback: function (err) {
                     if (err) {
-                        return system.logger.error(`AssetManager: Minification failed for ${sourcePath}, reason: ${err.message}`, err);
+                        return logging.logger.error(`AssetManager: Minification failed for ${sourcePath}, reason: ${err.message}`, err);
                     }
-                    system.logger.info(`AssetManager: Minified ${sourcePath} to ${targetPath}`);
+                    logging.logger.info(`AssetManager: Minified ${sourcePath} to ${targetPath}`);
                     if (onComplete) onComplete();
                 }
             });
         } else {
-            system.logger.error(`AssetManager: Could not minify file with type ${ext} for path ${sourcePath}`);
+            logging.logger.error(`AssetManager: Could not minify file with type ${ext} for path ${sourcePath}`);
         }
     }
 
@@ -137,9 +137,9 @@ class AssetManager {
     static delete (targetPath, onComplete) {
         fs.unlink(targetPath, function (err) {
             if (err) {
-                return system.logger.error(`AssetManager: Failed to delete ${targetPath}, reason ${err.message}`, err);
+                return logging.logger.error(`AssetManager: Failed to delete ${targetPath}, reason ${err.message}`, err);
             }
-            system.logger.info(`AssetManager: Deleted ${targetPath}`);
+            logging.logger.info(`AssetManager: Deleted ${targetPath}`);
             if (onComplete) onComplete();
         });
     }
@@ -190,7 +190,7 @@ class SassHandler extends AssetManager {
                 if (fsErr) {
                     return system.logger.error(`AssetManager: Failed to write compiled SASS to ${this.outFile}, reason: ${fsErr.message}`, fsErr);
                 }
-                system.logger.info(`AssetManager: Compiled SASS from ${this.mainFile} to ${this.outFile}`);
+                logging.logger.info(`AssetManager: Compiled SASS from ${this.mainFile} to ${this.outFile}`);
                 // Create a minified version of the CSS output
                 AssetManager.minify(this.outFile, this.minifiedFile);
             }.bind(this));

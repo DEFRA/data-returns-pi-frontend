@@ -1,15 +1,31 @@
+##############################################
+# Config applying to the application
+##############################################
 application:
   name: Data Returns - Pollution Inventory
-
+  version: 1.0.0
+##############################################
+# Config applying to the HAPI web server
+##############################################
 server:
-  cache:
+  sampleInterval: 60000     # log load every minute
+  timeout: 60000            # Time out requests after one minute and return a 503 error - Service Unavailable
+  cache:                    # The redis cache storing authorized user details
     authorization:
-      timeToLive: 145440000 # The session cache time to live in milliseconds
-
+      timeToLive: 145440000 # Time to live in milliseconds (1 day)
   authorization:
-    cookie:
+    cookie:                 # The cookie associated with the authorization cache
       timeToLive:
       ironCookiePassword: 'vghu87VkhjgvTG796kjhbOHsqa&^(*&gsVJ'
+##############################################
+# Logging options
+##############################################
+logging:
+  level: debug              # Only effective when NODE_ENV === local
 
-  timeout: 60000 # Time out requests after one minute and return a 503 error - Service Unavailable
 
+##############################################
+# Miscellaneous options
+##############################################
+css:
+  compressed: true          # minify css

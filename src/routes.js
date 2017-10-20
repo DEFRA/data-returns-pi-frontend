@@ -1,7 +1,7 @@
 'use strict';
 
 const authentication = require('./handlers/authentication.js');
-const home = require('./handlers/home.js');
+const home = require('./handlers/start.js');
 
 /**
  * Returns routes for the static assets

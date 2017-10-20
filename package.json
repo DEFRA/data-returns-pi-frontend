@@ -27,6 +27,7 @@
     "time-stamp": "^2.0.0",
     "fs-extra": "^4.0.2",
     "nunjucks": "^3.0.1",
+    "lodash": "^4.17.4",
     "govuk-elements-sass": "^3.1.2",
     "govuk_frontend_toolkit": "^7.1.0",
     "govuk_template_jinja": "^0.23.0"

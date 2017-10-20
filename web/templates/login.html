@@ -2,23 +2,29 @@
 
 {% block content %}
 
-<form action="/login" method="post">
+<main id="content" role="main">
+    <form action="/login" method="post">
 
-    {% if message %} {{ message }} {% endif %}
+        {% if message %} {{ message }} {% endif %}
 
-    <div class="container">
-        <label><b>Username</b></label>
-        <input placeholder="Enter Username" name="username" required>
+        <div class="text">
+            <label>Username</label>
+            <input placeholder="Enter Username" name="username" required></div></br>
 
-        <label><b>Password</b></label>
-        <input type="password" placeholder="Enter Password" name="password" required>
-        <input type="hidden" name="crumb" value="{{crumb}}"/>
-        <button>Login</button>
-    </div>
+            <label>Password</label>
+            <input type="password" placeholder="Enter Password" name="password" required></br>
 
-    <div class="container">
-        <span>Forgot <a href="#">password?</a></span>
-    </div>
-</form>
+            <div class="form-group">
+                <input class="button" type="submit" id="continueBtn" value="Login" accesskey="L">
+            </div>
+
+            <input type="hidden" name="crumb" value="{{crumb}}"/>
+        </div>
+
+        <div class="container">
+            <span>Forgot <a href="#">password?</a></span>
+        </div>
+    </form>
+</main>
 
 {% endblock %}

@@ -1,10 +1,28 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>Title</title>
-</head>
-<body>
+{% extends 'layout/layout.html' %}
 
-</body>
-</html>
+{% block content %}
+
+<main id="content" role="main">
+    <form>
+    <h1 class="heading-large"><span id="title">{{ message }}</span></h1>
+
+        <div class="text">
+            <p class="lede">Once you’ve sent your data we’ll email you a receipt.</p>
+            <div class="text panel panel-border-wide">
+                <ul class="list">
+                    <li>Pollution Inventory</li>
+                </ul>
+            </div>
+
+            <div class="help-notice">
+                <p>By sending this data you agree that you’re acting on behalf of the permit holder and - to the best of your knowledge and belief - the data is true, not false or misleading.</p>
+            </div>
+
+            <div class="form-group">
+                <input class="button" type="submit" id="continueBtn" value="Accept" accesskey="C">
+            </div>
+        </div>
+    </form>
+</main>
+
+{% endblock %}

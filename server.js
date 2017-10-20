@@ -6,9 +6,9 @@
 const hapi = require('hapi');
 const fs = require('fs');
 const nunjucks = require('nunjucks');
-const path = require('path');
 
 const system = require('./src/lib/system');
+const logging = require('./src/lib/logging');
 const authorization = require('./src/lib/authorization');
 const serverMethods = require('./src/lib/server-methods');
 const templateBuilder = require('./assembly/template-builder');
@@ -16,7 +16,7 @@ const assetManager = require('./assembly/asset-manager');
 
 const srvcfg = system.configuration.server;
 
-system.logger.info(fs.readFileSync('./banner.txt', 'utf8'));
+logging.logger.info(fs.readFileSync('./banner.txt', 'utf8'));
 
 // Build gov.uk templates and start the asset manager
 templateBuilder.build();
@@ -33,11 +33,14 @@ const server = new hapi.Server({
     }],
     app: {
         foo: 'bar'
+    },
+    load: {
+        sampleInterval: srvcfg.sampleInterval
     }
 });
 
 // Set the server connection details
-server.connection({
+const connections = server.connection({
     host: process.env.HOSTNAME,
     port: process.env.PORT,
     routes: {
@@ -45,6 +48,8 @@ server.connection({
         timeout: { server: srvcfg.timeout }
     }
 });
+
+logging.logger.log('debug', `Hapi server connection settings: ${JSON.stringify(connections.info)}`);
 
 // TODO Add Boom
 // A function to provision and start the Hapi server
@@ -56,7 +61,7 @@ server.connection({
             register: require('good'),
             options: {
                 reporters: {
-                    winston: [system.goodWinstonStream]
+                    winston: [logging.goodWinstonStream]
                 }
             }
         });
@@ -107,7 +112,11 @@ server.connection({
             helpersPath: 'web/helpers',
 
             // Set up the common data
-            context: require('./src/lib/common-view-data')
+            context: require('./src/lib/common-view-data'),
+
+            // Cause the template rendering engine to reread the file on each invocation
+            // in development to avoid restarts when changing templates
+            isCached: process.env.NODE_ENV !== 'local'
         });
 
         // Create a Hapi-server cache policy
@@ -137,9 +146,9 @@ server.connection({
 
         // Start the server
         await server.start();
-        system.logger.info(`Server started at ${server.info.uri}`);
+        logging.logger.info(`Server started at ${server.info.uri}`);
     } catch (err) {
-        system.logger.log('error', err);
+        logging.logger.log('error', err);
         process.exit(1);
     }
 })();

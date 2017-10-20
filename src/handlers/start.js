@@ -17,7 +17,7 @@ module.exports = {
                 return reply(err);
             }
 
-            reply(`<html><head><title>Login page</title></head><body><h3>${result}</body></html>`);
+            reply.view('start', { message: result });
         });
 
     }
