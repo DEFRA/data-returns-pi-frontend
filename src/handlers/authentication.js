@@ -3,8 +3,8 @@
 /**
  * Route handlers for authentication routes
  */
+const system = require('../lib/system');
 const uuid = require('uuid');
-const timestamp = require('time-stamp');
 
 const users = {
     gdog: {
@@ -51,7 +51,7 @@ module.exports = {
         const sid = uuid.v4();
 
         // TODO Move to system
-        account.loggedInAt = timestamp('YYYY/MM/DD HH:mm:ss');
+        account.loggedInAt = system.timestamp;
 
         request.server.app.cache.set(sid, { account: account }, 0, (err) => {
 

@@ -1,7 +1,9 @@
 'use strict';
 
 /**
- * Initializes the Hapi server
+ * Initializes the Hapi server and sets the configuration
+ * Registers the required plugins and exports the server object
+ * in order that the server can be used in integration tests
  */
 const hapi = require('hapi');
 const nunjucks = require('nunjucks');
@@ -14,7 +16,7 @@ const serverMethods = require('./server-methods');
 const srvcfg = system.configuration.server;
 
 // Create a Hapi server with a redis cache
-// as the main client cache
+// as the default client cache
 const server = new hapi.Server({
     cache: [{
         engine: require('catbox-redis'),
@@ -42,13 +44,13 @@ const connections = server.connection({
 
 logging.logger.log('debug', `Hapi server connection settings: ${JSON.stringify(connections.info)}`);
 
-// A function to provision and start the Hapi server
+// A function to provision the Hapi server
 const initialize = async () => {
     try {
 
         logging.logger.info('Starting server initialization...');
 
-        // Register the logging plugin
+        // Register the logging plugin to allow Hapi to log using Winston
         await server.register({
             register: require('good'),
             options: {
@@ -63,7 +65,7 @@ const initialize = async () => {
             register: require('inert')
         });
 
-        // Register rendering plugin support
+        // Register template rendering plugin support
         await server.register({
             register: require('vision')
         });
@@ -103,7 +105,7 @@ const initialize = async () => {
             layoutPath: 'web/layout',
             helpersPath: 'web/helpers',
 
-            // Set up the common data
+            // Set up the common view data
             context: require('./common-view-data'),
 
             // Cause the template rendering engine to reread the file on each invocation

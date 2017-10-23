@@ -7,6 +7,7 @@
 const yaml = require('js-yaml');
 const fs = require('fs');
 const dotenv = require('dotenv');
+const timestamp = require('time-stamp');
 
 /**
  * Copy environment variables to process.env
@@ -32,5 +33,10 @@ module.exports = {
    * Return the system configuration as a javascript object
    * @returns {*} The global system configuration
    */
-    configuration: getSystemConfiguration()
+    configuration: getSystemConfiguration(),
+
+    /**
+   * Standard timestamp used throughout the application
+   */
+    timestamp: timestamp('YYYY/MM/DD HH:mm:ss')
 };
