@@ -5,11 +5,11 @@
  * @type {{validate: module.exports.validate}}
  */
 module.exports = {
-   /**
+    /**
    * validation function called on every request
-   * @param request
-   * @param session
-   * @param callback
+   * @param request - Hapi request object of the request which is being authenticated
+   * @param session - The session object set via request.cookieAuth.set()
+   * @param callback - a callback function with the signature function(err, isValid, credentials)
    */
     validate: (request, session, callback) => {
         const server = request.server;

@@ -14,7 +14,7 @@ const it = lab.it;
 const before = lab.before;
 const after = lab.after;
 const expect = lab.expect;
-
+const logging = require('../src/lib/logging');
 const system = require('../src/lib/system.js');
 
 describe('Testing Framework', () => {
@@ -32,8 +32,8 @@ describe('Testing Framework', () => {
     });
 
     it('Testing logging is alive', (done) => {
-        expect(() => system.logger.info('Testing logging...')).to.not.throw();
-        expect(system.goodWinstonStream).to.be.an.object();
+        expect(() => logging.logger.info('Testing logging...')).to.not.throw();
+        expect(logging.goodWinstonStream).to.be.an.object();
         done();
     });
 });

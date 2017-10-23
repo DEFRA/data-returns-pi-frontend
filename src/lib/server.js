@@ -1,26 +1,17 @@
 'use strict';
 
 /**
- * Application entry point: Initializes the Hapi server
+ * Initializes the Hapi server
  */
 const hapi = require('hapi');
-const fs = require('fs');
 const nunjucks = require('nunjucks');
 
-const system = require('./src/lib/system');
-const logging = require('./src/lib/logging');
-const authorization = require('./src/lib/authorization');
-const serverMethods = require('./src/lib/server-methods');
-const templateBuilder = require('./assembly/template-builder');
-const assetManager = require('./assembly/asset-manager');
+const system = require('./system');
+const logging = require('./logging');
+const authorization = require('./authorization');
+const serverMethods = require('./server-methods');
 
 const srvcfg = system.configuration.server;
-
-logging.logger.info(fs.readFileSync('./banner.txt', 'utf8'));
-
-// Build gov.uk templates and start the asset manager
-templateBuilder.build();
-assetManager.start();
 
 // Create a Hapi server with a redis cache
 // as the main client cache
@@ -51,10 +42,11 @@ const connections = server.connection({
 
 logging.logger.log('debug', `Hapi server connection settings: ${JSON.stringify(connections.info)}`);
 
-// TODO Add Boom
 // A function to provision and start the Hapi server
-(async () => {
+const initialize = async () => {
     try {
+
+        logging.logger.info('Starting server initialization...');
 
         // Register the logging plugin
         await server.register({
@@ -99,20 +91,20 @@ logging.logger.log('debug', `Hapi server connection settings: ${JSON.stringify(c
                     },
 
                     prepare: function (options, next) {
-                        options.compileOptions.environment = nunjucks.configure(options.path, { watch: false });
+                        options.compileOptions.environment = nunjucks.configure(options.path, {watch: false});
                         return next();
                     }
                 }
             },
 
             // Set up the location of the template resources
-            relativeTo: __dirname,
+            relativeTo: process.env.APP_ROOT,
             path: 'web/templates',
             layoutPath: 'web/layout',
             helpersPath: 'web/helpers',
 
             // Set up the common data
-            context: require('./src/lib/common-view-data'),
+            context: require('./common-view-data'),
 
             // Cause the template rendering engine to reread the file on each invocation
             // in development to avoid restarts when changing templates
@@ -142,13 +134,18 @@ logging.logger.log('debug', `Hapi server connection settings: ${JSON.stringify(c
         server.method(serverMethods.methods);
 
         // Set up the routing
-        server.route(require('./src/routes'));
+        server.route(require('../routes'));
 
-        // Start the server
-        await server.start();
-        logging.logger.info(`Server started at ${server.info.uri}`);
+        logging.logger.info('Completed server initialization');
+
+        return;
     } catch (err) {
-        logging.logger.log('error', err);
-        process.exit(1);
+        return Promise.reject(err);
     }
-})();
+};
+
+// Export the server so that it can be used in the integration tests
+module.exports = {
+    server: server,
+    initialize: initialize
+};

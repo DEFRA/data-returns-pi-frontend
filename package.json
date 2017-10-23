@@ -52,7 +52,7 @@
     ]
   },
   "scripts": {
-    "start": "npm test && node server.js",
+    "start": "npm test && node main.js",
     "lint": "./node_modules/eslint/bin/eslint.js .",
     "test": "./node_modules/lab/bin/lab -e local",
     "coverage": "nyc --all npm start",

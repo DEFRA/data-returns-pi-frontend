@@ -10,7 +10,7 @@ module.exports = {
     'environment': 'local',
     'colors': true,
     'coverage': true,
-    'coverage-path': 'app/',
+    'coverage-path': 'src/',
     'threshold': 80,
     'lint': true,
     'lint-errors-threshold': 0,
