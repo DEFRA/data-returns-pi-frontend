@@ -50,7 +50,6 @@ module.exports = {
 
         const sid = uuid.v4();
 
-        // TODO Move to system
         account.loggedInAt = system.timestamp;
 
         request.server.app.cache.set(sid, { account: account }, 0, (err) => {

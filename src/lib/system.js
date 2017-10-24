@@ -8,11 +8,32 @@ const yaml = require('js-yaml');
 const fs = require('fs');
 const dotenv = require('dotenv');
 const timestamp = require('time-stamp');
+const joi = require('joi');
 
 /**
  * Copy environment variables to process.env
  */
 dotenv.config();
+
+/**
+ * Validate the environment variables
+ */
+const environmentSchema = joi.object({
+    CONFIG: joi.string().required(),
+    APP_ROOT: joi.string().required(),
+    HOSTNAME: joi.string().required(),
+    PORT: joi.number().required(),
+    REDIS_HOSTNAME: joi.string().required(),
+    REDIS_PORT: joi.number().required()
+}).unknown()
+    .required();
+
+const { error } = joi.validate(process.env, environmentSchema);
+if (error) {
+    console.log(`Environment validation error: ${error.message}`);
+    console.log('Please check your .env file is correct in the application root');
+    process.exit(1);
+}
 
 /**
  * Get the global system configuration
