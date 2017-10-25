@@ -68,6 +68,27 @@ const resultExclude = {
     ]
 };
 
+const resultStatus = {
+    stages: [
+        {
+            heading: 'Check your details',
+            items: [
+                {
+                    name: 'CONTACT',
+                    title: 'Your contact details',
+                    page: '/contact'
+                },
+                {
+                    name: 'SITE',
+                    title: 'Your site codes',
+                    page: '/site',
+                    status: 'Completed'
+                }
+            ]
+        }
+    ]
+};
+
 const testSet = ['RELEASES_TO_AIR', 'RELEASES_TO_LAND', 'RELEASES_TO_CONTROLLED_WATERS', 'SUBMIT'];
 
 describe('Testing task list library', () => {
@@ -82,9 +103,14 @@ describe('Testing task list library', () => {
         done();
     });
 
-    // it('Testing throws error with invalid tasklist', (done) => {
-    //    expect(() => { tasklistLib.exclude({ stages: 'junk' }, testSet); }).to.throw();
-    //    done();
-    // });
+    it('Testing add status function', (done) => {
+        expect(tasklistLib.status(resultExclude, 'SITE', 'Completed')).to.equal(resultStatus);
+        done();
+    });
+
+    it('Testing remove status function', (done) => {
+        expect(resultExclude).to.equal(tasklistLib.status(resultStatus, 'SITE', 'Completed'));
+        done();
+    });
 
 });
