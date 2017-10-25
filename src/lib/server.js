@@ -93,7 +93,7 @@ const initialize = async () => {
                     },
 
                     prepare: function (options, next) {
-                        options.compileOptions.environment = nunjucks.configure(options.path, {watch: false});
+                        options.compileOptions.environment = nunjucks.configure(options.path, { watch: false });
                         return next();
                     }
                 }

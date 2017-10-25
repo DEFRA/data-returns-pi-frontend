@@ -1,0 +1,21 @@
+{% extends 'layout/layout.html' %}
+
+{% block content %}
+
+<main id="content">
+
+    <ol>
+        {% for stage in stages %}
+        <li class="font-large">{{ stage.heading }}
+            <ul>
+                {% for item in stage.items %}
+                <li><a href="{{ item.page }}"><span class="font-medium">{{ item.title }}</span></a></li>
+                {% endfor %}
+            </ul>
+        </li>
+        {% endfor %}
+    </ol>
+
+</main>
+
+{% endblock %}

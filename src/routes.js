@@ -52,6 +52,7 @@ const handlers = [
         'node_modules/govuk_frontend_toolkit/stylesheets'
     ]),
 
+    // Authentication handlers
     {
         method: ['GET', 'POST'],
         path: '/login',
@@ -79,7 +80,17 @@ const handlers = [
         config: {
             handler: home.start
         }
+    },
+
+    // Handlers for the chemical journey
+    {
+        method: 'GET',
+        path: '/all-sectors',
+        config: {
+            handler: require('./handlers/all-sectors/main').task_list
+         }
     }
+
 ];
 
 module.exports = handlers;
