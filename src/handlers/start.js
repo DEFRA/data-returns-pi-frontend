@@ -1,5 +1,7 @@
 'use strict';
 
+const logging = require('../lib/logging');
+
 /**
  * The handler for the start page
  * @type {{start: (function(internals.Request, Function))}}
@@ -14,19 +16,30 @@ module.exports = {
      */
     start: (request, reply) => {
 
-        // Get the user details from the cache
-        const sid = request.server.app.sid;
+        // TODO The async version of get appears to be broken - it returns undefined. Investigate this further
+        request.server.app.cache.get(request.server.app.sid, (err, cached) => {
 
-      reply.view('start', { message: sid });
+            if (err) {
+                logging.logger.log('error', err);
+                reply.redirect('/logout');
+            }
 
-        // request.server.methods.sessionData(sid, request.auth.credentials.name, (err, result) => {
+            reply.view('start', { message: cached.user.username });
+
+        });
+
+        // try {
         //
-        //     if (err) {
-        //         return reply(err);
-        //     }
+        //     // Get the user details from the cache
+        //     const sessionData = await request.server.app.cache.get(request.server.app.sid);       //
+        //     reply.view('start', { message: request.server.app.sid });
         //
-        //     reply.view('start', { message: result });
-        // });
-
+        // } catch (err) {
+        //     reply(err);
+        //     /*
+        //      *logging.logger.log('error', err);
+        //      * reply.redirect('/logout');
+        //      */
+        // }
     }
 };
