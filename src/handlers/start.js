@@ -1,5 +1,10 @@
 'use strict';
 
+/**
+ * The handler for the start page
+ * @type {{start: (function(internals.Request, Function))}}
+ */
+
 module.exports = {
     /**
      * Landing page handler
@@ -9,16 +14,19 @@ module.exports = {
      */
     start: (request, reply) => {
 
+        // Get the user details from the cache
         const sid = request.server.app.sid;
 
-        request.server.methods.sessionData(sid, request.auth.credentials.name, (err, result) => {
+      reply.view('start', { message: sid });
 
-            if (err) {
-                return reply(err);
-            }
-
-            reply.view('start', { message: result });
-        });
+        // request.server.methods.sessionData(sid, request.auth.credentials.name, (err, result) => {
+        //
+        //     if (err) {
+        //         return reply(err);
+        //     }
+        //
+        //     reply.view('start', { message: result });
+        // });
 
     }
 };

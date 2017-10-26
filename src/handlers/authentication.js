@@ -4,8 +4,8 @@
  * Route handlers for authentication routes
  */
 const uuid = require('uuid');
-const system = ('../lib/system');
-const logging = ('../lib/logging');
+const system = require('../lib/system');
+const logging = require('../lib/logging');
 const userService = require('../service/user-service.js');
 
 module.exports = {
@@ -41,7 +41,7 @@ module.exports = {
             delete authenticated.password;
 
             // Set the authentication details in the session cache
-            await request.server.app.cache.set(sid, { user: authenticated, loggedInAt: system.timestamp });
+            await request.server.app.cache.set(sid, { user: authenticated, loggedInAt: system.time() });
 
             // Set the session authorization cookie - it will encode the session id to identify the cache
             request.cookieAuth.set({ sid: sid });
@@ -50,7 +50,7 @@ module.exports = {
             return reply.redirect('/');
 
         } catch (err) {
-            logging.logger.error(err);
+            logging.logger.log('error', err);
             return reply.view('login');
         }
     },

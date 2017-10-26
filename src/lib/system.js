@@ -29,6 +29,7 @@ const environmentSchema = joi.object({
     .required();
 
 const { error } = joi.validate(process.env, environmentSchema);
+
 if (error) {
     console.log(`Environment validation error: ${error.message}`);
     console.log('Please check your .env file is correct in the application root');
@@ -59,5 +60,7 @@ module.exports = {
     /**
      * Standard timestamp used throughout the application
      */
-    timestamp: timestamp('YYYY/MM/DD HH:mm:ss')
+    time: () => {
+        return timestamp('YYYY/MM/DD HH:mm:ss');
+    }
 };
