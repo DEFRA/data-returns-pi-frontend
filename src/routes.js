@@ -14,7 +14,8 @@ const staticAssetDir = function (type, paths) {
         method: 'GET',
         path: `/public/${type}/{param*}`,
         config: {
-            auth: false
+            auth: false,
+            cache: false
         },
         handler: {
             directory: {
@@ -29,7 +30,7 @@ const staticAssetDir = function (type, paths) {
  * The dynamic routing
  * @type {[null]}
  */
-const handlers = [
+const staticHandlers = [
 
     // Images
     staticAssetDir('images', [
@@ -50,8 +51,11 @@ const handlers = [
         'public/stylesheets',
         'node_modules/govuk_template_jinja/assets/stylesheets',
         'node_modules/govuk_frontend_toolkit/stylesheets'
-    ]),
+    ])
 
+];
+
+const dynamicHandlers = [
     // Authentication handlers
     {
         method: ['GET', 'POST'],
@@ -88,9 +92,22 @@ const handlers = [
         path: '/all-sectors',
         config: {
             handler: require('./handlers/all-sectors/main').task_list
-         }
+        }
     }
-
 ];
 
-module.exports = handlers;
+module.exports = {
+    staticHandlers: staticHandlers,
+
+    /*
+     * Decorate the dynamic handler configuration with common cache properties
+     * No caching for get requests and no public caching
+     */
+    dynamicHandlers: dynamicHandlers.map((h) => {
+        h.config = h.config || {};
+        h.config.cache = h.config.cache || {};
+        h.config.cache.privacy = 'private';
+        h.config.cache.otherwise = 'no-cache, no-store, must-revalidate';
+        return h;
+    })
+};

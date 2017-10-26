@@ -2,11 +2,11 @@
 
 module.exports = {
     /**
-   * Landing page handler
-   * @param {internals.Request} request - The server request object
-   * @param {function} reply - The server reply function
-   * @return {undefined}
-   */
+     * Landing page handler
+     * @param {internals.Request} request - The server request object
+     * @param {function} reply - The server reply function
+     * @return {undefined}
+     */
     start: (request, reply) => {
 
         const sid = request.server.app.sid;

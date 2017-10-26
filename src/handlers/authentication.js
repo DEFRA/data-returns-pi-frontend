@@ -3,73 +3,69 @@
 /**
  * Route handlers for authentication routes
  */
-const system = require('../lib/system');
 const uuid = require('uuid');
-
-const users = {
-    gdog: {
-        id: 'gdog',
-        password: 'gd',
-        name: 'Graham Willis'
-    }
-};
+const system = ('../lib/system');
+const logging = ('../lib/logging');
+const userService = require('../service/user-service.js');
 
 module.exports = {
     /**
-   * Landing page handler
-   * @param {internals.Request} request - The server request object
-   * @param {function} reply - The server reply function
-   * @return {undefined}
-   */
-    login: (request, reply) => {
-        if (request.auth.isAuthenticated) {
-            return reply.redirect('/');
-        }
+     * Landing page handler
+     * @param {internals.Request} request - The server request object
+     * @param {function} reply - The server reply function
+     * @return {undefined}
+     */
+    login: async (request, reply) => {
+        try {
 
-        if (request.method === 'get') {
+            // If this users is already authenticated then redirect to the start pag
+            if (request.auth.isAuthenticated) {
+                return reply.redirect('/');
+            }
+
+            // If this is a get request then display the login screen
+            if (request.method === 'get') {
+                return reply.view('login');
+            }
+
+            const authenticated = userService.authenticate(request.payload.username, request.payload.password) || 'FAILED';
+
+            // Back to the login screen with an error if the wrong username or password is given
+            if (authenticated === 'FAILED') {
+                return reply.view('login', { authenticated: authenticated });
+            }
+
+            const sid = uuid.v4();
+
+            // Do not cache the password
+            delete authenticated.password;
+
+            // Set the authentication details in the session cache
+            await request.server.app.cache.set(sid, { user: authenticated, loggedInAt: system.timestamp });
+
+            // Set the session authorization cookie - it will encode the session id to identify the cache
+            request.cookieAuth.set({ sid: sid });
+
+            // We are in - redirect to the start page
+            return reply.redirect('/');
+
+        } catch (err) {
+            logging.logger.error(err);
             return reply.view('login');
         }
-
-        let message = '';
-        let account = null;
-
-        if (request.method === 'post') {
-            if (!request.payload.username || !request.payload.password) {
-                message = 'Missing username or password';
-            } else {
-                account = users[request.payload.username];
-                if (!account || account.password !== request.payload.password) {
-                    message = 'Invalid username or password';
-                }
-            }
-        }
-
-        if (message) {
-            return reply.view('login', { message: message });
-        }
-
-        const sid = uuid.v4();
-
-        account.loggedInAt = system.timestamp;
-
-        request.server.app.cache.set(sid, { account: account }, 0, (err) => {
-
-            if (err) {
-                return reply(err);
-            }
-
-            request.cookieAuth.set({ sid: sid });
-            return reply.redirect('/');
-        });
     },
 
     /**
-   * Landing page handler
-   * @param {internals.Request} request - The server request object
-   * @param {function} reply - The server reply function
-   * @return {undefined}
-   */
-    logout: (request, reply) => {
+     * Logout handler
+     * @param {internals.Request} request - The server request object
+     * @param {function} reply - The server reply function
+     * @return {undefined}
+     */
+    logout: async (request, reply) => {
+        // Remove the cache data for the session
+        await request.server.app.cache.drop(request.server.app.sid);
+
+        // Clear the session authentication cookie
         request.cookieAuth.clear();
         return reply.redirect('/');
     }

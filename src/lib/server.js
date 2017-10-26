@@ -15,8 +15,10 @@ const serverMethods = require('./server-methods');
 
 const srvcfg = system.configuration.server;
 
-// Create a Hapi server with a redis cache
-// as the default client cache
+/*
+ * Create a Hapi server with a redis cache
+ * as the default client cache
+ */
 const server = new hapi.Server({
     cache: [{
         engine: require('catbox-redis'),
@@ -75,13 +77,14 @@ const initialize = async () => {
             register: require('hapi-auth-cookie')
         });
 
-        // Register Crumb - looks like this is broken with the current
-        // version of hapi
-        // await server.register({
-        //    register: require('crumb')
-        // });
-
-        // Configure nunjucks
+        /*
+         * Register Crumb - looks like this is broken with the current
+         * version of hapi
+         * await server.register({
+         *    register: require('crumb')
+         * });
+         * Configure nunjucks
+         */
         server.views({
             engines: {
                 html: {
@@ -108,14 +111,18 @@ const initialize = async () => {
             // Set up the common view data
             context: require('./common-view-data'),
 
-            // Cause the template rendering engine to reread the file on each invocation
-            // in development to avoid restarts when changing templates
+            /*
+             * Cause the template rendering engine to reread the file on each invocation
+             * in development to avoid restarts when changing templates
+             */
             isCached: process.env.NODE_ENV !== 'local'
         });
 
-        // Create a Hapi-server cache policy
-        // To hold the authenticated user data. This will
-        // live in the plug-in cache
+        /*
+         * Create a Hapi-server cache policy
+         * To hold the authenticated user data. This will
+         * live in the plug-in cache
+         */
         const cache = server.cache({
             segment: 'authenticated-sessions',
             expiresIn: srvcfg.cache.authorization.timeToLive
@@ -135,8 +142,11 @@ const initialize = async () => {
         // Register the server methods
         server.method(serverMethods.methods);
 
-        // Set up the routing
-        server.route(require('../routes'));
+        // Set up the static routing
+        server.route(require('../routes').staticHandlers);
+
+        // Set up the dynamic routing
+        server.route(require('../routes').dynamicHandlers);
 
         logging.logger.info('Completed server initialization');
 

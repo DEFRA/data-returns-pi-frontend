@@ -65,11 +65,11 @@ class AssetManager {
     }
 
     /**
-   * Empty the specified directory (recursively delete all contents)
-   *
-   * @param targetDir the directory to empty
-   * @param onComplete optional completion callback
-   */
+     * Empty the specified directory (recursively delete all contents)
+     * 
+     * @param targetDir the directory to empty
+     * @param onComplete optional completion callback
+     */
     static empty (targetDir, onComplete) {
         fs.emptyDir(targetDir, function (err) {
             if (err) {
@@ -82,12 +82,12 @@ class AssetManager {
     }
 
     /**
-   * Copy a resource from sourcePath to targetPath
-   *
-   * @param sourcePath the source file/directory for the copy operation
-   * @param targetPath the target file/directory for the copy operation
-   * @param onComplete optional completion callback
-   */
+     * Copy a resource from sourcePath to targetPath
+     * 
+     * @param sourcePath the source file/directory for the copy operation
+     * @param targetPath the target file/directory for the copy operation
+     * @param onComplete optional completion callback
+     */
     static copy (sourcePath, targetPath, onComplete) {
         fs.copy(sourcePath, targetPath, {'clobber': true}, function (err) {
             if (err) {
@@ -99,12 +99,12 @@ class AssetManager {
     }
 
     /**
-   * Minify the sourcePath resource and output the minified content to targetPath
-   *
-   * @param sourcePath the source file/directory for the minify operation
-   * @param targetPath the target file/directory for the minify operation
-   * @param onComplete optional completion callback
-   */
+     * Minify the sourcePath resource and output the minified content to targetPath
+     * 
+     * @param sourcePath the source file/directory for the minify operation
+     * @param targetPath the target file/directory for the minify operation
+     * @param onComplete optional completion callback
+     */
     static minify (sourcePath, targetPath, onComplete) {
         const ext = path.extname(sourcePath).toLowerCase();
         const minifyType = minifyTypes[ext] || null;
@@ -129,11 +129,11 @@ class AssetManager {
     }
 
     /**
-   * Delete the file/directory specified by targetPath
-   *
-   * @param targetPath the file/directory to be deleted
-   * @param onComplete optional completion callback
-   */
+     * Delete the file/directory specified by targetPath
+     * 
+     * @param targetPath the file/directory to be deleted
+     * @param onComplete optional completion callback
+     */
     static delete (targetPath, onComplete) {
         fs.unlink(targetPath, function (err) {
             if (err) {
@@ -145,13 +145,13 @@ class AssetManager {
     }
 
     /**
-   * The onChange method is an override point.  This method is called whenever the AssetManager detects a change
-   * in one of the watched asset directories.
-   *
-   * @param event the type of change (added, changed, deleted)
-   * @param absolutePath the absolute path to the file that was changed
-   * @param relPath the relative path from the asset directory being watched
-   */
+     * The onChange method is an override point.  This method is called whenever the AssetManager detects a change
+     * in one of the watched asset directories.
+     * 
+     * @param event the type of change (added, changed, deleted)
+     * @param absolutePath the absolute path to the file that was changed
+     * @param relPath the relative path from the asset directory being watched
+     */
     onChange () {
     // Override point
     }
@@ -170,16 +170,16 @@ class SassHandler extends AssetManager {
     }
 
     /**
-   * Fired when a change to any SASS asset occurs
-   */
+     * Fired when a change to any SASS asset occurs
+     */
     onChange () {
     // When a change to a SASS asset occurs we need to delete the last output and recompile all SASS
         AssetManager.empty(this.config.targetDir, this.compileSass.bind(this));
     }
 
     /**
-   * Recompile the output CSS from the SASS source.
-   */
+     * Recompile the output CSS from the SASS source.
+     */
     compileSass () {
         const onCompiled = function (err, result) {
             if (err) {
@@ -219,8 +219,8 @@ class PassthroughHandler extends AssetManager {
     }
 
     /**
-   * Synchronise all assets between the source and target folders
-   */
+     * Synchronise all assets between the source and target folders
+     */
     synchroniseAll () {
     // Synchronise directories on startup
         AssetManager.empty(this.config.targetDir, function () {
@@ -235,8 +235,8 @@ class PassthroughHandler extends AssetManager {
     }
 
     /**
-   * Fired when a change to a source asset is detected
-   */
+     * Fired when a change to a source asset is detected
+     */
     onChange (event, absolutePath, relPath) {
     // Something changed in the source directory
         const targetPath = path.join(this.config.targetDir, relPath);
@@ -248,10 +248,10 @@ class PassthroughHandler extends AssetManager {
     }
 
     /**
-   * Synchronise a file between the source and target folders
-   *
-   * Determines whether to use a minify or copy operation.
-   */
+     * Synchronise a file between the source and target folders
+     * 
+     * Determines whether to use a minify or copy operation.
+     */
     synchroniseFile (source, target) {
         const filename = path.basename(source);
         const minifyIgnore = !!minifyIgnorePatterns.find(ptn => filename.match(ptn));

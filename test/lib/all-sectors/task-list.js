@@ -93,24 +93,20 @@ const testSet = ['RELEASES_TO_AIR', 'RELEASES_TO_LAND', 'RELEASES_TO_CONTROLLED_
 
 describe('Testing task list library', () => {
 
-    it('Testing include function', (done) => {
+    it('Testing include function', () => {
         expect(tasklistLib.include(allSectorsTaskList, testSet)).to.equal(resultInclude);
-        done();
     });
 
-    it('Testing exclude function', (done) => {
+    it('Testing exclude function', () => {
         expect(tasklistLib.exclude(allSectorsTaskList, testSet)).to.equal(resultExclude);
-        done();
     });
 
-    it('Testing add status function', (done) => {
+    it('Testing add status function', () => {
         expect(tasklistLib.status(resultExclude, 'SITE', 'Completed')).to.equal(resultStatus);
-        done();
     });
 
-    it('Testing remove status function', (done) => {
+    it('Testing remove status function', () => {
         expect(resultExclude).to.equal(tasklistLib.status(resultStatus, 'SITE', 'Completed'));
-        done();
     });
 
 });

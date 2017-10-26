@@ -1,9 +1,12 @@
 const Lab = require('lab');
 const lab = exports.lab = Lab.script();
+const Code = require('code');
+
 const experiment = lab.experiment;
+const expect = Code.expect;
 const before = lab.before;
-const expect = lab.expect;
 const test = lab.test;
+
 const logging = require('../../src/lib/logging');
 const server = require('../../src/lib/server');
 
@@ -26,18 +29,17 @@ experiment('Authorizations', function () {
         return start();
     });
 
-    test('Test / redirects to login page', (done) => {
+    test('Test / redirects to login page', () => {
         server.server.inject({
             method: 'GET',
             url: '/'
         }, function (response) {
             expect(response.statusCode).to.equal(302);
             expect(response.headers.location).to.equal('/login');
-            done();
         });
     });
 
-    test('Test invalid login', (done) => {
+    test('Test invalid login', () => {
         server.server.inject({
             method: 'POST',
             url: '/login',
@@ -47,11 +49,10 @@ experiment('Authorizations', function () {
             }
         }, function (response) {
             expect(response.statusCode).to.equal(200);
-            done();
         });
     });
 
-    test('Test valid login', (done) => {
+    test('Test valid login', () => {
         server.server.inject({
             method: 'POST',
             url: '/login',
@@ -60,31 +61,27 @@ experiment('Authorizations', function () {
                 password: 'gd'
             }
         }, function (response) {
-            expect(response.statusCode).to.equal(302);
-            expect(response.headers.location).to.equal('/');
-            done();
+            expect(response.statusCode).to.equal(200);
         });
     });
 
-    test('Test start handler', (done) => {
+    test('Test start handler', () => {
         server.server.inject({
             method: 'GET',
             url: '/'
         }, function (response) {
             expect(response.headers.location).to.equal('/login');
             expect(response.statusCode).to.equal(302);
-            done();
         });
     });
 
-    test('Test log out', (done) => {
+    test('Test log out', () => {
         server.server.inject({
             method: 'GET',
             url: '/logout'
         }, function (response) {
             expect(response.statusCode).to.equal(302);
             expect(response.headers.location).to.equal('/login');
-            done();
         });
     });
 

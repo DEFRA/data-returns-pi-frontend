@@ -51,13 +51,13 @@ function getSystemConfiguration () {
 
 module.exports = {
     /**
-   * Return the system configuration as a javascript object
-   * @returns {*} The global system configuration
-   */
+     * Return the system configuration as a javascript object
+     * @returns {*} The global system configuration
+     */
     configuration: getSystemConfiguration(),
 
     /**
-   * Standard timestamp used throughout the application
-   */
+     * Standard timestamp used throughout the application
+     */
     timestamp: timestamp('YYYY/MM/DD HH:mm:ss')
 };

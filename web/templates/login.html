@@ -2,11 +2,14 @@
 
 {% block content %}
 
-<main id="content" role="main">
+<main id="content">
+    {% if authenticated === 'FAILED' %}
+    <div class="error-message">
+        <p>Username and password not recognized</p>
+    </div>
+    {% endif %}
+
     <form action="/login" method="post">
-
-        {% if message %} {{ message }} {% endif %}
-
         <div class="text">
             <label>Username</label>
             <input placeholder="Enter Username" name="username" required></div></br>

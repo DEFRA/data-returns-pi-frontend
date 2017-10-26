@@ -19,10 +19,12 @@ module.exports = {
             logging.logger.info('Building gov.uk templates');
             fs.emptyDirSync(targetPath);
             fs.copySync(govukTemplateSourcePath, govukTemplateTargetPath);
-            // TODO Consider precompilation There is also an API if you want to programmatically precompile templates.
-            // You'll want to do this if you use extensions or you use asynchronous filters, both of which need to
-            // be known at compile-time.
-            // nunjucks.precompile(govukTemplateTargetPath);
+            /*
+             * TODO Consider precompilation There is also an API if you want to programmatically precompile templates.
+             * You'll want to do this if you use extensions or you use asynchronous filters, both of which need to
+             * be known at compile-time.
+             * nunjucks.precompile(govukTemplateTargetPath);
+             */
         } catch (err) {
             logging.logger.log('error', `Error building gov.uk templates: ${err}`);
             process.exit(1);

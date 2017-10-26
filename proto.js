@@ -1,17 +1,19 @@
-const tasklistLib = require('./src/lib/task-list');
-const allSectorsTaskList = require('./src/model/all-sectors/task-list');
+const userService = require('./src/service/user-service');
 
-// console.log(JSON.stringify(tasklistLib.include(allSectorsTaskList,
-//     ['RELEASES_TO_AIR', 'RELEASES_TO_LAND', 'RELEASES_TO_CONTROLLED_WATERS', 'SUBMIT']
-// ), null, 4));
-//
-// console.log(JSON.stringify(tasklistLib.exclude(allSectorsTaskList,
-//     ['RELEASES_TO_AIR', 'RELEASES_TO_LAND', 'RELEASES_TO_CONTROLLED_WATERS', 'SUBMIT']
-// ), null, 4));
-//
-// console.log(JSON.stringify(tasklistLib.status(allSectorsTaskList, 'RELEASES_TO_LAND', 'Completed'), null, 4));
-//
-const add = tasklistLib.status(allSectorsTaskList, 'RELEASES_TO_LAND', 'Completed');
-console.log(JSON.stringify(add, null, 4));
-const remove = tasklistLib.status(add, 'RELEASES_TO_LAND');
-console.log(JSON.stringify(remove, null, 4));
+console.log('Users: ' + JSON.stringify(userService.getUsers(), null, 2));
+
+const user1 = userService.getUser('JonathanAgnew@email.com');
+
+console.log('User: ' + JSON.stringify(user1, null, 2));
+
+const permits = userService.getPermitsForUser(user1.id);
+
+console.log('Permits for user: ' + JSON.stringify(permits, null, 2));
+
+const allPermits = userService.getPermits();
+
+console.log('Permits: ' + JSON.stringify(allPermits, null, 2));
+
+console.log('Authenticate true: ' + JSON.stringify(userService.authenticate(user1.username, user1.password), null, 2));
+
+console.log('Authenticate false: ' + JSON.stringify(userService.authenticate(user1.username, 'qewr'), null, 2));

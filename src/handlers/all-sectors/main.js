@@ -1,19 +1,20 @@
 'use strict';
 
-const journey = require('../../lib/task-list');
+// const journey = require('../../lib/task-list');
+const allSectorsTaskList = require('../../model/all-sectors/task-list');
 
 /**
  * Route handlers for the all-sectors journey
  */
 module.exports = {
     /**
-   * All sectors task-list handler
-   * @param {internals.Request} request - The server request object
-   * @param {function} reply - The server reply function
-   * @return {undefined}
-   */
+     * All sectors task-list handler
+     * @param {internals.Request} request - The server request object
+     * @param {function} reply - The server reply function
+     * @return {undefined}
+     */
     task_list: (request, reply) => {
-        return reply.view('all-sectors/task-list', journey.taskList);
+        return reply.view('all-sectors/task-list', allSectorsTaskList);
     }
 
 };

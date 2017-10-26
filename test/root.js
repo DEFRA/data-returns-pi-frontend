@@ -11,29 +11,18 @@ const lab = exports.lab = Lab.script();
 
 const describe = lab.describe;
 const it = lab.it;
-const before = lab.before;
-const after = lab.after;
 const expect = lab.expect;
 const logging = require('../src/lib/logging');
 const system = require('../src/lib/system.js');
 
 describe('Testing Framework', () => {
-    before((done) => {
-        done();
-    });
 
-    after((done) => {
-        done();
-    });
-
-    it('Testing configuration is alive', (done) => {
+    it('Testing configuration is alive', () => {
         expect(system.configuration).to.be.an.object();
-        done();
     });
 
-    it('Testing logging is alive', (done) => {
+    it('Testing logging is alive', () => {
         expect(() => logging.logger.info('Testing logging...')).to.not.throw();
         expect(logging.goodWinstonStream).to.be.an.object();
-        done();
     });
 });

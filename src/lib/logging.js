@@ -36,12 +36,12 @@ const winlogger = new winston.Logger({
 
 module.exports = {
     /**
-   * Return the system logger
-   */
+     * Return the system logger
+     */
     logger: winlogger,
 
     /**
-   * Return the winston-good interface for Hapi
-   */
+     * Return the winston-good interface for Hapi
+     */
     goodWinstonStream: new GoodWinston({ winston: winlogger })
 };

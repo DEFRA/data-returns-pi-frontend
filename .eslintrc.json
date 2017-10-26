@@ -6,6 +6,7 @@
         "no-var": "warn",
         "prefer-const": "warn",
         "padded-blocks": "off",
+        "multiline-comment-style": ["error", "starred-block"],
         "require-jsdoc": ["warn", {
             "require": {
                 "FunctionDeclaration": true,
