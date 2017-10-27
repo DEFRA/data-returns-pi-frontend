@@ -34,8 +34,8 @@ module.exports = {
      * Return all the permits
      * @return {*} - The list of permits
      */
-    getPermits: () => {
-        return data.permits;
+    getEaIds: () => {
+        return data.eaIds;
     },
 
     /**
@@ -43,16 +43,63 @@ module.exports = {
      * @param id - The permit identifier
      * @return {*} - The list of permits
      */
-    getPermitsForUser: (id) => {
+    getEaIdsForUser: (id) => {
         try {
-            return data.userPermits
-                .find((e) => { return e.userId === id; })
-                .permitIds.map((id) => {
-                    return data.permits.find((e) => { return e.id === id; });
+            return data.userEaIds
+                .find((e) => { return e.userId === id; }).eaIdId
+                .map((eaId) => {
+                    return data.eaIds.find((e) => { return e.id === eaId; });
                 });
         } catch (err) {
             return null;
         }
+    },
+
+    /**
+     * Get the distinct set of sites for a set of permits
+     * @param eaIds - an array containing the site objects enriched with an array of the
+     * corresponding permits
+     */
+    getSitesForPermits: (eaIdIds) => {
+
+        // Get the permits
+        const eaIds = eaIdIds.map((id) => {
+            return data.eaIds.find((e) => { return e.id === id; });
+        });
+
+        // Find the unique site Ids
+        const uniqueSites = eaIds
+            // Sort permits by siteId
+            .sort((e1, e2) => { return e1.siteId - e2.siteId; })
+            // Generate an object containing the the site and permit object
+            .map((e) => {
+                return {
+                    site: data.sites.find((s) => { return s.id === e.siteId; }),
+                    eaId: e
+                };
+            })
+            // Return the unique sites enriched with the permit details
+            .reduce(function (accumulator, currentValue, currentIndex) {
+
+                if (currentValue.site.eaIds) {
+                    currentValue.site.eaIds.push(currentValue.eaId);
+                } else {
+                    currentValue.site.eaIds = [ currentValue.eaId ];
+                }
+
+                if (currentIndex === 0) {
+                    accumulator.push(currentValue.site);
+                }
+
+                if (accumulator[ accumulator.length - 1 ].id !== currentValue.site.id) {
+                    accumulator.push(currentValue.site);
+                }
+
+                return accumulator;
+
+            }, []);
+
+        return uniqueSites;
     },
 
     /**

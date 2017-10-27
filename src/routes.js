@@ -1,7 +1,7 @@
 'use strict';
 
 const authentication = require('./handlers/authentication.js');
-const home = require('./handlers/start.js');
+const start = require('./handlers/start.js');
 
 /**
  * Returns routes for the static assets
@@ -82,18 +82,28 @@ const dynamicHandlers = [
         method: 'GET',
         path: '/',
         config: {
-            handler: home.start
+            handler: start.start
         }
     },
 
-    // Handlers for the chemical journey
+    // Handlers for the all sectors journey
     {
         method: 'GET',
         path: '/all-sectors',
         config: {
             handler: require('./handlers/all-sectors/main').task_list
         }
+    },
+
+    // Handlers for the all sectors journey
+    {
+        method: 'POST',
+        path: '/select-journey',
+        config: {
+            handler: start.select
+        }
     }
+
 ];
 
 module.exports = {

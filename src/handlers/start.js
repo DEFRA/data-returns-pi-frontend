@@ -1,45 +1,59 @@
 'use strict';
 
 const logging = require('../lib/logging');
+const userService = require('../service/user-service');
 
 /**
  * The handler for the start page
  * @type {{start: (function(internals.Request, Function))}}
+ *
  */
-
 module.exports = {
     /**
-     * Landing page handler
+     * Start page handler
      * @param {internals.Request} request - The server request object
      * @param {function} reply - The server reply function
      * @return {undefined}
      */
     start: (request, reply) => {
-
-        // TODO The async version of get appears to be broken - it returns undefined. Investigate this further
-        request.server.app.cache.get(request.server.app.sid, (err, cached) => {
+        request.server.app.cache.get(request.server.app.sid, (err, session) => {
 
             if (err) {
                 logging.logger.log('error', err);
                 reply.redirect('/logout');
             }
 
-            reply.view('start', { message: cached.user.username });
+            // Get the permits for the user
+            const eaIds = userService.getEaIdsForUser(session.user.id);
 
+            // Get the permits grouped by site
+            const sites = userService.getSitesForPermits(eaIds.map(e => e.id));
+
+            // Return the start page
+            reply.view('start', { user: session.user, sites: sites });
         });
+    },
 
-        // try {
-        //
-        //     // Get the user details from the cache
-        //     const sessionData = await request.server.app.cache.get(request.server.app.sid);       //
-        //     reply.view('start', { message: request.server.app.sid });
-        //
-        // } catch (err) {
-        //     reply(err);
-        //     /*
-        //      *logging.logger.log('error', err);
-        //      * reply.redirect('/logout');
-        //      */
-        // }
+    /**
+     * select handler
+     * Selects the appropriate use journey for a given permit and if necessary creates
+     * the submission object within the cache
+     * @param {internals.Request} request - The server request object
+     * @param {function} reply - The server reply function
+     * @return {undefined}
+     */
+    select: (request, reply) => {
+        request.server.app.cache.get(request.server.app.sid, (err, session) => {
+
+            if (err) {
+                logging.logger.log('error', err);
+                reply.redirect('/logout');
+            }
+
+            console.log('SESSION;' + JSON.stringify(session));
+
+            // Return the start page
+            reply.redirect('/all-sectors');
+        });
     }
 };

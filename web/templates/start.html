@@ -2,11 +2,43 @@
 
 {% block content %}
 
-<main id="content" role="main">
-    <form>
-    <h1 class="heading-large"><span id="title">{{ message }}</span></h1>
+<main id="content">
+    <h1 class="heading-medium"><span id="title">Welcome {{ user.username }}</span></h1>
 
-    </form>
+    {% if eaIds.length === 0 %}
+
+        <div class="error-message">
+            <p>You have no permits</p>
+        </div>
+
+    {% else %}
+        <form action="/select-journey" method="post">
+
+            <p>Choose a permit</p>
+
+            <ol>
+                {% for site in sites %}
+
+                <li class="font-medium">{{ site.name }}
+                    <ul>
+                        {% for eaId in site.eaIds %}
+
+                        <div class="form-group; font-small">
+                            <input class="button" type="submit" id="continueBtn" value="{{ eaId.name }}">
+                        </div>
+
+                        <input type="hidden" name="crumb" value="{{crumb}}"/>
+
+                        {% endfor %}
+                    </ul>
+                </li>
+
+                {% endfor %}
+            </ol>
+
+        </form>
+    {% endif %}
+
 </main>
 
 {% endblock %}
