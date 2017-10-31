@@ -1,6 +1,6 @@
 'use strict';
 
-const system = require('./system');
+const System = require('./system');
 
 /**
  * This object is provides common data to to all views
@@ -11,6 +11,6 @@ module.exports = {
     full_service_title: 'Report your pollution inventory',
     asset_path: '/public/',
     css: {
-        compressed: system.configuration.css.compressed || false
+        compressed: System.configuration.css.compressed || false
     }
 };

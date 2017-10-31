@@ -1,7 +1,7 @@
 'use strict';
 
-const authentication = require('./handlers/authentication.js');
-const start = require('./handlers/start.js');
+const Authentication = require('./handlers/authentication.js');
+const Start = require('./handlers/start.js');
 
 /**
  * Returns routes for the static assets
@@ -61,7 +61,7 @@ const dynamicHandlers = [
         method: ['GET', 'POST'],
         path: '/login',
         config: {
-            handler: authentication.login,
+            handler: Authentication.login,
             auth: { mode: 'try' },
             plugins: {
                 'hapi-auth-cookie': { redirectTo: false },
@@ -74,7 +74,7 @@ const dynamicHandlers = [
         method: 'GET',
         path: '/logout',
         config: {
-            handler: authentication.logout
+            handler: Authentication.logout
         }
     },
 
@@ -82,7 +82,7 @@ const dynamicHandlers = [
         method: 'GET',
         path: '/',
         config: {
-            handler: start.start
+            handler: Start.start
         }
     },
 
@@ -100,7 +100,7 @@ const dynamicHandlers = [
         method: 'POST',
         path: '/select-journey',
         config: {
-            handler: start.select
+            handler: Start.select
         }
     }
 

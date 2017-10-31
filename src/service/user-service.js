@@ -5,7 +5,7 @@
  */
 
 // TODO Replace plug in data model with the real deal.
-const data = require('../model/dev-data');
+const Data = require('../model/dev-data');
 
 module.exports = {
 
@@ -14,7 +14,7 @@ module.exports = {
      * @return {*} - The list of users
      */
     getUsers: () => {
-        return data.users;
+        return Data.users;
     },
 
     /**
@@ -24,7 +24,7 @@ module.exports = {
      */
     getUser: (username) => {
         try {
-            return data.users.find((e) => { return e.username === username; });
+            return Data.users.find((e) => { return e.username === username; });
         } catch (err) {
             return null;
         }
@@ -35,7 +35,7 @@ module.exports = {
      * @return {*} - The list of permits
      */
     getEaIds: () => {
-        return data.eaIds;
+        return Data.eaIds;
     },
 
     /**
@@ -45,10 +45,10 @@ module.exports = {
      */
     getEaIdsForUser: (id) => {
         try {
-            return data.userEaIds
+            return Data.userEaIds
                 .find((e) => { return e.userId === id; }).eaIdId
                 .map((eaId) => {
-                    return data.eaIds.find((e) => { return e.id === eaId; });
+                    return Data.eaIds.find((e) => { return e.id === eaId; });
                 });
         } catch (err) {
             return null;
@@ -64,7 +64,7 @@ module.exports = {
 
         // Get the permits
         const eaIds = eaIdIds.map((id) => {
-            return data.eaIds.find((e) => { return e.id === id; });
+            return Data.eaIds.find((e) => { return e.id === id; });
         });
 
         // Find the unique site Ids
@@ -74,7 +74,7 @@ module.exports = {
             // Generate an object containing the the site and permit object
             .map((e) => {
                 return {
-                    site: data.sites.find((s) => { return s.id === e.siteId; }),
+                    site: Data.sites.find((s) => { return s.id === e.siteId; }),
                     eaId: e
                 };
             })
@@ -110,7 +110,7 @@ module.exports = {
      */
     authenticate: (username, password) => {
         try {
-            return data.users.find((e) => { return e.username === username && e.password === password; });
+            return Data.users.find((e) => { return e.username === username && e.password === password; });
         } catch (err) {
             return undefined;
         }

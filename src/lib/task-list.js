@@ -1,25 +1,28 @@
 'use strict';
 
-const hoek = require('hoek');
-const logging = require('./logging');
+/**
+ * Module to manipulate the task list
+ */
+const Hoek = require('hoek');
+const logger = require('./logging').logger;
 
 function checkTaskListCorrectness (taskList) {
     try {
         // Perform some checking that the tasklist is well-formed
-        hoek.assert(taskList.stages && Array.isArray(taskList.stages),
+        Hoek.assert(taskList.stages && Array.isArray(taskList.stages),
             'The taskList object should contain a value "stages" which is an array');
 
-        hoek.assert(taskList.stages.every((e) => {
+        Hoek.assert(taskList.stages.every((e) => {
             return e.heading && e.items && Array.isArray(e.items);
         }), 'Each taskList item should contain a heading and an array of items');
     } catch (err) {
-        logging.logger.error(err);
+        logger.error(err);
         throw err;
     }
 }
 
 /**
- *  Filter function for the task-list
+ * Filter function for the task-list
  * @param taskList
  * @param items to include or exclude
  * @param include

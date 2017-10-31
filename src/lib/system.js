@@ -2,33 +2,33 @@
 
 /**
  * System wide resources
- * @type {*|yaml}
+ * @type {*|Yaml}
  */
-const yaml = require('js-yaml');
-const fs = require('fs');
-const dotenv = require('dotenv');
-const timestamp = require('time-stamp');
-const joi = require('joi');
+const Yaml = require('js-yaml');
+const Fs = require('fs');
+const Dotenv = require('dotenv');
+const Timestamp = require('time-stamp');
+const Joi = require('joi');
 
 /**
  * Copy environment variables to process.env
  */
-dotenv.config();
+Dotenv.config();
 
 /**
  * Validate the environment variables
  */
-const environmentSchema = joi.object({
-    CONFIG: joi.string().required(),
-    APP_ROOT: joi.string().required(),
-    HOSTNAME: joi.string().required(),
-    PORT: joi.number().required(),
-    REDIS_HOSTNAME: joi.string().required(),
-    REDIS_PORT: joi.number().required()
+const environmentSchema = Joi.object({
+    CONFIG: Joi.string().required(),
+    APP_ROOT: Joi.string().required(),
+    HOSTNAME: Joi.string().required(),
+    PORT: Joi.number().required(),
+    REDIS_HOSTNAME: Joi.string().required(),
+    REDIS_PORT: Joi.number().required()
 }).unknown()
     .required();
 
-const { error } = joi.validate(process.env, environmentSchema);
+const { error } = Joi.validate(process.env, environmentSchema);
 
 if (error) {
     console.log(`Environment validation error: ${error.message}`);
@@ -43,7 +43,7 @@ if (error) {
 function getSystemConfiguration () {
     try {
         console.log('info', `Reading system configuration: ${process.env.CONFIG}`);
-        return yaml.safeLoad(fs.readFileSync(process.env.CONFIG, 'utf8'));
+        return Yaml.safeLoad(Fs.readFileSync(process.env.CONFIG, 'utf8'));
     } catch (err) {
         console.log('error', `Cannot read the system configuration: ${err}`);
         process.exit(1);
@@ -61,6 +61,6 @@ module.exports = {
      * Standard timestamp used throughout the application
      */
     time: () => {
-        return timestamp('YYYY/MM/DD HH:mm:ss');
+        return Timestamp('YYYY/MM/DD HH:mm:ss');
     }
 };

@@ -33,3 +33,30 @@
  *
  */
 
+'use strict';
+
+const userCache = require('./src/lib/user-cache');
+
+(async () => {
+    try {
+
+        console.log('Hello World!');
+
+        // Create two cache sections
+        await userCache.start(require('catbox-redis'), ['status', 'returns']);
+
+        const key = { id: 'joke' };
+
+        await userCache.cache('status').set(key, [1, 2, 3, 4]);
+
+        const p = await userCache.cache('status').get(key);
+
+        console.log(p);
+
+        console.log('Started');
+
+        userCache.stop();
+    } catch (err) {
+        console.log(err);
+    }
+})();

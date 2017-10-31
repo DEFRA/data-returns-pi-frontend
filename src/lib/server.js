@@ -5,27 +5,29 @@
  * Registers the required plugins and exports the server object
  * in order that the server can be used in integration tests
  */
-const hapi = require('hapi');
-const nunjucks = require('nunjucks');
+const Hapi = require('hapi');
+const Nunjucks = require('nunjucks');
 
-const system = require('./system');
-const logging = require('./logging');
-const authorization = require('./authorization');
-const serverMethods = require('./server-methods');
+const System = require('./system');
+const Logging = require('./logging');
+const Authorization = require('./authorization');
+const ServerMethods = require('./server-methods');
 
-const srvcfg = system.configuration.server;
+const srvcfg = System.configuration.server;
 
 /*
  * Create a Hapi server with a redis cache
  * as the default client cache
  */
-const server = new hapi.Server({
-    cache: [{
-        engine: require('catbox-redis'),
-        host: process.env.REDIS_HOSTNAME,
-        port: process.env.REDIS_PORT,
-        partition: 'cache'
-    }],
+const server = new Hapi.Server({
+    cache: [
+        {
+            engine: require('catbox-redis'),
+            host: process.env.REDIS_HOSTNAME,
+            port: process.env.REDIS_PORT,
+            partition: 'session-cache'
+        }
+    ],
     app: {
         foo: 'bar'
     },
@@ -44,20 +46,20 @@ const connections = server.connection({
     }
 });
 
-logging.logger.log('debug', `Hapi server connection settings: ${JSON.stringify(connections.info)}`);
+Logging.logger.log('debug', `Hapi server connection settings: ${JSON.stringify(connections.info)}`);
 
 // A function to provision the Hapi server
 const initialize = async () => {
     try {
 
-        logging.logger.info('Starting server initialization...');
+        Logging.logger.info('Starting server initialization...');
 
         // Register the logging plugin to allow Hapi to log using Winston
         await server.register({
             register: require('good'),
             options: {
                 reporters: {
-                    winston: [logging.goodWinstonStream]
+                    winston: [Logging.goodWinstonStream]
                 }
             }
         });
@@ -89,14 +91,14 @@ const initialize = async () => {
             engines: {
                 html: {
                     compile: function (src, options) {
-                        const template = nunjucks.compile(src, options.environment);
+                        const template = Nunjucks.compile(src, options.environment);
                         return function (context) {
                             return template.render(context);
                         };
                     },
 
                     prepare: function (options, next) {
-                        options.compileOptions.environment = nunjucks.configure(options.path, { watch: false });
+                        options.compileOptions.environment = Nunjucks.configure(options.path, { watch: false });
                         return next();
                     }
                 }
@@ -136,11 +138,11 @@ const initialize = async () => {
             redirectTo: '/login',
             isSecure: false,
             clearInvalid: true,
-            validateFunc: authorization.validate
+            validateFunc: Authorization.validate
         });
 
         // Register the server methods
-        server.method(serverMethods.methods);
+        server.method(ServerMethods.methods);
 
         // Set up the static routing
         server.route(require('../routes').staticHandlers);
@@ -148,7 +150,7 @@ const initialize = async () => {
         // Set up the dynamic routing
         server.route(require('../routes').dynamicHandlers);
 
-        logging.logger.info('Completed server initialization');
+        Logging.logger.info('Completed server initialization');
 
         return;
     } catch (err) {

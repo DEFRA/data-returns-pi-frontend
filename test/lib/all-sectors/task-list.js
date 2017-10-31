@@ -5,10 +5,11 @@
  */
 const Lab = require('lab');
 const lab = exports.lab = Lab.script();
+const Code = require('code');
 
 const describe = lab.describe;
 const it = lab.it;
-const expect = lab.expect;
+const expect = Code.expect;
 
 const tasklistLib = require('../../../src/lib/task-list');
 const allSectorsTaskList = require('../../../src/model/all-sectors/task-list');

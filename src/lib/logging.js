@@ -4,13 +4,13 @@
  * System logger resources
  * @type {*|yaml}
  */
-const winston = require('winston');
+const Winston = require('winston');
 const GoodWinston = require('good-winston');
-const system = require('./system');
+const System = require('./system');
 const _ = require('lodash');
 
 const commonLoggingOptions = {
-    level: process.env.NODE_ENV === 'local' ? system.configuration.logging.level : 'info',
+    level: process.env.NODE_ENV === 'local' ? System.configuration.logging.level : 'info',
     colorize: true,
     silent: false,
     timestamp: true,
@@ -21,16 +21,16 @@ const commonLoggingOptions = {
 };
 
 const fileLoggingOptions = {
-    filename: system.configuration.logging.file,
+    filename: System.configuration.logging.file,
     maxsize: 2 * Math.pow(2, 20),
     maxFiles: 10,
     tailable: true
 };
 
-const winlogger = new winston.Logger({
+const winlogger = new Winston.Logger({
     transports: [
-        new (winston.transports.Console)(commonLoggingOptions),
-        new (winston.transports.File)(_.merge({}, commonLoggingOptions, fileLoggingOptions))
+        new (Winston.transports.Console)(commonLoggingOptions),
+        new (Winston.transports.File)(_.merge({}, commonLoggingOptions, fileLoggingOptions))
     ]
 });
 

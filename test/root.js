@@ -7,11 +7,12 @@
  *
  */
 const Lab = require('lab');
-const lab = exports.lab = Lab.script();
+const Code = require('code');
 
+const lab = exports.lab = Lab.script();
 const describe = lab.describe;
 const it = lab.it;
-const expect = lab.expect;
+const expect = Code.expect;
 const logging = require('../src/lib/logging');
 const system = require('../src/lib/system.js');
 
