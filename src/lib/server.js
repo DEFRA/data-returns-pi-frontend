@@ -12,6 +12,7 @@ const System = require('./system');
 const Logging = require('./logging');
 const Authorization = require('./authorization');
 const ServerMethods = require('./server-methods');
+const UserCache = require('./user-cache');
 
 const srvcfg = System.configuration.server;
 
@@ -132,6 +133,7 @@ const initialize = async () => {
 
         server.app.cache = cache;
 
+        // Set up the authorization strategy
         server.auth.strategy('session', 'cookie', true, {
             password: srvcfg.authorization.cookie.ironCookiePassword,
             cookie: 'sid',
@@ -140,6 +142,17 @@ const initialize = async () => {
             clearInvalid: true,
             validateFunc: Authorization.validate
         });
+
+        /*
+         * Connect to the user cache and
+         * Provision the policies defined in user-cache-policies
+         * using the catbox plugin.
+         */
+        await UserCache.start(require('catbox-redis'),
+            require('./user-cache-policies').policies);
+
+        // Add to the server object.
+        server.app.userCache = UserCache;
 
         // Register the server methods
         server.method(ServerMethods.methods);

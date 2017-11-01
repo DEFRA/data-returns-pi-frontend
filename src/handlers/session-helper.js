@@ -1,7 +1,7 @@
 'set strict';
 
 /**
- * Helper functions for route handlers
+ * Helper functions for authorization cache in route handlers
  *
  * Note that the current version of Hapi (16.6.2) includes Version: 7.x of catbox which
  * does not yet include the asynchronous methods
@@ -29,7 +29,7 @@ module.exports = {
      */
     set: (request, key, session) => {
         return new Promise((resolve, reject) => {
-            request.server.app.cache.set(key, session, (err) => {
+            request.server.app.cache.set(key, session, 0, (err) => {
                 if (err) {
                     reject(err);
                 }

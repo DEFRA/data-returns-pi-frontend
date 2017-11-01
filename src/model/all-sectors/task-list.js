@@ -47,25 +47,25 @@ module.exports = {
                 {
                     name: 'RELEASES_TO_CONTROLLED_WATERS',
                     title: 'Releases to controlled waters',
-                    page: '/controlledWaters'
+                    page: '/water'
                 },
 
                 {
                     name: 'OFFSITE_TRANSFERS_IN_WASTE_WATER',
                     title: 'Off-site transfers in waste water',
-                    page: 'offSiteTransfersWasteWater'
+                    page: '/waste-water'
                 },
 
                 {
                     name: 'OFFSITE_WASTE_TRANSFERS',
                     title: 'Off-site waste transfers',
-                    page: '/offSiteTransfersWaste'
+                    page: '/off-site'
                 },
 
                 {
                     name: 'OVERSEAS_WASTE_TRANSFERS',
                     title: 'Overseas waste transfers',
-                    page: '/overseasTransfersWaste'
+                    page: '/overseas'
                 }
 
             ]

@@ -4,6 +4,8 @@
  * This module services requests against the data model.
  */
 
+const _ = require('lodash');
+
 // TODO Replace plug in data model with the real deal.
 const Data = require('../model/dev-data');
 
@@ -68,7 +70,7 @@ module.exports = {
         });
 
         // Find the unique site Ids
-        const uniqueSites = eaIds
+        const sites = eaIds
             // Sort permits by siteId
             .sort((e1, e2) => { return e1.siteId - e2.siteId; })
             // Generate an object containing the the site and permit object
@@ -77,40 +79,35 @@ module.exports = {
                     site: Data.sites.find((s) => { return s.id === e.siteId; }),
                     eaId: e
                 };
-            })
-            // Return the unique sites enriched with the permit details
-            .reduce(function (accumulator, currentValue, currentIndex) {
+            });
 
-                if (currentValue.site.eaIds) {
-                    currentValue.site.eaIds.push(currentValue.eaId);
-                } else {
-                    currentValue.site.eaIds = [ currentValue.eaId ];
-                }
+        const result = [];
+        for (const site of sites) {
+            if (result.length && site.site.id === result[ result.length - 1 ].id) {
+                // Its the same site so add the list of eaId
+                result[ result.length - 1 ].eaIds.push(_.cloneDeep(site.eaId));
+            } else {
+                // Its a new site so create a new object
+                const newSite = _.cloneDeep(site.site);
+                newSite.eaIds = [ _.cloneDeep(site.eaId) ];
+                result.push(newSite);
+            }
+        }
 
-                if (currentIndex === 0) {
-                    accumulator.push(currentValue.site);
-                }
-
-                if (accumulator[ accumulator.length - 1 ].id !== currentValue.site.id) {
-                    accumulator.push(currentValue.site);
-                }
-
-                return accumulator;
-
-            }, []);
-
-        return uniqueSites;
+        return result;
     },
 
     /**
-     * Authenticate a given user. Returns the user object if authenticated or undefined if not.
+     * Authenticate a given user. Returns a copy of user object if authenticated or undefined if not.
      * @param username - The given username
      * @param password - The given password
      * @return {*}
      */
     authenticate: (username, password) => {
         try {
-            return Data.users.find((e) => { return e.username === username && e.password === password; });
+            return _.cloneDeep(Data.users.find((e) => {
+                return e.username === username && e.password === password;
+            }));
         } catch (err) {
             return undefined;
         }

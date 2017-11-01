@@ -32,7 +32,7 @@ const resultInclude = {
                 {
                     name: 'RELEASES_TO_CONTROLLED_WATERS',
                     title: 'Releases to controlled waters',
-                    page: '/controlledWaters'
+                    page: '/water'
                 }
             ]
         },

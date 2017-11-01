@@ -9,41 +9,34 @@ const lab = exports.lab = Lab.script();
 const expect = Code.expect;
 const test = lab.test;
 const experiment = lab.experiment;
-const before = lab.before;
-const after = lab.after;
 
 const UserCache = require('../../src/lib/user-cache');
 
 experiment('User cache', function () {
 
-    before(() => {
-        // Start the server asynchronously
-        return UserCache.start(require('catbox-redis'), ['test']);
-    });
-
     test('Test basic cache usage', async () => {
 
-        const value = '__value__';
+        try {
 
-        const key = { id: 'key' };
+            const value = '150 runs';
 
-        await UserCache.cache('test').set(key, value);
+            const key = '001';
 
-        const value2 = await UserCache.cache('test').get(key);
+            await UserCache.cache('unit-test').set('9045', key, value);
 
-        expect(value).to.equal(value2);
+            const value2 = await UserCache.cache('unit-test').get('9045', key);
 
-        await UserCache.cache('test').drop(key);
+            expect(value).to.equal(value2);
 
-        const value3 = await UserCache.cache('test').get(key);
+            await UserCache.cache('unit-test').drop('9045', key);
 
-        expect(value3).to.be.null();
+            const value3 = await UserCache.cache('unit-test').get('9045', key);
 
-    });
+            expect(value3).to.be.null();
 
-    after(() => {
-        // Start the server asynchronously
-        UserCache.stop();
+        } catch (err) {
+            console.log(err);
+        }
     });
 
 });

@@ -24,7 +24,7 @@
                         {% for eaId in site.eaIds %}
 
                         <div class="form-group; font-small">
-                            <input class="button" type="submit" id="continueBtn" value="{{ eaId.name }}">
+                            <input class="button" type="submit" id="continueBtn" name="eaId" value="{{ eaId.name }}">
                         </div>
 
                         <input type="hidden" name="crumb" value="{{crumb}}"/>

@@ -2,6 +2,7 @@
 
 // const journey = require('../../lib/task-list');
 const allSectorsTaskList = require('../../model/all-sectors/task-list');
+const logger = require('../../lib/logging').logger;
 
 /**
  * Route handlers for the all-sectors journey
@@ -13,8 +14,21 @@ module.exports = {
      * @param {function} reply - The server reply function
      * @return {undefined}
      */
-    task_list: (request, reply) => {
-        return reply.view('all-sectors/task-list', allSectorsTaskList);
+    task_list: async (request, reply) => {
+        try {
+            // Get a status object or create a new one
+            const eaId = await request.server.app.userCache.cache('status')
+                .get(request, 'eaIdId');
+
+            if (!eaId) {
+                throw new Error('No cached status object found');
+            }
+
+            return reply.view('all-sectors/task-list', { eaId: eaId.name, taskList: allSectorsTaskList });
+        } catch (err) {
+            logger.log('error', err);
+            reply.redirect('/logout');
+        }
     }
 
 };

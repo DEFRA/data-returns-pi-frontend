@@ -57,7 +57,7 @@
     "start": "npm test && node main.js",
     "proto": "node proto.js",
     "lint": "./node_modules/eslint/bin/eslint.js .",
-    "test": "./node_modules/lab/bin/lab --timeout 10000 -e local --assert code",
+    "test": "./node_modules/lab/bin/lab -e local --assert code --verbose",
     "coverage": "nyc --all npm start",
     "coverage-unittest": "nyc --all npm test"
   },

@@ -4,8 +4,9 @@
 
 <main id="content">
 
+    <h1 class="font-medium">EA_ID: {{ eaId }}</h1>
     <ol>
-        {% for stage in stages %}
+        {% for stage in taskList.stages %}
         <li class="font-large">{{ stage.heading }}
             <ul>
                 {% for item in stage.items %}

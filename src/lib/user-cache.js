@@ -9,6 +9,7 @@
  * promises are returned
  */
 const Catbox = require('catbox');
+const logger = require('./logging').logger;
 
 const internals = {};
 
@@ -19,7 +20,8 @@ internals.policies = {};
 /**
  * A function to initialize a catbox cache with a number of policies
  * @param provider - The cache provider (redis/s3)
- * @param policies - a {string} defining the policy name
+ * @param policies - an object like { name, keyFunc } defining the policy name and a function
+ * to generate a key prefix.
  * @return {Promise} - a promise fulfilled when the cache is connected
  */
 internals.startCache = function (provider, policies) {
@@ -28,8 +30,8 @@ internals.startCache = function (provider, policies) {
         // Specify a segment of the redis cache
         const options = {
             partition: internals.partition_name,
-            host: process.env.HOSTNAME,
-            port: process.env.PORT
+            host: process.env.REDIS_HOSTNAME,
+            port: process.env.REDIS_PORT
         };
 
         // Expire in 90 days
@@ -45,19 +47,23 @@ internals.startCache = function (provider, policies) {
 
         // Create a cache policy for each section
         if (!Array.isArray(policies)) {
-            reject(new Error('Please provide an array of the cache policies'));
+            reject(new Error('Please provide an array of the cache policy objects'));
         }
 
         for (const policy of policies) {
-            internals.policies[policy] = new Catbox.Policy(config, internals.client, policy);
+            internals.policies[policy.name] = {};
+            internals.policies[policy.name].policy = new Catbox.Policy(config, internals.client, policy.name);
+            internals.policies[policy.name].keyFunc = policy.keyFunc;
         }
 
         internals.client.start((err) => {
 
             if (err) {
+                logger.error('Failed to connect to user-cache instance' + err);
                 reject(err);
             }
 
+            logger.info('Started user-cache instance');
             resolve();
         });
     });
@@ -111,7 +117,7 @@ module.exports = {
     /**
      * Start the user cache engin
      */
-    start: internals.startCache,
+    start: (provider, policies) => { return internals.startCache(provider, policies); },
 
     /**
      * Stop the user cache engine
@@ -136,9 +142,23 @@ module.exports = {
         }
 
         return {
-            get: (key) => getter(internals.policies[policyKey], key),
-            set: (key, value) => setter(internals.policies[policyKey], key, value),
-            drop: (key) => dropper(internals.policies[policyKey], key)
+            // Returns a promise to retrieve the value in the policy for key
+            get: async (request, key) => {
+                const keyPrefix = await internals.policies[policyKey].keyFunc(request);
+                return getter(internals.policies[policyKey].policy, keyPrefix + '.' + key);
+            },
+
+            // Returns a promise to set the value in the policy for key
+            set: async (request, key, value) => {
+                const keyPrefix = await internals.policies[policyKey].keyFunc(request);
+                return setter(internals.policies[policyKey].policy, keyPrefix + '.' + key, value);
+            },
+
+            // Returns a promise to remove the value in the policy for key
+            drop: async (request, key) => {
+                const keyPrefix = await internals.policies[policyKey].keyFunc(request);
+                return dropper(internals.policies[policyKey].policy, keyPrefix + '.' + key);
+            }
         };
     }
 };

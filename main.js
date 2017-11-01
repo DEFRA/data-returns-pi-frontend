@@ -3,26 +3,26 @@
 /**
  * Application entry point
  */
-const logging = require('./src/lib/logging');
-const server = require('./src/lib/server');
-const templateBuilder = require('./assembly/template-builder');
-const assetManager = require('./assembly/asset-manager');
-const fs = require('fs');
+const logger = require('./src/lib/logging').logger;
+const Server = require('./src/lib/server');
+const TemplateBuilder = require('./assembly/template-builder');
+const AssetManager = require('./assembly/asset-manager');
+const Fs = require('fs');
 
-logging.logger.info(fs.readFileSync('./banner.txt', 'utf8'));
+logger.info(Fs.readFileSync('./banner.txt', 'utf8'));
 
 // Build gov.uk templates and start the asset manager
-templateBuilder.build();
-assetManager.start();
+TemplateBuilder.build();
+AssetManager.start();
 
 // Start the server
 (async () => {
     try {
-        await server.initialize();
-        await server.server.start();
-        logging.logger.info(`Server started at ${server.server.info.uri}`);
+        await Server.initialize();
+        await Server.server.start();
+        logger.info(`Server started at ${Server.server.info.uri}`);
     } catch (err) {
-        logging.logger.log('error', err);
+        logger.log('error', err);
         process.exit(1);
     }
 })();

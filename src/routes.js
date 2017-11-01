@@ -1,7 +1,22 @@
 'use strict';
 
+/**
+ * Define the Hapi server route array and associated route handlers
+ */
 const Authentication = require('./handlers/authentication.js');
 const Start = require('./handlers/start.js');
+const AllSectors = require('./handlers/all-sectors/main');
+const Contact = require('./handlers/all-sectors/check/contact');
+const Site = require('./handlers/all-sectors/check/site');
+const Air = require('./handlers/all-sectors/report/air');
+const Land = require('./handlers/all-sectors/report/land');
+const OffSite = require('./handlers/all-sectors/report/off-site');
+const Overseas = require('./handlers/all-sectors/report/overseas');
+const WasteWater = require('./handlers/all-sectors/report/waste-water');
+const Water = require('./handlers/all-sectors/report/water');
+const Check = require('./handlers/all-sectors/submit/check');
+const Share = require('./handlers/all-sectors/submit/share');
+const Submit = require('./handlers/all-sectors/submit/submit');
 
 /**
  * Returns routes for the static assets
@@ -91,7 +106,7 @@ const dynamicHandlers = [
         method: 'GET',
         path: '/all-sectors',
         config: {
-            handler: require('./handlers/all-sectors/main').task_list
+            handler: AllSectors.task_list
         }
     },
 
@@ -101,6 +116,94 @@ const dynamicHandlers = [
         path: '/select-journey',
         config: {
             handler: Start.select
+        }
+    },
+
+    {
+        method: 'GET',
+        path: '/contact',
+        config: {
+            handler: Contact.contact
+        }
+    },
+
+    {
+        method: 'GET',
+        path: '/site',
+        config: {
+            handler: Site.site
+        }
+    },
+
+    {
+        method: 'GET',
+        path: '/air',
+        config: {
+            handler: Air.air
+        }
+    },
+
+    {
+        method: 'GET',
+        path: '/land',
+        config: {
+            handler: Land.land
+        }
+    },
+
+    {
+        method: 'GET',
+        path: '/off-site',
+        config: {
+            handler: OffSite.offSite
+        }
+    },
+
+    {
+        method: 'GET',
+        path: '/overseas',
+        config: {
+            handler: Overseas.overseas
+        }
+    },
+
+    {
+        method: 'GET',
+        path: '/waste-water',
+        config: {
+            handler: WasteWater.wasteWater
+        }
+    },
+
+    {
+        method: 'GET',
+        path: '/water',
+        config: {
+            handler: Water.water
+        }
+    },
+
+    {
+        method: 'GET',
+        path: '/check',
+        config: {
+            handler: Check.check
+        }
+    },
+
+    {
+        method: 'GET',
+        path: '/share',
+        config: {
+            handler: Share.share
+        }
+    },
+
+    {
+        method: 'GET',
+        path: '/submit',
+        config: {
+            handler: Submit.submit
         }
     }
 
