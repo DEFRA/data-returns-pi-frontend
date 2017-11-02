@@ -44,7 +44,7 @@ experiment('Authorizations', function () {
             method: 'POST',
             url: '/login',
             payload: {
-                username: 'gdog',
+                username: '1@email.com',
                 password: 'wrong'
             }
         }, function (response) {
@@ -57,8 +57,8 @@ experiment('Authorizations', function () {
             method: 'POST',
             url: '/login',
             payload: {
-                username: 'gdog',
-                password: 'gd'
+                username: '1@email.com',
+                password: 'a'
             }
         }, function (response) {
             expect(response.statusCode).to.equal(302);

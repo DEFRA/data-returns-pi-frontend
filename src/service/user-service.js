@@ -7,7 +7,7 @@
 const _ = require('lodash');
 
 // TODO Replace plug in data model with the real deal.
-const Data = require('../model/dev-data');
+const Data = require('../model/actual-data/master-data');
 
 module.exports = {
 
