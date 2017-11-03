@@ -54,7 +54,7 @@ experiment('Authentication', function () {
                 password: 'wrong'
             }
         }, function (response) {
-            expect(response.statusCode).to.equal(200);
+            expect(response.statusCode).to.equal(302);
         });
     });
 

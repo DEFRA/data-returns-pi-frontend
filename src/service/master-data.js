@@ -17,7 +17,7 @@ module.exports = internals = {
      * Return all the user details
      * @return {*} - The list of users
      */
-    getUsers: () => {
+    getUsers: async () => {
         return Data.users;
     },
 
@@ -26,19 +26,15 @@ module.exports = internals = {
      * @param username
      * @return {*} - The user
      */
-    getUser: (username) => {
-        try {
-            return Data.users.find((e) => { return e.username === username; });
-        } catch (err) {
-            return null;
-        }
+    getUser: async (username) => {
+        return Data.users.find((e) => { return e.username === username; }) || null;
     },
 
     /**
      * Return all the permits
      * @return {*} - The list of permits
      */
-    getEaIds: () => {
+    getEaIds: async () => {
         return Data.eaIds;
     },
 
@@ -47,7 +43,7 @@ module.exports = internals = {
      * @param id - The permit identifier
      * @return {*} - The list of permits
      */
-    getEaIdsForUser: (id) => {
+    getEaIdsForUser: async (id) => {
         try {
             return Data.userEaIds
                 .find((e) => { return e.userId === id; }).eaIdId
@@ -63,20 +59,20 @@ module.exports = internals = {
      * Get permit form permit Id (The database key)
      * @param eaIdId - the permit id
      */
-    getEaIdFromEaIdId: (eaIdId) => {
-        return Data.eaIds.find((e) => { return e.id === eaIdId; });
+    getEaIdFromEaIdId: async (eaIdId) => {
+        return Data.eaIds.find((e) => { return e.id === eaIdId; }) || null;
     },
 
     /**
      * Get the site information for a given permit
      * @param eaIdId - the permit id
      */
-    getSiteForEaIdId: (eaIdId) => {
+    getSiteForEaIdId: async (eaIdId) => {
         // Get the permit
-        const eaId = internals.getEaIdFromEaIdId(eaIdId);
+        const eaId = await internals.getEaIdFromEaIdId(eaIdId);
 
         // Get its site
-        return Data.sites.find((s) => { return s.id === eaId.siteId; });
+        return eaId ? Data.sites.find((s) => { return s.id === eaId.siteId; }) : null;
     },
 
     /**
@@ -84,39 +80,48 @@ module.exports = internals = {
      * @param eaIds - an array containing the site objects enriched with an array of the
      * corresponding permits
      */
-    getSitesForEaIdIds: (eaIdIds) => {
+    getSitesForEaIdIds: async (eaIdIds) => {
 
         // Get the permits
-        const eaIds = eaIdIds.map((id) => {
+        const eaIdsP = eaIdIds.map((id) => {
             return internals.getEaIdFromEaIdId(id);
         });
 
-        // Find the unique site Ids
-        const sites = eaIds
-            // Sort permits by siteId
-            .sort((e1, e2) => { return e1.siteId - e2.siteId; })
-            // Generate an object containing the the site and permit object
-            .map((e) => {
-                return {
-                    site: Data.sites.find((s) => { return s.id === e.siteId; }),
-                    eaId: e
-                };
-            });
+        return Promise.all(eaIdsP).then((eaIds) => {
+            const result = [];
 
-        const result = [];
-        for (const site of sites) {
-            if (result.length && site.site.id === result[ result.length - 1 ].id) {
-                // Its the same site so add the list of eaId
-                result[ result.length - 1 ].eaIds.push(_.cloneDeep(site.eaId));
-            } else {
-                // Its a new site so create a new object
-                const newSite = _.cloneDeep(site.site);
-                newSite.eaIds = [ _.cloneDeep(site.eaId) ];
-                result.push(newSite);
+            try {
+
+                // Find the unique site Ids
+                const sites = eaIds
+                    // Sort permits by siteId
+                    .sort((e1, e2) => { return e1.siteId - e2.siteId; })
+                    // Generate an object containing the the site and permit object
+                    .map((e) => {
+                        return {
+                            site: Data.sites.find((s) => { return s.id === e.siteId; }),
+                            eaId: e
+                        };
+                    });
+
+                for (const site of sites) {
+                    if (result.length && site.site.id === result[result.length - 1].id) {
+                        // Its the same site so add the list of eaId
+                        result[result.length - 1].eaIds.push(_.cloneDeep(site.eaId));
+                    } else {
+                        // Its a new site so create a new object
+                        const newSite = _.cloneDeep(site.site);
+                        newSite.eaIds = [_.cloneDeep(site.eaId)];
+                        result.push(newSite);
+                    }
+                }
+
+                return result;
+
+            } catch (err) {
+                return null;
             }
-        }
-
-        return result;
+        });
     },
 
     /**
@@ -125,7 +130,7 @@ module.exports = internals = {
      * @param password - The given password
      * @return {*}
      */
-    authenticate: (username, password) => {
+    authenticate: async (username, password) => {
         try {
             return _.cloneDeep(Data.users.find((e) => {
                 return e.username === username && e.password === password;

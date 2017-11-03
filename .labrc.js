@@ -9,10 +9,10 @@ const reporters = new Map([
 module.exports = {
     'environment': 'local',
     'colors': true,
-    'coverage': true,
+    'coverage': false,
     'coverage-path': 'src/',
     'threshold': 80,
-    'lint': true,
+    'lint': false,
     'lint-errors-threshold': 0,
     'lint-warnings-threshold': -1,
     'leaks': true,

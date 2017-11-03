@@ -21,10 +21,10 @@ module.exports = {
             const session = await SessionHelper.get(request, request.server.app.sid);
 
             // Get the permits for the user
-            const eaIds = MasterDataService.getEaIdsForUser(session.user.id);
+            const eaIds = await MasterDataService.getEaIdsForUser(session.user.id);
 
             // Get the permits grouped by site
-            const sites = MasterDataService.getSitesForEaIdIds(eaIds.map(e => e.id));
+            const sites = await MasterDataService.getSitesForEaIdIds(eaIds.map(e => e.id));
 
             // Return the start page
             reply.view('start', { user: session.user, sites: sites });
@@ -48,7 +48,7 @@ module.exports = {
             const session = await SessionHelper.get(request, request.server.app.sid);
 
             // Get the permits for the user
-            const eaIds = MasterDataService.getEaIdsForUser(session.user.id);
+            const eaIds = await MasterDataService.getEaIdsForUser(session.user.id);
 
             // Validate ownership of the EaId
             const eaIdName = request.payload.eaId;
