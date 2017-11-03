@@ -6,7 +6,7 @@
 const Uuid = require('uuid');
 const System = require('../lib/system');
 const logger = require('../lib/logging').logger;
-const UserService = require('../service/user-service.js');
+const MasterDataService = require('../service/master-data');
 const SessionHelper = require('./session-helper');
 
 module.exports = {
@@ -31,7 +31,7 @@ module.exports = {
                 return reply.view('login');
             }
 
-            const authenticated = UserService.authenticate(request.payload.username, request.payload.password) || 'FAILED';
+            const authenticated = MasterDataService.authenticate(request.payload.username, request.payload.password) || 'FAILED';
 
             // Back to the login screen with an error if the wrong username or password is given
             if (authenticated === 'FAILED') {

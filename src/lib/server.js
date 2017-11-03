@@ -49,126 +49,121 @@ server.connection({
 
 // A function to provision the Hapi server
 const initialize = async () => {
-    try {
 
-        Logging.logger.info('Starting server initialization...');
+    Logging.logger.info('Starting server initialization...');
 
-        // Register the logging plugin to allow Hapi to log using Winston
-        await server.register({
-            register: require('good'),
-            options: {
-                reporters: {
-                    winston: [Logging.goodWinstonStream]
+    // Register the logging plugin to allow Hapi to log using Winston
+    await server.register({
+        register: require('good'),
+        options: {
+            reporters: {
+                winston: [Logging.goodWinstonStream]
+            }
+        }
+    });
+
+    // Register the static data server
+    await server.register({
+        register: require('inert')
+    });
+
+    // Register template rendering plugin support
+    await server.register({
+        register: require('vision')
+    });
+
+    // Register Hapi Authorization cookies
+    await server.register({
+        register: require('hapi-auth-cookie')
+    });
+
+    /*
+     * Register Crumb - looks like this is broken with the current
+     * version of hapi
+     * await server.register({
+     *    register: require('crumb')
+     * });
+     * Configure nunjucks
+     */
+    server.views({
+        engines: {
+            html: {
+                compile: function (src, options) {
+                    const template = Nunjucks.compile(src, options.environment);
+                    return function (context) {
+                        return template.render(context);
+                    };
+                },
+
+                prepare: function (options, next) {
+                    options.compileOptions.environment = Nunjucks.configure(options.path, { watch: false });
+                    return next();
                 }
             }
-        });
+        },
 
-        // Register the static data server
-        await server.register({
-            register: require('inert')
-        });
+        // Set up the location of the template resources
+        relativeTo: process.env.APP_ROOT,
+        path: 'web/templates',
+        layoutPath: 'web/layout',
+        helpersPath: 'web/helpers',
 
-        // Register template rendering plugin support
-        await server.register({
-            register: require('vision')
-        });
-
-        // Register Hapi Authorization cookies
-        await server.register({
-            register: require('hapi-auth-cookie')
-        });
+        // Set up the common view data
+        context: require('./common-view-data'),
 
         /*
-         * Register Crumb - looks like this is broken with the current
-         * version of hapi
-         * await server.register({
-         *    register: require('crumb')
-         * });
-         * Configure nunjucks
+         * Cause the template rendering engine to reread the file on each invocation
+         * in development to avoid restarts when changing templates
          */
-        server.views({
-            engines: {
-                html: {
-                    compile: function (src, options) {
-                        const template = Nunjucks.compile(src, options.environment);
-                        return function (context) {
-                            return template.render(context);
-                        };
-                    },
+        isCached: process.env.NODE_ENV !== 'local'
+    });
 
-                    prepare: function (options, next) {
-                        options.compileOptions.environment = Nunjucks.configure(options.path, { watch: false });
-                        return next();
-                    }
-                }
-            },
+    /*
+     * Create a Hapi-server cache policy
+     * To hold the authenticated user data. This will
+     * live in the plug-in cache
+     */
+    const cache = server.cache({
+        segment: 'authenticated-sessions',
+        expiresIn: srvcfg.cache.authorization.timeToLive
+    });
 
-            // Set up the location of the template resources
-            relativeTo: process.env.APP_ROOT,
-            path: 'web/templates',
-            layoutPath: 'web/layout',
-            helpersPath: 'web/helpers',
+    server.app.cache = cache;
 
-            // Set up the common view data
-            context: require('./common-view-data'),
+    // Set up the authorization strategy
+    server.auth.strategy('session', 'cookie', true, {
+        password: srvcfg.authorization.cookie.ironCookiePassword,
+        cookie: 'sid',
+        redirectTo: '/login',
+        isSecure: false,
+        clearInvalid: true,
+        validateFunc: Authorization.validate
+    });
 
-            /*
-             * Cause the template rendering engine to reread the file on each invocation
-             * in development to avoid restarts when changing templates
-             */
-            isCached: process.env.NODE_ENV !== 'local'
-        });
+    /*
+     * Connect to the user cache and
+     * Provision the policies defined in user-cache-policies
+     * using the catbox plugin.
+     */
+    await UserCache.start(require('catbox-redis'),
+        require('./user-cache-policies').policies);
 
-        /*
-         * Create a Hapi-server cache policy
-         * To hold the authenticated user data. This will
-         * live in the plug-in cache
-         */
-        const cache = server.cache({
-            segment: 'authenticated-sessions',
-            expiresIn: srvcfg.cache.authorization.timeToLive
-        });
+    // Add to the server object.
+    server.app.userCache = UserCache;
 
-        server.app.cache = cache;
+    // Register the server methods
+    server.method(ServerMethods.methods);
 
-        // Set up the authorization strategy
-        server.auth.strategy('session', 'cookie', true, {
-            password: srvcfg.authorization.cookie.ironCookiePassword,
-            cookie: 'sid',
-            redirectTo: '/login',
-            isSecure: false,
-            clearInvalid: true,
-            validateFunc: Authorization.validate
-        });
+    // Set up the static routing
+    server.route(require('../routes').staticHandlers);
 
-        /*
-         * Connect to the user cache and
-         * Provision the policies defined in user-cache-policies
-         * using the catbox plugin.
-         */
-        await UserCache.start(require('catbox-redis'),
-            require('./user-cache-policies').policies);
+    // Set up the dynamic routing
+    server.route(require('../routes').dynamicHandlers);
 
-        // Add to the server object.
-        server.app.userCache = UserCache;
+    // console.log(server.eventNames());
 
-        // Register the server methods
-        server.method(ServerMethods.methods);
+    Logging.logger.info('Completed server initialization');
 
-        // Set up the static routing
-        server.route(require('../routes').staticHandlers);
-
-        // Set up the dynamic routing
-        server.route(require('../routes').dynamicHandlers);
-
-        // console.log(server.eventNames());
-
-        Logging.logger.info('Completed server initialization');
-
-        return Promise.resolve();
-    } catch (err) {
-        return Promise.reject(err);
-    }
 };
 
 // Export the server so that it can be used in the integration tests

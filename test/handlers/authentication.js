@@ -10,6 +10,12 @@ const test = lab.test;
 const logging = require('../../src/lib/logging');
 const server = require('../../src/lib/server');
 
+/**
+ * Important - this test is run first as it is alphabetically first. This
+ * means it is this test that establishes the hapi server.
+ * @returns {Promise.<void>}
+ */
+
 // Start the server
 const start = async () => {
     try {
@@ -22,7 +28,7 @@ const start = async () => {
     }
 };
 
-experiment('Authorizations', function () {
+experiment('Authentication', function () {
 
     before(() => {
         // Start the server asynchronously
@@ -84,5 +90,4 @@ experiment('Authorizations', function () {
             expect(response.headers.location).to.equal('/login');
         });
     });
-
 });
