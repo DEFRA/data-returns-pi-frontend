@@ -9,7 +9,9 @@ const _ = require('lodash');
 // TODO Replace plug in data model with the real deal.
 const Data = require('../model/actual-data/master-data');
 
-module.exports = {
+let internals = {};
+
+module.exports = internals = {
 
     /**
      * Return all the user details
@@ -58,15 +60,35 @@ module.exports = {
     },
 
     /**
+     * Get permit form permit Id (The database key)
+     * @param eaIdId - the permit id
+     */
+    getEaIdFromEaIdId: (eaIdId) => {
+        return Data.eaIds.find((e) => { return e.id === eaIdId; });
+    },
+
+    /**
+     * Get the site information for a given permit
+     * @param eaIdId - the permit id
+     */
+    getSiteForEaIdId: (eaIdId) => {
+        // Get the permit
+        const eaId = internals.getEaIdFromEaIdId(eaIdId);
+
+        // Get its site
+        return Data.sites.find((s) => { return s.id === eaId.siteId; });
+    },
+
+    /**
      * Get the distinct set of sites for a set of permits
      * @param eaIds - an array containing the site objects enriched with an array of the
      * corresponding permits
      */
-    getSitesForPermits: (eaIdIds) => {
+    getSitesForEaIdIds: (eaIdIds) => {
 
         // Get the permits
         const eaIds = eaIdIds.map((id) => {
-            return Data.eaIds.find((e) => { return e.id === id; });
+            return internals.getEaIdFromEaIdId(id);
         });
 
         // Find the unique site Ids

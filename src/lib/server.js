@@ -38,7 +38,7 @@ const server = new Hapi.Server({
 });
 
 // Set the server connection details
-const connections = server.connection({
+server.connection({
     host: process.env.HOSTNAME,
     port: process.env.PORT,
     routes: {
@@ -46,8 +46,6 @@ const connections = server.connection({
         timeout: { server: srvcfg.timeout }
     }
 });
-
-Logging.logger.log('debug', `Hapi server connection settings: ${JSON.stringify(connections.info)}`);
 
 // A function to provision the Hapi server
 const initialize = async () => {
@@ -163,9 +161,11 @@ const initialize = async () => {
         // Set up the dynamic routing
         server.route(require('../routes').dynamicHandlers);
 
+        // console.log(server.eventNames());
+
         Logging.logger.info('Completed server initialization');
 
-        return;
+        return Promise.resolve();
     } catch (err) {
         return Promise.reject(err);
     }
