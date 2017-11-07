@@ -11,7 +11,7 @@ const describe = lab.describe;
 const it = lab.it;
 const expect = Code.expect;
 
-const tasklistLib = require('../../../src/lib/task-list');
+const tasklistLib = require('../../../src/service/task-list');
 const allSectorsTaskList = require('../../../src/model/all-sectors/task-list');
 
 const resultInclude = {
@@ -108,6 +108,10 @@ describe('Testing task list library', () => {
 
     it('Testing remove status function', () => {
         expect(resultExclude).to.equal(tasklistLib.status(resultStatus, 'SITE', 'Completed'));
+    });
+
+    it('Testing names function', () => {
+        expect(tasklistLib.names(resultStatus)).to.equal(['CONTACT', 'SITE']);
     });
 
 });

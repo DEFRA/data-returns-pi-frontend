@@ -15,22 +15,19 @@ const UserCache = require('../../src/lib/user-cache');
 experiment('User cache', function () {
 
     test('Test basic cache usage', async () => {
-
         try {
 
             const value = '150 runs';
 
-            const key = '001';
+            await UserCache.cache('unit-test').set('9045', value);
 
-            await UserCache.cache('unit-test').set('9045', key, value);
-
-            const value2 = await UserCache.cache('unit-test').get('9045', key);
+            const value2 = await UserCache.cache('unit-test').get('9045');
 
             expect(value).to.equal(value2);
 
-            await UserCache.cache('unit-test').drop('9045', key);
+            await UserCache.cache('unit-test').drop('9045');
 
-            const value3 = await UserCache.cache('unit-test').get('9045', key);
+            const value3 = await UserCache.cache('unit-test').get('9045');
 
             expect(value3).to.be.null();
 

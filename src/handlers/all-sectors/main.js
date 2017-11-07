@@ -16,9 +16,8 @@ module.exports = {
      */
     task_list: async (request, reply) => {
         try {
-            // Get a status object or create a new one
-            const eaId = await request.server.app.userCache.cache('status')
-                .get(request, 'eaIdId');
+            // Get the submission status object or create a new one
+            const eaId = await request.server.app.userCache.cache('submission-status').get(request);
 
             if (!eaId) {
                 throw new Error('No cached status object found');

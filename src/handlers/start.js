@@ -3,6 +3,8 @@
 const logger = require('../lib/logging').logger;
 const MasterDataService = require('../service/master-data');
 const SessionHelper = require('./session-helper');
+const TaskList = require('../model/all-sectors/task-list');
+const TaskListService = require('../service/task-list');
 
 /**
  * The handler for the start page
@@ -59,8 +61,25 @@ module.exports = {
                 throw new Error(`The eaId ${eaId} is not visible to user ${session.user.username}`);
             }
 
-            await request.server.app.userCache.cache('status')
-                .set(request, 'eaIdId', eaId);
+            // Set the current permit in the submission cache
+            await request.server.app.userCache.cache('submission-status')
+                .set(request, eaId);
+
+            /*
+             * The permit status is object with containing the statuses and other meta-data
+             * for each stage within the user journey for a given (current) permit
+             */
+            let stageStatus = await request.server.app.userCache.cache('permit-status').get(request);
+
+            if (!stageStatus) {
+                const names = TaskListService.names(TaskList);
+                stageStatus = {};
+                names.forEach(n => { stageStatus[n] = { status: 'REQUIRED' }; });
+
+                // Set the new stage status in the status cache
+                await request.server.app.userCache.cache('permit-status')
+                    .set(request, stageStatus);
+            }
 
             reply.redirect('/all-sectors');
         } catch (err) {

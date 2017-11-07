@@ -4,7 +4,7 @@
  * Module to manipulate the task list
  */
 const Hoek = require('hoek');
-const logger = require('./logging').logger;
+const logger = require('../lib/logging').logger;
 
 function checkTaskListCorrectness (taskList) {
     try {
@@ -67,5 +67,10 @@ module.exports = {
             }
         });
         return taskList;
+    },
+    // Names - retrieves the list of names from a task list
+    names: (taskList) => {
+        checkTaskListCorrectness(taskList);
+        return ([].concat(...taskList.stages.map(i => i.items))).map(n => n.name);
     }
 };

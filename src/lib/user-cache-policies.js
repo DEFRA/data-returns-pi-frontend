@@ -12,7 +12,13 @@ let internals = {};
 module.exports = internals = {
     policies: [
         {
-            name: 'status',
+            name: 'submission-status',
+            /**
+             * Returns a key of the form userid.submission-year to handle
+             * all submission level artifacts
+             * @param request
+             * @return {Promise.<string>}
+             */
             keyFunc: async (request) => {
                 try {
                     const session = await SessionHelper.get(request, request.server.app.sid);
@@ -24,6 +30,35 @@ module.exports = internals = {
                 }
             }
         },
+
+        {
+            name: 'permit-status',
+            /**
+             * Returns a key of the form userid.submission-year.permitId to handle
+             * all permit level artifacts. If we cannot calculate a key it returns '_'
+             * this is not an error
+             * @param request
+             * @return {Promise.<string>}
+             */
+            keyFunc: async (request) => {
+                try {
+                    // Get the status cache key
+                    const statusKey = await internals.policies[0].keyFunc(request);
+
+                    // Fetch the permit key
+                    const permitStatusKey = await request.server.app.userCache.cache('submission-status').get(request);
+
+                    if (permitStatusKey && permitStatusKey.id) {
+                        return statusKey + '.' + permitStatusKey.id;
+                    } else {
+                        return '_';
+                    }
+                } catch (err) {
+                    throw new Error(err);
+                }
+            }
+        },
+
         {
             name: 'submission',
             keyFunc: async (request) => {
@@ -32,7 +67,7 @@ module.exports = internals = {
                     const statusKey = await internals.policies[0].keyFunc(request);
 
                     // Fetch the permit
-                    const status = await UserCache.cache('status').get(statusKey);
+                    const status = await UserCache.cache('permit-status').get(statusKey);
 
                     // Construct a key containing the eaId
                     return statusKey + '.' + status.id;
