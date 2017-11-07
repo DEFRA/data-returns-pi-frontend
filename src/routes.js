@@ -136,6 +136,14 @@ const dynamicHandlers = [
     },
 
     {
+        method: ['GET', 'POST'],
+        path: '/air-confirm',
+        config: {
+            handler: Air.airConfirm
+        }
+    },
+
+    {
         method: 'GET',
         path: '/air',
         config: {
@@ -144,10 +152,50 @@ const dynamicHandlers = [
     },
 
     {
+        method: ['GET', 'POST'],
+        path: '/land-confirm',
+        config: {
+            handler: Land.landConfirm
+        }
+    },
+
+    {
         method: 'GET',
         path: '/land',
         config: {
             handler: Land.land
+        }
+    },
+
+    {
+        method: ['GET', 'POST'],
+        path: '/waste-water-confirm',
+        config: {
+            handler: WasteWater.wasteWaterConfirm
+        }
+    },
+
+    {
+        method: 'GET',
+        path: '/waste-water',
+        config: {
+            handler: WasteWater.wasteWater
+        }
+    },
+
+    {
+        method: ['GET', 'POST'],
+        path: '/water-confirm',
+        config: {
+            handler: Water.waterConfirm
+        }
+    },
+
+    {
+        method: 'GET',
+        path: '/water',
+        config: {
+            handler: Water.water
         }
     },
 
@@ -164,22 +212,6 @@ const dynamicHandlers = [
         path: '/overseas',
         config: {
             handler: Overseas.overseas
-        }
-    },
-
-    {
-        method: 'GET',
-        path: '/waste-water',
-        config: {
-            handler: WasteWater.wasteWater
-        }
-    },
-
-    {
-        method: 'GET',
-        path: '/water',
-        config: {
-            handler: Water.water
         }
     },
 

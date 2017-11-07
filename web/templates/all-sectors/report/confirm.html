@@ -1,0 +1,39 @@
+{% extends 'layout/layout.html' %}
+
+{% macro form(header, action) %}
+<h1 class="heading-large">{{ header }}</h1>
+<form action="{{ action }}" method="post" class="form">
+    <div class="form-group">
+        <fieldset class="inline">
+            <div class="multiple-choice">
+                <input id="radio-1" type="radio" name="confirmation" value="true">
+                <label for="radio-1">Yes</label>
+            </div>
+            <div class="multiple-choice">
+                <input id="radio-2" checked type="radio" name="confirmation" value="false">
+                <label for="radio-2">No</label>
+            </div>
+        </fieldset>
+    </div>
+    <div class="form-group">
+        <input class="button" type="submit" value="Continue">
+    </div>
+</form>
+{% endmacro %}
+
+{% block content %}
+
+<main id="content">
+    {% if task === 'RELEASES_TO_LAND'%}
+        {{ form('Did you release any substances to land?', '/land-confirm') }}
+    {% elif task === 'RELEASES_TO_AIR' %}
+        {{ form('Did you release any substances to air?', '/air-confirm') }}
+    {% elif task === 'RELEASES_TO_CONTROLLED_WATERS' %}
+        {{ form('Did you release any substances to controlled waters?', '/water-confirm') }}
+    {% elif task === 'OFFSITE_TRANSFERS_IN_WASTE_WATER' %}
+        {{ form('Did you transfer any substances off-site in waste water?', '/waste-water-confirm') }}
+    {% endif %}
+</main>
+
+{% endblock %}
+

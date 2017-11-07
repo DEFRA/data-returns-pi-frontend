@@ -74,7 +74,7 @@ module.exports = {
             if (!stageStatus) {
                 const names = TaskListService.names(TaskList);
                 stageStatus = {};
-                names.forEach(n => { stageStatus[n] = { status: 'REQUIRED' }; });
+                names.forEach(n => { stageStatus[n] = { required: 'false', supplied: false }; });
 
                 // Set the new stage status in the status cache
                 await request.server.app.userCache.cache('permit-status')

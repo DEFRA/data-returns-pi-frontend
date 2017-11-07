@@ -4,8 +4,21 @@
  * Route handlers for reporting releases to controlled waters
  */
 const logger = require('../../../lib/logging').logger;
+const Helper = require('./helper');
+
+// This maps to the task name in the task-list object
+const TASK = { name: 'RELEASES_TO_CONTROLLED_WATERS', uri: '/water' };
 
 module.exports = {
+    /**
+     * Report releases to controlled waters - confirmation page handler
+     * @param {internals.Request} request - The server request object
+     * @param {function} reply - The server reply function
+     * @return {undefined}
+     */
+    waterConfirm: async (request, reply) => {
+        return Helper.processConfirmations(request, reply, TASK);
+    },
     /**
      * Report releases to controlled waters
      * @param {internals.Request} request - The server request object

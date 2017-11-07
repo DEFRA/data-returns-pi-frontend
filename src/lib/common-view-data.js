@@ -1,6 +1,7 @@
 'use strict';
 
 const System = require('./system');
+const Uuid = require('uuid');
 
 /**
  * This object is provides common data to to all views
@@ -12,5 +13,6 @@ module.exports = {
     asset_path: '/public/',
     css: {
         compressed: System.configuration.css.compressed || false
-    }
+    },
+    pgid: Uuid.v4()
 };
