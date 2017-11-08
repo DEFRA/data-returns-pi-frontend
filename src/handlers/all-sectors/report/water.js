@@ -17,7 +17,7 @@ module.exports = {
      * @return {undefined}
      */
     waterConfirm: async (request, reply) => {
-        return Helper.processConfirmations(request, reply, TASK);
+        await Helper.processConfirmations(request, reply, TASK);
     },
     /**
      * Report releases to controlled waters
@@ -27,7 +27,7 @@ module.exports = {
      */
     water: async (request, reply) => {
         try {
-            return reply.view('all-sectors/report/water');
+            reply.view('all-sectors/report/water');
         } catch (err) {
             logger.log('error', err);
             reply.redirect('/logout');

@@ -23,7 +23,7 @@ module.exports = {
                 throw new Error('No cached status object found');
             }
 
-            return reply.view('all-sectors/task-list', { eaId: eaId.name, taskList: allSectorsTaskList });
+            reply.view('all-sectors/task-list', { eaId: eaId.name, taskList: allSectorsTaskList });
         } catch (err) {
             logger.log('error', err);
             reply.redirect('/logout');

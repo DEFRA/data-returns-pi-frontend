@@ -17,7 +17,7 @@ module.exports = {
      * @return {undefined}
      */
     wasteWaterConfirm: async (request, reply) => {
-        Helper.processConfirmations(request, reply, TASK);
+        await Helper.processConfirmations(request, reply, TASK);
     },
     /**
      * Releases in off site waste water
@@ -27,7 +27,7 @@ module.exports = {
      */
     wasteWater: async (request, reply) => {
         try {
-            return reply.view('all-sectors/report/waste-water');
+            reply.view('all-sectors/report/waste-water');
         } catch (err) {
             logger.log('error', err);
             reply.redirect('/logout');

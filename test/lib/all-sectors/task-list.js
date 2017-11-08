@@ -22,17 +22,17 @@ const resultInclude = {
                 {
                     name: 'RELEASES_TO_AIR',
                     title: 'Releases to air',
-                    page: '/air'
+                    page: '/air-confirm'
                 },
                 {
                     name: 'RELEASES_TO_LAND',
                     title: 'Releases to land',
-                    page: '/land'
+                    page: '/land-confirm'
                 },
                 {
                     name: 'RELEASES_TO_CONTROLLED_WATERS',
                     title: 'Releases to controlled waters',
-                    page: '/water'
+                    page: '/water-confirm'
                 }
             ]
         },

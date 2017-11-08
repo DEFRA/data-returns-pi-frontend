@@ -18,7 +18,7 @@ module.exports = {
             const stageStatus = await request.server.app.userCache.cache('permit-status').get(request);
             if (request.method === 'get') {
                 // Display the releases to air confirmation page
-                return reply.view('all-sectors/report/confirm', { task: task.name, selected: stageStatus[task.name].supplied });
+                reply.view('all-sectors/report/confirm', { task: task.name, selected: stageStatus[task.name].supplied });
             } else {
                 // Process the confirmation
                 if (request.payload.confirmation === 'true') {

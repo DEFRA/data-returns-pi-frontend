@@ -14,7 +14,7 @@ module.exports = {
      */
     offSite: async (request, reply) => {
         try {
-            return reply.view('all-sectors/report/off-site');
+            reply.view('all-sectors/report/off-site');
         } catch (err) {
             logger.log('error', err);
             reply.redirect('/logout');

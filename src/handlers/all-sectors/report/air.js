@@ -17,7 +17,7 @@ module.exports = {
      * @return {undefined}
      */
     airConfirm: async (request, reply) => {
-        Helper.processConfirmations(request, reply, TASK);
+        await Helper.processConfirmations(request, reply, TASK);
     },
     /**
      * Report releases to air
@@ -27,7 +27,7 @@ module.exports = {
      */
     air: async (request, reply) => {
         try {
-            return reply.view('all-sectors/report/air');
+            reply.view('all-sectors/report/air');
         } catch (err) {
             logger.log('error', err);
             reply.redirect('/logout');

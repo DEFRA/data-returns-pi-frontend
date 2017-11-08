@@ -14,7 +14,7 @@ module.exports = {
      */
     overseas: async (request, reply) => {
         try {
-            return reply.view('all-sectors/report/overseas');
+            reply.view('all-sectors/report/overseas');
         } catch (err) {
             logger.log('error', err);
             reply.redirect('/logout');

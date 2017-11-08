@@ -14,7 +14,7 @@ module.exports = {
      */
     site: async (request, reply) => {
         try {
-            return reply.view('all-sectors/check/site');
+            reply.view('all-sectors/check/site');
         } catch (err) {
             logger.log('error', err);
             reply.redirect('/logout');

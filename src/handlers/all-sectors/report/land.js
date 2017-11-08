@@ -17,7 +17,7 @@ module.exports = {
      * @return {undefined}
      */
     landConfirm: async (request, reply) => {
-        Helper.processConfirmations(request, reply, TASK);
+        await Helper.processConfirmations(request, reply, TASK);
     },
 
     /**
@@ -28,7 +28,7 @@ module.exports = {
      */
     land: async (request, reply) => {
         try {
-            return reply.view('all-sectors/report/land');
+            reply.view('all-sectors/report/land');
         } catch (err) {
             logger.log('error', err);
             reply.redirect('/logout');

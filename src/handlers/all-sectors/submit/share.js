@@ -14,7 +14,7 @@ module.exports = {
      */
     share: async (request, reply) => {
         try {
-            return reply.view('all-sectors/submit/share');
+            reply.view('all-sectors/submit/share');
         } catch (err) {
             logger.log('error', err);
             reply.redirect('/logout');

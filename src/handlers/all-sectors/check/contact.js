@@ -15,7 +15,7 @@ module.exports = {
      */
     contact: async (request, reply) => {
         try {
-            return reply.view('all-sectors/check/contact');
+            reply.view('all-sectors/check/contact');
         } catch (err) {
             logger.log('error', err);
             reply.redirect('/logout');

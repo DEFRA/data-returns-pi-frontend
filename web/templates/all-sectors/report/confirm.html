@@ -6,11 +6,11 @@
     <div class="form-group">
         <fieldset class="inline">
             <div class="multiple-choice">
-                <input id="radio-1" type="radio" name="confirmation" value="true">
+                <input id="radio-1" type="radio" name="confirmation" value="true" {% if selected %}checked{% endif %}>
                 <label for="radio-1">Yes</label>
             </div>
             <div class="multiple-choice">
-                <input id="radio-2" checked type="radio" name="confirmation" value="false">
+                <input id="radio-2" type="radio" name="confirmation" value="false"  {% if not selected %}checked{% endif %}>
                 <label for="radio-2">No</label>
             </div>
         </fieldset>
@@ -22,7 +22,6 @@
 {% endmacro %}
 
 {% block content %}
-
 <main id="content">
     {% if task === 'RELEASES_TO_LAND'%}
         {{ form('Did you release any substances to land?', '/land-confirm') }}
@@ -34,6 +33,5 @@
         {{ form('Did you transfer any substances off-site in waste water?', '/waste-water-confirm') }}
     {% endif %}
 </main>
-
 {% endblock %}
 

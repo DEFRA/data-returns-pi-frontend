@@ -70,7 +70,7 @@ module.exports = {
         try {
             await SessionHelper.drop(request, request.server.app.sid);
             request.cookieAuth.clear();
-            return reply.redirect('/');
+            reply.redirect('/');
         } catch (err) {
             logger.logger.log('error', err);
         }
