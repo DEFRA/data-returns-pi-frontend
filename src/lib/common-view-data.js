@@ -8,11 +8,15 @@ const Uuid = require('uuid');
  * @type {{assetPath: string}}
  */
 module.exports = {
-    service_title: 'Report your pollution inventory',
-    full_service_title: 'Report your pollution inventory',
-    asset_path: '/public/',
-    css: {
-        compressed: System.configuration.css.compressed || false
-    },
-    pgid: Uuid.v4()
+    context: function (request) {
+        return {
+            service_title: 'Report your pollution inventory',
+            full_service_title: 'Report your pollution inventory',
+            asset_path: '/public/',
+            css: {
+                compressed: System.configuration.css.compressed || false
+            },
+            pgid: Uuid.v4()
+        };
+    }
 };

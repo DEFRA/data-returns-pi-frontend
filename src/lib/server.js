@@ -109,7 +109,7 @@ const initialize = async () => {
         helpersPath: 'web/helpers',
 
         // Set up the common view data
-        context: require('./common-view-data'),
+        context: require('./common-view-data').context,
 
         /*
          * Cause the template rendering engine to reread the file on each invocation
