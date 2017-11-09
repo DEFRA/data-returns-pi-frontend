@@ -124,6 +124,8 @@ module.exports = internals = {
         });
     },
 
+    getSubstances: async () => { return Data.substances; },
+
     /**
      * Authenticate a given user. Returns a copy of user object if authenticated or undefined if not.
      * @param username - The given username

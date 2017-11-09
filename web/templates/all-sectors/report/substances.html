@@ -1,0 +1,26 @@
+{% extends 'layout/layout.html' %}
+
+{% macro form(header, action) %}
+<h1 class="heading-large">{{ header }}</h1>
+<h2 class="font-medium">EA_ID: {{ eaId }}</h2>
+<form action="{{ action }}-check" method="post" class="form">
+    <div class="form-group">
+        <input class="button" type="submit" value="Continue">
+    </div>
+    <div class="form-group"> <a href="/add-substance">Add a new substance</a> </div>
+</form>
+{% endmacro %}
+
+{% block content %}
+<main id="content">
+    {% if task === 'RELEASES_TO_LAND'%}
+    {{ form('Your releases to land?', '/land') }}
+    {% elif task === 'RELEASES_TO_AIR' %}
+    {{ form('Your releases to air?', '/air') }}
+    {% elif task === 'RELEASES_TO_CONTROLLED_WATERS' %}
+    {{ form('Your releases to controlled waters?', '/water') }}
+    {% elif task === 'OFFSITE_TRANSFERS_IN_WASTE_WATER' %}
+    {{ form('Your transfers of substances off-site in waste water?', '/waste-water') }}
+    {% endif %}
+</main>
+{% endblock %}

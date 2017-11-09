@@ -3,7 +3,6 @@
 /**
  * Route handlers for reporting off-site releases in waste water
  */
-const logger = require('../../../lib/logging').logger;
 const Helper = require('./helper');
 
 // This maps to the task name in the task-list object
@@ -19,6 +18,7 @@ module.exports = {
     wasteWaterConfirm: async (request, reply) => {
         await Helper.processConfirmations(request, reply, TASK);
     },
+
     /**
      * Releases in off site waste water
      * @param {internals.Request} request - The server request object
@@ -26,11 +26,6 @@ module.exports = {
      * @return {undefined}
      */
     wasteWater: async (request, reply) => {
-        try {
-            reply.view('all-sectors/report/waste-water');
-        } catch (err) {
-            logger.log('error', err);
-            reply.redirect('/logout');
-        }
+        await Helper.substances(request, reply, TASK);
     }
 };

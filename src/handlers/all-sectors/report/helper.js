@@ -24,6 +24,7 @@ module.exports = {
                 if (request.payload.confirmation === 'true') {
                     if (!stageStatus[task.name].supplied) {
                         stageStatus[task.name].supplied = true;
+                        stageStatus.currentTask = task.name;
                         await request.server.app.userCache.cache('permit-status').set(request, stageStatus);
                     }
                     reply.redirect(task.uri);
@@ -35,6 +36,29 @@ module.exports = {
                     reply.redirect('/all-sectors');
                 }
             }
+        } catch (err) {
+            logger.log('error', err);
+            reply.redirect('/logout');
+        }
+    },
+
+    /**
+     * Handler for the main substance submission page
+     * @param request
+     * @param reply
+     * @param task
+     * @return {Promise.<void>}
+     */
+    substances: async (request, reply, task) => {
+        try {
+            // Get the submission status object or create a new one
+            const eaId = await request.server.app.userCache.cache('submission-status').get(request);
+
+            if (!eaId) {
+                throw new Error('No cached status object found');
+            }
+
+            reply.view('all-sectors/report/substances', { task: task.name, eaId: eaId.name });
         } catch (err) {
             logger.log('error', err);
             reply.redirect('/logout');

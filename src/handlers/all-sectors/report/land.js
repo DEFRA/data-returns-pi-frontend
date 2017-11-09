@@ -3,7 +3,6 @@
 /**
  * Route handlers for reporting releases to land
  */
-const logger = require('../../../lib/logging').logger;
 const Helper = require('./helper');
 
 // This maps to the task name in the task-list object
@@ -27,11 +26,6 @@ module.exports = {
      * @return {undefined}
      */
     land: async (request, reply) => {
-        try {
-            reply.view('all-sectors/report/land');
-        } catch (err) {
-            logger.log('error', err);
-            reply.redirect('/logout');
-        }
+        await Helper.substances(request, reply, TASK);
     }
 };

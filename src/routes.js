@@ -17,6 +17,7 @@ const Water = require('./handlers/all-sectors/report/water');
 const Check = require('./handlers/all-sectors/submit/check');
 const Share = require('./handlers/all-sectors/submit/share');
 const Submit = require('./handlers/all-sectors/submit/submit');
+const Substances = require('./handlers/all-sectors/report/substances');
 
 /**
  * Returns routes for the static assets
@@ -212,6 +213,14 @@ const dynamicHandlers = [
         path: '/overseas',
         config: {
             handler: Overseas.overseas
+        }
+    },
+
+    {
+        method: 'GET',
+        path: '/add-substance',
+        config: {
+            handler: Substances.add
         }
     },
 

@@ -3,7 +3,6 @@
 /**
  * Route handlers for reporting releases to controlled waters
  */
-const logger = require('../../../lib/logging').logger;
 const Helper = require('./helper');
 
 // This maps to the task name in the task-list object
@@ -19,6 +18,7 @@ module.exports = {
     waterConfirm: async (request, reply) => {
         await Helper.processConfirmations(request, reply, TASK);
     },
+
     /**
      * Report releases to controlled waters
      * @param {internals.Request} request - The server request object
@@ -26,11 +26,6 @@ module.exports = {
      * @return {undefined}
      */
     water: async (request, reply) => {
-        try {
-            reply.view('all-sectors/report/water');
-        } catch (err) {
-            logger.log('error', err);
-            reply.redirect('/logout');
-        }
+        await Helper.substances(request, reply, TASK);
     }
 };
