@@ -6,7 +6,7 @@
 const Helper = require('./helper');
 
 // This maps to the task name in the task-list object
-const TASK = { name: 'OFFSITE_TRANSFERS_IN_WASTE_WATER', uri: '/waste-water' };
+const TASK = 'OFFSITE_TRANSFERS_IN_WASTE_WATER';
 
 module.exports = {
     /**

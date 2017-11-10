@@ -4,6 +4,13 @@
 
 <main id="content">
     <h1 class="large">Add substance</h1>
+    <form action="/add-substance" method="post">
+        <table>
+        {% for substance in substances %}
+            <tr><td>{{ substance.name }}</td><td><input class="button" type="submit" name="{{ substance.id }}" value="Add"></td></tr>
+        {% endfor %}
+        </table>
+    </form>
 </main>
 
 {% endblock %}

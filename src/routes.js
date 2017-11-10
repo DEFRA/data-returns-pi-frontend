@@ -217,7 +217,7 @@ const dynamicHandlers = [
     },
 
     {
-        method: 'GET',
+        method: ['GET', 'POST'],
         path: '/add-substance',
         config: {
             handler: Substances.add

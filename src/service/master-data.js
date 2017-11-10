@@ -10,6 +10,7 @@ const _ = require('lodash');
 const Data = require('../model/actual-data/master-data');
 
 let internals = {};
+const _substancesMap = new Map();
 
 module.exports = internals = {
 
@@ -124,7 +125,25 @@ module.exports = internals = {
         });
     },
 
+    /**
+     * Return an array of all the substances
+     * @returns {Promise.<Array>}
+     */
     getSubstances: async () => { return Data.substances; },
+
+    /**
+     * Return a substance object from its id
+     * @param id
+     * @returns {Promise.<*>}
+     */
+    getSubstanceById: async (id) => {
+        if (!_substancesMap.size) {
+            Data.substances.forEach((s) => {
+                _substancesMap.set(s.id, s);
+            });
+        }
+        return _substancesMap.get(id);
+    },
 
     /**
      * Authenticate a given user. Returns a copy of user object if authenticated or undefined if not.
