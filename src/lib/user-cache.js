@@ -24,48 +24,46 @@ internals.policies = {};
  * to generate a key prefix.
  * @return {Promise} - a promise fulfilled when the cache is connected
  */
-internals.startCache = function (provider, policies) {
-    return new Promise((resolve, reject) => {
+internals.startCache = async function (provider, policies) {
 
-        // Specify a segment of the redis cache
-        const options = {
-            partition: internals.partition_name,
-            host: process.env.REDIS_HOSTNAME,
-            port: process.env.REDIS_PORT
-        };
+    // Specify a segment of the redis cache
+    const options = {
+        partition: internals.partition_name,
+        host: process.env.REDIS_HOSTNAME,
+        port: process.env.REDIS_PORT
+    };
 
         // Expire in 90 days
-        const config = {
-            expiresIn: 1000 * 60 * 60 * 24 * 90
-        };
+    const config = {
+        expiresIn: 1000 * 60 * 60 * 24 * 90
+    };
 
-        if (internals.client) {
-            reject(new Error('The user cache provider is already initialized'));
+    if (internals.client) {
+        throw new Error('The user cache provider is already initialized');
+    }
+
+    internals.client = new Catbox.Client(provider, options);
+
+    // Create a cache policy for each section
+    if (!Array.isArray(policies)) {
+        throw new Error('Please provide an array of the cache policy objects');
+    }
+
+    for (const policy of policies) {
+        internals.policies[policy.name] = {};
+        internals.policies[policy.name].policy = new Catbox.Policy(config, internals.client, policy.name);
+        internals.policies[policy.name].keyFunc = policy.keyFunc;
+    }
+
+    internals.client.start((err) => {
+
+        if (err) {
+            logger.error('Failed to connect to user-cache instance' + err);
+            throw new Error(err);
         }
 
-        internals.client = new Catbox.Client(provider, options);
+        logger.info('Started user-cache instance');
 
-        // Create a cache policy for each section
-        if (!Array.isArray(policies)) {
-            reject(new Error('Please provide an array of the cache policy objects'));
-        }
-
-        for (const policy of policies) {
-            internals.policies[policy.name] = {};
-            internals.policies[policy.name].policy = new Catbox.Policy(config, internals.client, policy.name);
-            internals.policies[policy.name].keyFunc = policy.keyFunc;
-        }
-
-        internals.client.start((err) => {
-
-            if (err) {
-                logger.error('Failed to connect to user-cache instance' + err);
-                reject(err);
-            }
-
-            logger.info('Started user-cache instance');
-            resolve();
-        });
     });
 };
 
@@ -74,7 +72,7 @@ internals.startCache = function (provider, policies) {
  * @param request
  * @returns {Promise}
  */
-const getter = (policy, key) => {
+const getter = async (policy, key) => {
     return new Promise((resolve, reject) => {
         policy.get(key, (err, cached) => {
             if (err) {
@@ -88,7 +86,7 @@ const getter = (policy, key) => {
 /**
  * Promisfy the method to set session information
  */
-const setter = (policy, key, value) => {
+const setter = async (policy, key, value) => {
     return new Promise((resolve, reject) => {
         policy.set(key, value, 0, (err) => {
             if (err) {
@@ -102,7 +100,7 @@ const setter = (policy, key, value) => {
 /**
  * Promisfy the method to drop session information
  */
-const dropper = (policy, key) => {
+const dropper = async (policy, key) => {
     return new Promise((resolve, reject) => {
         policy.drop(key, (err) => {
             if (err) {

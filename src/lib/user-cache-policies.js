@@ -58,7 +58,13 @@ const internals = {
     },
 
     taskStatus: {
-        name: 'task-work',
+        name: 'tasks',
+        /**
+         * Returns a key for the task object.
+         * This is of the form userid.submission-year.permitId.TASK
+         * @param request - a request object
+         * @return {Promise.<string>}
+         */
         keyFunc: async (request) => {
             try {
                 // Get the permit status cache key

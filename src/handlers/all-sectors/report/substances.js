@@ -22,21 +22,23 @@ module.exports = {
                 const substances = await MasterDataService.getSubstances();
                 reply.view('all-sectors/report/add-substance', {substances: substances});
             } else {
-                /*
-                 * Add the selected substance
-                 * Redirect back to the current substances page
-                 */
+                // Add the selected substance
                 const substanceId = parseInt(Object.keys(request.payload)[0]);
-
                 const substance = await MasterDataService.getSubstanceById(substanceId);
-
                 if (!substance || Number.isNaN(substanceId)) {
                     throw new Error(`Unknown substance identifier: ${substanceId}`);
                 }
 
-                console.log(substance);
-                const stageStatus = await request.server.app.userCache.cache('permit-status').get(request);
+                const tasks = await request.server.app.userCache.cache('tasks').get(request);
+                if (!tasks) {
+                    throw new Error('Cache error: no task cache initialized');
+                }
 
+                tasks.substances[substanceId] = { value: null, units: null };
+                await request.server.app.userCache.cache('tasks').set(request, tasks);
+
+                // Redirect back to the current submission page
+                const stageStatus = await request.server.app.userCache.cache('permit-status').get(request);
                 reply.redirect(Helper.tasks[stageStatus.currentTask].uri);
             }
         } catch (err) {

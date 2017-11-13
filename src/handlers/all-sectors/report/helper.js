@@ -75,7 +75,11 @@ module.exports = internals = {
                 throw new Error('No cached status object found');
             }
 
-            request.server.app.userCache.cache('task-work').set(request, { foo: 'bar' });
+            const tasks = await request.server.app.userCache.cache('tasks').get(request);
+
+            if (!tasks) {
+                request.server.app.userCache.cache('tasks').set(request, { substances: {} });
+            }
 
             reply.view('all-sectors/report/substances', { task: task, eaId: eaId.name });
         } catch (err) {
