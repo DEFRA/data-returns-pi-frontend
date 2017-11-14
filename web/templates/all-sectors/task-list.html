@@ -3,20 +3,36 @@
 {% block content %}
 
 <main id="content">
-
-    <h1 class="font-medium">EA_ID: {{ eaId }}</h1>
-    <ol>
-        {% for stage in taskList.stages %}
-        <li class="font-large">{{ stage.heading }}
-            <ul>
+    <div class="grid-row">
+        <div class="column-two-thirds">
+            <br>
+            <br>
+            {% for stage in taskList.stages %}
+            <table id="table-{{ loop.index }}">
+                <thead>
+                    <tr>
+                        <th scope="col" id="col-task-{{ loop.index }}">
+                            <span class="task-group">
+                                <span class="group-number">{{ loop.index }}.</span> {{ stage.heading }}
+                            </span>
+                        </th>
+                    </tr>
+                </thead>
+                <tbody>
                 {% for item in stage.items %}
-                <li><a href="{{ item.page }}"><span class="font-medium">{{ item.title }}</span></a></li>
+                <tr>
+                    <td class="task">
+                        <a href="{{ item.page }}">
+                            <span class="task-name">{{ item.title }}</span>
+                        </a>
+                    </td>
+                </tr>
                 {% endfor %}
-            </ul>
-        </li>
-        {% endfor %}
-    </ol>
-
+                </tbody>
+            </table>
+            {% endfor %}
+        </div>
+    </div>
 </main>
-
 {% endblock %}
+
