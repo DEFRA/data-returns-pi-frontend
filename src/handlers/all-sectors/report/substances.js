@@ -10,7 +10,7 @@ const Helper = require('./helper');
 module.exports = {
 
     /**
-     * Add substances
+     * Add (multiple) substances
      * @param request
      * @param reply
      * @return {Promise.<void>}
@@ -18,23 +18,41 @@ module.exports = {
     add: async (request, reply) => {
         try {
             if (request.method === 'get') {
-                // Get a list of all of the substances from the master data service
-                const substances = await MasterDataService.getSubstances();
-                reply.view('all-sectors/report/add-substance', {substances: substances});
-            } else {
-                // Add the selected substance
-                const substanceId = parseInt(Object.keys(request.payload)[0]);
-                const substance = await MasterDataService.getSubstanceById(substanceId);
-                if (!substance || Number.isNaN(substanceId)) {
-                    throw new Error(`Unknown substance identifier: ${substanceId}`);
+                const stageStatus = await request.server.app.userCache.cache('permit-status').get(request);
+
+                if (!stageStatus) {
+                    throw new Error('Cache error: no permit-status initialized');
                 }
 
+                // Get a list of all of the substances from the master data service
+                const substances = await MasterDataService.getSubstances();
+                reply.view('all-sectors/report/add-substance', { task: stageStatus.currentTask, substances: substances });
+            } else {
+                // Get the tasks object
                 const tasks = await request.server.app.userCache.cache('tasks').get(request);
+
                 if (!tasks) {
                     throw new Error('Cache error: no task cache initialized');
                 }
 
-                tasks.substances[substanceId] = { value: null, units: null };
+                const substances = await Promise.all(Object.keys(request.payload).map(async id =>
+                    MasterDataService.getSubstanceById(Number.parseInt(id))
+                ));
+
+                // Add the selected substances to the task
+                substances.forEach((substance) => {
+                    // Check substance exists
+                    if (!substance) {
+                        throw new Error('Unknown substance requested from page');
+                    }
+
+                    // Add the substance to the task provided it does not already exist
+                    if (!tasks.substances[substance.id]) {
+                        tasks.substances[substance.id] = { value: null, units: null };
+                    }
+                });
+
+                // Write the task object back to the cache
                 await request.server.app.userCache.cache('tasks').set(request, tasks);
 
                 // Redirect back to the current submission page

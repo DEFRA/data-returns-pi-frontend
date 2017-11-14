@@ -4,9 +4,36 @@
 <h1 class="heading-large">{{ header }}</h1>
 <h2 class="font-medium">EA_ID: {{ eaId }}</h2>
 <form action="{{ action }}-check" method="post" class="form">
-    <div class="form-group">
-        <input class="button" type="submit" value="Continue">
-    </div>
+    <table class="check-data table-control mobile-format">
+        <thead>
+        <tr>
+            <th class="th-substance">Substance</th>
+            <th class="th-reporting-threshold numeric">2017 threshold</th>
+            <th class="th-release">2017 total</th>
+            <th class="th-unit">Unit</th>
+            <th class="th-action"><span class="visually-hidden">More detail</span></th>
+        </tr>
+        </thead>
+        <tbody>
+        {% for release in releases %}
+        <tr>
+            <td class="td-substance">{{ release.substance.name }}</td>
+            <td class="td-reporting-threshold numeric"></td>
+            <td class="td-release"> <label class="form-label visually-hidden" for="releases">Releases</label> <input class="form-control" id="releases" name="releases", value="{{ release.substance.value }}"> </td>
+            <td class="td-unit">
+                <label class="form-label visually-hidden" for="select-box">Unit</label>
+                <select class="form-control unit" id="select-box" name="select-box">
+                    <option>--</option>
+                    {% for unit in units %}
+                    <option>{{ unit.name }}</option>
+                    {% endfor %}
+                </select>
+            </td>
+            <td class="td-action"><a href="/">More detail</a></td>
+        </tr>
+        {% endfor %}
+        </tbody>
+    </table>
     <div class="form-group"> <a href="/add-substance">Add a new substance</a> </div>
 </form>
 {% endmacro %}

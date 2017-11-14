@@ -83,4 +83,28 @@ experiment('Master data service', function () {
         expect(a2).to.be.undefined();
     });
 
+    test('getSubstances()', async () => {
+        const substances = await MasterDataService.getSubstances();
+        expect(substances).to.be.an.array();
+        expect(substances.length).to.equal(785);
+    });
+
+    test('getSubstanceById(id)', async () => {
+        const substance = await MasterDataService.getSubstanceById(504);
+        expect(substance).to.be.an.object();
+        expect(substance.name).to.equal('Acrylic acid');
+    });
+
+    test('getUnits()', async () => {
+        const units = await MasterDataService.getUnits();
+        expect(units).to.be.an.array();
+        expect(units.length).to.equal(12);
+    });
+
+    test('getUnitsById(id)', async () => {
+        const units = await MasterDataService.getUnitsById(1);
+        expect(units).to.be.an.object();
+        expect(units.name).to.equal('Bq');
+    });
+
 });

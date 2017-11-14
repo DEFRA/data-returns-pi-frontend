@@ -7,10 +7,11 @@
 const _ = require('lodash');
 
 // TODO Replace plug in data model with the real deal.
-const Data = require('../model/actual-data/master-data');
+const Data = require('../../data/master-data');
 
 let internals = {};
 const _substancesMap = new Map();
+const _unitsMap = new Map();
 
 module.exports = internals = {
 
@@ -143,6 +144,26 @@ module.exports = internals = {
             });
         }
         return _substancesMap.get(id);
+    },
+
+    /**
+     * Return an array of all the substances
+     * @returns {Promise.<Array>}
+     */
+    getUnits: async () => { return Data.units; },
+
+    /**
+     * Return a substance object from its id
+     * @param id
+     * @returns {Promise.<*>}
+     */
+    getUnitsById: async (id) => {
+        if (!_unitsMap.size) {
+            Data.units.forEach((s) => {
+                _unitsMap.set(s.id, s);
+            });
+        }
+        return _unitsMap.get(id);
     },
 
     /**

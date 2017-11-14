@@ -4,6 +4,7 @@
  * Common functions for route handlers
  */
 const logger = require('../../../lib/logging').logger;
+const MasterDataService = require('../../../service/master-data');
 
 let internals = {};
 
@@ -75,13 +76,42 @@ module.exports = internals = {
                 throw new Error('No cached status object found');
             }
 
-            const tasks = await request.server.app.userCache.cache('tasks').get(request);
+            let tasks = await request.server.app.userCache.cache('tasks').get(request);
 
             if (!tasks) {
+                tasks = {};
+                tasks.substances = {};
                 request.server.app.userCache.cache('tasks').set(request, { substances: {} });
             }
 
-            reply.view('all-sectors/report/substances', { task: task, eaId: eaId.name });
+            // Add the substances to the page - we need to get the substance objects from the id
+            const releases = await Promise.all(Object.keys(tasks.substances).map(async id => {
+                return {
+                    substance: await MasterDataService.getSubstanceById(Number.parseInt(id)),
+                    value: tasks.substances[id].value,
+                    units: tasks.substances[id].units
+                };
+            }));
+
+            // Sort the releases by name
+            releases.sort((a, b) => {
+                const nameA = a.substance.name.toUpperCase();
+                const nameB = b.substance.name.toUpperCase();
+
+                if (nameA < nameB) {
+                    return -1;
+                }
+                if (nameA > nameB) {
+                    return 1;
+                }
+
+                return 0;
+            });
+
+            const units = await MasterDataService.getUnits();
+
+            reply.view('all-sectors/report/substances', { task: task, eaId: eaId.name, releases: releases, units: units });
+            reply.view('all-sectors/report/substances', { task: task, eaId: eaId.name, releases: releases, units: units });
         } catch (err) {
             logger.log('error', err);
             reply.redirect('/logout');

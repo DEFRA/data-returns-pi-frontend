@@ -5,12 +5,30 @@
 <main id="content">
     <h1 class="large">Add substance</h1>
     <form action="/add-substance" method="post">
-        <table>
-        {% for substance in substances %}
-            <tr><td>{{ substance.name }}</td><td><input class="button" type="submit" name="{{ substance.id }}" value="Add"></td></tr>
-        {% endfor %}
-        </table>
+        {% if task === 'RELEASES_TO_LAND'%}
+        <h1 class="heading-large">Add new releases to land</h1>
+        {% elif task === 'RELEASES_TO_AIR' %}
+        <h1 class="heading-large">Add new releases to air</h1>
+        {% elif task === 'RELEASES_TO_CONTROLLED_WATERS' %}
+        <h1 class="heading-large">Add new releases to controlled waters</h1>
+        {% elif task === 'OFFSITE_TRANSFERS_IN_WASTE_WATER' %}
+        <h1 class="heading-large">Add new offsite transfers in waste water/h1>
+        {% endif %}
+        <p>Select one or more substances to continue</p>
+        <div id="search-results" class="grid-row">
+            <div class="column-two-thirds">
+                <div class="form-group list">
+                    {% for substance in substances %}
+                    <div class="multiple-choice">
+                        <input id="{{ substance.id }}" name="{{ substance.id }}" value="selected" type="checkbox">
+                        <label for="{{ substance.id }}"><span class="category"></span> <span class="name">{{ substance.name }}</span></label>
+                    </div>
+                    {% endfor %}
+                </div>
+            </div>
+        </div>
+        <div class="form-group"><input type="submit" class="button" value="Continue"> </div>
     </form>
 </main>
-
 {% endblock %}
+

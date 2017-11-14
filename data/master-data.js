@@ -4414,7 +4414,7 @@ module.exports = {
     ],
 
     units: [
-        { 'id': 1, 'name': 'Bq', 'type': 'R', 'factor': 0.001000000000000, 'description': 'becqerels'},
+        { 'id': 1, 'name': 'Bq', 'type': 'R', 'factor': 0.001000000000000, 'description': 'becqerels' },
         { 'id': 2, 'name': 'g', 'type': 'W', 'factor': 0.001000000000000, 'description': 'grammes' },
         { 'id': 3, 'name': 'GBq', 'type': 'R', 'factor': 1000000.000000000000000, 'description': 'gigabecqerels' },
         { 'id': 4, 'name': 'KBq', 'type': 'R', 'factor': 1.000000000000000, 'description': 'kilobecqerels' },
