@@ -19,6 +19,14 @@
         <tr>
             <td class="td-substance">{{ release.substance.name }}</td>
             <td class="td-reporting-threshold numeric"></td>
+
+            {% if release.errors %}
+            <!--user_params.indexOf('add_user')-->
+            <td>{{ release.errors | dump }}</td>
+            {% else %}
+            <td>xxx</td>
+            {% endif %}
+
             <td class="td-release"> <label class="form-label visually-hidden" for="value-{{ release.substance.id }}">Releases</label>
                 <input class="form-control" id="value-{{ release.substance.id }}" name="value-{{ release.substance.id }}" value="{{ release.value }}"> </td>
             <td class="td-unit">

@@ -1,10 +1,12 @@
 'use strict';
 
 /**
- * Common functions for route handlers
+ * Common functions for route handlers for substance releases to
+ * air, water, waste water and land
  */
 const logger = require('../../../lib/logging').logger;
 const MasterDataService = require('../../../service/master-data');
+const Errors = require('../../../model/all-sectors/errors.js');
 
 const internals = {
     /**
@@ -18,30 +20,93 @@ const internals = {
     },
 
     /**
-     * Save submission regardless of validation
+     * Save submission regardless of validation status
+     * @param request
+     * @return {Promise.<void>}
      */
     save: async (request) => {
-        /*
-         * Rewrite the tasks object
-         * let tasks = await request.server.app.userCache.cache('tasks').get(request);
-         */
+
+        // Read the tasks object
         const tasks = await request.server.app.userCache.cache('tasks').get(request);
 
-        if (!tasks || !tasks.releases) {
-            throw new Error('Cache read error - invalid task cache');
+        if (!tasks) {
+            throw new Error('Cache error: tasks object not found');
         }
 
         Object.keys(tasks.releases).forEach(s => {
+
+            // Strip the value from the payload and add to the tasks objects
             if (request.payload['value-' + s]) {
                 tasks.releases[s].value = request.payload['value-' + s];
             }
+
+            // Strip the units from the payload and add to the tasks objects
             if (request.payload['unitId-' + s]) {
                 const unitId = Number.parseInt(request.payload['unitId-' + s]);
                 tasks.releases[s].unitId = Number.isNaN(unitId) ? null : unitId;
             }
         });
 
+        // Write the tasks object
         await request.server.app.userCache.cache('tasks').set(request, tasks);
+    },
+
+    /**
+     * Validates the submission saving the state to the cache if the submission is invalid.
+     *
+     * Returns true if invalid
+     * @param request - the request object
+     * @param tasks - the tasks read from cache
+     * @return {Promise.<boolean>} - promises to be true if invalid
+     */
+    validate: async (request) => {
+
+        // Read the tasks
+        const tasks = await request.server.app.userCache.cache('tasks').get(request);
+
+        if (!tasks) {
+            throw new Error('Cache error: tasks object not found');
+        }
+
+        let isValid = true;
+        Object.keys(tasks.releases).forEach(s => {
+
+            const release = tasks.releases[s];
+
+            // Remove any old validations
+            delete release.errors;
+
+            // Test number or BRT
+            if (!release.value || (Number.isNaN(release.value) && release.value.toUpperCase() !== 'BRT')) {
+                isValid = false;
+                release.errors = [ Errors.NOT_A_NUMBER_OR_BRT ];
+            }
+
+            // Test units and BRT
+            if (release.value && release.value.toUpperCase() === 'BRT' && release.unitId) {
+                isValid = false;
+                if (release.errors) {
+                    release.errors.push(Errors.UNIT_WITH_BRT);
+                } else {
+                    release.errors = [ Errors.UNIT_WITH_BRT ];
+                }
+            }
+
+            // Test value without units
+            if (!Number.isNaN(release.value) && !release.unitId) {
+                isValid = false;
+                if (release.errors) {
+                    release.errors.push(Errors.NUMBER_WITHOUT_UNIT);
+                } else {
+                    release.errors = [ Errors.NUMBER_WITHOUT_UNIT ];
+                }
+            }
+        });
+
+        // Write the validations to the cache
+        await request.server.app.userCache.cache('tasks').set(request, tasks);
+
+        return isValid;
     },
 
     /**
@@ -82,7 +147,7 @@ module.exports = {
             const stageStatus = await request.server.app.userCache.cache('permit-status').get(request);
 
             if (!stageStatus) {
-                throw new Error('Unexpected cache error reading stage status');
+                throw new Error('Cache error: submission-status object not found');
             }
 
             if (request.method === 'get') {
@@ -124,7 +189,7 @@ module.exports = {
             const eaId = await request.server.app.userCache.cache('submission-status').get(request);
 
             if (!eaId) {
-                throw new Error('No cached status object found');
+                throw new Error('Cache error: submission-status object not found');
             }
 
             let tasks = await request.server.app.userCache.cache('tasks').get(request);
@@ -140,7 +205,8 @@ module.exports = {
                 return {
                     substance: await MasterDataService.getSubstanceById(Number.parseInt(id)),
                     value: tasks.releases[id].value,
-                    unitId: tasks.releases[id].unitId
+                    unitId: tasks.releases[id].unitId,
+                    errors: tasks.releases[id].errors
                 };
             }));
 
@@ -166,8 +232,17 @@ module.exports = {
      */
     validate: async (request, reply, task) => {
         try {
+
+            // Save and validate the submission
             await internals.save(request);
-            reply.redirect('/all-sectors');
+
+            // Validate the submission
+            if (await internals.validate(request)) {
+                reply.redirect('/all-sectors');
+            } else {
+                reply.redirect(internals.tasks[task].uri);
+            }
+
         } catch (err) {
             logger.log('error', err);
             reply.redirect('/logout');
