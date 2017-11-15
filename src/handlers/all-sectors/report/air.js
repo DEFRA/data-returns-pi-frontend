@@ -15,7 +15,7 @@ module.exports = {
      * @param {function} reply - The server reply function
      * @return {undefined}
      */
-    airConfirm: async (request, reply) => {
+    confirm: async (request, reply) => {
         await Helper.processConfirmations(request, reply, TASK);
     },
 
@@ -25,7 +25,22 @@ module.exports = {
      * @param {function} reply - The server reply function
      * @return {undefined}
      */
-    air: async (request, reply) => {
-        await Helper.substances(request, reply, TASK);
+    releases: async (request, reply) => {
+        await Helper.releases(request, reply, TASK);
+    },
+
+    /**
+     * Handle the the release page validation and persist the data
+     * in the cache
+     * @param request
+     * @param reply
+     * @return {Promise.<void>}
+     */
+    validate: async (request, reply) => {
+        await Helper.validate(request, reply, TASK);
+    },
+
+    detail: async (request, reply) => {
+        await Helper.detail(request, reply, TASK);
     }
 };

@@ -140,7 +140,7 @@ const dynamicHandlers = [
         method: ['GET', 'POST'],
         path: '/air-confirm',
         config: {
-            handler: Air.airConfirm
+            handler: Air.confirm
         }
     },
 
@@ -148,7 +148,23 @@ const dynamicHandlers = [
         method: 'GET',
         path: '/air',
         config: {
-            handler: Air.air
+            handler: Air.releases
+        }
+    },
+
+    {
+        method: 'POST',
+        path: '/air-validate',
+        config: {
+            handler: Air.validate
+        }
+    },
+
+    {
+        method: 'GET',
+        path: '/air-detail',
+        config: {
+            handler: Air.detail
         }
     },
 
@@ -156,7 +172,7 @@ const dynamicHandlers = [
         method: ['GET', 'POST'],
         path: '/land-confirm',
         config: {
-            handler: Land.landConfirm
+            handler: Land.confirm
         }
     },
 
@@ -164,7 +180,23 @@ const dynamicHandlers = [
         method: 'GET',
         path: '/land',
         config: {
-            handler: Land.land
+            handler: Land.releases
+        }
+    },
+
+    {
+        method: 'POST',
+        path: '/land-validate',
+        config: {
+            handler: Land.validate
+        }
+    },
+
+    {
+        method: 'GET',
+        path: '/land-detail',
+        config: {
+            handler: Land.detail
         }
     },
 
@@ -172,7 +204,7 @@ const dynamicHandlers = [
         method: ['GET', 'POST'],
         path: '/waste-water-confirm',
         config: {
-            handler: WasteWater.wasteWaterConfirm
+            handler: WasteWater.confirm
         }
     },
 
@@ -180,7 +212,23 @@ const dynamicHandlers = [
         method: 'GET',
         path: '/waste-water',
         config: {
-            handler: WasteWater.wasteWater
+            handler: WasteWater.releases
+        }
+    },
+
+    {
+        method: 'POST',
+        path: '/waste-water-validate',
+        config: {
+            handler: WasteWater.validate
+        }
+    },
+
+    {
+        method: 'GET',
+        path: '/waste-water-detail',
+        config: {
+            handler: WasteWater.detail
         }
     },
 
@@ -188,7 +236,7 @@ const dynamicHandlers = [
         method: ['GET', 'POST'],
         path: '/water-confirm',
         config: {
-            handler: Water.waterConfirm
+            handler: Water.confirm
         }
     },
 
@@ -196,7 +244,23 @@ const dynamicHandlers = [
         method: 'GET',
         path: '/water',
         config: {
-            handler: Water.water
+            handler: Water.releases
+        }
+    },
+
+    {
+        method: 'POST',
+        path: '/water-validate',
+        config: {
+            handler: Water.validate
+        }
+    },
+
+    {
+        method: 'GET',
+        path: '/water-detail',
+        config: {
+            handler: Water.detail
         }
     },
 

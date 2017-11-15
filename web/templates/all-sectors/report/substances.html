@@ -3,7 +3,7 @@
 {% macro form(header, action) %}
 <h1 class="heading-large">{{ header }}</h1>
 <h2 class="font-medium">EA_ID: {{ eaId }}</h2>
-<form action="{{ action }}-check" method="post" class="form">
+<form action="{{ action }}-validate" method="post" class="form">
     <table class="check-data table-control mobile-format">
         <thead>
         <tr>
@@ -19,13 +19,18 @@
         <tr>
             <td class="td-substance">{{ release.substance.name }}</td>
             <td class="td-reporting-threshold numeric"></td>
-            <td class="td-release"> <label class="form-label visually-hidden" for="releases">Releases</label> <input class="form-control" id="releases" name="releases", value="{{ release.substance.value }}"> </td>
+            <td class="td-release"> <label class="form-label visually-hidden" for="value-{{ release.substance.id }}">Releases</label>
+                <input class="form-control" id="value-{{ release.substance.id }}" name="value-{{ release.substance.id }}" value="{{ release.value }}"> </td>
             <td class="td-unit">
-                <label class="form-label visually-hidden" for="select-box">Unit</label>
-                <select class="form-control unit" id="select-box" name="select-box">
+                <label class="form-label visually-hidden" for="unit-{{ release.substance.id }}">Unit</label>
+                <select class="form-control unit" id="unit-{{ release.substance.id }}" name="unitId-{{ release.substance.id }}">
                     <option>--</option>
                     {% for unit in units %}
-                    <option>{{ unit.name }}</option>
+                    {% if release.unitId === unit.id %}
+                    <option selected value="{{ unit.id }}">{{ unit.name }}</option>
+                    {% else %}
+                    <option value="{{ unit.id }}">{{ unit.name }}</option>
+                    {% endif %}
                     {% endfor %}
                 </select>
             </td>
@@ -35,6 +40,7 @@
         </tbody>
     </table>
     <div class="form-group"> <a href="/add-substance">Add a new substance</a> </div>
+    <div class="form-group"> <input type="submit" class="button" value="Continue"> </div>
 </form>
 {% endmacro %}
 

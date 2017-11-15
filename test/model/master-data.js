@@ -101,8 +101,8 @@ experiment('Master data service', function () {
         expect(units.length).to.equal(12);
     });
 
-    test('getUnitsById(id)', async () => {
-        const units = await MasterDataService.getUnitsById(1);
+    test('getUnitById(id)', async () => {
+        const units = await MasterDataService.getUnitById(1);
         expect(units).to.be.an.object();
         expect(units.name).to.equal('Bq');
     });

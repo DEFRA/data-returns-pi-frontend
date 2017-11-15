@@ -46,9 +46,12 @@ module.exports = {
                         throw new Error('Unknown substance requested from page');
                     }
 
-                    // Add the substance to the task provided it does not already exist
-                    if (!tasks.substances[substance.id]) {
-                        tasks.substances[substance.id] = { value: null, units: null };
+                    /*
+                     * Add the substance to the task provided it does not already exist
+                     * This creates the release object for the substance
+                     */
+                    if (!tasks.releases[substance.id]) {
+                        tasks.releases[substance.id] = { value: null, unitId: null };
                     }
                 });
 

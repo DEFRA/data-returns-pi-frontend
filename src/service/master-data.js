@@ -157,7 +157,7 @@ module.exports = internals = {
      * @param id
      * @returns {Promise.<*>}
      */
-    getUnitsById: async (id) => {
+    getUnitById: async (id) => {
         if (!_unitsMap.size) {
             Data.units.forEach((s) => {
                 _unitsMap.set(s.id, s);

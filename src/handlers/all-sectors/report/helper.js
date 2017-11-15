@@ -6,9 +6,7 @@
 const logger = require('../../../lib/logging').logger;
 const MasterDataService = require('../../../service/master-data');
 
-let internals = {};
-
-module.exports = internals = {
+const internals = {
     /**
      * Used to identify the current submission task type
      */
@@ -18,6 +16,59 @@ module.exports = internals = {
         OFFSITE_TRANSFERS_IN_WASTE_WATER: { uri: '/waste-water' },
         RELEASES_TO_CONTROLLED_WATERS: { uri: '/water' }
     },
+
+    /**
+     * Save submission regardless of validation
+     */
+    save: async (request) => {
+        /*
+         * Rewrite the tasks object
+         * let tasks = await request.server.app.userCache.cache('tasks').get(request);
+         */
+        const tasks = await request.server.app.userCache.cache('tasks').get(request);
+
+        if (!tasks || !tasks.releases) {
+            throw new Error('Cache read error - invalid task cache');
+        }
+
+        Object.keys(tasks.releases).forEach(s => {
+            if (request.payload['value-' + s]) {
+                tasks.releases[s].value = request.payload['value-' + s];
+            }
+            if (request.payload['unitId-' + s]) {
+                const unitId = Number.parseInt(request.payload['unitId-' + s]);
+                tasks.releases[s].unitId = Number.isNaN(unitId) ? null : unitId;
+            }
+        });
+
+        await request.server.app.userCache.cache('tasks').set(request, tasks);
+    },
+
+    /**
+     * Function to order the substances on the release screen
+     * @param a - first release
+     * @param b - second release
+     * @return {number}
+     */
+    sortReleases: (a, b) => {
+        const nameA = a.substance.name.toUpperCase();
+        const nameB = b.substance.name.toUpperCase();
+
+        if (nameA < nameB) {
+            return -1;
+        }
+        if (nameA > nameB) {
+            return 1;
+        }
+
+        return 0;
+    }
+};
+
+module.exports = {
+
+    // Expose the tasks object
+    tasks: internals.tasks,
 
     /**
      * Process the confirmation pages
@@ -61,13 +112,13 @@ module.exports = internals = {
     },
 
     /**
-     * Handler for the main substance submission page
+     * Handler for the main releases submission pages to air, land, waste-water and controlled water
      * @param request
      * @param reply
      * @param task
      * @return {Promise.<void>}
      */
-    substances: async (request, reply, task) => {
+    releases: async (request, reply, task) => {
         try {
             // Get the task-status object or create a new one
             const eaId = await request.server.app.userCache.cache('submission-status').get(request);
@@ -80,41 +131,64 @@ module.exports = internals = {
 
             if (!tasks) {
                 tasks = {};
-                tasks.substances = {};
-                request.server.app.userCache.cache('tasks').set(request, { substances: {} });
+                tasks.releases = {};
+                request.server.app.userCache.cache('tasks').set(request, tasks);
             }
 
-            // Add the substances to the page - we need to get the substance objects from the id
-            const releases = await Promise.all(Object.keys(tasks.substances).map(async id => {
+            // Enrich the stored object for page presentation - add descriptions
+            const releases = await Promise.all(Object.keys(tasks.releases).map(async id => {
                 return {
                     substance: await MasterDataService.getSubstanceById(Number.parseInt(id)),
-                    value: tasks.substances[id].value,
-                    units: tasks.substances[id].units
+                    value: tasks.releases[id].value,
+                    unitId: tasks.releases[id].unitId
                 };
             }));
 
-            // Sort the releases by name
-            releases.sort((a, b) => {
-                const nameA = a.substance.name.toUpperCase();
-                const nameB = b.substance.name.toUpperCase();
+            // Sort the releases by substance name
+            releases.sort(internals.sortReleases);
 
-                if (nameA < nameB) {
-                    return -1;
-                }
-                if (nameA > nameB) {
-                    return 1;
-                }
-
-                return 0;
-            });
-
+            // Get the units list
             const units = await MasterDataService.getUnits();
 
-            reply.view('all-sectors/report/substances', { task: task, eaId: eaId.name, releases: releases, units: units });
             reply.view('all-sectors/report/substances', { task: task, eaId: eaId.name, releases: releases, units: units });
         } catch (err) {
             logger.log('error', err);
             reply.redirect('/logout');
         }
+    },
+
+    /**
+     * Validate the submitted releases
+     * @param request
+     * @param reply
+     * @param task
+     * @return {Promise.<void>}
+     */
+    validate: async (request, reply, task) => {
+        try {
+            await internals.save(request);
+            reply.redirect('/all-sectors');
+        } catch (err) {
+            logger.log('error', err);
+            reply.redirect('/logout');
+        }
+    },
+
+    /**
+     * Validate the submitted releases
+     * @param request
+     * @param reply
+     * @param task
+     * @return {Promise.<void>}
+     */
+    detail: async (request, reply, task) => {
+        try {
+            await internals.save(request);
+            reply.redirect('/all-sectors');
+        } catch (err) {
+            logger.log('error', err);
+            reply.redirect('/logout');
+        }
     }
+
 };
