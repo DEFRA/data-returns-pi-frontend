@@ -13,6 +13,7 @@ const Logging = require('./logging');
 const Authorization = require('./authorization');
 const ServerMethods = require('./server-methods');
 const UserCache = require('./user-cache');
+const AdditionalFilters = require('../service/additional-filters');
 
 const srvcfg = System.configuration.server;
 
@@ -89,7 +90,9 @@ const initialize = async () => {
         engines: {
             html: {
                 compile: function (src, options) {
+
                     const template = Nunjucks.compile(src, options.environment);
+
                     return function (context) {
                         return template.render(context);
                     };
@@ -97,6 +100,12 @@ const initialize = async () => {
 
                 prepare: function (options, next) {
                     options.compileOptions.environment = Nunjucks.configure(options.path, { watch: false });
+
+                    // Add in additional nunjunks filter functions
+                    for (const filter of AdditionalFilters) {
+                        options.compileOptions.environment.addFilter(filter.functionName, filter.filterFunction);
+                    }
+
                     return next();
                 }
             }
@@ -104,9 +113,9 @@ const initialize = async () => {
 
         // Set up the location of the template resources
         relativeTo: process.env.APP_ROOT,
-        path: 'web/templates',
-        layoutPath: 'web/layout',
-        helpersPath: 'web/helpers',
+        path: './web/templates',
+        layoutPath: './web/templates/layout',
+        helpersPath: './web/templates/helpers',
 
         // Set up the common view data
         context: require('./common-view-data').context,

@@ -36,15 +36,11 @@ const internals = {
         Object.keys(tasks.releases).forEach(s => {
 
             // Strip the value from the payload and add to the tasks objects
-            if (request.payload['value-' + s]) {
-                tasks.releases[s].value = request.payload['value-' + s];
-            }
+            tasks.releases[s].value = request.payload['value-' + s];
 
             // Strip the units from the payload and add to the tasks objects
-            if (request.payload['unitId-' + s]) {
-                const unitId = Number.parseInt(request.payload['unitId-' + s]);
-                tasks.releases[s].unitId = Number.isNaN(unitId) ? null : unitId;
-            }
+            const unitId = Number.parseInt(request.payload['unitId-' + s]);
+            tasks.releases[s].unitId = Number.isNaN(unitId) ? null : unitId;
         });
 
         // Write the tasks object
@@ -79,28 +75,29 @@ const internals = {
             // Test number or BRT
             if (!release.value || (Number.isNaN(release.value) && release.value.toUpperCase() !== 'BRT')) {
                 isValid = false;
-                release.errors = [ Errors.NOT_A_NUMBER_OR_BRT ];
+                release.errors = [ Errors.NOT_A_NUMBER_OR_BRT.errno ];
             }
 
             // Test units and BRT
             if (release.value && release.value.toUpperCase() === 'BRT' && release.unitId) {
                 isValid = false;
                 if (release.errors) {
-                    release.errors.push(Errors.UNIT_WITH_BRT);
+                    release.errors.push(Errors.UNIT_WITH_BRT.errno);
                 } else {
-                    release.errors = [ Errors.UNIT_WITH_BRT ];
+                    release.errors = [ Errors.UNIT_WITH_BRT.errno ];
                 }
             }
 
-            // Test value without units
-            if (!Number.isNaN(release.value) && !release.unitId) {
+            // Test non BRT value is present and is a number and without units
+            if (release.value && !Number.isNaN(release.value) && !release.unitId) {
                 isValid = false;
                 if (release.errors) {
-                    release.errors.push(Errors.NUMBER_WITHOUT_UNIT);
+                    release.errors.push(Errors.NUMBER_WITHOUT_UNIT.errno);
                 } else {
-                    release.errors = [ Errors.NUMBER_WITHOUT_UNIT ];
+                    release.errors = [ Errors.NUMBER_WITHOUT_UNIT.errno ];
                 }
             }
+
         });
 
         // Write the validations to the cache

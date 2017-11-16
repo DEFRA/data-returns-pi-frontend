@@ -17,18 +17,31 @@
         <tbody>
         {% for release in releases %}
         <tr>
-            <td class="td-substance">{{ release.substance.name }}</td>
-            <td class="td-reporting-threshold numeric"></td>
-
-            {% if release.errors %}
-            <!--user_params.indexOf('add_user')-->
-            <td>{{ release.errors | dump }}</td>
+            {%if ( release.errors | concernsElement('value') | dump ) if release.errors %}
+                <td>{{ release.errors }}</td>
             {% else %}
-            <td>xxx</td>
+                <td>{{ release.errors }}</td>
             {% endif %}
 
-            <td class="td-release"> <label class="form-label visually-hidden" for="value-{{ release.substance.id }}">Releases</label>
-                <input class="form-control" id="value-{{ release.substance.id }}" name="value-{{ release.substance.id }}" value="{{ release.value }}"> </td>
+            <td class="td-substance">{{ release.substance.name }}</td>
+            <td class="td-reporting-threshold numeric"></td>
+            {% if 1 == 1 %}
+                <td class="td-release">
+                    <div class="form-group-error">
+                        <label class="form-label visually-hidden" for="value-err{{ release.substance.id }}">Releases</label>
+                        <input class="form-control" id="value-err{{ release.substance.id }}" name="value-{{ release.substance.id }}" value="{{ release.value }}">
+                    </div>
+                </td>
+            </div>
+            {% else %}
+            <td class="td-release">
+                <div class="form-group">
+                    <label class="form-label visually-hidden" for="value-{{ release.substance.id }}">Releases</label>
+                    <input class="form-control" id="value-{{ release.substance.id }}" name="value-{{ release.substance.id }}" value="{{ release.value }}">
+                </div>
+            </td>
+            {% endif %}
+
             <td class="td-unit">
                 <label class="form-label visually-hidden" for="unit-{{ release.substance.id }}">Unit</label>
                 <select class="form-control unit" id="unit-{{ release.substance.id }}" name="unitId-{{ release.substance.id }}">
@@ -54,7 +67,7 @@
 
 {% block content %}
 <main id="content">
-    {% if task === 'RELEASES_TO_LAND'%}
+    {% if task === 'RELEASES_TO_LAND' %}
     {{ form('Your releases to land?', '/land') }}
     {% elif task === 'RELEASES_TO_AIR' %}
     {{ form('Your releases to air?', '/air') }}
