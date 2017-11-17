@@ -1,6 +1,7 @@
 {% extends 'layout/layout.html' %}
 
 {% macro form(header, action) %}
+<lable id="page-name" hidden>releases</lable>
 <h1 class="heading-large">{{ header }}</h1>
 <h2 class="font-medium">EA_ID: {{ eaId }}</h2>
 <form action="{{ action }}-validate" method="post" class="form">

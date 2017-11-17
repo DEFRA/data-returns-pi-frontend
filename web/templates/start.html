@@ -3,19 +3,15 @@
 {% block content %}
 
 <main id="content">
+    <lable hidden id="page-name">start</lable>
     <h1 class="heading-medium"><span id="title">Welcome {{ user.username }}</span></h1>
-
     {% if eaIds.length === 0 %}
-
         <div class="error-message">
             <p>You have no permits</p>
         </div>
-
     {% else %}
         <form action="/select-journey" method="post">
-
             <p>Choose a permit</p>
-
             <ol>
                 {% for site in sites %}
 
@@ -32,13 +28,10 @@
                         {% endfor %}
                     </ul>
                 </li>
-
                 {% endfor %}
             </ol>
-
         </form>
     {% endif %}
-
 </main>
 
 {% endblock %}
