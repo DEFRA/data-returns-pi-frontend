@@ -81,7 +81,7 @@ module.exports = {
                     .set(request, stageStatus);
             }
 
-            reply.redirect('/all-sectors');
+            reply.redirect('/task-list');
         } catch (err) {
             logger.log('error', err);
             reply.redirect('/logout');

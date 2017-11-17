@@ -36,11 +36,8 @@ module.exports = {
      * @param reply
      * @return {Promise.<void>}
      */
-    validate: async (request, reply) => {
-        await Releases.validate(request, reply, TASK);
-    },
-
-    detail: async (request, reply) => {
-        await Releases.detail(request, reply, TASK);
+    action: async (request, reply) => {
+        await Releases.action(request, reply, TASK);
     }
+
 };

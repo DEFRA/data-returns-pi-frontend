@@ -105,16 +105,16 @@ const dynamicHandlers = [
     // Handlers for the all sectors journey
     {
         method: 'GET',
-        path: '/all-sectors',
+        path: '/task-list',
         config: {
-            handler: AllSectors.task_list
+            handler: AllSectors.taskList
         }
     },
 
     // Handlers for the all sectors journey
     {
         method: 'POST',
-        path: '/select-journey',
+        path: '/select-permit',
         config: {
             handler: Start.select
         }
@@ -154,17 +154,9 @@ const dynamicHandlers = [
 
     {
         method: 'POST',
-        path: '/air-validate',
+        path: '/air-action',
         config: {
-            handler: Air.validate
-        }
-    },
-
-    {
-        method: 'GET',
-        path: '/air-detail',
-        config: {
-            handler: Air.detail
+            handler: Air.action
         }
     },
 
@@ -186,17 +178,9 @@ const dynamicHandlers = [
 
     {
         method: 'POST',
-        path: '/land-validate',
+        path: '/land-action',
         config: {
-            handler: Land.validate
-        }
-    },
-
-    {
-        method: 'GET',
-        path: '/land-detail',
-        config: {
-            handler: Land.detail
+            handler: Land.action
         }
     },
 
@@ -218,17 +202,9 @@ const dynamicHandlers = [
 
     {
         method: 'POST',
-        path: '/waste-water-validate',
+        path: '/waste-water-action',
         config: {
-            handler: WasteWater.validate
-        }
-    },
-
-    {
-        method: 'GET',
-        path: '/waste-water-detail',
-        config: {
-            handler: WasteWater.detail
+            handler: WasteWater.action
         }
     },
 
@@ -250,17 +226,9 @@ const dynamicHandlers = [
 
     {
         method: 'POST',
-        path: '/water-validate',
+        path: '/water-action',
         config: {
-            handler: Water.validate
-        }
-    },
-
-    {
-        method: 'GET',
-        path: '/water-detail',
-        config: {
-            handler: Water.detail
+            handler: Water.action
         }
     },
 

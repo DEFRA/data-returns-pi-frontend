@@ -14,7 +14,7 @@ module.exports = {
      * @param {function} reply - The server reply function
      * @return {undefined}
      */
-    task_list: async (request, reply) => {
+    taskList: async (request, reply) => {
         try {
             // Get the submission status object or create a new one
             const eaId = await request.server.app.userCache.cache('submission-status').get(request);

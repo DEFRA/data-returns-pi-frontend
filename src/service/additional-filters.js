@@ -7,8 +7,16 @@ const Errors = require('../model/all-sectors/errors');
  * so this is added in the seview view configuration.
  */
 module.exports = [
+
     {
         functionName: 'concernsElement',
+
+        /**
+         * Determine if a given set of page errors concern a particular element
+         * @param pageErrors
+         * @param element
+         * @returns {*} - The error applying to the element
+         */
         filterFunction: (pageErrors, element) => {
             for (const errno of pageErrors) {
 
@@ -22,5 +30,19 @@ module.exports = [
             }
             return undefined;
         }
+    },
+
+    {
+        functionName: 'substancesWithErrors',
+
+        /**
+         * Process the releases object to filter only those substance names with errors
+         * @param releases - the releases object
+         * @returns {*} - The substance name
+         */
+        filterFunction: (releases) => {
+            return releases.filter(r => r.errors).map(r => r.substance);
+        }
     }
+
 ];

@@ -31,8 +31,7 @@ const minifyTypes = {
 
 const minifyIgnorePatterns = [
     // Pre-minified versions of these libraries already provided
-    /^jquery-1\.12\.4.*/,
-    /^jquery\.mark.*/
+    /^jquery-*/
 ];
 
 /**

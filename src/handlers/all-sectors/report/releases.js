@@ -6,7 +6,8 @@
  */
 const logger = require('../../../lib/logging').logger;
 const MasterDataService = require('../../../service/master-data');
-const Errors = require('../../../model/all-sectors/errors.js');
+const Errors = require('../../../model/all-sectors/errors');
+const isNumeric = require('../../../lib/utils').isNumeric;
 
 const internals = {
     /**
@@ -24,15 +25,7 @@ const internals = {
      * @param request
      * @return {Promise.<void>}
      */
-    save: async (request) => {
-
-        // Read the tasks object
-        const tasks = await request.server.app.userCache.cache('tasks').get(request);
-
-        if (!tasks) {
-            throw new Error('Cache error: tasks object not found');
-        }
-
+    save: async (request, tasks) => {
         Object.keys(tasks.releases).forEach(s => {
 
             // Strip the value from the payload and add to the tasks objects
@@ -42,9 +35,6 @@ const internals = {
             const unitId = Number.parseInt(request.payload['unitId-' + s]);
             tasks.releases[s].unitId = Number.isNaN(unitId) ? null : unitId;
         });
-
-        // Write the tasks object
-        await request.server.app.userCache.cache('tasks').set(request, tasks);
     },
 
     /**
@@ -55,14 +45,7 @@ const internals = {
      * @param tasks - the tasks read from cache
      * @return {Promise.<boolean>} - promises to be true if invalid
      */
-    validate: async (request) => {
-
-        // Read the tasks
-        const tasks = await request.server.app.userCache.cache('tasks').get(request);
-
-        if (!tasks) {
-            throw new Error('Cache error: tasks object not found');
-        }
+    validate: async (request, tasks) => {
 
         let isValid = true;
         Object.keys(tasks.releases).forEach(s => {
@@ -73,7 +56,7 @@ const internals = {
             delete release.errors;
 
             // Test number or BRT
-            if (!release.value || (Number.isNaN(Number.parseFloat(release.value)) && release.value.toUpperCase() !== 'BRT')) {
+            if (!release.value || (!isNumeric(release.value) && release.value.toUpperCase() !== 'BRT')) {
                 isValid = false;
                 release.errors = [ Errors.NOT_A_NUMBER_OR_BRT.errno ];
             }
@@ -89,7 +72,7 @@ const internals = {
             }
 
             // Test non BRT value is present and is a number and without units
-            if (release.value && !Number.isNaN(Number.parseFloat(release.value)) && !release.unitId) {
+            if (release.value && isNumeric(release.value) && !release.unitId) {
                 isValid = false;
                 if (release.errors) {
                     release.errors.push(Errors.NUMBER_WITHOUT_UNIT.errno);
@@ -99,9 +82,6 @@ const internals = {
             }
 
         });
-
-        // Write the validations to the cache
-        await request.server.app.userCache.cache('tasks').set(request, tasks);
 
         return isValid;
     },
@@ -153,18 +133,16 @@ module.exports = {
             } else {
                 // Process the confirmation
                 if (request.payload.confirmation === 'true') {
-                    if (!stageStatus[task].supplied) {
-                        stageStatus[task].supplied = true;
-                        stageStatus.currentTask = task;
-                        await request.server.app.userCache.cache('permit-status').set(request, stageStatus);
-                    }
+                    stageStatus[task].supplied = true;
+                    stageStatus.currentTask = task;
+                    await request.server.app.userCache.cache('permit-status').set(request, stageStatus);
                     reply.redirect(internals.tasks[task].uri);
                 } else {
                     if (stageStatus[task].supplied) {
                         stageStatus[task].supplied = false;
                         await request.server.app.userCache.cache('permit-status').set(request, stageStatus);
                     }
-                    reply.redirect('/all-sectors');
+                    reply.redirect('/task-list');
                 }
             }
         } catch (err) {
@@ -221,46 +199,44 @@ module.exports = {
     },
 
     /**
-     * Validate the submitted releases
-     * @param request
-     * @param reply
-     * @param task
-     * @return {Promise.<void>}
+     * Save action
      */
-    validate: async (request, reply, task) => {
+    action: async (request, reply, task) => {
         try {
+            // Read the tasks
+            const tasks = await request.server.app.userCache.cache('tasks').get(request);
 
-            // Save and validate the submission
-            await internals.save(request);
-
-            // Validate the submission
-            if (await internals.validate(request)) {
-                reply.redirect('/all-sectors');
-            } else {
-                reply.redirect(internals.tasks[task].uri);
+            if (!tasks) {
+                throw new Error('Cache error: tasks object not found');
             }
 
-        } catch (err) {
-            logger.log('error', err);
-            reply.redirect('/logout');
-        }
-    },
+            // Save the submission
+            await internals.save(request, tasks);
 
-    /**
-     * Validate the submitted releases
-     * @param request
-     * @param reply
-     * @param task
-     * @return {Promise.<void>}
-     */
-    detail: async (request, reply, task) => {
-        try {
-            await internals.save(request);
-            reply.redirect('/all-sectors');
+            // If we continue we will need to validate the submission
+            if (request.payload.action === 'continue') {
+
+                // Test if the releases are valid
+                if (await internals.validate(request, tasks)) {
+                    // Write the (removed) validations to the cache
+                    await request.server.app.userCache.cache('tasks').set(request, tasks);
+                    reply.redirect('/task-list');
+                } else {
+                    // Update the cache with the validation objects and redirect back to the page
+                    await request.server.app.userCache.cache('tasks').set(request, tasks);
+                    reply.redirect(internals.tasks[task].uri);
+                }
+
+            } else if (request.payload.action === 'detail') {
+                reply.redirect('/detail');
+            } else if (request.payload.action === 'back') {
+                reply.redirect('/task-list');
+            } else if (request.payload.action === 'add-substance') {
+                reply.redirect('/add-substance');
+            }
         } catch (err) {
             logger.log('error', err);
             reply.redirect('/logout');
         }
     }
-
 };
