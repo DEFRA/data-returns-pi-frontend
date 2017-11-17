@@ -1,11 +1,21 @@
 {% extends 'layout/layout.html' %}
 
+{% macro errtext(errno) %}
+{% if errno === 'PI-1000' %}
+<span class="error-message">Must be a number or BRT</span>
+{% elif errno === 'PI-1001' %}
+<span class="error-message">Do not specify a unit with BRT</span>
+{% elif errno === 'PI-1002' %}
+<span class="error-message">A value must have units</span>
+{% else %}
+<span class="error-message">Unknown error</span>
+{% endif %}
+{% endmacro %}
+
 {% macro form(header, action) %}
-<lable id="page-name" hidden>releases</lable>
-<h1 class="heading-large">{{ header }}</h1>
-<h2 class="font-medium">EA_ID: {{ eaId }}</h2>
 <form action="{{ action }}-validate" method="post" class="form">
     <table class="check-data table-control mobile-format">
+
         <thead>
         <tr>
             <th class="th-substance">Substance</th>
@@ -15,25 +25,22 @@
             <th class="th-action"><span class="visually-hidden">More detail</span></th>
         </tr>
         </thead>
+
         <tbody>
         {% for release in releases %}
         <tr>
-            {%if ( release.errors | concernsElement('value') | dump ) if release.errors %}
-                <td>{{ release.errors }}</td>
-            {% else %}
-                <td>{{ release.errors }}</td>
-            {% endif %}
-
             <td class="td-substance">{{ release.substance.name }}</td>
-            <td class="td-reporting-threshold numeric"></td>
-            {% if 1 == 1 %}
-                <td class="td-release">
-                    <div class="form-group-error">
-                        <label class="form-label visually-hidden" for="value-err{{ release.substance.id }}">Releases</label>
-                        <input class="form-control" id="value-err{{ release.substance.id }}" name="value-{{ release.substance.id }}" value="{{ release.value }}">
-                    </div>
-                </td>
-            </div>
+
+            <td class="td-reporting-threshold numeric"/>
+
+            {%if ( release.errors | concernsElement('value') ) if release.errors %}
+            <td class="td-release">
+                <div class="form-group-error">
+                    <label class="form-label visually-hidden" for="value-err{{ release.substance.id }}">Releases</label>
+                    <input class="form-control form-control-error" id="value-err{{ release.substance.id }}" name="value-{{ release.substance.id }}" value="{{ release.value }}">
+                    {{ errtext(release.errors | concernsElement('value')) }}
+                </div>
+            </td>
             {% else %}
             <td class="td-release">
                 <div class="form-group">
@@ -56,6 +63,7 @@
                     {% endfor %}
                 </select>
             </td>
+
             <td class="td-action"><a href="/">More detail</a></td>
         </tr>
         {% endfor %}
@@ -68,6 +76,9 @@
 
 {% block content %}
 <main id="content">
+    <h1 class="heading-large">{{ header }}</h1>
+    <h2 class="font-medium">EA_ID: {{ eaId }}</h2>
+    <label id="page-name" hidden>releases</label>
     {% if task === 'RELEASES_TO_LAND' %}
     {{ form('Your releases to land?', '/land') }}
     {% elif task === 'RELEASES_TO_AIR' %}

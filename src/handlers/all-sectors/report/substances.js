@@ -2,7 +2,7 @@
 
 const logger = require('../../../lib/logging').logger;
 const MasterDataService = require('../../../service/master-data');
-const Helper = require('./helper');
+const Helper = require('./releases');
 
 /**
  * Route handlers for adding substances to a release

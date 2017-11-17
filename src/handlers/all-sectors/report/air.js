@@ -3,7 +3,7 @@
 /**
  * Route handlers for reporting releases to air
  */
-const Helper = require('./helper');
+const Releases = require('./releases');
 
 // This maps to the task name in the task-list object
 const TASK = 'RELEASES_TO_AIR';
@@ -16,7 +16,7 @@ module.exports = {
      * @return {undefined}
      */
     confirm: async (request, reply) => {
-        await Helper.processConfirmations(request, reply, TASK);
+        await Releases.processConfirmations(request, reply, TASK);
     },
 
     /**
@@ -26,7 +26,7 @@ module.exports = {
      * @return {undefined}
      */
     releases: async (request, reply) => {
-        await Helper.releases(request, reply, TASK);
+        await Releases.releases(request, reply, TASK);
     },
 
     /**
@@ -37,10 +37,10 @@ module.exports = {
      * @return {Promise.<void>}
      */
     validate: async (request, reply) => {
-        await Helper.validate(request, reply, TASK);
+        await Releases.validate(request, reply, TASK);
     },
 
     detail: async (request, reply) => {
-        await Helper.detail(request, reply, TASK);
+        await Releases.detail(request, reply, TASK);
     }
 };

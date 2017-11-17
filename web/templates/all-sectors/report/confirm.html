@@ -23,7 +23,7 @@
 
 {% block content %}
 <main id="content">
-    <lable id="page-name" hidden>releases</lable>
+    <label id="page-name" hidden>releases</label>
     {% if task === 'RELEASES_TO_LAND'%}
         {{ form('Did you release any substances to land?', '/land-confirm') }}
     {% elif task === 'RELEASES_TO_AIR' %}

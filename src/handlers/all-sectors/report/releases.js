@@ -213,7 +213,7 @@ module.exports = {
             // Get the units list
             const units = await MasterDataService.getUnits();
 
-            reply.view('all-sectors/report/substances', { task: task, eaId: eaId.name, releases: releases, units: units });
+            reply.view('all-sectors/report/releases', { task: task, eaId: eaId.name, releases: releases, units: units });
         } catch (err) {
             logger.log('error', err);
             reply.redirect('/logout');

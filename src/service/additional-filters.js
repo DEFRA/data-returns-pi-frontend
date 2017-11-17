@@ -17,10 +17,10 @@ module.exports = [
                 });
 
                 if (found) {
-                    return true;
+                    return errno;
                 }
             }
-            return false;
+            return undefined;
         }
     }
 ];
