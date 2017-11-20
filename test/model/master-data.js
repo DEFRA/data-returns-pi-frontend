@@ -107,4 +107,16 @@ experiment('Master data service', function () {
         expect(units.name).to.equal('Bq');
     });
 
+    test('getMethods', async () => {
+        const methods = await MasterDataService.getMethods();
+        expect(methods).to.be.an.array();
+        expect(methods.length).to.equal(3);
+    });
+
+    test('getMethodById(id)', async (id) => {
+        const method = await MasterDataService.getMethodById(1);
+        expect(method).to.be.an.object();
+        expect(method.name).to.equal('Measurement');
+    });
+
 });

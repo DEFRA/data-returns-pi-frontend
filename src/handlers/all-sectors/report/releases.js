@@ -6,10 +6,16 @@
  */
 const logger = require('../../../lib/logging').logger;
 const MasterDataService = require('../../../service/master-data');
-const Errors = require('../../../model/all-sectors/errors');
-const isNumeric = require('../../../lib/utils').isNumeric;
+const Validator = require('../../../lib/validator');
+
+const BELOW_REGULATORY_THRESHOLD = 'BRT';
 
 const internals = {
+
+    isBrt: (value) => {
+        return value && typeof value === 'string' && value.toUpperCase().trim() === BELOW_REGULATORY_THRESHOLD;
+    },
+
     /**
      * Used to identify the current submission task type
      */
@@ -21,13 +27,13 @@ const internals = {
     },
 
     /**
-     * Save submission regardless of validation status
+     * Save submission to the task object regardless of validation status
+     * Does not write the task object back to the cache
      * @param request
      * @return {Promise.<void>}
      */
     save: async (request, tasks) => {
         Object.keys(tasks.releases).forEach(s => {
-
             // Strip the value from the payload and add to the tasks objects
             tasks.releases[s].value = request.payload['value-' + s];
 
@@ -46,43 +52,12 @@ const internals = {
      * @return {Promise.<boolean>} - promises to be true if invalid
      */
     validate: async (request, tasks) => {
-
         let isValid = true;
         Object.keys(tasks.releases).forEach(s => {
-
-            const release = tasks.releases[s];
-
-            // Remove any old validations
-            delete release.errors;
-
-            // Test number or BRT
-            if (!release.value || (!isNumeric(release.value) && release.value.toUpperCase() !== 'BRT')) {
+            if (!Validator.release(tasks.releases[s])) {
                 isValid = false;
-                release.errors = [ Errors.NOT_A_NUMBER_OR_BRT.errno ];
             }
-
-            // Test units and BRT
-            if (release.value && release.value.toUpperCase() === 'BRT' && release.unitId) {
-                isValid = false;
-                if (release.errors) {
-                    release.errors.push(Errors.UNIT_WITH_BRT.errno);
-                } else {
-                    release.errors = [ Errors.UNIT_WITH_BRT.errno ];
-                }
-            }
-
-            // Test non BRT value is present and is a number and without units
-            if (release.value && isNumeric(release.value) && !release.unitId) {
-                isValid = false;
-                if (release.errors) {
-                    release.errors.push(Errors.NUMBER_WITHOUT_UNIT.errno);
-                } else {
-                    release.errors = [ Errors.NUMBER_WITHOUT_UNIT.errno ];
-                }
-            }
-
         });
-
         return isValid;
     },
 
@@ -111,6 +86,12 @@ module.exports = {
 
     // Expose the tasks object
     tasks: internals.tasks,
+
+    // Expose the isBrt function
+    isBrt: internals.isBrt,
+
+    // Expose the validate function
+    validate: internals.validate,
 
     /**
      * Process the confirmation pages
@@ -214,7 +195,7 @@ module.exports = {
             await internals.save(request, tasks);
 
             // If we continue we will need to validate the submission
-            if (request.payload.action === 'continue') {
+            if (request.payload.continue) {
 
                 // Test if the releases are valid
                 if (await internals.validate(request, tasks)) {
@@ -227,12 +208,24 @@ module.exports = {
                     reply.redirect(internals.tasks[task].uri);
                 }
 
-            } else if (request.payload.action === 'detail') {
-                reply.redirect('/detail');
-            } else if (request.payload.action === 'back') {
+            } else if (Object.keys(request.payload).find(s => s.startsWith('detail'))) {
+                // Save the substance id and redirect to the release detail page
+                tasks.currentDetail = Object.keys(request.payload)
+                    .find(s => s.startsWith('detail')).substr(7);
+
+                await request.server.app.userCache.cache('tasks').set(request, tasks);
+                reply.redirect(internals.tasks[task].uri + '-detail');
+
+            } else if (request.payload.back) {
+                // Save the release information to the cache and return to the main task-list page
+                await request.server.app.userCache.cache('tasks').set(request, tasks);
                 reply.redirect('/task-list');
-            } else if (request.payload.action === 'add-substance') {
+
+            } else if (request.payload.add) {
+                // Save the release information to the cache and redirect to the add-substances page
+                await request.server.app.userCache.cache('tasks').set(request, tasks);
                 reply.redirect('/add-substance');
+
             }
         } catch (err) {
             logger.log('error', err);

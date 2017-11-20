@@ -167,6 +167,21 @@ module.exports = internals = {
     },
 
     /**
+     * Return a list of the value methods
+     */
+    getMethods: function () {
+        return Data.methods;
+    },
+
+    /**
+     * Return a specific method by Id
+     * @param id
+     */
+    getMethodById: function (id) {
+        return Data.methods.find(m => m.id === id);
+    },
+
+    /**
      * Authenticate a given user. Returns a copy of user object if authenticated or undefined if not.
      * @param username - The given username
      * @param password - The given password

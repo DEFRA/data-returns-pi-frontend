@@ -4,6 +4,7 @@
  * Route handlers for reporting releases to land
  */
 const Releases = require('./releases');
+const Details = require('./details');
 
 // This maps to the task name in the task-list object
 const TASK = 'RELEASES_TO_LAND';
@@ -38,5 +39,16 @@ module.exports = {
      */
     action: async (request, reply) => {
         await Releases.action(request, reply, TASK);
+    },
+
+    /**
+     * Handle the the substance detail page
+     * @param request
+     * @param reply
+     * @return {Promise.<void>}
+     */
+    detail: async (request, reply) => {
+        await Details.detail(request, reply, TASK);
     }
+
 };

@@ -4,6 +4,7 @@
  * Route handlers for reporting off-site releases in waste water
  */
 const Releases = require('./releases');
+const Details = require('./details');
 
 // This maps to the task name in the task-list object
 const TASK = 'OFFSITE_TRANSFERS_IN_WASTE_WATER';
@@ -38,6 +39,16 @@ module.exports = {
      */
     action: async (request, reply) => {
         await Releases.action(request, reply, TASK);
+    },
+
+    /**
+     * Handle the the substance detail page
+     * @param request
+     * @param reply
+     * @return {Promise.<void>}
+     */
+    detail: async (request, reply) => {
+        await Details.detail(request, reply, TASK);
     }
 
 };

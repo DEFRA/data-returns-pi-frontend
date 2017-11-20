@@ -1,0 +1,121 @@
+{% extends 'layout/layout.html' %}
+
+{% macro errtext(errno) %}
+{% if errno === 'PI-1000' %}
+<span class="error-message">Must be a number or BRT</span>
+{% elif errno === 'PI-1001' %}
+<span class="error-message">Do not specify a unit with BRT</span>
+{% elif errno === 'PI-1002' %}
+<span class="error-message">A value must have units</span>
+{% else %}
+<span class="error-message">Unknown error</span>
+{% endif %}
+{% endmacro %}
+
+{% macro form(description, action) %}
+<form id="main-form" action="{{ action }}" method="post" class="form">
+    <h1 class="heading-large">More detail about the release of {{ release.substance.name }} {{ description }}</h1>
+    <div class="grid-row">
+        <div class="column-two-thirds">
+            <table class="more-detail table-control mobile-format">
+                <thead> </thead>
+                <tbody>
+                <tr>
+                    <th class="2017-reporting-threshold">2017 reporting threshold</th>
+                    <td class="2017-reporting-threshold-value"></td>
+                </tr>
+                <tr>
+                    <th class="2017-total-or-BRT">2017 total</th>
+
+                    {%if ( release.errors | concernsElement('value') ) if release.errors %}
+                    <td class="td-release">
+                        <div class="form-group-error">
+                            <label class="form-label visually-hidden" for="value-err">Releases</label>
+                            <input class="form-control form-control-error" id="value-err" name="value" value="{{ release.value }}">
+                            {{ errtext(release.errors | concernsElement('value')) }}
+                        </div>
+                    </td>
+                    {% else %}
+                    <td class="td-release">
+                        <div class="form-group">
+                            <label class="form-label visually-hidden" for="value">Releases</label>
+                            <input class="form-control" id="value" name="value-{{ release.substance.id }}" value="{{ release.value }}">
+                        </div>
+                    </td>
+                    {% endif %}
+
+                    <td class="td-unit">
+                        {%if ( release.errors | concernsElement('unit') ) if release.errors %}
+                        <div class="form-group">
+                            <label class="form-label visually-hidden" for="unit-err">Unit</label>
+                            <select class="form-control form-control-error unit" id="unit-err" name="unitId">
+                                <option>--</option>
+                                {% for unit in units %}
+                                {% if release.unitId === unit.id %}
+                                <option selected value="{{ unit.id }}">{{ unit.name }}</option>
+                                {% else %}
+                                <option value="{{ unit.id }}">{{ unit.name }}</option>
+                                {% endif %}
+                                {% endfor %}
+                            </select>
+                        </div>
+                        {% else %}
+                        <div class="form-group">
+                            <label class="form-label visually-hidden" for="unit">Unit</label>
+                            <select class="form-control unit" id="unit" name="unitId">
+                                <option>--</option>
+                                {% for unit in units %}
+                                {% if release.unitId === unit.id %}
+                                <option selected value="{{ unit.id }}">{{ unit.name }}</option>
+                                {% else %}
+                                <option value="{{ unit.id }}">{{ unit.name }}</option>
+                                {% endif %}
+                                {% endfor %}
+                            </select>
+                        </div>
+                        {% endif %}
+                    </td>
+                </tr>
+                <tr>
+                    <th class="method">Method</th>
+                    <td class="method">
+                        <label class="form-label visually-hidden" for="method">Method</label>
+                        <select class="form-control method" id="method" name="methodId">
+                            {% for method in methods %}
+                            {% if release.methodId === method.id %}
+                            <option selected value="{{ method.id }}">{{ method.name }}</option>
+                            {% else %}
+                            <option value="{{ method.id }}">{{ method.name }}</option>
+                            {% endif %}
+                            {% endfor %}
+                        </select>
+                        <!--<select class="form-control" id="select-box" name="select-box">-->
+                        <!--<option>Calculation</option>-->
+                        <!--<option>Measurement</option>-->
+                        <!--<option selected="">Estimation</option>-->
+                    </select>
+                    </td>
+                </tr>
+                </tbody>
+            </table>
+            <div class="form-group"> <input type="submit" class="button" value="Continue"> </div>
+        </div>
+    </div>
+</form>
+{% endmacro %}
+
+{% block content %}
+
+<main id="content">
+    {% if task === 'RELEASES_TO_LAND' %}
+    {{ form('to land', '/land-detail') }}
+    {% elif task === 'RELEASES_TO_AIR' %}
+    {{ form('to air', '/air-detail') }}
+    {% elif task === 'RELEASES_TO_CONTROLLED_WATERS' %}
+    {{ form('to controlled waters', '/water-detail') }}
+    {% elif task === 'OFFSITE_TRANSFERS_IN_WASTE_WATER' %}
+    {{ form('in waste water', '/waste-water-detail') }}
+    {% endif %}
+</main>
+
+{% endblock %}

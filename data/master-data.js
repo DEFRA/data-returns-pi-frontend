@@ -4413,6 +4413,12 @@ module.exports = {
         { 'id': 4463, 'name': '99', 'nacehId': 104, 'description': 'Activities of extraterritorial organisations and bodies' }
     ],
 
+    methods: [
+        { 'id': 1, name: 'Measurement' },
+        { 'id': 2, name: 'Estimation' },
+        { 'id': 3, name: 'Calculation' }
+    ],
+
     units: [
         { 'id': 1, 'name': 'Bq', 'type': 'R', 'factor': 0.001000000000000, 'description': 'becqerels' },
         { 'id': 2, 'name': 'g', 'type': 'W', 'factor': 0.001000000000000, 'description': 'grammes' },

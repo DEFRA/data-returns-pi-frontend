@@ -48,7 +48,7 @@ module.exports = {
 
                     // Add the substance to the task provided it does not already exist
                     if (!tasks.releases[substance.id]) {
-                        tasks.releases[substance.id] = { value: null, unitId: null };
+                        tasks.releases[substance.id] = { value: null, unitId: null, methodId: 1 };
                     }
                 });
 

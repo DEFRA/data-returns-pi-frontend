@@ -14,9 +14,7 @@
 
 {% macro form(header, errorheader, action) %}
 <form id="main-form" action="{{ action }}-action" method="post" class="form">
-    <div class="form-group"><a id="back" href="#" class="action">Back to tasks</a></div>
-
-    {{ substancesWithErrors | dump }}
+    <div class="form-group"><input class="button" type="submit" id="back" name="back" value="Back to tasks"/></div>
 
     {% if (releases | substancesWithErrors | length) === 0 %}
     <h1 class="heading-large">{{ header }}</h1>
@@ -101,28 +99,19 @@
                 </div>
                 {% endif %}
             </td>
-
-            <td class="td-action"><a id="detail" href="#" class="action">More Detail</a></td>
+            <td>
+                <div class="form-group"><input class="button" type="submit" id="detail" name="detail-{{ release.substance.id }}" value="Detail"/></div>
+            </td>
         </tr>
         {% endfor %}
         </tbody>
     </table>
-    <div class="form-group"><a id="add-substance" href="#" class="action">Add substance</a></div>
-    <div class="form-group"><button type="button" id="continue" class="button action" >Continue</button></div>
-    <input type="hidden" id="action" name="action">
-</form>
-{% endmacro %}
 
-{% block body_start %}
-<script>
-  $(function(){
-        $('.action').click(function(event) {
-            $('#action').val(event.target.id);
-            $('#main-form').submit();
-        });
-  });
-</script>
-{% endblock %}
+    <div class="form-group"><input class="button" type="submit" id="add" name="add" value="Add Substance"/></div>
+    <div class="form-group"><input class="button" type="submit" id="continue" name="continue" value="Continue"/></div>
+
+ </form>
+{% endmacro %}
 
 {% block content %}
 <main id="content">
