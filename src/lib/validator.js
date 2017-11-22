@@ -5,12 +5,19 @@
  */
 const Errors = require('../model/all-sectors/errors');
 const isNumeric = require('./utils').isNumeric;
+const Joi = require('joi');
 
 const BELOW_REGULATORY_THRESHOLD = 'BRT';
 
 const isBrt = (value) => {
     return value && typeof value === 'string' && value.toUpperCase().trim() === BELOW_REGULATORY_THRESHOLD;
 };
+
+const releasesSchema = Joi.object({
+    unitId: Joi.number().min(1).max(3).required(),
+    methodId: Joi.number().required(),
+    value: [Joi.string().valid('BRT').insensitive(), Joi.number()]
+});
 
 module.exports = {
 

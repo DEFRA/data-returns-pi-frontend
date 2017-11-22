@@ -117,7 +117,7 @@
 <main id="content">
     <h1 class="heading-large">{{ header }}</h1>
     <h2 class="font-medium">EA_ID: {{ eaId }}</h2>
-    <label id="page-name" hidden>releases</label>
+    <label id="page-name" hidden>route</label>
     {% if route === 'RELEASES_TO_LAND' %}
     {{ form('Your releases to land?', 'Check your releases to land', '/releases/land') }}
     {% elif route === 'RELEASES_TO_AIR' %}
