@@ -12,9 +12,10 @@ module.exports = {
     /**
      * Detail action
      */
-    detail: async (request, reply, task) => {
+    detail: async (request, reply) => {
         try {
             const tasks = await request.server.app.userCache.cache('tasks').get(request);
+            const route = Releases.getRoute(request);
 
             if (request.method === 'get') {
                 // Get the current release and enrich with the substance details
@@ -29,12 +30,11 @@ module.exports = {
                 const units = await MasterDataService.getUnits();
 
                 // Display the detail page
-                reply.view('all-sectors/report/detail', { task: task, release: release, methods: methods, units: units });
+                reply.view('all-sectors/report/detail', { route: route.route, release: release, methods: methods, units: units });
             } else {
 
                 // Set the task detail elements
-                const { unitId, methodId } = request.payload;
-                const value = request.payload['value-' + tasks.currentDetail];
+                const { unitId, methodId, value } = request.payload;
 
                 tasks.releases[tasks.currentDetail].unitId = Number.parseInt(unitId);
                 tasks.releases[tasks.currentDetail].methodId = Number.parseInt(methodId);
@@ -43,11 +43,11 @@ module.exports = {
                 if (await Validator.release(tasks.releases[tasks.currentDetail])) {
                     // Write the (removed) validations to the cache
                     await request.server.app.userCache.cache('tasks').set(request, tasks);
-                    reply.redirect(Releases.tasks[task].uri);
+                    reply.redirect(route.uri);
                 } else {
                     // Update the cache with the validation objects and redirect back to the releases page
                     await request.server.app.userCache.cache('tasks').set(request, tasks);
-                    reply.redirect(Releases.tasks[task].uri + '-detail');
+                    reply.redirect(route.uri + '/detail');
                 }
 
             }

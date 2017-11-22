@@ -107,14 +107,14 @@
 {% block content %}
 
 <main id="content">
-    {% if task === 'RELEASES_TO_LAND' %}
-    {{ form('to land', '/land-detail') }}
-    {% elif task === 'RELEASES_TO_AIR' %}
-    {{ form('to air', '/air-detail') }}
-    {% elif task === 'RELEASES_TO_CONTROLLED_WATERS' %}
-    {{ form('to controlled waters', '/water-detail') }}
-    {% elif task === 'OFFSITE_TRANSFERS_IN_WASTE_WATER' %}
-    {{ form('in waste water', '/waste-water-detail') }}
+    {% if route === 'RELEASES_TO_LAND' %}
+    {{ form('to land', '/releases/land/detail') }}
+    {% elif route === 'RELEASES_TO_AIR' %}
+    {{ form('to air', '/releases/air/detail') }}
+    {% elif route === 'RELEASES_TO_CONTROLLED_WATERS' %}
+    {{ form('to controlled waters', '/releases/water/detail') }}
+    {% elif route === 'OFFSITE_TRANSFERS_IN_WASTE_WATER' %}
+    {{ form('in waste water', '/releases/waste-water/detail') }}
     {% endif %}
 </main>
 

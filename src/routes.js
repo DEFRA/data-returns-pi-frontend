@@ -8,12 +8,10 @@ const Start = require('./handlers/start.js');
 const AllSectors = require('./handlers/all-sectors/main');
 const Contact = require('./handlers/all-sectors/check/contact');
 const Site = require('./handlers/all-sectors/check/site');
-const Air = require('./handlers/all-sectors/report/air');
-const Land = require('./handlers/all-sectors/report/land');
+const Releases = require('./handlers/all-sectors/report/releases');
+const Details = require('./handlers/all-sectors/report/details');
 const OffSite = require('./handlers/all-sectors/report/off-site');
 const Overseas = require('./handlers/all-sectors/report/overseas');
-const WasteWater = require('./handlers/all-sectors/report/waste-water');
-const Water = require('./handlers/all-sectors/report/water');
 const Check = require('./handlers/all-sectors/submit/check');
 const Share = require('./handlers/all-sectors/submit/share');
 const Submit = require('./handlers/all-sectors/submit/submit');
@@ -138,130 +136,26 @@ const dynamicHandlers = [
 
     {
         method: ['GET', 'POST'],
-        path: '/air-confirm',
-        config: {
-            handler: Air.confirm
-        }
+        path: '/releases/{route}/confirm',
+        handler: Releases.confirm
     },
 
     {
         method: 'GET',
-        path: '/air',
-        config: {
-            handler: Air.releases
-        }
+        path: '/releases/{route}',
+        handler: Releases.releases
     },
 
     {
         method: 'POST',
-        path: '/air-action',
-        config: {
-            handler: Air.action
-        }
+        path: '/releases/{route}/action',
+        handler: Releases.action
     },
 
     {
         method: ['GET', 'POST'],
-        path: '/air-detail',
-        config: {
-            handler: Air.detail
-        }
-    },
-
-    {
-        method: ['GET', 'POST'],
-        path: '/land-confirm',
-        config: {
-            handler: Land.confirm
-        }
-    },
-
-    {
-        method: 'GET',
-        path: '/land',
-        config: {
-            handler: Land.releases
-        }
-    },
-
-    {
-        method: 'POST',
-        path: '/land-action',
-        config: {
-            handler: Land.action
-        }
-    },
-
-    {
-        method: ['GET', 'POST'],
-        path: '/land-detail',
-        config: {
-            handler: Land.detail
-        }
-    },
-
-    {
-        method: ['GET', 'POST'],
-        path: '/waste-water-confirm',
-        config: {
-            handler: WasteWater.confirm
-        }
-    },
-
-    {
-        method: 'GET',
-        path: '/waste-water',
-        config: {
-            handler: WasteWater.releases
-        }
-    },
-
-    {
-        method: 'POST',
-        path: '/waste-water-action',
-        config: {
-            handler: WasteWater.action
-        }
-    },
-
-    {
-        method: ['GET', 'POST'],
-        path: '/waste-water-detail',
-        config: {
-            handler: WasteWater.detail
-        }
-    },
-
-    {
-        method: ['GET', 'POST'],
-        path: '/water-confirm',
-        config: {
-            handler: Water.confirm
-        }
-    },
-
-    {
-        method: 'GET',
-        path: '/water',
-        config: {
-            handler: Water.releases
-        }
-    },
-
-    {
-        method: 'POST',
-        path: '/water-action',
-        config: {
-            handler: Water.action
-        }
-    },
-
-    {
-        method: ['GET', 'POST'],
-        path: '/water-detail',
-        config: {
-            handler: Water.detail
-        }
+        path: '/releases/{route}/detail',
+        handler: Details.detail
     },
 
     {

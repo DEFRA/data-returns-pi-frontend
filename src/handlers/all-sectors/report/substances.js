@@ -2,7 +2,7 @@
 
 const logger = require('../../../lib/logging').logger;
 const MasterDataService = require('../../../service/master-data');
-const Helper = require('./releases');
+const Releases = require('./releases');
 
 /**
  * Route handlers for adding substances to a release
@@ -26,7 +26,7 @@ module.exports = {
 
                 // Get a list of all of the substances from the master data service
                 const substances = await MasterDataService.getSubstances();
-                reply.view('all-sectors/report/add-substance', { task: stageStatus.currentTask, substances: substances });
+                reply.view('all-sectors/report/add-substance', { route: stageStatus.currentTask, substances: substances });
             } else {
                 // Get the tasks object
                 const tasks = await request.server.app.userCache.cache('tasks').get(request);
@@ -57,7 +57,7 @@ module.exports = {
 
                 // Redirect back to the current submission page
                 const stageStatus = await request.server.app.userCache.cache('permit-status').get(request);
-                reply.redirect(Helper.tasks[stageStatus.currentTask].uri);
+                reply.redirect(Releases.routes[stageStatus.currentTask].uri);
             }
         } catch (err) {
             logger.log('error', err);

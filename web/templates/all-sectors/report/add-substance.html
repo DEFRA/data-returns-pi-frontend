@@ -6,13 +6,13 @@
     <label id="page-name" hidden>add-substance</label>
     <h1 class="large">Add substance</h1>
     <form action="/add-substance" method="post">
-        {% if task === 'RELEASES_TO_LAND'%}
+        {% if route === 'RELEASES_TO_LAND'%}
         <h1 class="heading-large">Add new releases to land</h1>
-        {% elif task === 'RELEASES_TO_AIR' %}
+        {% elif route === 'RELEASES_TO_AIR' %}
         <h1 class="heading-large">Add new releases to air</h1>
-        {% elif task === 'RELEASES_TO_CONTROLLED_WATERS' %}
+        {% elif route === 'RELEASES_TO_CONTROLLED_WATERS' %}
         <h1 class="heading-large">Add new releases to controlled waters</h1>
-        {% elif task === 'OFFSITE_TRANSFERS_IN_WASTE_WATER' %}
+        {% elif route === 'OFFSITE_TRANSFERS_IN_WASTE_WATER' %}
         <h1 class="heading-large">Add new offsite transfers in waste water</h1>
         {% endif %}
         <p>Select one or more substances to continue</p>

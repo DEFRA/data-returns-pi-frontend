@@ -19,11 +19,23 @@ const internals = {
     /**
      * Used to identify the current submission task type
      */
-    tasks: {
-        RELEASES_TO_AIR: { uri: '/air' },
-        RELEASES_TO_LAND: { uri: '/land' },
-        OFFSITE_TRANSFERS_IN_WASTE_WATER: { uri: '/waste-water' },
-        RELEASES_TO_CONTROLLED_WATERS: { uri: '/water' }
+    routes: {
+        RELEASES_TO_AIR: { route: 'RELEASES_TO_AIR', pathParam: 'air', uri: '/releases/air' },
+        RELEASES_TO_LAND: { route: 'RELEASES_TO_LAND', pathParam: 'land', uri: '/releases/land' },
+        OFFSITE_TRANSFERS_IN_WASTE_WATER: { route: 'OFFSITE_TRANSFERS_IN_WASTE_WATER', pathParam: 'waste-water', uri: '/releases/waste-water' },
+        RELEASES_TO_CONTROLLED_WATERS: { route: 'RELEASES_TO_CONTROLLED_WATERS', pathParam: 'water', uri: '/releases-water' }
+    },
+
+    /**
+     * Function to get the route object from the parameter
+     * @param request
+     */
+    getRoute: (request) => {
+        const route = Object.values(internals.routes).find(r => r.pathParam === request.params.route);
+        if (!route) {
+            throw new Error(`Request error: incorrect route specified: ${request.params.route}`);
+        }
+        return route;
     },
 
     /**
@@ -93,6 +105,12 @@ module.exports = {
     // Expose the validate function
     validate: internals.validate,
 
+    // Expose the function to get the route object from the parameter
+    getRoute: internals.getRoute,
+
+    // Need the routes also for the substances handler
+    routes: internals.routes,
+
     /**
      * Process the confirmation pages
      * @param request
@@ -100,28 +118,29 @@ module.exports = {
      * @param stageStatus - the
      * @return {Promise.<boolean>}
      */
-    processConfirmations: async (request, reply, task) => {
+    confirm: async (request, reply) => {
         try {
-            const stageStatus = await request.server.app.userCache.cache('permit-status').get(request);
+            const route = internals.getRoute(request);
+            const permitStatus = await request.server.app.userCache.cache('permit-status').get(request);
 
-            if (!stageStatus) {
-                throw new Error('Cache error: submission-status object not found');
+            if (!permitStatus) {
+                throw new Error('Cache error: permit-status object not found');
             }
 
             if (request.method === 'get') {
                 // Display the releases to air confirmation page
-                reply.view('all-sectors/report/confirm', { task: task, selected: stageStatus[task].supplied });
+                reply.view('all-sectors/report/confirm', { route: route.route, selected: permitStatus[route.route].supplied });
             } else {
                 // Process the confirmation
                 if (request.payload.confirmation === 'true') {
-                    stageStatus[task].supplied = true;
-                    stageStatus.currentTask = task;
-                    await request.server.app.userCache.cache('permit-status').set(request, stageStatus);
-                    reply.redirect(internals.tasks[task].uri);
+                    permitStatus[route.route].supplied = true;
+                    permitStatus.currentTask = route.route;
+                    await request.server.app.userCache.cache('permit-status').set(request, permitStatus);
+                    reply.redirect(route.uri);
                 } else {
-                    if (stageStatus[task].supplied) {
-                        stageStatus[task].supplied = false;
-                        await request.server.app.userCache.cache('permit-status').set(request, stageStatus);
+                    if (permitStatus[route.route].supplied) {
+                        permitStatus[route.route].supplied = false;
+                        await request.server.app.userCache.cache('permit-status').set(request, permitStatus);
                     }
                     reply.redirect('/task-list');
                 }
@@ -139,8 +158,10 @@ module.exports = {
      * @param task
      * @return {Promise.<void>}
      */
-    releases: async (request, reply, task) => {
+    releases: async (request, reply) => {
         try {
+            const route = internals.getRoute(request);
+
             // Get the task-status object or create a new one
             const eaId = await request.server.app.userCache.cache('submission-status').get(request);
 
@@ -172,7 +193,7 @@ module.exports = {
             // Get the units list
             const units = await MasterDataService.getUnits();
 
-            reply.view('all-sectors/report/releases', { task: task, eaId: eaId.name, releases: releases, units: units });
+            reply.view('all-sectors/report/releases', { route: route.route, eaId: eaId.name, releases: releases, units: units });
         } catch (err) {
             logger.log('error', err);
             reply.redirect('/logout');
@@ -184,6 +205,8 @@ module.exports = {
      */
     action: async (request, reply, task) => {
         try {
+            const route = internals.getRoute(request);
+
             // Read the tasks
             const tasks = await request.server.app.userCache.cache('tasks').get(request);
 
@@ -205,7 +228,7 @@ module.exports = {
                 } else {
                     // Update the cache with the validation objects and redirect back to the page
                     await request.server.app.userCache.cache('tasks').set(request, tasks);
-                    reply.redirect(internals.tasks[task].uri);
+                    reply.redirect(route.uri);
                 }
 
             } else if (Object.keys(request.payload).find(s => s.startsWith('detail'))) {
@@ -214,7 +237,7 @@ module.exports = {
                     .find(s => s.startsWith('detail')).substr(7);
 
                 await request.server.app.userCache.cache('tasks').set(request, tasks);
-                reply.redirect(internals.tasks[task].uri + '-detail');
+                reply.redirect(route.uri + '/detail');
 
             } else if (request.payload.back) {
                 // Save the release information to the cache and return to the main task-list page

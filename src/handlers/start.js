@@ -62,23 +62,21 @@ module.exports = {
             }
 
             // Set the current permit in the submission cache
-            await request.server.app.userCache.cache('submission-status')
-                .set(request, eaId);
+            await request.server.app.userCache.cache('submission-status').set(request, eaId);
 
             /*
              * The permit status is object with containing the statuses and other meta-data
              * for each stage within the user journey for a given (current) permit
              */
-            let stageStatus = await request.server.app.userCache.cache('permit-status').get(request);
+            let permitStatus = await request.server.app.userCache.cache('permit-status').get(request);
 
-            if (!stageStatus) {
+            if (!permitStatus) {
                 const names = TaskListService.names(TaskList);
-                stageStatus = {};
-                names.forEach(n => { stageStatus[n] = { required: 'false', supplied: false }; });
+                permitStatus = {};
+                names.forEach(n => { permitStatus[n] = { required: 'false', supplied: false }; });
 
                 // Set the new stage status in the status cache
-                await request.server.app.userCache.cache('permit-status')
-                    .set(request, stageStatus);
+                await request.server.app.userCache.cache('permit-status').set(request, permitStatus);
             }
 
             reply.redirect('/task-list');

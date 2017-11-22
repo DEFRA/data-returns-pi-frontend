@@ -1,8 +1,8 @@
 {% extends 'layout/layout.html' %}
 
-{% macro form(header, action) %}
+{% macro form(header, route) %}
 <h1 class="heading-large">{{ header }}</h1>
-<form action="{{ action }}" method="post" class="form">
+<form action="{{ route }}" method="post" class="form">
     <div class="form-group">
         <fieldset class="inline">
             <div class="multiple-choice">
@@ -24,14 +24,14 @@
 {% block content %}
 <main id="content">
     <label id="page-name" hidden>releases</label>
-    {% if task === 'RELEASES_TO_LAND'%}
-        {{ form('Did you release any substances to land?', '/land-confirm') }}
-    {% elif task === 'RELEASES_TO_AIR' %}
-        {{ form('Did you release any substances to air?', '/air-confirm') }}
-    {% elif task === 'RELEASES_TO_CONTROLLED_WATERS' %}
-        {{ form('Did you release any substances to controlled waters?', '/water-confirm') }}
-    {% elif task === 'OFFSITE_TRANSFERS_IN_WASTE_WATER' %}
-        {{ form('Did you transfer any substances off-site in waste water?', '/waste-water-confirm') }}
+    {% if route === 'RELEASES_TO_LAND'%}
+        {{ form('Did you release any substances to land?', '/releases/land/confirm') }}
+    {% elif route === 'RELEASES_TO_AIR' %}
+        {{ form('Did you release any substances to air?', '/releases/air/confirm') }}
+    {% elif route === 'RELEASES_TO_CONTROLLED_WATERS' %}
+        {{ form('Did you release any substances to controlled waters?', '/releases/water/confirm') }}
+    {% elif route === 'OFFSITE_TRANSFERS_IN_WASTE_WATER' %}
+        {{ form('Did you transfer any substances off-site in waste water?', '/releases/waste-water/confirm') }}
     {% endif %}
 </main>
 {% endblock %}

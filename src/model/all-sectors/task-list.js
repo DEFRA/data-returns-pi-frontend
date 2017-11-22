@@ -35,25 +35,25 @@ module.exports = {
                 {
                     name: 'RELEASES_TO_AIR',
                     title: 'Releases to air',
-                    page: '/air-confirm'
+                    page: '/releases/air/confirm'
                 },
 
                 {
                     name: 'RELEASES_TO_LAND',
                     title: 'Releases to land',
-                    page: '/land-confirm'
+                    page: '/releases/land/confirm'
                 },
 
                 {
                     name: 'RELEASES_TO_CONTROLLED_WATERS',
                     title: 'Releases to controlled waters',
-                    page: '/water-confirm'
+                    page: '/releases/water/confirm'
                 },
 
                 {
                     name: 'OFFSITE_TRANSFERS_IN_WASTE_WATER',
                     title: 'Off-site transfers in waste water',
-                    page: '/waste-water-confirm'
+                    page: '/releases/waste-water/confirm'
                 },
 
                 {

@@ -12,8 +12,8 @@
 {% endif %}
 {% endmacro %}
 
-{% macro form(header, errorheader, action) %}
-<form id="main-form" action="{{ action }}-action" method="post" class="form">
+{% macro form(header, errorheader, release) %}
+<form id="main-form" action="{{ release }}/action" method="post" class="form">
     <div class="form-group"><input class="button" type="submit" id="back" name="back" value="Back to tasks"/></div>
 
     {% if (releases | substancesWithErrors | length) === 0 %}
@@ -118,14 +118,14 @@
     <h1 class="heading-large">{{ header }}</h1>
     <h2 class="font-medium">EA_ID: {{ eaId }}</h2>
     <label id="page-name" hidden>releases</label>
-    {% if task === 'RELEASES_TO_LAND' %}
-    {{ form('Your releases to land?', 'Check your releases to land', '/land') }}
-    {% elif task === 'RELEASES_TO_AIR' %}
-    {{ form('Your releases to air?', 'Check your releases to air', '/air') }}
-    {% elif task === 'RELEASES_TO_CONTROLLED_WATERS' %}
-    {{ form('Your releases to controlled waters?', 'Check your releases to controlled waters', '/water') }}
-    {% elif task === 'OFFSITE_TRANSFERS_IN_WASTE_WATER' %}
-    {{ form('Your transfers of substances off-site in waste water?', 'Check your releases in waste water', '/waste-water') }}
+    {% if route === 'RELEASES_TO_LAND' %}
+    {{ form('Your releases to land?', 'Check your releases to land', '/releases/land') }}
+    {% elif route === 'RELEASES_TO_AIR' %}
+    {{ form('Your releases to air?', 'Check your releases to air', '/releases/air') }}
+    {% elif route === 'RELEASES_TO_CONTROLLED_WATERS' %}
+    {{ form('Your releases to controlled waters?', 'Check your releases to controlled waters', '/releases/water') }}
+    {% elif route === 'OFFSITE_TRANSFERS_IN_WASTE_WATER' %}
+    {{ form('Your transfers of substances off-site in waste water?', 'Check your releases in waste water', '/releases/waste-water') }}
     {% endif %}
 </main>
 {% endblock %}
