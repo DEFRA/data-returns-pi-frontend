@@ -16,7 +16,6 @@ experiment('Validation', () => {
     test('Empty object', () => {
         const releaseObj = {};
         const validation = releaseValidator(releaseObj);
-        console.log(JSON.stringify(validation));
         expect(validation).to.be.not.null();
         expect(validation).to.include({'key': 'value', 'errno': 'PI-1000'});
         expect(validation).to.include({'key': 'methodId', 'errno': 'PI-1003'});
