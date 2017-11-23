@@ -63,6 +63,12 @@ experiment('Validation', () => {
         expect(validation).to.include({'key': 'unitId', 'errno': 'PI-1001'});
     });
 
+    test('BRT with unit null', () => {
+        const releaseObj = { value: 'brt', unitId: null, methodId: 1 };
+        const validation = releaseValidator(releaseObj);
+        expect(validation).to.be.null();
+    });
+
     test('Unit no value error', () => {
         const releaseObj = { unitId: 1, methodId: 1 };
         const validation = releaseValidator(releaseObj);
@@ -73,7 +79,20 @@ experiment('Validation', () => {
     test('Value no unit error', () => {
         const releaseObj = { value: 546.2, methodId: 1 };
         const validation = releaseValidator(releaseObj);
-        console.log(JSON.stringify(validation));
+        expect(validation).to.be.not.null();
+        expect(validation).to.include({'key': 'unitId', 'errno': 'PI-1002'});
+    });
+
+    test('Value null unit error', () => {
+        const releaseObj = { value: 546.2, methodId: 1, unitId: null };
+        const validation = releaseValidator(releaseObj);
+        expect(validation).to.be.not.null();
+        expect(validation).to.include({'key': 'unitId', 'errno': 'PI-1002'});
+    });
+
+    test('Value empty unit error', () => {
+        const releaseObj = { value: '', methodId: 1, unitId: null };
+        const validation = releaseValidator(releaseObj);
         expect(validation).to.be.not.null();
         expect(validation).to.include({'key': 'unitId', 'errno': 'PI-1002'});
     });

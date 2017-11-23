@@ -15,16 +15,19 @@ const releaseSchema = Joi.object({
 
     // The value must either be a floating point number or BRT
     value: Joi.alternatives().try(
-        Joi.string().valid('BRT').trim().insensitive().label('PI-1000'),
+        Joi.string().valid(BELOW_REGULATORY_THRESHOLD).trim().insensitive().label('PI-1000'),
         Joi.string().regex(/^[-+]?[0-9]*\.?[0-9]+$/).label('PI-1000'),
         Joi.number().label('PI-1000')
     ).required().label('PI-1000'),
 
     // If value is a number then we must have a unit. If BRT then a unit is forbidden
     unitId: Joi.any().when('value', {
-        is: Joi.string().exist().valid(BELOW_REGULATORY_THRESHOLD).trim().insensitive(),
-        then: Joi.any().forbidden().label('PI-1001'),
-        otherwise: Joi.number().required().integer().positive().label('PI-1002')
+        is:
+          Joi.string().exist().valid(BELOW_REGULATORY_THRESHOLD).trim().insensitive(),
+        then:
+          Joi.any().valid(null).label('PI-1001'),
+        otherwise:
+          Joi.number().required().integer().positive().label('PI-1002')
     }),
 
     // Every release must have a method

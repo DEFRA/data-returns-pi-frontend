@@ -1,31 +1,27 @@
 'use strict';
 
-const Errors = require('../model/all-sectors/errors');
-
 /**
  * Additional filters for use in the nunjunks templates. The vision helpers configuration does not appear to work
  * so this is added in the seview view configuration.
  */
 module.exports = [
-
     {
-        functionName: 'concernsElement',
+        functionName: 'selectattr',
 
         /**
-         * Determine if a given set of page errors concern a particular element
-         * @param pageErrors
-         * @param element
-         * @returns {*} - The error applying to the element
+         * Filters a sequence of objects by applying a test to the specified attribute of each object,
+         * and only selecting the objects with the test succeeding
+         * @param seq
+         * @param attr
+         * @param val
+         * @return {*}
          */
-        filterFunction: (pageErrors, element) => {
-            for (const errno of pageErrors) {
-
-                const found = Errors.mapByCode(errno).fields.find((field) => {
-                    return field === element;
-                });
-
-                if (found) {
-                    return errno;
+        filterFunction: (seq, attr, val) => {
+            if (Array.isArray(seq)) {
+                for (const item of seq) {
+                    if (item[attr] && item[attr] === val) {
+                        return item;
+                    }
                 }
             }
             return undefined;

@@ -35,19 +35,26 @@ module.exports = {
 
                 // Set the task detail elements
                 const { unitId, methodId, value } = request.payload;
+                const currentRelease = tasks.releases[tasks.currentDetail];
 
-                tasks.releases[tasks.currentDetail].unitId = Number.parseInt(unitId);
-                tasks.releases[tasks.currentDetail].methodId = Number.parseInt(methodId);
-                tasks.releases[tasks.currentDetail].value = value;
+                // Set up the release object
+                currentRelease.unitId = Number.isNaN(Number.parseInt(unitId)) ? null : Number.parseInt(unitId);
+                currentRelease.methodId = Number.isNaN(Number.parseInt(methodId)) ? null : Number.parseInt(methodId);
+                currentRelease.value = value;
+                delete currentRelease.errors;
 
-                if (await Validator.release(tasks.releases[tasks.currentDetail])) {
+                // Validate the release object
+                const validation = await Validator.release(tasks.releases[tasks.currentDetail]);
+
+                if (validation) {
+                    // Update the cache with the validation objects and redirect back to the releases page
+                    currentRelease.errors = validation;
+                    await request.server.app.userCache.cache('tasks').set(request, tasks);
+                    reply.redirect(route.uri + '/detail');
+                } else {
                     // Write the (removed) validations to the cache
                     await request.server.app.userCache.cache('tasks').set(request, tasks);
                     reply.redirect(route.uri);
-                } else {
-                    // Update the cache with the validation objects and redirect back to the releases page
-                    await request.server.app.userCache.cache('tasks').set(request, tasks);
-                    reply.redirect(route.uri + '/detail');
                 }
 
             }

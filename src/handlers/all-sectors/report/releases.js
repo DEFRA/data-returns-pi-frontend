@@ -23,7 +23,7 @@ const internals = {
         RELEASES_TO_AIR: { route: 'RELEASES_TO_AIR', pathParam: 'air', uri: '/releases/air' },
         RELEASES_TO_LAND: { route: 'RELEASES_TO_LAND', pathParam: 'land', uri: '/releases/land' },
         OFFSITE_TRANSFERS_IN_WASTE_WATER: { route: 'OFFSITE_TRANSFERS_IN_WASTE_WATER', pathParam: 'waste-water', uri: '/releases/waste-water' },
-        RELEASES_TO_CONTROLLED_WATERS: { route: 'RELEASES_TO_CONTROLLED_WATERS', pathParam: 'water', uri: '/releases-water' }
+        RELEASES_TO_CONTROLLED_WATERS: { route: 'RELEASES_TO_CONTROLLED_WATERS', pathParam: 'water', uri: '/releases/water' }
     },
 
     /**
@@ -66,7 +66,10 @@ const internals = {
     validate: async (request, tasks) => {
         let isValid = true;
         Object.keys(tasks.releases).forEach(s => {
-            if (!Validator.release(tasks.releases[s])) {
+            delete tasks.releases[s].errors;
+            const validation = Validator.release(tasks.releases[s]);
+            if (validation) {
+                tasks.releases[s].errors = validation;
                 isValid = false;
             }
         });

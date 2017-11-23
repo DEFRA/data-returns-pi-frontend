@@ -7,14 +7,38 @@
 <span class="error-message">Do not specify a unit with BRT</span>
 {% elif errno === 'PI-1002' %}
 <span class="error-message">A value must have units</span>
+{% elif errno === 'PI-1003' %}
+<span class="error-message">You must select a method</span>
 {% else %}
 <span class="error-message">Unknown error</span>
 {% endif %}
 {% endmacro %}
 
 {% macro form(description, action) %}
+{% set value_error = (release.errors | selectattr("key", "value"))  %}
+{% set unit_error = (release.errors | selectattr("key", "unitId"))  %}
+{% set method_error = (release.errors | selectattr("key", "methodId"))  %}
 <form id="main-form" action="{{ action }}" method="post" class="form">
     <h1 class="heading-large">More detail about the release of {{ release.substance.name }} {{ description }}</h1>
+
+    {% if release.errors %}
+    <div class="error-summary" role="alert" aria-labelledby="error-summary-heading-example-2" tabindex="-1">
+        <h2 class="heading-large error-summary-heading" id="error-summary-heading-example-2">
+            Check your {{ release.substance.name }} report
+        </h2>
+        <p>There are issues with the data</p>
+        <ul class="error-summary-list">
+            {% if value_error %}
+            <li><a href="#value-check">{{ errtext(value_error.errno) }}</a>
+            {% elif unit_error %}
+            <li><a href="#unit-check">{{ errtext(unit_error.errno) }}</a>
+            {% elif method_error %}
+            <li><a href="#method-check">{{ errtext(value_error.errno) }}</a>
+            {% endif %}
+        </ul>
+    </div>
+    {% endif %}
+
     <div class="grid-row">
         <div class="column-two-thirds">
             <table class="more-detail table-control mobile-format">
@@ -25,27 +49,31 @@
                     <td class="2017-reporting-threshold-value"></td>
                 </tr>
                 <tr>
-                    <th class="2017-total-or-BRT">2017 total</th>
+                    <th class="id=value-check">2017 total</th>
 
-                    {%if ( release.errors | concernsElement('value') ) if release.errors %}
+                    {% if value_error %}
                     <td class="td-release">
                         <div class="form-group-error">
                             <label class="form-label visually-hidden" for="value-err">Releases</label>
                             <input class="form-control form-control-error" id="value-err" name="value" value="{{ release.value }}">
-                            {{ errtext(release.errors | concernsElement('value')) }}
+                            {{ errtext(value_error.errno) }}
                         </div>
                     </td>
                     {% else %}
                     <td class="td-release">
                         <div class="form-group">
                             <label class="form-label visually-hidden" for="value">Releases</label>
-                            <input class="form-control" id="value" name="value-{{ release.substance.id }}" value="{{ release.value }}">
+                            <input class="form-control" id="value" name="value" value="{{ release.value }}">
                         </div>
                     </td>
                     {% endif %}
+                </tr>
 
+                <tr>
+                    <th id="unit-check">Unit</th>
                     <td class="td-unit">
-                        {%if ( release.errors | concernsElement('unit') ) if release.errors %}
+                        {%if unit_error %}
+                        {{ errtext(unit_error.errno) }}
                         <div class="form-group">
                             <label class="form-label visually-hidden" for="unit-err">Unit</label>
                             <select class="form-control form-control-error unit" id="unit-err" name="unitId">
@@ -77,10 +105,14 @@
                     </td>
                 </tr>
                 <tr>
-                    <th class="method">Method</th>
+                    <th class="id=method-check" class="method">Method</th>
+
                     <td class="method">
-                        <label class="form-label visually-hidden" for="method">Method</label>
-                        <select class="form-control method" id="method" name="methodId">
+                    {%if method_error %}
+                        {{ errtext(method_error.errno) }}
+                        <label class="form-label visually-hidden" for="method-err">Method</label>
+                        <select class="form-control form-control-error method" id="method-err" name="methodId">
+                            <option>--</option>
                             {% for method in methods %}
                             {% if release.methodId === method.id %}
                             <option selected value="{{ method.id }}">{{ method.name }}</option>
@@ -89,11 +121,19 @@
                             {% endif %}
                             {% endfor %}
                         </select>
-                        <!--<select class="form-control" id="select-box" name="select-box">-->
-                        <!--<option>Calculation</option>-->
-                        <!--<option>Measurement</option>-->
-                        <!--<option selected="">Estimation</option>-->
-                    </select>
+                    {% else %}
+                        <label class="form-label visually-hidden" for="method">Method</label>
+                        <select class="form-control method" id="method" name="methodId">
+                            <option>--</option>
+                            {% for method in methods %}
+                            {% if release.methodId === method.id %}
+                            <option selected value="{{ method.id }}">{{ method.name }}</option>
+                            {% else %}
+                            <option value="{{ method.id }}">{{ method.name }}</option>
+                            {% endif %}
+                            {% endfor %}
+                        </select>
+                        {% endif %}
                     </td>
                 </tr>
                 </tbody>

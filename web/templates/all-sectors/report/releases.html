@@ -48,15 +48,23 @@
         <tbody>
         {% for release in releases %}
         <tr>
+
             <td class="td-substance"><div id="#substance-{{ release.substance.id }}">{{ release.substance.name }}</div></td>
             <td class="td-reporting-threshold numeric"/>
 
-            {%if ( release.errors | concernsElement('value') ) if release.errors %}
+            {% set value_error = (release.errors | selectattr("key", "value"))  %}
+            {% set unit_error = (release.errors | selectattr("key", "unitId"))  %}
+
+            {% if value_error or unit_error %}
             <td class="td-release">
                 <div class="form-group-error">
                     <label class="form-label visually-hidden" for="value-err{{ release.substance.id }}">Releases</label>
                     <input class="form-control form-control-error" id="value-err{{ release.substance.id }}" name="value-{{ release.substance.id }}" value="{{ release.value }}">
-                    {{ errtext(release.errors | concernsElement('value')) }}
+                    {% if value_error %}
+                        {{ errtext(value_error.errno) }}
+                    {% else %}
+                        {{ errtext(unit_error.errno) }}
+                    {% endif %}
                 </div>
             </td>
             {% else %}
@@ -69,7 +77,7 @@
             {% endif %}
 
             <td class="td-unit">
-                {%if ( release.errors | concernsElement('unit') ) if release.errors %}
+                {%if unit_error %}
                 <div class="form-group">
                     <label class="form-label visually-hidden" for="unit-err{{ release.substance.id }}">Unit</label>
                     <select class="form-control form-control-error unit" id="unit-err{{ release.substance.id }}" name="unitId-{{ release.substance.id }}">
