@@ -54,10 +54,10 @@
     ]
   },
   "scripts": {
-    "start": "npm test && node main.js",
+    "start": "node main.js",
     "proto": "node proto.js",
     "lint": "./node_modules/eslint/bin/eslint.js .",
-    "test": "./node_modules/lab/bin/lab -e local --assert code --verbose",
+    "test": "redis-cli flushdb & ./node_modules/lab/bin/lab -e local --assert code --verbose",
     "coverage": "nyc --all npm start",
     "coverage-unittest": "nyc --all npm test"
   },

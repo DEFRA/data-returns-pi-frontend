@@ -33,7 +33,7 @@
             {% elif unit_error %}
             <li><a href="#unit-check">{{ errtext(unit_error.errno) }}</a>
             {% elif method_error %}
-            <li><a href="#method-check">{{ errtext(value_error.errno) }}</a>
+            <li><a href="#method-check">{{ errtext(method_error.errno) }}</a>
             {% endif %}
         </ul>
     </div>

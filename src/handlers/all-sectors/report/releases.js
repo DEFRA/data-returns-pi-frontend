@@ -7,14 +7,9 @@
 const logger = require('../../../lib/logging').logger;
 const MasterDataService = require('../../../service/master-data');
 const Validator = require('../../../lib/validator');
-
-const BELOW_REGULATORY_THRESHOLD = 'BRT';
+const CacheKeyError = require('../../../lib/user-cache-policies').CacheKeyError;
 
 const internals = {
-
-    isBrt: (value) => {
-        return value && typeof value === 'string' && value.toUpperCase().trim() === BELOW_REGULATORY_THRESHOLD;
-    },
 
     /**
      * Used to identify the current submission task type
@@ -102,9 +97,6 @@ module.exports = {
     // Expose the tasks object
     tasks: internals.tasks,
 
-    // Expose the isBrt function
-    isBrt: internals.isBrt,
-
     // Expose the validate function
     validate: internals.validate,
 
@@ -124,10 +116,10 @@ module.exports = {
     confirm: async (request, reply) => {
         try {
             const route = internals.getRoute(request);
-            const permitStatus = await request.server.app.userCache.cache('permit-status').get(request);
 
+            const permitStatus = await request.server.app.userCache.cache('permit-status').get(request);
             if (!permitStatus) {
-                throw new Error('Cache error: permit-status object not found');
+                throw new CacheKeyError('expected permit status');
             }
 
             if (request.method === 'get') {
@@ -149,8 +141,12 @@ module.exports = {
                 }
             }
         } catch (err) {
-            logger.log('error', err);
-            reply.redirect('/logout');
+            if (err instanceof CacheKeyError) {
+                reply.redirect('/');
+            } else {
+                logger.log('error', err);
+                reply.redirect('/logout');
+            }
         }
     },
 
@@ -168,8 +164,15 @@ module.exports = {
             // Get the task-status object or create a new one
             const eaId = await request.server.app.userCache.cache('submission-status').get(request);
 
+            // If no substance is selected go back to the task list
             if (!eaId) {
-                throw new Error('Cache error: submission-status object not found');
+                throw new CacheKeyError('expected submission-status');
+            }
+
+            // Check the permit status
+            const permitStatus = await request.server.app.userCache.cache('permit-status').get(request);
+            if (!permitStatus || !permitStatus.currentTask) {
+                throw new CacheKeyError('expected permit status');
             }
 
             let tasks = await request.server.app.userCache.cache('tasks').get(request);
@@ -198,8 +201,12 @@ module.exports = {
 
             reply.view('all-sectors/report/releases', { route: route.route, eaId: eaId.name, releases: releases, units: units });
         } catch (err) {
-            logger.log('error', err);
-            reply.redirect('/logout');
+            if (err instanceof CacheKeyError) {
+                reply.redirect('/');
+            } else {
+                logger.log('error', err);
+                reply.redirect('/logout');
+            }
         }
     },
 
@@ -214,7 +221,7 @@ module.exports = {
             const tasks = await request.server.app.userCache.cache('tasks').get(request);
 
             if (!tasks) {
-                throw new Error('Cache error: tasks object not found');
+                throw new CacheKeyError('expected tasks');
             }
 
             // Save the submission
@@ -254,8 +261,12 @@ module.exports = {
 
             }
         } catch (err) {
-            logger.log('error', err);
-            reply.redirect('/logout');
+            if (err instanceof CacheKeyError) {
+                reply.redirect('/');
+            } else {
+                logger.log('error', err);
+                reply.redirect('/logout');
+            }
         }
     }
 };

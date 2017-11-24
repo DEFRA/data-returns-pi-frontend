@@ -3,6 +3,7 @@
 // const journey = require('../../lib/task-list');
 const allSectorsTaskList = require('../../model/all-sectors/task-list');
 const logger = require('../../lib/logging').logger;
+const CacheKeyError = require('../../lib/user-cache-policies').CacheKeyError;
 
 /**
  * Route handlers for the all-sectors journey
@@ -19,15 +20,20 @@ module.exports = {
             // Get the submission status object or create a new one
             const eaId = await request.server.app.userCache.cache('submission-status').get(request);
 
+            // If no permit is selected redirect back to the start page
             if (!eaId) {
-                throw new Error('No cached status object found');
+                throw new CacheKeyError('Expected permit');
             }
 
-            reply.view('all-sectors/task-list', { eaId: eaId.name, taskList: allSectorsTaskList });
+            reply.view('all-sectors/task-list', {eaId: eaId.name, taskList: allSectorsTaskList});
         } catch (err) {
-            logger.log('error', err);
-            reply.redirect('/logout');
+            if (err instanceof CacheKeyError) {
+                // Probably due to unexpected navigation
+                reply.redirect('/');
+            } else {
+                logger.log('error', err);
+                reply.redirect('/logout');
+            }
         }
     }
-
 };

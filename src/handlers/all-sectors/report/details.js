@@ -4,6 +4,7 @@ const logger = require('../../../lib/logging').logger;
 const MasterDataService = require('../../../service/master-data');
 const Releases = require('./releases');
 const Validator = require('../../../lib/validator');
+const CacheKeyError = require('../../../lib/user-cache-policies').CacheKeyError;
 
 /**
  * Route handlers for adding substances to a release
@@ -14,7 +15,19 @@ module.exports = {
      */
     detail: async (request, reply) => {
         try {
+            // Check the permit status has been set
+            const permitStatus = await request.server.app.userCache.cache('permit-status').get(request);
+            if (!permitStatus || !permitStatus.currentTask) {
+                throw new CacheKeyError('expected permit status');
+            }
+
             const tasks = await request.server.app.userCache.cache('tasks').get(request);
+
+            // Check for tasks
+            if (!tasks) {
+                throw new CacheKeyError('expected tasks');
+            }
+
             const route = Releases.getRoute(request);
 
             if (request.method === 'get') {
@@ -59,8 +72,12 @@ module.exports = {
 
             }
         } catch (err) {
-            logger.log('error', err);
-            reply.redirect('/logout');
+            if (err instanceof CacheKeyError) {
+                reply.redirect('/');
+            } else {
+                logger.log('error', err);
+                reply.redirect('/logout');
+            }
         }
     }
 

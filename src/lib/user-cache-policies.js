@@ -3,10 +3,16 @@
 const SessionHelper = require('../handlers/session-helper');
 const UserCache = require('./user-cache');
 
+class CacheKeyError extends Error {
+    constructor (message) {
+        super(`User cache error: ${message}`);
+        this.name = 'UserCacheError';
+    }
+};
+
 /**
  * This module is a definition of the user cache keys and cache names.
  */
-
 const internals = {
 
     submissionStatus: {
@@ -24,7 +30,7 @@ const internals = {
                 // TODO submission year
                 return session.user.id + '.' + '2017';
             } catch (err) {
-                throw new Error(err);
+                throw new CacheKeyError(err);
             }
         }
     },
@@ -52,7 +58,7 @@ const internals = {
                     return '_';
                 }
             } catch (err) {
-                throw new Error(err);
+                throw new CacheKeyError(err);
             }
         }
     },
@@ -76,7 +82,7 @@ const internals = {
                 // Construct a key containing the permit status and the current task
                 return statusKey + '.' + status.currentTask;
             } catch (err) {
-                throw new Error(err);
+                throw new CacheKeyError(err);
             }
         }
     },
@@ -88,7 +94,7 @@ const internals = {
             try {
                 return request + '.' + '2017';
             } catch (err) {
-                throw new Error(err);
+                throw new CacheKeyError(err);
             }
         }
     }
@@ -96,6 +102,7 @@ const internals = {
 };
 
 module.exports = {
+    CacheKeyError: CacheKeyError,
     policies: [internals.submissionStatus,
         internals.permitStatus,
         internals.taskStatus,
