@@ -11,6 +11,9 @@
 <meta http-equiv="Expires" content="-1">
 {% endblock %}
 
+{% block header_class %}
+with-proposition
+{% endblock %}
 
 {% block cookie_message %}
 {% include "includes/cookie-message.html" %}
@@ -21,5 +24,3 @@
 {% endblock %}
 
 {% block footer_top %}<div><input type="hidden" id="pgid" value="{{ pgid }}"/></div>{% endblock %}
-
-

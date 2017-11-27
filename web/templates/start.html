@@ -4,32 +4,32 @@
 
 <main id="content">
     <label hidden id="page-name">start</label>
-    <h1 class="heading-medium"><span id="title">Welcome {{ user.username }}</span></h1>
+    <p class="heading-medium"><span id="title">Signed in as {{ user.username }}</span></p>
     {% if eaIds.length === 0 %}
         <div class="error-message">
             <p>You have no permits</p>
         </div>
     {% else %}
         <form action="/select-permit" method="post">
-            <p>Choose a permit</p>
-            <ol>
-                {% for site in sites %}
-
-                <li class="font-medium">{{ site.address }}
-                    <ul>
-                        {% for eaId in site.eaIds %}
-
-                        <div class="form-group; font-small">
-                            <input class="button" type="submit" id="continueBtn" name="eaId" value="{{ eaId.name }}">
-                        </div>
-
-                        <input type="hidden" name="crumb" value="{{crumb}}"/>
-
-                        {% endfor %}
-                    </ul>
-                </li>
-                {% endfor %}
-            </ol>
+            <h1 class="heading-large">Choose a permit</h1>
+            <table class="table-control">
+				<thead></thead>
+				<tbody>
+	                {% for site in sites %}
+					<tr>
+						<td>
+							{% for eaId in site.eaIds %}
+                            <input class="link" type="submit" id="continueBtn" name="eaId" value="{{ eaId.name }}">
+							<input type="hidden" name="crumb" value="{{crumb}}"/>
+                        	{% endfor %}
+	                    </td>
+						<td>
+							{{ site.address }}
+						</td>
+					</tr>
+	                {% endfor %}
+				</tbody>
+            </table>
         </form>
     {% endif %}
 </main>
