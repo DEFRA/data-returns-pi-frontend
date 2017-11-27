@@ -31,7 +31,7 @@ module.exports = {
                 // Probably due to unexpected navigation
                 reply.redirect('/');
             } else {
-                logger.log('error', err);
+                logger.log('error', err.message);
                 reply.redirect('/logout');
             }
         }

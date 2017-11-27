@@ -16,7 +16,7 @@ module.exports = {
         try {
             reply.view('all-sectors/check/site');
         } catch (err) {
-            logger.log('error', err);
+            logger.log('error', err.message);
             reply.redirect('/logout');
         }
     }

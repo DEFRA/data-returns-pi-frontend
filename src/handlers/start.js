@@ -32,7 +32,7 @@ module.exports = {
             reply.view('start', { user: session.user, sites: sites });
 
         } catch (err) {
-            logger.log('error', err);
+            logger.log('error', err.message);
             reply.redirect('/logout');
         }
     },
@@ -58,7 +58,7 @@ module.exports = {
             const eaId = eaIds.find((e) => { return e.name === eaIdName; });
 
             if (!eaId) {
-                throw new Error(`The eaId ${eaId} is not visible to user ${session.user.username}`);
+                throw new Error(`The selected eaId is not visible to user ${session.user.username}`);
             }
 
             // Set the current permit in the submission cache
@@ -80,7 +80,7 @@ module.exports = {
 
             reply.redirect('/task-list');
         } catch (err) {
-            logger.log('error', err);
+            logger.log('error', err.message);
             reply.redirect('/logout');
         }
     }

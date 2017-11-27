@@ -123,8 +123,19 @@ experiment('Unexpected navigation', async () => {
         expect(response.headers.location).to.equal('/');
     });
 
-    test('Go straight to the detail page', async () => {
-        const response = await server.server.inject({
+    test('Select a permit and go straight to the detail page', async () => {
+        let response = await server.server.inject({
+            method: 'POST',
+            url: '/select-permit',
+            headers: { cookie: 'sid=' + internals.sid },
+            payload: {
+                eaId: 'AB7469'
+            }
+        });
+        expect(response.statusCode).to.equal(302);
+        expect(response.headers.location).to.equal('/task-list');
+
+        response = await server.server.inject({
             method: 'GET',
             url: '/releases/air/detail',
             headers: { cookie: 'sid=' + internals.sid }
@@ -133,8 +144,19 @@ experiment('Unexpected navigation', async () => {
         expect(response.headers.location).to.equal('/');
     });
 
-    test('Go straight to add substances', async () => {
-        const response = await server.server.inject({
+    test('Select a permit and go straight to add substances', async () => {
+        let response = await server.server.inject({
+            method: 'POST',
+            url: '/select-permit',
+            headers: { cookie: 'sid=' + internals.sid },
+            payload: {
+                eaId: 'AB7469'
+            }
+        });
+        expect(response.statusCode).to.equal(302);
+        expect(response.headers.location).to.equal('/task-list');
+
+        response = await server.server.inject({
             method: 'GET',
             url: '/add-substance',
             headers: { cookie: 'sid=' + internals.sid }

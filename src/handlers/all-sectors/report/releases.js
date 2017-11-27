@@ -144,7 +144,7 @@ module.exports = {
             if (err instanceof CacheKeyError) {
                 reply.redirect('/');
             } else {
-                logger.log('error', err);
+                logger.log('error', err.message);
                 reply.redirect('/logout');
             }
         }
@@ -204,7 +204,7 @@ module.exports = {
             if (err instanceof CacheKeyError) {
                 reply.redirect('/');
             } else {
-                logger.log('error', err);
+                logger.log('error', err.message);
                 reply.redirect('/logout');
             }
         }
@@ -264,7 +264,7 @@ module.exports = {
             if (err instanceof CacheKeyError) {
                 reply.redirect('/');
             } else {
-                logger.log('error', err);
+                logger.log('error', err.message);
                 reply.redirect('/logout');
             }
         }
