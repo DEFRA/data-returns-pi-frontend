@@ -41,7 +41,7 @@
             <th class="th-reporting-threshold numeric">2017 threshold</th>
             <th class="th-release">2017 total</th>
             <th class="th-unit">Unit</th>
-            <th class="th-action"><span class="visually-hidden">More detail</span></th>
+            <th class="th-action">Action</th>
         </tr>
         </thead>
 
@@ -69,46 +69,42 @@
             </td>
             {% else %}
             <td class="td-release">
-                <div class="form-group">
-                    <label class="form-label visually-hidden" for="value-{{ release.substance.id }}">Releases</label>
-                    <input class="form-control" id="value-{{ release.substance.id }}" name="value-{{ release.substance.id }}" value="{{ release.value }}">
-                </div>
+                <label class="form-label visually-hidden" for="value-{{ release.substance.id }}">Releases</label>
+                <input class="form-control" id="value-{{ release.substance.id }}" name="value-{{ release.substance.id }}" value="{{ release.value }}">
             </td>
             {% endif %}
 
             <td class="td-unit">
                 {%if unit_error %}
-                <div class="form-group">
-                    <label class="form-label visually-hidden" for="unit-err{{ release.substance.id }}">Unit</label>
-                    <select class="form-control form-control-error unit" id="unit-err{{ release.substance.id }}" name="unitId-{{ release.substance.id }}">
-                        <option>--</option>
-                        {% for unit in units %}
-                        {% if release.unitId === unit.id %}
-                        <option selected value="{{ unit.id }}">{{ unit.name }}</option>
-                        {% else %}
-                        <option value="{{ unit.id }}">{{ unit.name }}</option>
-                        {% endif %}
-                        {% endfor %}
-                    </select>
-                </div>
-                {% else %}
-                <div class="form-group">
-                    <label class="form-label visually-hidden" for="unit-{{ release.substance.id }}">Unit</label>
-                    <select class="form-control unit" id="unit-{{ release.substance.id }}" name="unitId-{{ release.substance.id }}">
-                        <option>--</option>
-                        {% for unit in units %}
-                        {% if release.unitId === unit.id %}
-                        <option selected value="{{ unit.id }}">{{ unit.name }}</option>
-                        {% else %}
-                        <option value="{{ unit.id }}">{{ unit.name }}</option>
-                        {% endif %}
-                        {% endfor %}
-                    </select>
-                </div>
+	            <div class="form-group-error">
+	                <label class="form-label visually-hidden" for="unit-err{{ release.substance.id }}">Unit</label>
+	                <select class="form-control form-control-error unit" id="unit-err{{ release.substance.id }}" name="unitId-{{ release.substance.id }}">
+	                    <option>--</option>
+	                    {% for unit in units %}
+	                    {% if release.unitId === unit.id %}
+	                    <option selected value="{{ unit.id }}">{{ unit.name }}</option>
+	                    {% else %}
+	                    <option value="{{ unit.id }}">{{ unit.name }}</option>
+	                    {% endif %}
+	                    {% endfor %}
+	                </select>
+	                {% else %}
+	                <label class="form-label visually-hidden" for="unit-{{ release.substance.id }}">Unit</label>
+	                <select class="form-control unit" id="unit-{{ release.substance.id }}" name="unitId-{{ release.substance.id }}">
+	                    <option>--</option>
+	                    {% for unit in units %}
+	                    {% if release.unitId === unit.id %}
+	                    <option selected value="{{ unit.id }}">{{ unit.name }}</option>
+	                    {% else %}
+	                    <option value="{{ unit.id }}">{{ unit.name }}</option>
+	                    {% endif %}
+	                    {% endfor %}
+	                </select>
+				</div>
                 {% endif %}
             </td>
             <td>
-                <div class="form-group"><input class="button" type="submit" id="detail" name="detail-{{ release.substance.id }}" value="Detail"/></div>
+                <input class="link" type="submit" id="detail" name="detail-{{ release.substance.id }}" value="More detail"/>
             </td>
         </tr>
         {% endfor %}

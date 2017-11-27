@@ -17,6 +17,10 @@
 	cursor: pointer;
 }
 
+.link-back {
+	border-radius:0 0 0 0;
+	border-bottom: 1px solid #0b0c0c;
+}
 .qq-upload-button-focus {
 	outline: 3px solid $yellow !important;
 }
