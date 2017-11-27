@@ -48,6 +48,9 @@ server.connection({
     }
 });
 
+// A map to store the compiled templates
+const templates = new Map();
+
 // A function to provision the Hapi server
 const initialize = async () => {
 
@@ -91,7 +94,14 @@ const initialize = async () => {
             html: {
                 compile: function (src, options) {
 
-                    const template = Nunjucks.compile(src, options.environment);
+                    // Store the templates on compilation
+                    let template = null;
+                    if (templates.has(options.filename)) {
+                        template = templates.get(options.filename);
+                    } else {
+                        template = Nunjucks.compile(src, options.environment);
+                        templates.set(options.filename, template);
+                    }
 
                     return function (context) {
                         return template.render(context);
