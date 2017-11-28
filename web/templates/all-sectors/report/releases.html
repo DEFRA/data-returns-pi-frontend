@@ -14,7 +14,7 @@
 
 {% macro form(header, errorheader, release) %}
 <form id="main-form" action="{{ release }}/action" method="post" class="form">
-    <div class="form-group"><input class="button" type="submit" id="back" name="back" value="Back to tasks"/></div>
+	<input class="link link-back" type="submit" id="back" name="back" value="Back to tasks"/>
 
     {% if (releases | substancesWithErrors | length) === 0 %}
     <h1 class="heading-large">{{ header }}</h1>
@@ -41,7 +41,7 @@
             <th class="th-reporting-threshold numeric">2017 threshold</th>
             <th class="th-release">2017 total</th>
             <th class="th-unit">Unit</th>
-            <th class="th-action"><span class="visually-hidden">More detail</span></th>
+            <th class="th-action">Action</th>
         </tr>
         </thead>
 
@@ -69,54 +69,54 @@
             </td>
             {% else %}
             <td class="td-release">
-                <div class="form-group">
-                    <label class="form-label visually-hidden" for="value-{{ release.substance.id }}">Releases</label>
-                    <input class="form-control" id="value-{{ release.substance.id }}" name="value-{{ release.substance.id }}" value="{{ release.value }}">
-                </div>
+                <label class="form-label visually-hidden" for="value-{{ release.substance.id }}">Releases</label>
+                <input class="form-control" id="value-{{ release.substance.id }}" name="value-{{ release.substance.id }}" value="{{ release.value }}">
             </td>
             {% endif %}
 
             <td class="td-unit">
                 {%if unit_error %}
-                <div class="form-group">
-                    <label class="form-label visually-hidden" for="unit-err{{ release.substance.id }}">Unit</label>
-                    <select class="form-control form-control-error unit" id="unit-err{{ release.substance.id }}" name="unitId-{{ release.substance.id }}">
-                        <option>--</option>
-                        {% for unit in units %}
-                        {% if release.unitId === unit.id %}
-                        <option selected value="{{ unit.id }}">{{ unit.name }}</option>
-                        {% else %}
-                        <option value="{{ unit.id }}">{{ unit.name }}</option>
-                        {% endif %}
-                        {% endfor %}
-                    </select>
-                </div>
-                {% else %}
-                <div class="form-group">
-                    <label class="form-label visually-hidden" for="unit-{{ release.substance.id }}">Unit</label>
-                    <select class="form-control unit" id="unit-{{ release.substance.id }}" name="unitId-{{ release.substance.id }}">
-                        <option>--</option>
-                        {% for unit in units %}
-                        {% if release.unitId === unit.id %}
-                        <option selected value="{{ unit.id }}">{{ unit.name }}</option>
-                        {% else %}
-                        <option value="{{ unit.id }}">{{ unit.name }}</option>
-                        {% endif %}
-                        {% endfor %}
-                    </select>
-                </div>
+	            <div class="form-group-error">
+	                <label class="form-label visually-hidden" for="unit-err{{ release.substance.id }}">Unit</label>
+	                <select class="form-control form-control-error unit" id="unit-err{{ release.substance.id }}" name="unitId-{{ release.substance.id }}">
+	                    <option>--</option>
+	                    {% for unit in units %}
+	                    {% if release.unitId === unit.id %}
+	                    <option selected value="{{ unit.id }}">{{ unit.name }}</option>
+	                    {% else %}
+	                    <option value="{{ unit.id }}">{{ unit.name }}</option>
+	                    {% endif %}
+	                    {% endfor %}
+	                </select>
+	                {% else %}
+	                <label class="form-label visually-hidden" for="unit-{{ release.substance.id }}">Unit</label>
+	                <select class="form-control unit" id="unit-{{ release.substance.id }}" name="unitId-{{ release.substance.id }}">
+	                    <option>--</option>
+	                    {% for unit in units %}
+	                    {% if release.unitId === unit.id %}
+	                    <option selected value="{{ unit.id }}">{{ unit.name }}</option>
+	                    {% else %}
+	                    <option value="{{ unit.id }}">{{ unit.name }}</option>
+	                    {% endif %}
+	                    {% endfor %}
+	                </select>
+				</div>
                 {% endif %}
             </td>
             <td>
-                <div class="form-group"><input class="button" type="submit" id="detail" name="detail-{{ release.substance.id }}" value="Detail"/></div>
+                <input class="link" type="submit" id="detail" name="detail-{{ release.substance.id }}" value="More detail"/>
             </td>
         </tr>
         {% endfor %}
         </tbody>
     </table>
 
-    <div class="form-group"><input class="button" type="submit" id="add" name="add" value="Add Substance"/></div>
-    <div class="form-group"><input class="button" type="submit" id="continue" name="continue" value="Continue"/></div>
+    <div class="form-group">
+		<input class="link" type="submit" id="add" name="add" value="Add substance"/>
+	</div>
+    <div class="form-group">
+		<input class="button" type="submit" id="continue" name="continue" value="Continue"/>
+	</div>
 
  </form>
 {% endmacro %}
@@ -124,16 +124,16 @@
 {% block content %}
 <main id="content">
     <h1 class="heading-large">{{ header }}</h1>
-    <h2 class="font-medium">EA_ID: {{ eaId }}</h2>
+    <div>EA_ID: {{ eaId }}</div>
     <label id="page-name" hidden>route</label>
     {% if route === 'RELEASES_TO_LAND' %}
-    {{ form('Your releases to land?', 'Check your releases to land', '/releases/land') }}
+    {{ form('Your releases to land', 'Check your releases to land', '/releases/land') }}
     {% elif route === 'RELEASES_TO_AIR' %}
-    {{ form('Your releases to air?', 'Check your releases to air', '/releases/air') }}
+    {{ form('Your releases to air', 'Check your releases to air', '/releases/air') }}
     {% elif route === 'RELEASES_TO_CONTROLLED_WATERS' %}
-    {{ form('Your releases to controlled waters?', 'Check your releases to controlled waters', '/releases/water') }}
+    {{ form('Your releases to controlled waters', 'Check your releases to controlled waters', '/releases/water') }}
     {% elif route === 'OFFSITE_TRANSFERS_IN_WASTE_WATER' %}
-    {{ form('Your transfers of substances off-site in waste water?', 'Check your releases in waste water', '/releases/waste-water') }}
+    {{ form('Your transfers of substances off-site in waste water', 'Check your releases in waste water', '/releases/waste-water') }}
     {% endif %}
 </main>
 {% endblock %}

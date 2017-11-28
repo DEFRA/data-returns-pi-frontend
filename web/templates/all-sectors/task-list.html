@@ -5,9 +5,9 @@
     <label id="page-name" hidden>task-list</label>
     <div class="grid-row">
         <div class="column-two-thirds">
-            <br>
-            <br>
             {% for stage in taskList.stages %}
+	        <br>
+	        <br>
             <table id="table-{{ loop.index }}">
                 <thead>
                     <tr>
@@ -35,4 +35,3 @@
     </div>
 </main>
 {% endblock %}
-
