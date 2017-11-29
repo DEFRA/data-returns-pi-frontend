@@ -2,7 +2,7 @@
 
 {% macro errtext(errno) %}
 {% if errno === 'PI-1000' %}
-<span class="error-message">Must be a number or BRT</span>
+<span class="error-message">Enter a number or ‘BRT’</span>
 {% elif errno === 'PI-1001' %}
 <span class="error-message">Do not specify a unit with BRT</span>
 {% elif errno === 'PI-1002' %}
@@ -23,11 +23,10 @@
         <h2 class="heading-large error-summary-heading" id="error-summary-heading-example-2">
             {{ errorheader }}
         </h2>
-        <p>There are issues with the data</p>
-        <p>Check your reports for:</p>
+        <p>You must enter a number or the letters ‘BRT’ (below reporting threshold).</p>
         <ul class="error-summary-list">
             {% for substance in releases | substancesWithErrors %}
-            <li><a href="#substance-{{ substance.id }}">{{ substance.name }}</a></li>
+            <li><a href="#substance-{{ substance.id }}">Change your {{ substance.name }} total</a></li>
             {% endfor %}
         </ul>
     </div>
@@ -127,13 +126,13 @@
     <div>EA_ID: {{ eaId }}</div>
     <label id="page-name" hidden>route</label>
     {% if route === 'RELEASES_TO_LAND' %}
-    {{ form('Your releases to land', 'Check your releases to land', '/releases/land') }}
+    {{ form('Your releases to land', 'Check what you’re reporting', '/releases/land') }}
     {% elif route === 'RELEASES_TO_AIR' %}
-    {{ form('Your releases to air', 'Check your releases to air', '/releases/air') }}
+    {{ form('Your releases to air', 'Check what you’re reporting', '/releases/air') }}
     {% elif route === 'RELEASES_TO_CONTROLLED_WATERS' %}
-    {{ form('Your releases to controlled waters', 'Check your releases to controlled waters', '/releases/water') }}
+    {{ form('Your releases to controlled waters', 'Check what you’re reporting', '/releases/water') }}
     {% elif route === 'OFFSITE_TRANSFERS_IN_WASTE_WATER' %}
-    {{ form('Your transfers of substances off-site in waste water', 'Check your releases in waste water', '/releases/waste-water') }}
+    {{ form('Your transfers of substances off-site in waste water', 'Check what you’re reporting', '/releases/waste-water') }}
     {% endif %}
 </main>
 {% endblock %}
