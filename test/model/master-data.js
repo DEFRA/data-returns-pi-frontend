@@ -155,4 +155,16 @@ experiment('Master data service', function () {
         expect(ewc).to.be.null();
     });
 
+    test('getDisposalCode()', async () => {
+        const disposal = await MasterDataService.getDisposalCode('D1');
+        expect(disposal).to.be.an.object();
+        expect(disposal.code).to.to.equal('D1');
+    });
+
+    test('getRecoveryCode()', async () => {
+        const recovery = await MasterDataService.getRecoveryCode('R1');
+        expect(recovery).to.be.an.object();
+        expect(recovery.code).to.to.equal('R1');
+    });
+
 });

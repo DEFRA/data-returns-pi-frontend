@@ -6199,6 +6199,39 @@ module.exports = {
         { 'id': 2178, 'chapter': '03', 'activity': '20', 'hazardous': 0, 'subchapter': '06', 'description': 'Waste from sewage cleaning' },
         { 'id': 2179, 'chapter': '03', 'activity': '20', 'hazardous': 0, 'subchapter': '07', 'description': 'Bulky waste' },
         { 'id': 2180, 'chapter': '03', 'activity': '20', 'hazardous': 0, 'subchapter': '99', 'description': 'Municipal wastes not otherwise specified' }
-    ]
+    ],
 
+    recoveryCodes: [
+        { id: '1', code: 'R1', description: 'Use principally as a fuel or other means to generate energy' },
+        { id: '2', code: 'R2', description: 'Solvent reclamation/regeneration' },
+        { id: '3', code: 'R3', description: 'Recycling/reclamation of organic substances which are not used as solvents (including composting and other biological transformation processes)' },
+        { id: '4', code: 'R4', description: 'Recycling/reclamation of metals and metal compounds' },
+        { id: '5', code: 'R5', description: 'Recycling/reclamation of other inorganic materials' },
+        { id: '6', code: 'R6', description: 'Regeneration of acids or bases' },
+        { id: '7', code: 'R7', description: 'Recovery of components used for pollution abatement' },
+        { id: '8', code: 'R8', description: 'Recovery of components from catalysts' },
+        { id: '9', code: 'R9', description: 'Oil re-refining or other reuses of oil' },
+        { id: '10', code: 'R10', description: 'Land treatment resulting in benefit to agriculture or ecological improvement' },
+        { id: '11', code: 'R11', description: 'Use of wastes obtained from any of the operations numbered R1 to R10' },
+        { id: '12', code: 'R12', description: 'Exchange of wastes for submission to any of the operations numbered R1 to R11' },
+        { id: '13', code: 'R13', description: 'Storage of wastes pending any of the operations numbered R1 to R12 (excluding temporary storage pending collection on the site where it is produced)' }
+    ],
+
+    disposalCodes: [
+        { id: '1', code: 'D1', description: 'Deposit into or onto land  e.g. landfill' },
+        { id: '2', code: 'D2', description: 'Land treatment  e.g. biodegradation of liquid or sludgy discards in soils' },
+        { id: '3', code: 'D3', description: 'Deep injection  e.g. injection of pumpable discards into wells  salt domes or naturally occurring repositories' },
+        { id: '4', code: 'D4', description: 'Surface impoundment  e.g. placement of liquid or sludgy discards into pits  ponds or lagoons' },
+        { id: '5', code: 'D5', description: 'Specially engineered landfill  e.g. placement into lined discrete cells which are capped and isolated from one another and the environment' },
+        { id: '6', code: 'D6', description: 'Release into a water body except seas/oceans' },
+        { id: '7', code: 'D7', description: 'Release into seas/oceans including sea-bed insertion' },
+        { id: '8', code: 'D8', description: 'Biological treatment resulting in final compounds or mixtures which are discarded by any of the operations numbered D1 to D12' },
+        { id: '9', code: 'D9', description: 'Physico-chemical treatment resulting in final compounds or mixtures which are discarded by any of the operations numbered D1 to D12  e.g. evaporation drying calcination ' },
+        { id: '10', code: 'D10', description: 'Incineration on land' },
+        { id: '11', code: 'D11', description: 'Incineration at sea' },
+        { id: '12', code: 'D12', description: 'Permanent storage  e.g. emplacement of containers in a mine' },
+        { id: '13', code: 'D13', description: 'Blending or mixing prior to submission to any of the operations numbered D1 to D12' },
+        { id: '14', code: 'D14', description: 'Repackaging prior to submission to any of the operations numbered D1 to D13' },
+        { id: '15', code: 'D15', description: 'Storage pending any of the operations numbered D1 to D14 (excluding temporary storage pending collection on the site where it is produced)' }
+    ]
 };

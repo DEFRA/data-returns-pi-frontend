@@ -271,6 +271,14 @@ module.exports = internals = {
         }
 
         return null;
+    },
+
+    getDisposalCode: async (code) => {
+        return Data.disposalCodes.find((e) => { return e.code === code; }) || null;
+    },
+
+    getRecoveryCode: async (code) => {
+        return Data.recoveryCodes.find((e) => { return e.code === code; }) || null;
     }
 
 };
