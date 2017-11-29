@@ -113,10 +113,46 @@ experiment('Master data service', function () {
         expect(methods.length).to.equal(3);
     });
 
-    test('getMethodById(id)', async (id) => {
+    test('getMethodById(id)', async () => {
         const method = await MasterDataService.getMethodById(1);
         expect(method).to.be.an.object();
         expect(method.name).to.equal('Measurement');
+    });
+
+    test('getEwcActivity()', async () => {
+        const ewc = await MasterDataService.getEwc('01');
+        expect(ewc).to.be.an.object();
+        expect(ewc.activity).to.equal('01');
+    });
+
+    test('getEwcChapter()', async () => {
+        const ewc = await MasterDataService.getEwc('01', '01');
+        expect(ewc).to.be.an.object();
+        expect(ewc.activity).to.equal('01');
+        expect(ewc.chapter).to.equal('01');
+    });
+
+    test('getEwcSubchapter()', async () => {
+        const ewc = await MasterDataService.getEwc('01', '01', '01');
+        expect(ewc).to.be.an.object();
+        expect(ewc.activity).to.equal('01');
+        expect(ewc.chapter).to.equal('01');
+        expect(ewc.subchapter).to.equal('01');
+    });
+
+    test('getEwcActivity(): none', async () => {
+        const ewc = await MasterDataService.getEwc('ff');
+        expect(ewc).to.be.null();
+    });
+
+    test('getEwcChapter(): none', async () => {
+        const ewc = await MasterDataService.getEwc('ff', 'ff');
+        expect(ewc).to.be.null();
+    });
+
+    test('getEwcSubchapter(): none', async () => {
+        const ewc = await MasterDataService.getEwc('ff', 'ff', 'ff');
+        expect(ewc).to.be.null();
     });
 
 });

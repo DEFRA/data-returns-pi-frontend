@@ -10,8 +10,6 @@ const _ = require('lodash');
 const Data = require('../../data/master-data');
 
 let internals = {};
-const _substancesMap = new Map();
-const _unitsMap = new Map();
 
 module.exports = internals = {
 
@@ -138,12 +136,12 @@ module.exports = internals = {
      * @returns {Promise.<*>}
      */
     getSubstanceById: async (id) => {
-        if (!_substancesMap.size) {
+        if (!internals._substancesMap.size) {
             Data.substances.forEach((s) => {
-                _substancesMap.set(s.id, s);
+                internals._substancesMap.set(s.id, s);
             });
         }
-        return _substancesMap.get(id);
+        return internals._substancesMap.get(id);
     },
 
     /**
@@ -158,12 +156,12 @@ module.exports = internals = {
      * @returns {Promise.<*>}
      */
     getUnitById: async (id) => {
-        if (!_unitsMap.size) {
+        if (!internals._unitsMap.size) {
             Data.units.forEach((s) => {
-                _unitsMap.set(s.id, s);
+                internals._unitsMap.set(s.id, s);
             });
         }
-        return _unitsMap.get(id);
+        return internals._unitsMap.get(id);
     },
 
     /**
@@ -195,6 +193,90 @@ module.exports = internals = {
         } catch (err) {
             return undefined;
         }
+    },
+
+    getEwc: async (activity, chapter, subchapter) => {
+        if (!internals._ewcActivity.size) {
+            Data.ewcActivity.forEach((a) => {
+                internals._ewcActivity.set(a.activity, a);
+            });
+        }
+        if (!internals._ewcChapter.size) {
+            Data.ewcChapter.forEach((c) => {
+                internals._ewcChapter.set(c.activity + '-' + c.chapter, c);
+            });
+        }
+        if (!internals._ewcSubchapter.size) {
+            Data.ewcSubchapter.forEach((s) => {
+                internals._ewcSubchapter.set(s.activity + '-' + s.chapter + '-' + s.subchapter, s);
+            });
+        }
+
+        const result = {};
+
+        if (activity && chapter && subchapter) {
+            const _subchapter = internals._ewcSubchapter.get(activity + '-' + chapter + '-' + subchapter);
+
+            if (_subchapter) {
+
+                const _chapter = internals._ewcChapter.get(_subchapter.activity + '-' + _subchapter.chapter);
+                if (_chapter) {
+                    const _activity = internals._ewcActivity.get(_chapter.activity);
+
+                    if (_activity) {
+                        result.activity = _activity.activity;
+                        result.activity_description = _activity.description;
+                        result.chapter = _chapter.chapter;
+                        result.chapter_description = _chapter.description;
+                        result.subchapter = _subchapter.subchapter;
+                        result.subchapter_description = _subchapter.description;
+
+                        return result;
+                    }
+                }
+            }
+
+            return null;
+        }
+
+        if (activity && chapter) {
+            const _chapter = internals._ewcChapter.get(activity + '-' + chapter);
+
+            if (_chapter) {
+                const _activity = internals._ewcActivity.get(_chapter.activity);
+
+                if (_activity) {
+                    result.activity = _activity.activity;
+                    result.activity_description = _activity.description;
+                    result.chapter = _chapter.chapter;
+                    result.chapter_description = _chapter.description;
+
+                    return result;
+                }
+            }
+
+            return null;
+        }
+
+        if (activity) {
+            const _activity = internals._ewcActivity.get(activity);
+
+            if (_activity) {
+                result.activity = _activity.activity;
+                result.activity_description = _activity.description;
+                return result;
+            }
+
+            return null;
+        }
+
+        return null;
     }
 
 };
+
+internals._substancesMap = new Map();
+internals._unitsMap = new Map();
+internals._ewcActivity = new Map();
+internals._ewcChapter = new Map();
+internals._ewcSubchapter = new Map();
