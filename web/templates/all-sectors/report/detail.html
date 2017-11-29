@@ -2,13 +2,13 @@
 
 {% macro errtext(errno) %}
 {% if errno === 'PI-1000' %}
-<span class="error-message">Must be a number or BRT</span>
+<span class="error-message">Enter a number or ‘BRT’ (below reporting threshold)</span>
 {% elif errno === 'PI-1001' %}
 <span class="error-message">Do not specify a unit with BRT</span>
 {% elif errno === 'PI-1002' %}
-<span class="error-message">A value must have units</span>
+<span class="error-message">Select a type of unit</span>
 {% elif errno === 'PI-1003' %}
-<span class="error-message">You must select a method</span>
+<span class="error-message">Select your method</span>
 {% else %}
 <span class="error-message">Unknown error</span>
 {% endif %}
@@ -24,7 +24,7 @@
     {% if release.errors %}
     <div class="error-summary" role="alert" aria-labelledby="error-summary-heading-example-2" tabindex="-1">
         <h2 class="heading-large error-summary-heading" id="error-summary-heading-example-2">
-            Check your {{ release.substance.name }} report
+            Check what you’re reporting
         </h2>
         <p>There are issues with the data</p>
         <ul class="error-summary-list">
@@ -73,8 +73,7 @@
                     <th id="unit-check">Unit</th>
                     <td class="td-unit">
                         {%if unit_error %}
-                        {{ errtext(unit_error.errno) }}
-                        <div class="form-group">
+	                    <div class="form-group-error">
                             <label class="form-label visually-hidden" for="unit-err">Unit</label>
                             <select class="form-control form-control-error unit" id="unit-err" name="unitId">
                                 <option>--</option>
@@ -86,6 +85,7 @@
                                 {% endif %}
                                 {% endfor %}
                             </select>
+	                        {{ errtext(unit_error.errno) }}
                         </div>
                         {% else %}
                         <div class="form-group">
@@ -106,21 +106,22 @@
                 </tr>
                 <tr>
                     <th class="id=method-check" class="method">Method</th>
-
                     <td class="method">
                     {%if method_error %}
-                        {{ errtext(method_error.errno) }}
-                        <label class="form-label visually-hidden" for="method-err">Method</label>
-                        <select class="form-control form-control-error method" id="method-err" name="methodId">
-                            <option>--</option>
-                            {% for method in methods %}
-                            {% if release.methodId === method.id %}
-                            <option selected value="{{ method.id }}">{{ method.name }}</option>
-                            {% else %}
-                            <option value="{{ method.id }}">{{ method.name }}</option>
-                            {% endif %}
-                            {% endfor %}
-                        </select>
+	                    <div class="form-group-error">
+	                        <label class="form-label visually-hidden" for="method-err">Method</label>
+	                        <select class="form-control form-control-error method" id="method-err" name="methodId">
+	                            <option>--</option>
+	                            {% for method in methods %}
+	                            {% if release.methodId === method.id %}
+	                            <option selected value="{{ method.id }}">{{ method.name }}</option>
+	                            {% else %}
+	                            <option value="{{ method.id }}">{{ method.name }}</option>
+	                            {% endif %}
+	                            {% endfor %}
+	                        </select>
+		                        {{ errtext(method_error.errno) }}
+						</div>
                     {% else %}
                         <label class="form-label visually-hidden" for="method">Method</label>
                         <select class="form-control method" id="method" name="methodId">
