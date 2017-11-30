@@ -21,8 +21,8 @@
                 <tbody>
                 {% for item in stage.items %}
                 <tr>
-                    <td class="task" id="{{ item.page | replace('/', '') }}">
-                        <a href="{{ item.page }}/confirm">
+                    <td class="task">
+                        <a id="{{ item.page | replace('/', '') }}" href="{{ item.page }}/confirm">
                             <span class="task-name">{{ item.title }}</span>
                         </a>
                     </td>

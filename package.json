@@ -4,7 +4,7 @@
   "description": "Data Returns: Pollution Inventory Service",
   "main": "server.js",
   "engines": {
-    "node": "8.6.0"
+    "node": "8.9.1"
   },
   "dependencies": {
     "dotenv": "4.0.0",
