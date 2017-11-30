@@ -31,8 +31,10 @@ const releaseSchema = Joi.object({
     }),
 
     // Every release must have a method
-    methodId: Joi.number().integer().positive().required().label('PI-1003')
+    methodId: Joi.number().integer().positive().required().label('PI-1003'),
 
+    // Confirmed optional
+    confirmed: Joi.any().optional()
 });
 
 module.exports = {

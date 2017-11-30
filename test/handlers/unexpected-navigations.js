@@ -113,14 +113,6 @@ experiment('Unexpected navigation', async () => {
         });
         expect(response.statusCode).to.equal(302);
         expect(response.headers.location).to.equal('/task-list');
-
-        response = await server.server.inject({
-            method: 'GET',
-            url: '/releases/air',
-            headers: { cookie: 'sid=' + internals.sid }
-        });
-        expect(response.statusCode).to.equal(302);
-        expect(response.headers.location).to.equal('/');
     });
 
     test('Select a permit and go straight to the detail page', async () => {

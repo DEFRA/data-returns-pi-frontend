@@ -17,23 +17,22 @@ module.exports = {
         try {
             // Check the permit status has been set
             const permitStatus = await request.server.app.userCache.cache('permit-status').get(request);
-            if (!permitStatus || !permitStatus.currentTask) {
-                throw new CacheKeyError('expected permit status');
-            }
-
             const tasks = await request.server.app.userCache.cache('tasks').get(request);
-
-            // Check for tasks
-            if (!tasks) {
-                throw new CacheKeyError('expected tasks');
-            }
-
             const route = Releases.getRoute(request);
+
+            if (!permitStatus || !tasks || !route) {
+                throw new CacheKeyError('invalid cache state');
+            }
 
             if (request.method === 'get') {
                 // Get the current release and enrich with the substance details
-                const release = tasks.releases[tasks.currentDetail];
-                const substance = await MasterDataService.getSubstanceById(Number.parseInt(tasks.currentDetail));
+                const release = tasks.releases[tasks.currentSubstanceId];
+
+                if (!release) {
+                    throw new CacheKeyError('invalid cache state');
+                }
+
+                const substance = await MasterDataService.getSubstanceById(Number.parseInt(tasks.currentSubstanceId));
                 release.substance = substance;
 
                 // Get the methods list
@@ -43,31 +42,33 @@ module.exports = {
                 const units = await MasterDataService.getUnits();
 
                 // Display the detail page
-                reply.view('all-sectors/report/detail', { route: route.route, release: release, methods: methods, units: units });
+                reply.view('all-sectors/report/detail', { route: route.name, release: release, methods: methods, units: units });
             } else {
 
                 // Set the task detail elements
                 const { unitId, methodId, value } = request.payload;
-                const currentRelease = tasks.releases[tasks.currentDetail];
+                const currentRelease = tasks.releases[tasks.currentSubstanceId];
 
                 // Set up the release object
                 currentRelease.unitId = Number.isNaN(Number.parseInt(unitId)) ? null : Number.parseInt(unitId);
                 currentRelease.methodId = Number.isNaN(Number.parseInt(methodId)) ? null : Number.parseInt(methodId);
                 currentRelease.value = value;
+                currentRelease.confirmed = true;
+
                 delete currentRelease.errors;
 
                 // Validate the release object
-                const validation = await Validator.release(tasks.releases[tasks.currentDetail]);
+                const validation = await Validator.release(tasks.releases[tasks.currentSubstanceId]);
 
                 if (validation) {
                     // Update the cache with the validation objects and redirect back to the releases page
                     currentRelease.errors = validation;
                     await request.server.app.userCache.cache('tasks').set(request, tasks);
-                    reply.redirect(route.uri + '/detail');
+                    reply.redirect(route.page + '/detail');
                 } else {
                     // Write the (removed) validations to the cache
                     await request.server.app.userCache.cache('tasks').set(request, tasks);
-                    reply.redirect(route.uri);
+                    reply.redirect(route.page);
                 }
 
             }
@@ -75,10 +76,36 @@ module.exports = {
             if (err instanceof CacheKeyError) {
                 reply.redirect('/');
             } else {
-                logger.log('error', err.message);
+                logger.log('error', err);
+                reply.redirect('/logout');
+            }
+        }
+    },
+
+    // Remove action
+    remove: async (request, reply) => {
+        try {
+            const tasks = await request.server.app.userCache.cache('tasks').get(request);
+            const release = tasks.releases[tasks.currentSubstanceId];
+            const route = Releases.getRoute(request);
+
+            // Check for tasks
+            if (!tasks || !release || !route) {
+                throw new CacheKeyError('invalid cache state');
+            }
+
+            if (request.method === 'get') {
+                reply.view('all-sectors/report/confirm-delete', {route: route.name, release: release});
+            } else {
+                reply.view('all-sectors/report/confirm-delete');
+            }
+        } catch (err) {
+            if (err instanceof CacheKeyError) {
+                reply.redirect('/');
+            } else {
+                logger.log('error', err);
                 reply.redirect('/logout');
             }
         }
     }
-
 };

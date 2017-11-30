@@ -54,7 +54,7 @@ module.exports = {
             return reply.redirect('/');
 
         } catch (err) {
-            logger.logger.log('error', err.message);
+            logger.logger.log('error', err);
             return reply.view('login');
         }
     },
@@ -72,7 +72,7 @@ module.exports = {
             request.cookieAuth.clear();
             reply.redirect('/');
         } catch (err) {
-            logger.logger.log('error', err.message);
+            logger.logger.log('error', err);
         }
     }
 };

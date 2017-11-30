@@ -159,6 +159,12 @@ const dynamicHandlers = [
     },
 
     {
+        method: ['GET', 'POST'],
+        path: '/releases/{route}/remove',
+        handler: Details.remove
+    },
+
+    {
         method: 'GET',
         path: '/off-site',
         config: {

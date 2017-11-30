@@ -16,7 +16,7 @@ module.exports = {
         try {
             reply.view('all-sectors/report/off-site');
         } catch (err) {
-            logger.log('error', err.message);
+            logger.log('error', err);
             reply.redirect('/logout');
         }
     }

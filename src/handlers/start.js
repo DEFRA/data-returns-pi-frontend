@@ -32,7 +32,7 @@ module.exports = {
             reply.view('start', { user: session.user, sites: sites });
 
         } catch (err) {
-            logger.log('error', err.message);
+            logger.log('error', err);
             reply.redirect('/logout');
         }
     },
@@ -71,12 +71,17 @@ module.exports = {
             let permitStatus = await request.server.app.userCache.cache('permit-status').get(request);
 
             if (!permitStatus) {
-                const names = TaskListService.names(TaskList);
+                // Initialize a permit status if not exists
+                const keys = TaskListService.names(TaskList);
                 permitStatus = {};
-                names.forEach(n => { permitStatus[n] = { required: 'false', supplied: false }; });
-                // Set the new stage status in the status cache
-                await request.server.app.userCache.cache('permit-status').set(request, permitStatus);
+                keys.forEach(n => { permitStatus[n] = {}; });
+            } else {
+                // Always unset the current task
+                delete permitStatus.currentTask;
             }
+
+            // Save the permit status cache
+            await request.server.app.userCache.cache('permit-status').set(request, permitStatus);
 
             reply.redirect('/task-list');
         } catch (err) {

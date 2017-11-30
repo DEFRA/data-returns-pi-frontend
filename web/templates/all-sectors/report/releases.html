@@ -102,9 +102,15 @@
 				</div>
                 {% endif %}
             </td>
+
             <td>
                 <input class="link" type="submit" id="detail" name="detail-{{ release.substance.id }}" value="More detail"/>
             </td>
+
+            <td>
+                <input class="link" type="submit" id="delete" name="delete-{{ release.substance.id }}" value="Delete"/>
+            </td>
+
         </tr>
         {% endfor %}
         </tbody>
@@ -124,7 +130,7 @@
 <main id="content">
     <h1 class="heading-large">{{ header }}</h1>
     <div>EA_ID: {{ eaId }}</div>
-    <label id="page-name" hidden>route</label>
+    <label id="page-name" hidden>{{ route }}</label>
     {% if route === 'RELEASES_TO_LAND' %}
     {{ form('Your releases to land', 'Check what you’re reporting', '/releases/land') }}
     {% elif route === 'RELEASES_TO_AIR' %}

@@ -15,24 +15,30 @@ const tasklistLib = require('../../../src/service/task-list');
 const allSectorsTaskList = require('../../../src/model/all-sectors/task-list');
 
 const resultInclude = {
+    name: 'all-sectors',
     stages: [
         {
             heading: 'Report your data',
             items: [
                 {
                     name: 'RELEASES_TO_AIR',
+                    pathParam: 'air',
                     title: 'Releases to air',
-                    page: '/releases/air/confirm'
+                    page: '/releases/air'
                 },
+
                 {
                     name: 'RELEASES_TO_LAND',
+                    pathParam: 'land',
                     title: 'Releases to land',
-                    page: '/releases/land/confirm'
+                    page: '/releases/land'
                 },
+
                 {
                     name: 'RELEASES_TO_CONTROLLED_WATERS',
+                    pathParam: 'water',
                     title: 'Releases to controlled waters',
-                    page: '/releases/water/confirm'
+                    page: '/releases/water'
                 }
             ]
         },
@@ -41,6 +47,7 @@ const resultInclude = {
             items: [
                 {
                     name: 'SUBMIT',
+                    pathParam: 'submit',
                     title: 'Submit your report',
                     page: '/submit'
                 }
@@ -50,17 +57,21 @@ const resultInclude = {
 };
 
 const resultExclude = {
+    name: 'all-sectors',
     stages: [
         {
             heading: 'Check your details',
             items: [
                 {
                     name: 'CONTACT',
+                    pathParam: 'contact',
                     title: 'Your contact details',
                     page: '/contact'
                 },
+
                 {
                     name: 'SITE',
+                    pathParam: 'site',
                     title: 'Your site codes',
                     page: '/site'
                 }
@@ -70,17 +81,21 @@ const resultExclude = {
 };
 
 const resultStatus = {
+    name: 'all-sectors',
     stages: [
         {
             heading: 'Check your details',
             items: [
                 {
                     name: 'CONTACT',
+                    pathParam: 'contact',
                     title: 'Your contact details',
                     page: '/contact'
                 },
+
                 {
                     name: 'SITE',
+                    pathParam: 'site',
                     title: 'Your site codes',
                     page: '/site',
                     status: 'Completed'
@@ -112,6 +127,13 @@ describe('Testing task list library', () => {
 
     it('Testing names function', () => {
         expect(tasklistLib.names(resultStatus)).to.equal(['CONTACT', 'SITE']);
+    });
+
+    it('Testing map function', () => {
+        expect(tasklistLib.mapByPathParameter(resultStatus)).to.be.not.null();
+        expect(tasklistLib.mapByPathParameter(resultStatus).get('contact').name).to.equal('CONTACT');
+        expect(tasklistLib.mapByName(resultStatus)).to.be.not.null();
+        expect(tasklistLib.mapByName(resultStatus).get('SITE').name).to.equal('SITE');
     });
 
 });

@@ -4,6 +4,8 @@ const logger = require('../../../lib/logging').logger;
 const MasterDataService = require('../../../service/master-data');
 const Releases = require('./releases');
 const CacheKeyError = require('../../../lib/user-cache-policies').CacheKeyError;
+const TaskListService = require('../../../service/task-list');
+const AllSectorsTaskList = require('../../../model/all-sectors/task-list');
 
 const NEW_RELEASE_OBJECT = { value: null, unitId: null, methodId: null };
 
@@ -20,16 +22,18 @@ module.exports = {
      */
     add: async (request, reply) => {
         try {
-            // Get the tasks object
+            // Get cache objects
             const tasks = await request.server.app.userCache.cache('tasks').get(request);
+            const permitStatus = await request.server.app.userCache.cache('permit-status').get(request);
+            const map = TaskListService.mapByName(AllSectorsTaskList);
+            const route = map.get(permitStatus.currentTask);
+
+            // If permit status is not set go back to the start page
+            if (!tasks || !permitStatus || !permitStatus.currentTask || !route) {
+                throw new CacheKeyError('invalid cache state');
+            }
 
             if (request.method === 'get') {
-                const permitStatus = await request.server.app.userCache.cache('permit-status').get(request);
-
-                // If permit status is not set go back to the start page
-                if (!permitStatus || !permitStatus.currentTask) {
-                    throw new CacheKeyError('expected permit status');
-                }
 
                 // Get a list of all of the substances from the master data service
                 const substances = await MasterDataService.getSubstances();
@@ -41,11 +45,6 @@ module.exports = {
 
                 reply.view('all-sectors/report/add-substance', { route: permitStatus.currentTask, substances: filtered });
             } else {
-
-                if (!tasks) {
-                    throw new Error('Cache error: no task cache initialized');
-                }
-
                 const substance = await MasterDataService.getSubstanceById(Number.parseInt(request.payload['substanceId']));
 
                 // Add the selected substances to the task if it exists
@@ -59,26 +58,18 @@ module.exports = {
                 }
 
                 // Set the current task to allow us to get directly to the detail page
-                tasks.currentDetail = substance.id;
+                tasks.currentSubstanceId = substance.id;
 
                 // Write the task object back to the cache
                 await request.server.app.userCache.cache('tasks').set(request, tasks);
 
-                // Redirect directly to the detail page
-                const permitStatus = await request.server.app.userCache.cache('permit-status').get(request);
-
-                // If permit status is not set go back to the start page
-                if (!permitStatus || !permitStatus.currentTask) {
-                    throw new CacheKeyError('expected permit status');
-                }
-
-                reply.redirect(Releases.routes[permitStatus.currentTask].uri + '/detail');
+                reply.redirect(route.page + '/detail');
             }
         } catch (err) {
             if (err instanceof CacheKeyError) {
                 reply.redirect('/');
             } else {
-                logger.log('error', err.message);
+                logger.log('error', err);
                 reply.redirect('/logout');
             }
         }
