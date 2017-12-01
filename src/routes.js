@@ -9,7 +9,7 @@ const AllSectors = require('./handlers/all-sectors/main');
 const Contact = require('./handlers/all-sectors/check/contact');
 const Site = require('./handlers/all-sectors/check/site');
 const Releases = require('./handlers/all-sectors/report/releases');
-const Details = require('./handlers/all-sectors/report/details');
+const Details = require('./handlers/all-sectors/report/release-details');
 const OffSite = require('./handlers/all-sectors/report/off-site');
 const Overseas = require('./handlers/all-sectors/report/overseas');
 const Check = require('./handlers/all-sectors/submit/check');
@@ -166,15 +166,21 @@ const dynamicHandlers = [
 
     {
         method: 'GET',
-        path: '/off-site',
+        path: '/transfers/off-site',
         config: {
             handler: OffSite.offSite
         }
     },
 
     {
+        method: ['GET', 'POST'],
+        path: '/transfers/off-site/confirm',
+        handler: OffSite.confirm
+    },
+
+    {
         method: 'GET',
-        path: '/overseas',
+        path: '/transfers/overseas',
         config: {
             handler: Overseas.overseas
         }

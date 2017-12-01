@@ -10,6 +10,8 @@ function checkTaskListCorrectness (taskList) {
     try {
         Hoek.assert(taskList.name, 'Tasklist name must be set');
 
+        Hoek.assert(typeof taskList.newTasksObject === 'function', 'Tasklist new function must be set');
+
         // Perform some checking that the tasklist is well-formed
         Hoek.assert(taskList.stages && Array.isArray(taskList.stages),
             'The taskList object should contain a value "stages" which is an array');
@@ -49,32 +51,13 @@ function filter (taskList, names, include) {
     return newTaskList;
 }
 
-const internals = {};
-internals.mapByPathParameter = {};
-internals.mapByName = {};
+let internals = {};
 
-module.exports = {
+module.exports = internals = {
     // Filters a task list to only include those items with a 'name' attribute in the array names
     include: (taskList, names) => { return filter(taskList, names, true); },
     // Filters a task list to exclude those items with a 'name' attribute in the array names
     exclude: (taskList, names) => { return filter(taskList, names); },
-    // Apply a status to an item in the task list
-    status: (taskList, name, status) => {
-        checkTaskListCorrectness(taskList);
-        taskList.stages.forEach(s => {
-            const item = s.items.find((i) => {
-                return i.name === name;
-            });
-            if (item) {
-                if (status) {
-                    item.status = status;
-                } else {
-                    delete item.status;
-                }
-            }
-        });
-        return taskList;
-    },
     // Names - retrieves the list of names from a task list
     names: (taskList) => {
         checkTaskListCorrectness(taskList);
@@ -84,29 +67,49 @@ module.exports = {
     // Map by parameter
     mapByPathParameter: (taskList) => {
         checkTaskListCorrectness(taskList);
-        if (!internals.mapByPathParameter[taskList.name]) {
-            internals.mapByPathParameter[taskList.name] = new Map();
+        if (!internals._mapByPathParameter[taskList.name]) {
+            internals._mapByPathParameter[taskList.name] = new Map();
             taskList.stages.forEach(s => {
                 s.items.forEach(i => {
-                    internals.mapByPathParameter[taskList.name].set(i.pathParam, i);
+                    internals._mapByPathParameter[taskList.name].set(i.pathParam, i);
                 });
             });
         }
-        return internals.mapByPathParameter[taskList.name];
+        return internals._mapByPathParameter[taskList.name];
     },
 
     // Map by name
     mapByName: (taskList) => {
         checkTaskListCorrectness(taskList);
-        if (!internals.mapByName[taskList.name]) {
-            internals.mapByName[taskList.name] = new Map();
+        if (!internals._mapByName[taskList.name]) {
+            internals._mapByName[taskList.name] = new Map();
             taskList.stages.forEach(s => {
                 s.items.forEach(i => {
-                    internals.mapByName[taskList.name].set(i.name, i);
+                    internals._mapByName[taskList.name].set(i.name, i);
                 });
             });
         }
-        return internals.mapByName[taskList.name];
+        return internals._mapByName[taskList.name];
+    },
+
+    // Get the route from a tasklist
+    getRoute: (taskList, request) => {
+        const map = internals.mapByPathParameter(taskList);
+        const route = map.get(request.params.route);
+        if (!route) {
+            throw new Error(`Request error: incorrect route specified: ${request.params.route}`);
+        }
+        return route;
+    },
+
+    // Template to create a new tasks object
+    newTasksObject: async (taskList, request) => {
+        const tasks = taskList.newTasksObject();
+        await request.server.app.userCache.cache('tasks').set(request, tasks);
+        return tasks;
     }
 
 };
+
+internals._mapByPathParameter = {};
+internals._mapByName = {};

@@ -25,8 +25,7 @@ module.exports = {
             // Get cache objects
             const tasks = await request.server.app.userCache.cache('tasks').get(request);
             const permitStatus = await request.server.app.userCache.cache('permit-status').get(request);
-            const map = TaskListService.mapByName(AllSectorsTaskList);
-            const route = map.get(permitStatus.currentTask);
+            const route = TaskListService.mapByName(AllSectorsTaskList).get(permitStatus.currentTask);
 
             // If permit status is not set go back to the start page
             if (!tasks || !permitStatus || !permitStatus.currentTask || !route) {

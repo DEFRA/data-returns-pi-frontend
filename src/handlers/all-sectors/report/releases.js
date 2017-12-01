@@ -14,19 +14,6 @@ const AllSectorsTaskList = require('../../../model/all-sectors/task-list');
 const internals = {
 
     /**
-     * Function to get the route object from the parameter
-     * @param request
-     */
-    getRoute: (request) => {
-        const map = TaskListService.mapByPathParameter(AllSectorsTaskList);
-        const route = map.get(request.params.route);
-        if (!route) {
-            throw new Error(`Request error: incorrect route specified: ${request.params.route}`);
-        }
-        return route;
-    },
-
-    /**
      * Save submission to the task object regardless of validation status
      * Does not write the task object back to the cache
      * @param request
@@ -109,9 +96,6 @@ module.exports = {
     // Expose the validate function
     validate: internals.validate,
 
-    // Expose the function to get the route object from the parameter
-    getRoute: internals.getRoute,
-
     /**
      * Display the confirmation pages - skip if the release type is pre-populated
      * @param request
@@ -121,7 +105,7 @@ module.exports = {
      */
     confirm: async (request, reply) => {
         try {
-            const route = internals.getRoute(request);
+            const route = TaskListService.getRoute(AllSectorsTaskList, request);
             const permitStatus = await request.server.app.userCache.cache('permit-status').get(request);
             const eaId = await request.server.app.userCache.cache('submission-status').get(request);
 
@@ -200,7 +184,7 @@ module.exports = {
      */
     releases: async (request, reply) => {
         try {
-            const route = internals.getRoute(request);
+            const route = TaskListService.getRoute(AllSectorsTaskList, request);
             const eaId = await request.server.app.userCache.cache('submission-status').get(request);
             const permitStatus = await request.server.app.userCache.cache('permit-status').get(request);
 
@@ -208,13 +192,8 @@ module.exports = {
                 throw new CacheKeyError('Invalid cache state');
             }
 
-            let tasks = await request.server.app.userCache.cache('tasks').get(request);
-
-            if (!tasks) {
-                tasks = {};
-                tasks.releases = {};
-                request.server.app.userCache.cache('tasks').set(request, tasks);
-            }
+            const tasks = await request.server.app.userCache.cache('tasks').get(request) ||
+                await TaskListService.newTasksObject(AllSectorsTaskList, request);
 
             // Enrich the stored object for page presentation - add descriptions
             const releases = await Promise.all(Object.keys(tasks.releases).map(async id => {
@@ -248,7 +227,7 @@ module.exports = {
      */
     action: async (request, reply, task) => {
         try {
-            const route = internals.getRoute(request);
+            const route = TaskListService.getRoute(AllSectorsTaskList, request);
             const tasks = await request.server.app.userCache.cache('tasks').get(request);
 
             if (!tasks || !route) {

@@ -2,7 +2,8 @@
 
 const logger = require('../../../lib/logging').logger;
 const MasterDataService = require('../../../service/master-data');
-const Releases = require('./releases');
+const TaskListService = require('../../../service/task-list');
+const AllSectorsTaskList = require('../../../model/all-sectors/task-list');
 const Validator = require('../../../lib/validator');
 const CacheKeyError = require('../../../lib/user-cache-policies').CacheKeyError;
 
@@ -18,7 +19,7 @@ module.exports = {
             // Check the permit status has been set
             const permitStatus = await request.server.app.userCache.cache('permit-status').get(request);
             const tasks = await request.server.app.userCache.cache('tasks').get(request);
-            const route = Releases.getRoute(request);
+            const route = TaskListService.getRoute(AllSectorsTaskList, request);
 
             if (!permitStatus || !tasks || !route) {
                 throw new CacheKeyError('invalid cache state');
@@ -85,6 +86,7 @@ module.exports = {
     // Remove action
     remove: async (request, reply) => {
         try {
+
             const tasks = await request.server.app.userCache.cache('tasks').get(request);
 
             // Check for tasks
@@ -93,7 +95,7 @@ module.exports = {
             }
 
             const release = tasks.releases[tasks.currentSubstanceId];
-            const route = Releases.getRoute(request);
+            const route = TaskListService.getRoute(AllSectorsTaskList, request);
             const substance = await MasterDataService.getSubstanceById(Number.parseInt(tasks.currentSubstanceId));
 
             if (request.method === 'get') {

@@ -2,11 +2,25 @@
 
 /**
  * The task lists for each of the user journeys.
- * This it the static control data from within the system
+ * This is control data and other artefact's which pertain
+ * to a given user journey, for instance farming or all-sector
  */
 module.exports = {
 
+    // The name of the task list
     name: 'all-sectors',
+
+    /**
+     * A function to generate an object to hold a state of the tasks
+     * it is only called by the tasklist service and is here
+     * @returns {{}}
+     */
+    newTasksObject: () => {
+        const tasks = {};
+        tasks.releases = {};
+        tasks.offsiteTransfers = [];
+        return tasks;
+    },
 
     // Three stages
     stages: [
@@ -68,14 +82,14 @@ module.exports = {
                     name: 'OFFSITE_WASTE_TRANSFERS',
                     pathParam: 'off-site',
                     title: 'Off-site waste transfers',
-                    page: '/off-site'
+                    page: '/transfers/off-site'
                 },
 
                 {
                     name: 'OVERSEAS_WASTE_TRANSFERS',
                     pathParam: 'overseas',
                     title: 'Overseas waste transfers',
-                    page: '/overseas'
+                    page: '/transfers/overseas'
                 }
 
             ]

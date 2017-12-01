@@ -6,6 +6,7 @@
 const Lab = require('lab');
 const lab = exports.lab = Lab.script();
 const Code = require('code');
+const _ = require('lodash');
 
 const describe = lab.describe;
 const it = lab.it;
@@ -15,7 +16,10 @@ const tasklistLib = require('../../../src/service/task-list');
 const allSectorsTaskList = require('../../../src/model/all-sectors/task-list');
 
 const resultInclude = {
-    name: 'all-sectors',
+
+    name: 'test',
+    newTasksObject: () => {},
+
     stages: [
         {
             heading: 'Report your data',
@@ -57,7 +61,10 @@ const resultInclude = {
 };
 
 const resultExclude = {
-    name: 'all-sectors',
+
+    name: 'test',
+    newTasksObject: () => {},
+
     stages: [
         {
             heading: 'Check your details',
@@ -81,7 +88,10 @@ const resultExclude = {
 };
 
 const resultStatus = {
-    name: 'all-sectors',
+
+    name: 'test',
+    newTasksObject: () => {},
+
     stages: [
         {
             heading: 'Check your details',
@@ -110,19 +120,11 @@ const testSet = ['RELEASES_TO_AIR', 'RELEASES_TO_LAND', 'RELEASES_TO_CONTROLLED_
 describe('Testing task list library', () => {
 
     it('Testing include function', () => {
-        expect(tasklistLib.include(allSectorsTaskList, testSet)).to.equal(resultInclude);
+        expect(tasklistLib.include(allSectorsTaskList, testSet).stages).to.equal(resultInclude.stages);
     });
 
     it('Testing exclude function', () => {
-        expect(tasklistLib.exclude(allSectorsTaskList, testSet)).to.equal(resultExclude);
-    });
-
-    it('Testing add status function', () => {
-        expect(tasklistLib.status(resultExclude, 'SITE', 'Completed')).to.equal(resultStatus);
-    });
-
-    it('Testing remove status function', () => {
-        expect(resultExclude).to.equal(tasklistLib.status(resultStatus, 'SITE', 'Completed'));
+        expect(tasklistLib.exclude(allSectorsTaskList, testSet).stages).to.equal(resultExclude.stages);
     });
 
     it('Testing names function', () => {
