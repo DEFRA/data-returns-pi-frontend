@@ -85,7 +85,7 @@ experiment('Unexpected navigation', async () => {
     test('Go to add substances page without first setting a permit', async () => {
         const response = await server.server.inject({
             method: 'GET',
-            url: '/add-substance',
+            url: '/releases/air/add-substance',
             headers: { cookie: 'sid=' + internals.sid }
         });
         expect(response.statusCode).to.equal(302);
@@ -168,7 +168,7 @@ experiment('Unexpected navigation', async () => {
         expect(response.headers.location).to.equal('/');
     });
 
-    test('Select a permit and go straight to add substances', async () => {
+    test('Select a permit and go straight to add substances: (Ok)', async () => {
         let response = await server.server.inject({
             method: 'POST',
             url: '/select-permit',
@@ -182,11 +182,10 @@ experiment('Unexpected navigation', async () => {
 
         response = await server.server.inject({
             method: 'GET',
-            url: '/add-substance',
+            url: '/releases/air/add-substance',
             headers: { cookie: 'sid=' + internals.sid }
         });
-        expect(response.statusCode).to.equal(302);
-        expect(response.headers.location).to.equal('/');
+        expect(response.statusCode).to.equal(200);
     });
 
     test('Selecting someone else\'s permit logs user out', async () => {

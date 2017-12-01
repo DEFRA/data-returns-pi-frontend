@@ -154,6 +154,14 @@ const dynamicHandlers = [
 
     {
         method: ['GET', 'POST'],
+        path: '/releases/{route}/add-substance',
+        config: {
+            handler: Substances.add
+        }
+    },
+
+    {
+        method: ['GET', 'POST'],
         path: '/releases/{route}/detail',
         handler: Details.detail
     },
@@ -183,14 +191,6 @@ const dynamicHandlers = [
         path: '/transfers/overseas',
         config: {
             handler: Overseas.overseas
-        }
-    },
-
-    {
-        method: ['GET', 'POST'],
-        path: '/add-substance',
-        config: {
-            handler: Substances.add
         }
     },
 

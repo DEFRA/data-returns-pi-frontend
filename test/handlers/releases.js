@@ -147,12 +147,12 @@ experiment('Releases', async () => {
             }
         });
         expect(response.statusCode).to.equal(302);
-        expect(response.headers.location).to.equal('/add-substance');
+        expect(response.headers.location).to.equal('/releases/air/add-substance');
 
         // Get the substances page
         response = await server.server.inject({
             method: 'GET',
-            url: '/add-substance',
+            url: '/releases/air/add-substance',
             headers: { cookie: 'sid=' + internals.sid }
         });
         expect(response.statusCode).to.equal(200);
@@ -160,7 +160,7 @@ experiment('Releases', async () => {
         // Select alderin
         response = await server.server.inject({
             method: 'POST',
-            url: '/add-substance',
+            url: '/releases/air/add-substance',
             headers: { cookie: 'sid=' + internals.sid },
             payload: {
                 substanceId: '506'

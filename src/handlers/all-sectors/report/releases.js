@@ -8,8 +8,7 @@ const logger = require('../../../lib/logging').logger;
 const MasterDataService = require('../../../service/master-data');
 const Validator = require('../../../lib/validator');
 const CacheKeyError = require('../../../lib/user-cache-policies').CacheKeyError;
-const TaskListService = require('../../../service/task-list');
-const AllSectorsTaskList = require('../../../model/all-sectors/task-list');
+const cacheHelper = require('../common').cacheHelper;
 
 const internals = {
 
@@ -105,21 +104,11 @@ module.exports = {
      */
     confirm: async (request, reply) => {
         try {
-            const route = TaskListService.getRoute(AllSectorsTaskList, request);
-            const permitStatus = await request.server.app.userCache.cache('permit-status').get(request);
-            const eaId = await request.server.app.userCache.cache('submission-status').get(request);
-
-            if (!permitStatus || !route || !eaId) {
-                throw new CacheKeyError('Invalid cache state');
-            }
-
-            permitStatus.currentTask = route.name;
-            await request.server.app.userCache.cache('permit-status').set(request, permitStatus);
+            const { route, tasks } = await cacheHelper(request);
 
             if (request.method === 'get') {
-                const tasks = await request.server.app.userCache.cache('tasks').get(request);
 
-                if (tasks && tasks.releases && Object.entries(tasks.releases).length > 0) {
+                if (Object.entries(tasks.releases).length > 0) {
 
                     // Clean up any unconfirmed releases
                     let haveUnconfirmed = false;
@@ -137,6 +126,7 @@ module.exports = {
                     // If releases exist then go straight to the release page
                     if (Object.entries(tasks.releases).length > 0) {
                         reply.redirect(route.page);
+
                     } else {
                         // Display the releases to air confirmation page
                         reply.view('all-sectors/report/confirm', {
@@ -154,13 +144,9 @@ module.exports = {
                 }
 
             } else {
-
-                // Process the confirmation - set the current route and redirect to the releases page
+                // Process the confirmation - the releases page
                 if (request.payload.confirmation === 'true') {
-                    permitStatus.currentTask = route.name;
-                    await request.server.app.userCache.cache('permit-status').set(request, permitStatus);
                     reply.redirect(route.page);
-
                 } else {
                     reply.redirect('/task-list');
                 }
@@ -184,16 +170,7 @@ module.exports = {
      */
     releases: async (request, reply) => {
         try {
-            const route = TaskListService.getRoute(AllSectorsTaskList, request);
-            const eaId = await request.server.app.userCache.cache('submission-status').get(request);
-            const permitStatus = await request.server.app.userCache.cache('permit-status').get(request);
-
-            if (!permitStatus || !route || !eaId) {
-                throw new CacheKeyError('Invalid cache state');
-            }
-
-            const tasks = await request.server.app.userCache.cache('tasks').get(request) ||
-                await TaskListService.newTasksObject(AllSectorsTaskList, request);
+            const { route, submissionStatus, tasks } = await cacheHelper(request);
 
             // Enrich the stored object for page presentation - add descriptions
             const releases = await Promise.all(Object.keys(tasks.releases).map(async id => {
@@ -211,7 +188,7 @@ module.exports = {
             // Get the units list
             const units = await MasterDataService.getUnits();
 
-            reply.view('all-sectors/report/releases', { route: route.name, eaId: eaId.name, releases: releases, units: units });
+            reply.view('all-sectors/report/releases', { route: route.name, eaId: submissionStatus.name, releases: releases, units: units });
         } catch (err) {
             if (err instanceof CacheKeyError) {
                 reply.redirect('/');
@@ -225,14 +202,9 @@ module.exports = {
     /**
      * Save action
      */
-    action: async (request, reply, task) => {
+    action: async (request, reply) => {
         try {
-            const route = TaskListService.getRoute(AllSectorsTaskList, request);
-            const tasks = await request.server.app.userCache.cache('tasks').get(request);
-
-            if (!tasks || !route) {
-                throw new CacheKeyError('invalid cache state');
-            }
+            const { route, tasks } = await cacheHelper(request);
 
             // Save the submission
             await internals.save(request, tasks);
@@ -302,7 +274,7 @@ module.exports = {
             } else if (request.payload.add) {
                 // Save the release information to the cache and redirect to the add-substances page
                 await request.server.app.userCache.cache('tasks').set(request, tasks);
-                reply.redirect('/add-substance');
+                reply.redirect(route.page + '/add-substance');
             }
         } catch (err) {
             if (err instanceof CacheKeyError) {
