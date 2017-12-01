@@ -86,18 +86,23 @@ module.exports = {
     remove: async (request, reply) => {
         try {
             const tasks = await request.server.app.userCache.cache('tasks').get(request);
-            const release = tasks.releases[tasks.currentSubstanceId];
-            const route = Releases.getRoute(request);
 
             // Check for tasks
-            if (!tasks || !release || !route) {
+            if (!tasks) {
                 throw new CacheKeyError('invalid cache state');
             }
 
+            const release = tasks.releases[tasks.currentSubstanceId];
+            const route = Releases.getRoute(request);
+            const substance = await MasterDataService.getSubstanceById(Number.parseInt(tasks.currentSubstanceId));
+
             if (request.method === 'get') {
-                reply.view('all-sectors/report/confirm-delete', {route: route.name, release: release});
+                release.substance = substance;
+                reply.view('all-sectors/report/confirm-delete', { route: route.name, release: release });
             } else {
-                reply.view('all-sectors/report/confirm-delete');
+                delete tasks.releases[tasks.currentSubstanceId];
+                await request.server.app.userCache.cache('tasks').set(request, tasks);
+                reply.redirect(route.page);
             }
         } catch (err) {
             if (err instanceof CacheKeyError) {

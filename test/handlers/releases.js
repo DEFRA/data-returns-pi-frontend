@@ -280,6 +280,44 @@ experiment('Releases', async () => {
             headers: { cookie: 'sid=' + internals.sid }
         });
         expect(response.statusCode).to.equal(200);
+
+        // Test removal of substance
+        response = await server.server.inject({
+            method: 'POST',
+            url: '/releases/air/action',
+            headers: {cookie: 'sid=' + internals.sid},
+            payload: {
+                'value-506': '10',
+                'unitId-506': '5',
+                'delete-506': 'Delete'
+            }
+        });
+        expect(response.statusCode).to.equal(302);
+        expect(response.headers.location).to.equal('/releases/air/remove');
+
+        // request the task list again
+        response = await server.server.inject({
+            method: 'GET',
+            url: '/releases/air/remove',
+            headers: { cookie: 'sid=' + internals.sid }
+        });
+        expect(response.statusCode).to.equal(200);
+
+        response = await server.server.inject({
+            method: 'POST',
+            url: '/releases/air/remove',
+            headers: {cookie: 'sid=' + internals.sid}
+        });
+
+        expect(response.statusCode).to.equal(302);
+        expect(response.headers.location).to.equal('/releases/air');
+
+        response = await server.server.inject({
+            method: 'GET',
+            url: '/releases/air',
+            headers: { cookie: 'sid=' + internals.sid }
+        });
+        expect(response.statusCode).to.equal(200);
     });
 
     test('Log out', async () => {

@@ -2,37 +2,34 @@
 
 {% macro form(header, route) %}
 <h1 class="heading-large">{{ header }}</h1>
-<form action="/releases/land/confirm-delete" method="post" class="form">
+<form action="{{ route }}/remove" method="post" class="form">
     <div class="form-group">
-        <fieldset class="inline">
-            <div class="multiple-choice">
-                <input id="radio-1" type="radio" name="confirmation" value="true">
-                <label for="radio-1">Yes</label>
-            </div>
-            <div class="multiple-choice">
-                <input id="radio-2" type="radio" name="confirmation" value="false" checked>
-                <label for="radio-2">No</label>
-            </div>
-        </fieldset>
+        <input class="button" type="submit" value="Remove">
     </div>
     <div class="form-group">
-        <input class="button" type="submit" value="Continue">
+        <a href="{{ route }}">Cancel and go back</a>
     </div>
 </form>
 {% endmacro %}
 
 {% block content %}
 <main id="content">
-    <label id="page-name" hidden>releases</label>
-    {% if route === 'RELEASES_TO_LAND'%}
-        {{ form('Confirm removal of substance released to land?') }}
+    <label id="page-name" hidden>confirm-delete</label>
+
+    {% if route === 'RELEASES_TO_LAND' %}
+        {% set hdr = 'Confirm you want to remove the release to land of ' +  release.substance.name %}
+        {{ form(hdr, '/releases/land') }}
     {% elif route === 'RELEASES_TO_AIR' %}
-        {{ form('Confirm removal of substances to air?') }}
+        {% set hdr = 'Confirm you want to remove the release to air of ' +  release.substance.name %}
+        {{ form('Confirm you want to remove the release to air of carbon dioxide', '/releases/air') }}
     {% elif route === 'RELEASES_TO_CONTROLLED_WATERS' %}
-        {{ form('Confirm removal of substance release to controlled waters?') }}
+        {% set hdr = 'Confirm you want to remove controlled waters of ' +  release.substance.name %}
+        {{ form('Confirm you want to remove the release to controlled waters of carbon dioxide', '/releases/water') }}
     {% elif route === 'OFFSITE_TRANSFERS_IN_WASTE_WATER' %}
-        {{ form('Confirm removal of substance released off-site in waste water?') }}
+        {% set hdr = 'Confirm you want to remove the release in waste water of ' +  release.substance.name %}
+        {{ form('Confirm you want to remove the release waste water of carbon dioxide', '/releases/waste-water') }}
     {% endif %}
+
 </main>
 {% endblock %}
 

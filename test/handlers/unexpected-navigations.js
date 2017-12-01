@@ -102,8 +102,18 @@ experiment('Unexpected navigation', async () => {
         expect(response.headers.location).to.equal('/');
     });
 
+    test('Go to release remove page without first setting a permit', async () => {
+        const response = await server.server.inject({
+            method: 'GET',
+            url: '/releases/air/remove',
+            headers: { cookie: 'sid=' + internals.sid }
+        });
+        expect(response.statusCode).to.equal(302);
+        expect(response.headers.location).to.equal('/');
+    });
+
     test('Select a permit and go straight to the substances page', async () => {
-        let response = await server.server.inject({
+        const response = await server.server.inject({
             method: 'POST',
             url: '/select-permit',
             headers: { cookie: 'sid=' + internals.sid },
@@ -130,6 +140,28 @@ experiment('Unexpected navigation', async () => {
         response = await server.server.inject({
             method: 'GET',
             url: '/releases/air/detail',
+            headers: { cookie: 'sid=' + internals.sid }
+        });
+        expect(response.statusCode).to.equal(302);
+        expect(response.headers.location).to.equal('/');
+    });
+
+    test('Select a permit and go straight to the removal page', async () => {
+        let response = await server.server.inject({
+            method: 'POST',
+            url: '/select-permit',
+            headers: { cookie: 'sid=' + internals.sid },
+            payload: {
+                eaId: 'AB7469'
+            }
+        });
+
+        expect(response.statusCode).to.equal(302);
+        expect(response.headers.location).to.equal('/task-list');
+
+        response = await server.server.inject({
+            method: 'GET',
+            url: '/releases/air/remove',
             headers: { cookie: 'sid=' + internals.sid }
         });
         expect(response.statusCode).to.equal(302);
