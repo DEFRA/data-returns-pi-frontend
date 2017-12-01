@@ -72,9 +72,7 @@ module.exports = {
 
             if (!permitStatus) {
                 // Initialize a permit status if not exists
-                const keys = TaskListService.names(TaskList);
                 permitStatus = {};
-                keys.forEach(n => { permitStatus[n] = {}; });
             } else {
                 // Always unset the current task
                 delete permitStatus.currentTask;

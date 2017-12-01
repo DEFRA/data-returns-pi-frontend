@@ -88,7 +88,7 @@ const internals = {
     },
 
     unitTest: {
-        // Used for the lab tests that start the server
+        // Used for the lab tests
         name: 'unit-test',
         keyFunc: async (request) => {
             try {

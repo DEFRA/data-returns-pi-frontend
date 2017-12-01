@@ -6,7 +6,7 @@
 // const Errors = require('../model/all-sectors/errors');
 const Joi = require('joi');
 
-const BELOW_REGULATORY_THRESHOLD = 'BRT';
+const BELOW_REPORTING_THRESHOLD = 'BRT';
 
 /*
  * The joi validation object for a single release object.
@@ -15,7 +15,7 @@ const releaseSchema = Joi.object({
 
     // The value must either be a floating point number or BRT
     value: Joi.alternatives().try(
-        Joi.string().valid(BELOW_REGULATORY_THRESHOLD).trim().insensitive().label('PI-1000'),
+        Joi.string().valid(BELOW_REPORTING_THRESHOLD).trim().insensitive().label('PI-1000'),
         Joi.string().regex(/^[-+]?[0-9]*\.?[0-9]+$/).label('PI-1000'),
         Joi.number().label('PI-1000')
     ).required().label('PI-1000'),
@@ -23,7 +23,7 @@ const releaseSchema = Joi.object({
     // If value is a number then we must have a unit. If BRT then a unit is forbidden
     unitId: Joi.any().when('value', {
         is:
-          Joi.string().exist().valid(BELOW_REGULATORY_THRESHOLD).trim().insensitive(),
+          Joi.string().exist().valid(BELOW_REPORTING_THRESHOLD).trim().insensitive(),
         then:
           Joi.any().valid(null).label('PI-1001'),
         otherwise:

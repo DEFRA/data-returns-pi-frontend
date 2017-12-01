@@ -142,20 +142,20 @@ module.exports = {
         return {
             // Returns a promise to retrieve the value in the policy for key
             get: async (request) => {
-                const keyPrefix = await internals.policies[policyKey].keyFunc(request);
-                return getter(internals.policies[policyKey].policy, keyPrefix);
+                const key = await internals.policies[policyKey].keyFunc(request);
+                return getter(internals.policies[policyKey].policy, key);
             },
 
             // Returns a promise to set the value in the policy for key
             set: async (request, value) => {
-                const keyPrefix = await internals.policies[policyKey].keyFunc(request);
-                return setter(internals.policies[policyKey].policy, keyPrefix, value);
+                const key = await internals.policies[policyKey].keyFunc(request);
+                return setter(internals.policies[policyKey].policy, key, value);
             },
 
             // Returns a promise to remove the value in the policy for key
             drop: async (request) => {
-                const keyPrefix = await internals.policies[policyKey].keyFunc(request);
-                return dropper(internals.policies[policyKey].policy, keyPrefix);
+                const key = await internals.policies[policyKey].keyFunc(request);
+                return dropper(internals.policies[policyKey].policy, key);
             }
         };
     }
