@@ -167,7 +167,7 @@ module.exports = internals = {
     /**
      * Return a list of the value methods
      */
-    getMethods: function () {
+    getMethods: async () => {
         return Data.methods;
     },
 
@@ -175,7 +175,7 @@ module.exports = internals = {
      * Return a specific method by Id
      * @param id
      */
-    getMethodById: function (id) {
+    getMethodById: async (id) => {
         return Data.methods.find(m => m.id === id);
     },
 
@@ -224,50 +224,14 @@ module.exports = internals = {
                     const _activity = internals._ewcActivity.get(_chapter.activity);
 
                     if (_activity) {
-                        result.activity = _activity.activity;
-                        result.activity_description = _activity.description;
-                        result.chapter = _chapter.chapter;
-                        result.chapter_description = _chapter.description;
-                        result.subchapter = _subchapter.subchapter;
-                        result.subchapter_description = _subchapter.description;
+                        result.activityId = _activity.id;
+                        result.chapterId = _chapter.id;
+                        result.subChapterId = _subchapter.id;
 
                         return result;
                     }
                 }
             }
-
-            return null;
-        }
-
-        if (activity && chapter) {
-            const _chapter = internals._ewcChapter.get(activity + '-' + chapter);
-
-            if (_chapter) {
-                const _activity = internals._ewcActivity.get(_chapter.activity);
-
-                if (_activity) {
-                    result.activity = _activity.activity;
-                    result.activity_description = _activity.description;
-                    result.chapter = _chapter.chapter;
-                    result.chapter_description = _chapter.description;
-
-                    return result;
-                }
-            }
-
-            return null;
-        }
-
-        if (activity) {
-            const _activity = internals._ewcActivity.get(activity);
-
-            if (_activity) {
-                result.activity = _activity.activity;
-                result.activity_description = _activity.description;
-                return result;
-            }
-
-            return null;
         }
 
         return null;

@@ -119,25 +119,12 @@ experiment('Master data service', function () {
         expect(method.name).to.equal('Measurement');
     });
 
-    test('getEwcActivity()', async () => {
-        const ewc = await MasterDataService.getEwc('01');
-        expect(ewc).to.be.an.object();
-        expect(ewc.activity).to.equal('01');
-    });
-
-    test('getEwcChapter()', async () => {
-        const ewc = await MasterDataService.getEwc('01', '01');
-        expect(ewc).to.be.an.object();
-        expect(ewc.activity).to.equal('01');
-        expect(ewc.chapter).to.equal('01');
-    });
-
     test('getEwcSubchapter()', async () => {
         const ewc = await MasterDataService.getEwc('01', '01', '01');
         expect(ewc).to.be.an.object();
-        expect(ewc.activity).to.equal('01');
-        expect(ewc.chapter).to.equal('01');
-        expect(ewc.subchapter).to.equal('01');
+        expect(ewc.activityId).to.equal(1);
+        expect(ewc.chapterId).to.equal(1);
+        expect(ewc.subChapterId).to.equal(1342);
     });
 
     test('getEwcActivity(): none', async () => {

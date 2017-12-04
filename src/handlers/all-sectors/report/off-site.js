@@ -4,21 +4,16 @@
  * Route handlers for reporting overseas waste transfers
  */
 const logger = require('../../../lib/logging').logger;
+const MasterDataService = require('../../../service/master-data');
 const CacheKeyError = require('../../../lib/user-cache-policies').CacheKeyError;
-const TaskListService = require('../../../service/task-list');
-const AllSectorsTaskList = require('../../../model/all-sectors/task-list');
-
-const route = TaskListService.mapByPathParameter(AllSectorsTaskList).get('off-site');
+const cacheHelper = require('../common').cacheHelper;
+const Validator = require('../../../lib/validator');
 
 module.exports = {
     confirm: async (request, reply) => {
         try {
-            const permitStatus = await request.server.app.userCache.cache('permit-status').get(request);
-            const eaId = await request.server.app.userCache.cache('submission-status').get(request);
 
-            if (!permitStatus || !eaId) {
-                throw new CacheKeyError('invalid cache state');
-            }
+            const { route, permitStatus } = await cacheHelper(request, 'off-site');
 
             if (request.method === 'get') {
                 reply.view('all-sectors/report/confirm', {
@@ -55,17 +50,65 @@ module.exports = {
 
         try {
 
-            const tasks = await request.server.app.userCache.cache('tasks').get(request) ||
-                await TaskListService.newTasksObject(AllSectorsTaskList, request);
+            const { tasks } = await cacheHelper(request, 'off-site');
 
-            console.log(tasks);
-            /*
-             *
-             * tasks.offsiteTransfers
-             * console.log(tasks);
-             */
+            if (request.method === 'get') {
+                if (tasks.offsiteTransfers.length === 0) {
+                    reply.redirect('/transfers/off-site/detail');
+                } else {
+                    reply.view('all-sectors/report/off-site');
+                }
+            }
 
-            reply.view('all-sectors/report/off-site');
+        } catch (err) {
+            if (err instanceof CacheKeyError) {
+                reply.redirect('/');
+            } else {
+                logger.log('error', err);
+                reply.redirect('/logout');
+            }
+        }
+    },
+
+    /**
+     * The off-site detail page
+     * @param request
+     * @param reply
+     * @return {Promise.<void>}
+     */
+    detail: async (request, reply) => {
+        try {
+            // const { tasks } = await cacheHelper(request, 'off-site');
+
+            if (request.method === 'get') {
+
+                // Display the off site detail page (add/change off-site waste transfer)
+                reply.view('all-sectors/report/off-site-detail');
+            } else {
+                const { ewc, wfd, value } = request.payload;
+                const ewcCode = await Validator.ewcParse(ewc);
+
+                let disposal = null;
+                let recovery = null;
+
+                if (wfd) {
+                    disposal = await MasterDataService.getDisposalCode(wfd.toUpperCase());
+                    if (!disposal) {
+                        recovery = await MasterDataService.getRecoveryCode(wfd.toUpperCase());
+                    }
+                }
+
+                const offsiteTransfer = {
+                    ewc: ewcCode ? { activityId: ewcCode.activityId, chapterId: ewcCode.chapterId, subChapterId: ewcCode.subChapterId } : null,
+                    wfd: { disposalId: disposal ? disposal.id : null, recoveryId: recovery ? recovery.id : null },
+                    value: value
+                };
+
+                const validation = await Validator.offsite(offsiteTransfer);
+
+                reply.redirect('/transfers/off-site/detail');
+            }
+
         } catch (err) {
             if (err instanceof CacheKeyError) {
                 reply.redirect('/');
@@ -75,4 +118,5 @@ module.exports = {
             }
         }
     }
+
 };

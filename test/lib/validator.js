@@ -6,12 +6,17 @@ const lab = exports.lab = Lab.script();
 const Code = require('code');
 
 const releaseValidator = require('../../src/lib/validator').release;
+const ewcParse = require('../../src/lib/validator').ewcParse;
+const offsiteValidator = require('../../src/lib/validator').offsite;
+
+const MasterDataService = require('../../src/service/master-data');
 
 const experiment = lab.experiment;
 const test = lab.test;
 const expect = Code.expect;
 
-experiment('Validation', () => {
+experiment('Validation', async () => {
+
     // Should give no value and no method errors
     test('Empty object', () => {
         const releaseObj = {};
@@ -94,6 +99,61 @@ experiment('Validation', () => {
         const validation = releaseValidator(releaseObj);
         expect(validation).to.be.not.null();
         expect(validation).to.include({'key': 'unitId', 'errno': 'PI-1002'});
+    });
+
+    test('Valid ewc strings', async () => {
+        const expObj = await MasterDataService.getEwc(10, 11, 12);
+        let ewc = await ewcParse('10 11 12');
+        expect(ewc).to.be.not.null();
+        expect(ewc).to.equal(expObj);
+
+        ewc = await ewcParse('10.11.12');
+        expect(ewc).to.be.not.null();
+        expect(ewc).to.equal(expObj);
+
+        ewc = await ewcParse(' 10  11  12 ');
+        expect(ewc).to.be.not.null();
+        expect(ewc).to.equal(expObj);
+
+        ewc = await ewcParse('101112');
+        expect(ewc).to.be.not.null();
+        expect(ewc).to.equal(expObj);
+
+        ewc = await ewcParse('10-11-12');
+        expect(ewc).to.be.not.null();
+        expect(ewc).to.equal(expObj);
+    });
+
+    test('Invalid ewc strings', async () => {
+        let ewc = await ewcParse('10 11');
+        expect(ewc).to.be.null();
+
+        ewc = await ewcParse('10/11/12');
+        expect(ewc).to.be.null();
+
+        ewc = await ewcParse('99 11 12');
+        expect(ewc).to.be.null();
+
+        ewc = await ewcParse('Bloody monday morning!');
+        expect(ewc).to.be.null();
+    });
+
+    test('Valid off-site transfer object part 1', async () => {
+        const validObj = {
+            ewc: {
+                activityId: 1,
+                chapterId: 1,
+                subChapterId: 1342
+            },
+            wfd: {
+                disposalId: 5,
+                recoveryId: null
+            },
+            value: 236.89
+        };
+
+        const validation = await offsiteValidator(validObj);
+        expect(validation).to.be.null();
     });
 
 });

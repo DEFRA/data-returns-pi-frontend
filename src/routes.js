@@ -173,7 +173,7 @@ const dynamicHandlers = [
     },
 
     {
-        method: 'GET',
+        method: ['GET', 'POST'],
         path: '/transfers/off-site',
         config: {
             handler: OffSite.offSite
@@ -184,6 +184,14 @@ const dynamicHandlers = [
         method: ['GET', 'POST'],
         path: '/transfers/off-site/confirm',
         handler: OffSite.confirm
+    },
+
+    {
+        method: ['GET', 'POST'],
+        path: '/transfers/off-site/detail',
+        config: {
+            handler: OffSite.detail
+        }
     },
 
     {

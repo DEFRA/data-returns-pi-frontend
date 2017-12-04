@@ -43,7 +43,7 @@ module.exports = {
                 const units = await MasterDataService.getUnits();
 
                 // Display the detail page
-                reply.view('all-sectors/report/detail', { route: route.name, release: release, methods: methods, units: units });
+                reply.view('all-sectors/report/release-detail', { route: route.name, release: release, methods: methods, units: units });
             } else {
 
                 // Set the task detail elements

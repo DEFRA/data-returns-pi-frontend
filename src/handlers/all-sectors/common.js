@@ -11,13 +11,17 @@ module.exports = {
      * Wrapper for the common cache get functions in handlers
      * which will throw CacheKeyError on an unexpected read. Some redundant reads
      * but simplifies
-     * @param request
+     * @param request - extract the route from the request
+     * @param routeParameter - supply the route identifier
      * @returns  {Promise.<{route: *, submissionStatus: *, permitStatus: *, tasks: *}>}
      */
-    cacheHelper: async (request) => {
+    cacheHelper: async (request, routeParameter) => {
 
         try {
-            const route = TaskListService.getRoute(AllSectorsTaskList, request);
+
+            const route = routeParameter ? TaskListService.mapByPathParameter(AllSectorsTaskList).get(routeParameter)
+                : TaskListService.getRoute(AllSectorsTaskList, request);
+
             const submissionStatus = await request.server.app.userCache.cache('submission-status').get(request);
             const permitStatus = await request.server.app.userCache.cache('permit-status').get(request);
 

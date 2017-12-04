@@ -94,9 +94,10 @@ const initialize = async () => {
             html: {
                 compile: function (src, options) {
 
-                    // Store the templates on compilation
+                    // Store the templates on compilation unless local
                     let template = null;
-                    if (templates.has(options.filename)) {
+
+                    if (templates.has(options.filename) && process.env.NODE_ENV !== 'local') {
                         template = templates.get(options.filename);
                     } else {
                         template = Nunjucks.compile(src, options.environment);
