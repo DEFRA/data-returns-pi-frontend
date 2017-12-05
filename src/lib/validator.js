@@ -5,7 +5,7 @@
  */
 
 const MasterDataService = require('../../src/service/master-data');
-
+const findOffsiteTransfer = require('../handlers/all-sectors/report/off-site').findOffsiteTransfer;
 const isNumeric = require('./utils').isNumeric;
 
 const isBrt = (value) => {
@@ -48,7 +48,7 @@ module.exports = {
      * @param offsite
      * @return {*}
      */
-    offsite: async (offsite) => {
+    offsite: async (tasks, offsite) => {
         const result = [];
         if (!isNumeric(offsite.value)) {
             result.push({ key: 'value', errno: 'PI-2000' });
@@ -62,6 +62,11 @@ module.exports = {
         // Test the waste code
         if (!isNumeric(offsite.wfd.disposalId) && !isNumeric(offsite.wfd.recoveryId)) {
             result.push({ key: 'ewc', errno: 'PI-2002' });
+        }
+
+        // Test if it already exists
+        if (findOffsiteTransfer(tasks, offsite) !== -1) {
+            result.push({ key: 'offsite', errno: 'PI-2003' });
         }
 
         return result.length > 0 ? result : null;

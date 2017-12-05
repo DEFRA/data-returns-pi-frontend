@@ -152,8 +152,8 @@ experiment('Validation', async () => {
             value: 236.89
         };
 
-        const validation = await offsiteValidator(validObj);
-        expect(validation).to.be.null();
+        const validation = await offsiteValidator(null, validObj);
+        expect(validation).to.contain({ key: 'offsite', errno: 'PI-2003' });
     });
 
 });
