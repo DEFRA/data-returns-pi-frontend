@@ -18,7 +18,6 @@ const allSectorsTaskList = require('../../../src/model/all-sectors/task-list');
 const resultInclude = {
 
     name: 'test',
-    newTasksObject: () => {},
 
     stages: [
         {
@@ -63,7 +62,6 @@ const resultInclude = {
 const resultExclude = {
 
     name: 'test',
-    newTasksObject: () => {},
 
     stages: [
         {
@@ -90,7 +88,6 @@ const resultExclude = {
 const resultStatus = {
 
     name: 'test',
-    newTasksObject: () => {},
 
     stages: [
         {

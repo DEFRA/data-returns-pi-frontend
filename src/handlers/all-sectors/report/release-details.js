@@ -53,8 +53,7 @@ module.exports = {
                 // Set up the release object
                 currentRelease.unitId = Number.isNaN(Number.parseInt(unitId)) ? null : Number.parseInt(unitId);
                 currentRelease.methodId = Number.isNaN(Number.parseInt(methodId)) ? null : Number.parseInt(methodId);
-                currentRelease.value = value;
-                currentRelease.confirmed = true;
+                currentRelease.value = Number.isNaN(Number.parseFloat(value)) ? value : Number.parseFloat(value);
 
                 delete currentRelease.errors;
 
@@ -67,11 +66,11 @@ module.exports = {
                     await request.server.app.userCache.cache('tasks').set(request, tasks);
                     reply.redirect(route.page + '/detail');
                 } else {
-                    // Write the (removed) validations to the cache
+                    // Write the (removed) validations and cleared unconfirmed flag to the cache
+                    delete currentRelease.unconfirmed;
                     await request.server.app.userCache.cache('tasks').set(request, tasks);
                     reply.redirect(route.page);
                 }
-
             }
         } catch (err) {
             if (err instanceof CacheKeyError) {

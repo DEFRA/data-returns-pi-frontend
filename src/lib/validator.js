@@ -3,6 +3,7 @@
 /**
  * Validate a release object
  */
+
 const MasterDataService = require('../../src/service/master-data');
 
 const isNumeric = require('./utils').isNumeric;
@@ -11,27 +12,10 @@ const isBrt = (value) => {
     return value && typeof value === 'string' && value.toUpperCase().trim() === 'BRT';
 };
 
-/*
- * {'key': 'unitId', 'errno': 'PI-1002'}
- */
-
-/*
- * ewc: {
- * activityId: 1,
- * chapterId: 1,
- * subChapterId: 1342
- * },
- * wfd: {
- * disposalId: 5,
- * recoveryId: null
- * },
- *value: 236.89
- */
-
 module.exports = {
     /**
      * Validate a single release.
-     * separate error detail for each alternative value
+     * separate error add for each alternative value
      * @param release - the release objects. Modified to include validation details
      * @return returns an array like [ { key: 'key', label: 'error' } ] or undefined if valid
      */
@@ -76,7 +60,7 @@ module.exports = {
         }
 
         // Test the waste code
-        if (!isNumeric(offsite.wfd.disposalId) || !isNumeric(offsite.wfd.recoveryId)) {
+        if (!isNumeric(offsite.wfd.disposalId) && !isNumeric(offsite.wfd.recoveryId)) {
             result.push({ key: 'ewc', errno: 'PI-2002' });
         }
 

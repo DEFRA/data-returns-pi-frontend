@@ -1,19 +1,40 @@
 'use strict';
 
 /**
- * Route handlers for reporting overseas waste transfers
+ * Route handlers for reporting off-site waste transfers
  */
+const _ = require('lodash');
 const logger = require('../../../lib/logging').logger;
 const MasterDataService = require('../../../service/master-data');
 const CacheKeyError = require('../../../lib/user-cache-policies').CacheKeyError;
 const cacheHelper = require('../common').cacheHelper;
 const Validator = require('../../../lib/validator');
 
+const internals = {
+    /**
+     * Test if a given offsite waste transfer already exists in the tasks cache
+     * @param tasks - The tasks cache
+     * @param offsiteTransfer - The
+     * @return {*}
+     */
+    findOffsiteTransfer: (tasks, offsiteTransfer) => {
+        try {
+            return tasks.offsiteTransfers.findIndex(t =>
+                t.ewc.activityId === offsiteTransfer.ewc.activityId &&
+                t.ewc.chapterId === offsiteTransfer.ewc.chapterId &&
+                t.ewc.subChapterId === offsiteTransfer.ewc.subChapterId &&
+                (t.wfd.disposalId === offsiteTransfer.wfd.disposalId ||
+                    t.wfd.recoveryId === offsiteTransfer.wfd.recoveryId));
+        } catch (err) {
+            return false;
+        }
+    }
+};
+
 module.exports = {
     confirm: async (request, reply) => {
         try {
-
-            const { route, permitStatus } = await cacheHelper(request, 'off-site');
+            const { route } = await cacheHelper(request, 'off-site');
 
             if (request.method === 'get') {
                 reply.view('all-sectors/report/confirm', {
@@ -23,8 +44,6 @@ module.exports = {
             } else {
                 // Process the confirmation - set the current route and redirect to the releases page
                 if (request.payload.confirmation === 'true') {
-                    permitStatus.currentTask = route.name;
-                    await request.server.app.userCache.cache('permit-status').set(request, permitStatus);
                     reply.redirect(route.page);
                 } else {
                     reply.redirect('/task-list');
@@ -47,14 +66,12 @@ module.exports = {
      * @return {undefined}
      */
     offSite: async (request, reply) => {
-
         try {
-
             const { tasks } = await cacheHelper(request, 'off-site');
 
             if (request.method === 'get') {
-                if (tasks.offsiteTransfers.length === 0) {
-                    reply.redirect('/transfers/off-site/detail');
+                if (!tasks.offsiteTransfers || tasks.offsiteTransfers.length === 0) {
+                    reply.redirect('/transfers/off-site/add');
                 } else {
                     reply.view('all-sectors/report/off-site');
                 }
@@ -71,42 +88,79 @@ module.exports = {
     },
 
     /**
-     * The off-site detail page
+     * The off-site add page
      * @param request
      * @param reply
      * @return {Promise.<void>}
      */
-    detail: async (request, reply) => {
+    add: async (request, reply) => {
         try {
-            // const { tasks } = await cacheHelper(request, 'off-site');
+            const { tasks } = await cacheHelper(request, 'off-site');
 
             if (request.method === 'get') {
 
-                // Display the off site detail page (add/change off-site waste transfer)
-                reply.view('all-sectors/report/off-site-detail');
+                // Display the off site add page (add/change off-site waste transfer)
+                reply.view('all-sectors/report/off-site-add');
             } else {
-                const { ewc, wfd, value } = request.payload;
+
+                // Add a new transfers array to the task object if it does not exist
+                if (!tasks.offsiteTransfers) {
+                    tasks.offsiteTransfers = [];
+                }
+
+                let { ewc, wfd, value } = request.payload;
                 const ewcCode = await Validator.ewcParse(ewc);
 
+                value = Number.isNaN(Number.parseFloat(value)) ? value : Number.parseFloat(value);
+
+                // Set the disposal and recovery codes
                 let disposal = null;
                 let recovery = null;
 
                 if (wfd) {
                     disposal = await MasterDataService.getDisposalCode(wfd.toUpperCase());
+
                     if (!disposal) {
                         recovery = await MasterDataService.getRecoveryCode(wfd.toUpperCase());
                     }
                 }
 
+                // Create an off-site waste transfer object
                 const offsiteTransfer = {
-                    ewc: ewcCode ? { activityId: ewcCode.activityId, chapterId: ewcCode.chapterId, subChapterId: ewcCode.subChapterId } : null,
+                    ewc: ewcCode ? {
+                        activityId: ewcCode.activityId,
+                        chapterId: ewcCode.chapterId,
+                        subChapterId: ewcCode.subChapterId
+                    } : null,
+
                     wfd: { disposalId: disposal ? disposal.id : null, recoveryId: recovery ? recovery.id : null },
+
                     value: value
                 };
 
-                const validation = await Validator.offsite(offsiteTransfer);
+                const validationErrors = await Validator.offsite(offsiteTransfer);
 
-                reply.redirect('/transfers/off-site/detail');
+                let offsiteTransferIdx = internals.findOffsiteTransfer(tasks, offsiteTransfer);
+
+                if (offsiteTransferIdx === -1) {
+                    tasks.offsiteTransfers.push(offsiteTransfer);
+                    offsiteTransferIdx = 0;
+                } else {
+                    tasks.offsiteTransfers[offsiteTransferIdx] = _.cloneDeep(offsiteTransfer);
+                }
+
+                if (!validationErrors) {
+                    // If there are no validation errors saved the tasks and redirect to the off-site waste transfers screen
+                    delete tasks.offsiteTransfers[offsiteTransferIdx].error;
+                    await request.server.app.userCache.cache('tasks').set(request, tasks);
+                    reply.redirect('/transfers/off-site');
+                } else {
+                    // If there are validation errors saved append the errors to the transfer object and redirect back to the start page
+                    tasks.offsiteTransfers[offsiteTransferIdx].error = validationErrors;
+                    tasks.currentOffsiteTransferId = offsiteTransferIdx;
+                    await request.server.app.userCache.cache('tasks').set(request, tasks);
+                    reply.redirect('/transfers/off-site/add');
+                }
             }
 
         } catch (err) {

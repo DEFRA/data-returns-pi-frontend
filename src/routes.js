@@ -188,9 +188,9 @@ const dynamicHandlers = [
 
     {
         method: ['GET', 'POST'],
-        path: '/transfers/off-site/detail',
+        path: '/transfers/off-site/add',
         config: {
-            handler: OffSite.detail
+            handler: OffSite.add
         }
     },
 

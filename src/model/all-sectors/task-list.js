@@ -10,18 +10,6 @@ module.exports = {
     // The name of the task list
     name: 'all-sectors',
 
-    /**
-     * A function to generate an object to hold a state of the tasks
-     * it is only called by the tasklist service and is here
-     * @returns {{}}
-     */
-    newTasksObject: () => {
-        const tasks = {};
-        tasks.releases = {};
-        tasks.offsiteTransfers = [];
-        return tasks;
-    },
-
     // Three stages
     stages: [
 

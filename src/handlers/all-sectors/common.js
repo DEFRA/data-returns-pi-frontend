@@ -33,9 +33,8 @@ module.exports = {
             permitStatus.currentTask = route.name;
             await request.server.app.userCache.cache('permit-status').set(request, permitStatus);
 
-            // Tasks create a new task if necessary
-            const tasks = await request.server.app.userCache.cache('tasks').get(request) ||
-            await TaskListService.newTasksObject(AllSectorsTaskList, request);
+            // Get the tasks object or create an empty new one
+            const tasks = await request.server.app.userCache.cache('tasks').get(request) || {};
 
             return {
                 route: route,

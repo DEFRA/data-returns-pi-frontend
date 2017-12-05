@@ -19,14 +19,16 @@ const internals = {
      * @return {Promise.<void>}
      */
     save: async (request, tasks) => {
-        Object.keys(tasks.releases).forEach(s => {
-            // Strip the value from the payload and add to the tasks objects
-            tasks.releases[s].value = request.payload['value-' + s];
+        if (tasks.releases) {
+            Object.keys(tasks.releases).forEach(s => {
+                // Strip the value from the payload and add to the tasks objects
+                tasks.releases[s].value = request.payload['value-' + s];
 
-            // Strip the units from the payload and add to the tasks objects
-            const unitId = Number.parseInt(request.payload['unitId-' + s]);
-            tasks.releases[s].unitId = Number.isNaN(unitId) ? null : unitId;
-        });
+                // Strip the units from the payload and add to the tasks objects
+                const unitId = Number.parseInt(request.payload['unitId-' + s]);
+                tasks.releases[s].unitId = Number.isNaN(unitId) ? null : unitId;
+            });
+        }
     },
 
     /**
@@ -38,16 +40,20 @@ const internals = {
      * @return {Promise.<boolean>} - promises to be true if invalid
      */
     validate: async (request, tasks) => {
-        let isValid = true;
-        Object.keys(tasks.releases).forEach(s => {
-            delete tasks.releases[s].errors;
-            const validation = Validator.release(tasks.releases[s]);
-            if (validation) {
-                tasks.releases[s].errors = validation;
-                isValid = false;
-            }
-        });
-        return isValid;
+        if (tasks.releases) {
+            let isValid = true;
+            Object.keys(tasks.releases).forEach(s => {
+                delete tasks.releases[s].errors;
+                const validation = Validator.release(tasks.releases[s]);
+                if (validation) {
+                    tasks.releases[s].errors = validation;
+                    isValid = false;
+                }
+            });
+            return isValid;
+        }
+
+        return false;
     },
 
     /**
@@ -84,6 +90,30 @@ const internals = {
         } else {
             return 'NO_WARN';
         }
+    },
+
+    /**
+     * Clear any releases with the unconfirmed flag set - this can happen
+     * due to unexpected navigation
+     * @param request
+     * @param tasks
+     */
+    cleanUnconfirmed: async (request, tasks) => {
+        // Clean up any unconfirmed releases
+        if (tasks.releases) {
+            let haveUnconfirmed = false;
+
+            Object.entries(tasks.releases).forEach(async ([key, value]) => {
+                if (value.unconfirmed) {
+                    delete tasks.releases[key];
+                    haveUnconfirmed = true;
+                }
+            });
+
+            if (haveUnconfirmed) {
+                await request.server.app.userCache.cache('tasks').set(request, tasks);
+            }
+        }
     }
 };
 
@@ -108,20 +138,10 @@ module.exports = {
 
             if (request.method === 'get') {
 
-                if (Object.entries(tasks.releases).length > 0) {
+                if (tasks && tasks.releases && Object.entries(tasks.releases).length > 0) {
 
-                    // Clean up any unconfirmed releases
-                    let haveUnconfirmed = false;
-                    Object.entries(tasks.releases).forEach(async ([key, value]) => {
-                        if (!value.confirmed) {
-                            delete tasks.releases[key];
-                            haveUnconfirmed = true;
-                        }
-                    });
-
-                    if (haveUnconfirmed) {
-                        await request.server.app.userCache.cache('tasks').set(request, tasks);
-                    }
+                    // Clear any unconfirmed releases
+                    internals.cleanUnconfirmed(request, tasks);
 
                     // If releases exist then go straight to the release page
                     if (Object.entries(tasks.releases).length > 0) {
@@ -172,23 +192,33 @@ module.exports = {
         try {
             const { route, submissionStatus, tasks } = await cacheHelper(request);
 
+            // Clear any unconfirmed releases
+            internals.cleanUnconfirmed(request, tasks);
+
             // Enrich the stored object for page presentation - add descriptions
-            const releases = await Promise.all(Object.keys(tasks.releases).map(async id => {
-                return {
-                    substance: await MasterDataService.getSubstanceById(Number.parseInt(id)),
-                    value: tasks.releases[id].value,
-                    unitId: tasks.releases[id].unitId,
-                    errors: tasks.releases[id].errors
-                };
-            }));
+            let releases = [];
 
-            // Sort the releases by substance name
-            releases.sort(internals.sortReleases);
+            if (tasks.releases) {
+                releases = await Promise.all(Object.keys(tasks.releases).map(async id => {
+                    return {
+                        substance: await MasterDataService.getSubstanceById(Number.parseInt(id)),
+                        value: tasks.releases[id].value,
+                        unitId: tasks.releases[id].unitId,
+                        errors: tasks.releases[id].errors
+                    };
+                }));
 
-            // Get the units list
-            const units = await MasterDataService.getUnits();
+                // Sort the releases by substance name
+                releases.sort(internals.sortReleases);
+            }
 
-            reply.view('all-sectors/report/releases', { route: route.name, eaId: submissionStatus.name, releases: releases, units: units });
+            reply.view('all-sectors/report/releases', {
+                route: route.name,
+                eaId: submissionStatus.name,
+                releases: releases,
+                units: await MasterDataService.getUnits()
+            });
+
         } catch (err) {
             if (err instanceof CacheKeyError) {
                 reply.redirect('/');
@@ -276,6 +306,7 @@ module.exports = {
                 await request.server.app.userCache.cache('tasks').set(request, tasks);
                 reply.redirect(route.page + '/add-substance');
             }
+
         } catch (err) {
             if (err instanceof CacheKeyError) {
                 reply.redirect('/');

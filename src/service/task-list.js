@@ -10,8 +10,6 @@ function checkTaskListCorrectness (taskList) {
     try {
         Hoek.assert(taskList.name, 'Tasklist name must be set');
 
-        Hoek.assert(typeof taskList.newTasksObject === 'function', 'Tasklist new function must be set');
-
         // Perform some checking that the tasklist is well-formed
         Hoek.assert(taskList.stages && Array.isArray(taskList.stages),
             'The taskList object should contain a value "stages" which is an array');
@@ -100,13 +98,6 @@ module.exports = internals = {
             throw new Error(`Request error: incorrect route specified: ${request.params.route}`);
         }
         return route;
-    },
-
-    // Template to create a new tasks object
-    newTasksObject: async (taskList, request) => {
-        const tasks = taskList.newTasksObject();
-        await request.server.app.userCache.cache('tasks').set(request, tasks);
-        return tasks;
     }
 
 };
