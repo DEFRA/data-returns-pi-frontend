@@ -48,7 +48,7 @@
         {% for release in releases %}
         <tr>
 
-            <td class="td-substance"><div id="#substance-{{ release.substance.id }}">{{ release.substance.name }}</div></td>
+            <td class="td-substance"><div id="substance-{{ release.substance.id }}">{{ release.substance.name }}</div></td>
             <td class="td-reporting-threshold numeric"/>
 
             {% set value_error = (release.errors | selectattr("key", "value"))  %}

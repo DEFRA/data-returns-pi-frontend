@@ -21,8 +21,8 @@
                 <div class="form-group list">
                     {% for substance in substances %}
                     <div class="multiple-choice">
-                        <input id="{{ substance.id }}" name="substanceId" value="{{ substance.id }}" type="radio">
-                        <label for="{{ substance.id }}"><span class="category"></span> <span class="name">{{ substance.name }}</span></label>
+                        <input id="substance_{{ substance.id }}" name="substanceId" value="{{ substance.id }}" type="radio">
+                        <label for="substance_{{ substance.id }}"><span class="category"></span> <span class="name">{{ substance.name }}</span></label>
                     </div>
                     {% endfor %}
                 </div>

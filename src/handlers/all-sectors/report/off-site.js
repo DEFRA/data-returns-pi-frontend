@@ -20,13 +20,18 @@ module.exports = {
      */
     confirm: async (request, reply) => {
         try {
-            const { route } = await cacheHelper(request, 'off-site');
+            const { route, tasks } = await cacheHelper(request, 'off-site');
 
             if (request.method === 'get') {
-                reply.view('all-sectors/report/confirm', {
-                    route: route.name,
-                    selected: false
-                });
+                // If we have off-site transfers then redirect directly to the summary page
+                if (tasks && !tasks.offSiteTransfers && tasks.offSiteTransfers.length > 0) {
+                    reply.redirect('/transfers/off-site');
+                } else {
+                    reply.view('all-sectors/report/confirm', {
+                        route: route.name,
+                        selected: false
+                    });
+                }
             } else {
                 // Process the confirmation - set the current route and redirect to the releases page
                 if (request.payload.confirmation === 'true') {
@@ -47,7 +52,7 @@ module.exports = {
     },
 
     /**
-     * Handler for offsite waste transfers
+     * Handler for off-site waste transfers
      * @param {internals.Request} request - The server request object
      * @param {function} reply - The server reply function
      * @return {undefined}
@@ -57,7 +62,7 @@ module.exports = {
             const { tasks } = await cacheHelper(request, 'off-site');
 
             if (request.method === 'get') {
-                if (!tasks.offsiteTransfers || tasks.offsiteTransfers.length === 0) {
+                if (!tasks.offSiteTransfers || tasks.offSiteTransfers.length === 0) {
                     reply.redirect('/transfers/off-site/add');
                 } else {
                     reply.view('all-sectors/report/off-site');
@@ -92,7 +97,6 @@ module.exports = {
                     reply.view('all-sectors/report/off-site-add', {
                         transfer: tasks.currentOffSiteTransfer
                     });
-
                 } else {
                     // Display the off site add page (add/change off-site waste transfer)
                     reply.view('all-sectors/report/off-site-add');

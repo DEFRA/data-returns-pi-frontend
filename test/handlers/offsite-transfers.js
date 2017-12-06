@@ -67,8 +67,8 @@ experiment('Off-site transfers', async () => {
                 subChapterId: 1342
             },
             wfd: {
-                disposalId: 1,
-                recoveryId: 4
+                disposalId: 5,
+                recoveryId: null
             },
             value: 236.89
         });

@@ -25,12 +25,13 @@ const internals = {
         try {
             return tasks.offSiteTransfers.findIndex(t =>
                 t.ewc.activityId === offSiteTransfer.ewc.activityId &&
-        t.ewc.chapterId === offSiteTransfer.ewc.chapterId &&
-        t.ewc.subChapterId === offSiteTransfer.ewc.subChapterId &&
-        (t.wfd.disposalId === offSiteTransfer.wfd.disposalId ||
-          t.wfd.recoveryId === offSiteTransfer.wfd.recoveryId));
+                t.ewc.chapterId === offSiteTransfer.ewc.chapterId &&
+                t.ewc.subChapterId === offSiteTransfer.ewc.subChapterId &&
+                t.wfd.disposalId === offSiteTransfer.wfd.disposalId &&
+                t.wfd.recoveryId === offSiteTransfer.wfd.recoveryId
+            );
         } catch (err) {
-            return false;
+            return -1;
         }
     }
 };
