@@ -195,7 +195,34 @@ module.exports = internals = {
         }
     },
 
-    getEwc: async (activity, chapter, subchapter) => {
+    getEwcActivityById: async (id) => {
+        if (!internals._ewcActivityId.size) {
+            Data.ewcActivity.forEach((s) => {
+                internals._ewcActivityId.set(s.id, s);
+            });
+        }
+        return internals._ewcActivityId.get(id);
+    },
+
+    getEwcChapterById: async (id) => {
+        if (!internals._ewcChapterId.size) {
+            Data.ewcChapter.forEach((s) => {
+                internals._ewcChapterId.set(s.id, s);
+            });
+        }
+        return internals._ewcChapterId.get(id);
+    },
+
+    getEwcSubChapterById: async (id) => {
+        if (!internals._ewcSubChapterId.size) {
+            Data.ewcSubChapter.forEach((s) => {
+                internals._ewcSubChapterId.set(s.id, s);
+            });
+        }
+        return internals._ewcSubChapterId.get(id);
+    },
+
+    getEwc: async (activity, chapter, subChapter) => {
         if (!internals._ewcActivity.size) {
             Data.ewcActivity.forEach((a) => {
                 internals._ewcActivity.set(a.activity, a);
@@ -206,27 +233,27 @@ module.exports = internals = {
                 internals._ewcChapter.set(c.activity + '-' + c.chapter, c);
             });
         }
-        if (!internals._ewcSubchapter.size) {
-            Data.ewcSubchapter.forEach((s) => {
-                internals._ewcSubchapter.set(s.activity + '-' + s.chapter + '-' + s.subchapter, s);
+        if (!internals._ewcSubChapter.size) {
+            Data.ewcSubChapter.forEach((s) => {
+                internals._ewcSubChapter.set(s.activity + '-' + s.chapter + '-' + s.subChapter, s);
             });
         }
 
         const result = {};
 
-        if (activity && chapter && subchapter) {
-            const _subchapter = internals._ewcSubchapter.get(activity + '-' + chapter + '-' + subchapter);
+        if (activity && chapter && subChapter) {
+            const _subChapter = internals._ewcSubChapter.get(activity + '-' + chapter + '-' + subChapter);
 
-            if (_subchapter) {
+            if (_subChapter) {
 
-                const _chapter = internals._ewcChapter.get(_subchapter.activity + '-' + _subchapter.chapter);
+                const _chapter = internals._ewcChapter.get(_subChapter.activity + '-' + _subChapter.chapter);
                 if (_chapter) {
                     const _activity = internals._ewcActivity.get(_chapter.activity);
 
                     if (_activity) {
                         result.activityId = _activity.id;
                         result.chapterId = _chapter.id;
-                        result.subChapterId = _subchapter.id;
+                        result.subChapterId = _subChapter.id;
 
                         return result;
                     }
@@ -243,12 +270,22 @@ module.exports = internals = {
 
     getRecoveryCode: async (code) => {
         return Data.recoveryCodes.find((e) => { return e.code === code; }) || null;
-    }
+    },
 
+    getDisposalById: async (id) => {
+        return Data.disposalCodes.find((e) => { return e.id === id; }) || null;
+    },
+
+    getRecoveryById: async (id) => {
+        return Data.recoveryCodes.find((e) => { return e.id === id; }) || null;
+    }
 };
 
 internals._substancesMap = new Map();
 internals._unitsMap = new Map();
 internals._ewcActivity = new Map();
 internals._ewcChapter = new Map();
-internals._ewcSubchapter = new Map();
+internals._ewcSubChapter = new Map();
+internals._ewcActivityId = new Map();
+internals._ewcChapterId = new Map();
+internals._ewcSubChapterId = new Map();

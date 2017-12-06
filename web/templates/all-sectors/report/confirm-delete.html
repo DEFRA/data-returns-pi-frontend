@@ -21,13 +21,13 @@
         {{ form(hdr, '/releases/land') }}
     {% elif route === 'RELEASES_TO_AIR' %}
         {% set hdr = 'Confirm you want to remove the release to air of ' +  release.substance.name %}
-        {{ form('Confirm you want to remove the release to air of carbon dioxide', '/releases/air') }}
+        {{ form(hdr, '/releases/air') }}
     {% elif route === 'RELEASES_TO_CONTROLLED_WATERS' %}
         {% set hdr = 'Confirm you want to remove controlled waters of ' +  release.substance.name %}
-        {{ form('Confirm you want to remove the release to controlled waters of carbon dioxide', '/releases/water') }}
+        {{ form(hdr, '/releases/water') }}
     {% elif route === 'OFFSITE_TRANSFERS_IN_WASTE_WATER' %}
         {% set hdr = 'Confirm you want to remove the release in waste water of ' +  release.substance.name %}
-        {{ form('Confirm you want to remove the release waste water of carbon dioxide', '/releases/waste-water') }}
+        {{ form(hdr, '/releases/waste-water') }}
     {% endif %}
 
 </main>

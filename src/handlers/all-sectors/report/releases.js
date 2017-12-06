@@ -264,8 +264,8 @@ module.exports = {
 
             } else if (Object.keys(request.payload).find(s => s.startsWith('delete'))) {
                 // Save the substance id and redirect to the delete confirmation page
-                const substanceId = Object.keys(request.payload)
-                    .find(s => s.startsWith('delete')).substr(7);
+                const substanceId = Number.parseInt(Object.keys(request.payload)
+                    .find(s => s.startsWith('delete')).substr(7));
 
                 const release = tasks.releases[substanceId];
 

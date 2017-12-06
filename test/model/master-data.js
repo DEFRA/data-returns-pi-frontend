@@ -154,4 +154,34 @@ experiment('Master data service', function () {
         expect(recovery.code).to.to.equal('R1');
     });
 
+    test('getEwcActivityById(id)', async () => {
+        const activity = await MasterDataService.getEwcActivityById(1);
+        expect(activity).to.be.an.object();
+        expect(activity.id).to.equal(1);
+    });
+
+    test('getEwcChapterById(id)', async () => {
+        const chapter = await MasterDataService.getEwcChapterById(1);
+        expect(chapter).to.be.an.object();
+        expect(chapter.id).to.equal(1);
+    });
+
+    test('getEwcSubChapterById(id)', async () => {
+        const subChapter = await MasterDataService.getEwcSubChapterById(1342);
+        expect(subChapter).to.be.an.object();
+        expect(subChapter.id).to.equal(1342);
+    });
+
+    test('getDisposalById(id)', async () => {
+        const disposal = await MasterDataService.getDisposalById(1);
+        expect(disposal).to.be.an.object();
+        expect(disposal.id).to.equal(1);
+    });
+
+    test('getRecoveryById(id)', async () => {
+        const recovery = await MasterDataService.getRecoveryById(1);
+        expect(recovery).to.be.an.object();
+        expect(recovery.id).to.equal(1);
+    });
+
 });

@@ -24,7 +24,7 @@ module.exports = {
 
             if (request.method === 'get') {
                 // If we have off-site transfers then redirect directly to the summary page
-                if (tasks && !tasks.offSiteTransfers && tasks.offSiteTransfers.length > 0) {
+                if (tasks && tasks.offSiteTransfers && tasks.offSiteTransfers.length > 0) {
                     reply.redirect('/transfers/off-site');
                 } else {
                     reply.view('all-sectors/report/confirm', {
@@ -64,8 +64,28 @@ module.exports = {
             if (request.method === 'get') {
                 if (!tasks.offSiteTransfers || tasks.offSiteTransfers.length === 0) {
                     reply.redirect('/transfers/off-site/add');
+
                 } else {
-                    reply.view('all-sectors/report/off-site');
+                    // Enrich the offSiteTransfers object from the master data
+                    const transfers = await Promise.all(tasks.offSiteTransfers.map(async t => {
+                        return {
+
+                            ewc: {
+                                activity: await MasterDataService.getEwcActivityById(t.ewc.activityId),
+                                chapter: await MasterDataService.getEwcChapterById(t.ewc.chapterId),
+                                subChapter: await MasterDataService.getEwcSubChapterById(t.ewc.subChapterId)
+                            },
+
+                            wfd: {
+                                disposal: await MasterDataService.getDisposalById(t.wfd.disposalId),
+                                recovery: await MasterDataService.getRecoveryById(t.wfd.recoveryId)
+                            },
+
+                            value: t.value
+                        };
+                    }));
+
+                    reply.view('all-sectors/report/off-site', { transfers: transfers });
                 }
             }
 

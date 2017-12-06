@@ -3,9 +3,52 @@
 {% block content %}
 
 <main id="content">
-    <label id="page-name" hidden>offsite</label>
-    <h1 class="large">Your off-site waste transfers</h1>
-    <h2 class="font-medium">EA_ID: {{ eaId }}</h2>
+    <label id="page-name" hidden>off-site</label>
+    <h1 class="heading-large">Report your off-site waste transfers</h1>
+
+    <form action="" method="post" class="form">
+
+        <table class="check-data table-control mobile-format">
+            <thead>
+            <tr>
+                <th class="th-ewc-code">EWC code</th>
+                <th class="th-waste">Waste</th>
+                <th class="th-wfd-code">WFD code</th>
+                <th class="th-2017-total">2017 total</th>
+                <th class="th-more-detail"><span class="visually-hidden">More detail</span></th>
+                <th class="th-delete"><span class="visually-hidden">Delete</span></th>
+            </tr>
+            </thead>
+            <tbody>
+            {% for transfer in transfers %}
+            <tr>
+                <td class="td-ewc-code">{{ transfer.ewc.activity.activity }} {{ transfer.ewc.chapter.chapter }} {{ transfer.ewc.subChapter.subChapter }}</td>
+                <td class="td-ewc-code">{{ transfer.ewc.subChapter.description }}</td>
+                {% if transfer.wfd.disposal %}
+                <td class="td-wfd-code">{{ transfer.wfd.disposal.code }}</td>
+                {% elif transfer.wfd.recovery %}
+                <td class="td-wfd-code">{{ transfer.wfd.recovery.code }}</td>
+                {% endif %}
+                <td class="td-2017-total">
+                <label class="form-label visually-hidden" for="value">Total</label>
+                <input class="form-control" id="value" name="value" type="number" step="0.001" value="{{ transfer.value }}"> tonnes
+                </td>
+                <td class="td-more-detail"><a href="">More detail</a></td>
+                <td class="td-delete"><a href="">Delete</a></td>
+            </tr>
+            {% endfor %}
+            </tbody>
+        </table>
+
+        <div class="form-group">
+            <a href="/transfers/off-site/add">Add a new off-site waste transfer</a>
+        </div>
+
+        <div class="form-group">
+            <input class="button" type="submit" value="Continue">
+        </div>
+    </form>
+
 </main>
 
 {% endblock %}

@@ -7,6 +7,29 @@ const cacheHelper = require('../common').cacheHelper;
 
 const NEW_RELEASE_OBJECT = { value: null, unitId: null, methodId: null };
 
+const internals = {
+    /**
+     * Function to order the substances on the release screen
+     * @param a - first release
+     * @param b - second release
+     * @return {number}
+     */
+    sortSubstances: (a, b) => {
+        const nameA = a.name.toUpperCase();
+        const nameB = b.name.toUpperCase();
+
+        if (nameA < nameB) {
+            return -1;
+        }
+
+        if (nameA > nameB) {
+            return 1;
+        }
+
+        return 0;
+    }
+};
+
 /**
  * Route handlers for adding substances to a release
  */
@@ -21,7 +44,7 @@ module.exports = {
     add: async (request, reply) => {
         try {
             // Get cache objects
-            let { route, tasks } = await cacheHelper(request);
+            const { route, tasks } = await cacheHelper(request);
 
             if (request.method === 'get') {
 
@@ -33,6 +56,8 @@ module.exports = {
                     const substanceIds = Object.keys(tasks.releases).map(k => Number.parseInt(k));
                     substances = substances.filter(s => !substanceIds.find(i => s.id === i));
                 }
+
+                substances = substances.sort(internals.sortSubstances);
 
                 // Render the add substances page
                 reply.view('all-sectors/report/add-substance', { route: route, substances: substances });
