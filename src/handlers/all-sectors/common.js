@@ -7,6 +7,7 @@ const TaskListService = require('../../service/task-list');
 const Hoek = require('hoek');
 
 module.exports = {
+
     /**
      * Wrapper for the common cache get functions in handlers
      * which will throw CacheKeyError on an unexpected read. Some redundant reads

@@ -7,8 +7,7 @@ const Code = require('code');
 
 const releaseValidator = require('../../src/lib/validator').release;
 const ewcParse = require('../../src/lib/validator').ewcParse;
-const offsiteValidator = require('../../src/lib/validator').offsite;
-
+const offSiteValidator = require('../../src/lib/validator').offSite;
 const MasterDataService = require('../../src/service/master-data');
 
 const experiment = lab.experiment;
@@ -134,11 +133,12 @@ experiment('Validation', async () => {
         ewc = await ewcParse('99 11 12');
         expect(ewc).to.be.null();
 
-        ewc = await ewcParse('Bloody monday morning!');
+        ewc = await ewcParse('Good morning!');
         expect(ewc).to.be.null();
     });
 
     test('Valid off-site transfer object part 1', async () => {
+
         const validObj = {
             ewc: {
                 activityId: 1,
@@ -152,8 +152,8 @@ experiment('Validation', async () => {
             value: 236.89
         };
 
-        const validation = await offsiteValidator(null, validObj);
-        expect(validation).to.contain({ key: 'offsite', errno: 'PI-2003' });
+        const validation = await offSiteValidator(null, validObj);
+        expect(validation).to.be.null();
     });
 
 });

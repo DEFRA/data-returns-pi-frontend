@@ -30,9 +30,13 @@
         <ul class="error-summary-list">
             {% if value_error %}
             <li><a href="#value-check">{{ errtext(value_error.errno) }}</a>
-            {% elif unit_error %}
+            {% endif %}
+
+            {% if unit_error %}
             <li><a href="#unit-check">{{ errtext(unit_error.errno) }}</a>
-            {% elif method_error %}
+            {% endif %}
+
+            {% if method_error %}
             <li><a href="#method-check">{{ errtext(method_error.errno) }}</a>
             {% endif %}
         </ul>

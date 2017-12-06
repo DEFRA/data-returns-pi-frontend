@@ -3,16 +3,45 @@
 /**
  * Validate a release object
  */
-
 const MasterDataService = require('../../src/service/master-data');
-const findOffsiteTransfer = require('../handlers/all-sectors/report/off-site').findOffsiteTransfer;
 const isNumeric = require('./utils').isNumeric;
 
-const isBrt = (value) => {
-    return value && typeof value === 'string' && value.toUpperCase().trim() === 'BRT';
+const internals = {
+    /**
+     * What it says on the tin
+     */
+    isBrt: (value) => {
+        return value && typeof value === 'string' && value.toUpperCase().trim() === 'BRT';
+    },
+
+    /**
+     * Test if a given offsite waste transfer already exists in a tasks object
+     * Its here to prevent circular reference (not ideal)
+     * @param tasks - The tasks cache
+     * @param offsiteTransfer - An off-site object
+     * @return {*}
+     */
+    findOffSiteTransfer: (tasks, offSiteTransfer) => {
+        try {
+            return tasks.offSiteTransfers.findIndex(t =>
+                t.ewc.activityId === offSiteTransfer.ewc.activityId &&
+        t.ewc.chapterId === offSiteTransfer.ewc.chapterId &&
+        t.ewc.subChapterId === offSiteTransfer.ewc.subChapterId &&
+        (t.wfd.disposalId === offSiteTransfer.wfd.disposalId ||
+          t.wfd.recoveryId === offSiteTransfer.wfd.recoveryId));
+        } catch (err) {
+            return false;
+        }
+    }
 };
 
 module.exports = {
+
+    /**
+     * Expose findOffSiteTransfer object.
+     */
+    findOffSiteTransfer: internals.findOffSiteTransfer,
+
     /**
      * Validate a single release.
      * separate error add for each alternative value
@@ -22,17 +51,17 @@ module.exports = {
     release: (release) => {
 
         const result = [];
-        if (!isBrt(release.value) && !isNumeric(release.value)) {
+        if (!internals.isBrt(release.value) && !isNumeric(release.value)) {
             result.push({ key: 'value', errno: 'PI-1000' });
         }
 
         // Test units and BRT
-        if (isBrt(release.value) && release.unitId) {
+        if (internals.isBrt(release.value) && release.unitId) {
             result.push({ key: 'unitId', errno: 'PI-1001' });
         }
 
         // Test non BRT value is present and is a number and without units
-        if (!isBrt(release.value) && !release.unitId) {
+        if (!internals.isBrt(release.value) && !release.unitId) {
             result.push({ key: 'unitId', errno: 'PI-1002' });
         }
 
@@ -48,7 +77,7 @@ module.exports = {
      * @param offsite
      * @return {*}
      */
-    offsite: async (tasks, offsite) => {
+    offSite: (tasks, offsite) => {
         const result = [];
         if (!isNumeric(offsite.value)) {
             result.push({ key: 'value', errno: 'PI-2000' });
@@ -61,12 +90,12 @@ module.exports = {
 
         // Test the waste code
         if (!isNumeric(offsite.wfd.disposalId) && !isNumeric(offsite.wfd.recoveryId)) {
-            result.push({ key: 'ewc', errno: 'PI-2002' });
+            result.push({ key: 'wfd', errno: 'PI-2002' });
         }
 
         // Test if it already exists
-        if (findOffsiteTransfer(tasks, offsite) !== -1) {
-            result.push({ key: 'offsite', errno: 'PI-2003' });
+        if (tasks && internals.findOffSiteTransfer(tasks, offsite) !== -1) {
+            result.push({ key: 'off-site', errno: 'PI-2003' });
         }
 
         return result.length > 0 ? result : null;
@@ -78,7 +107,7 @@ module.exports = {
      * object containing the three validated components or null
      * @param ewcstr - The string to process
      */
-    ewcParse: (ewcStr) => {
+    ewcParse: async (ewcStr) => {
         const expr = new RegExp('^\\s*?(\\d{2})[\\s\\-\\.]*?(\\d{2})[\\s-\\.]*?(\\d{2})\\s*$');
         const matched = ewcStr.match(expr);
         if (matched) {

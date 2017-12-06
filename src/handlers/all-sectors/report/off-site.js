@@ -7,34 +7,17 @@ const logger = require('../../../lib/logging').logger;
 const MasterDataService = require('../../../service/master-data');
 const CacheKeyError = require('../../../lib/user-cache-policies').CacheKeyError;
 const cacheHelper = require('../common').cacheHelper;
-const Validator = require('../../../lib/validator');
-
-const internals = {
-    /**
-     * Test if a given offsite waste transfer already exists in the tasks cache
-     * @param tasks - The tasks cache
-     * @param offsiteTransfer - The
-     * @return {*}
-     */
-    findOffsiteTransfer: (tasks, offsiteTransfer) => {
-        try {
-            return tasks.offsiteTransfers.findIndex(t =>
-                t.ewc.activityId === offsiteTransfer.ewc.activityId &&
-                t.ewc.chapterId === offsiteTransfer.ewc.chapterId &&
-                t.ewc.subChapterId === offsiteTransfer.ewc.subChapterId &&
-                (t.wfd.disposalId === offsiteTransfer.wfd.disposalId ||
-                    t.wfd.recoveryId === offsiteTransfer.wfd.recoveryId));
-        } catch (err) {
-            return false;
-        }
-    }
-};
+const ewcParse = require('../../../lib/validator').ewcParse;
+const offSiteValidator = require('../../../lib/validator').offSite;
 
 module.exports = {
 
-    // Expose the find function
-    findOffsiteTransfer: internals.findOffsiteTransfer,
-
+    /**
+     * The challenge page handler
+     * @param request
+     * @param reply
+     * @return {Promise.<void>}
+     */
     confirm: async (request, reply) => {
         try {
             const { route } = await cacheHelper(request, 'off-site');
@@ -103,11 +86,11 @@ module.exports = {
 
             if (request.method === 'get') {
                 // If we have a transfer then set up the values and any errors
-                if (tasks && tasks.currentOffsiteTransfer) {
+                if (tasks && tasks.currentOffSiteTransfer) {
 
                     // Display the off site add page (add/change off-site waste transfer)
                     reply.view('all-sectors/report/off-site-add', {
-                        transfer: tasks.currentOffsiteTransfer
+                        transfer: tasks.currentOffSiteTransfer
                     });
 
                 } else {
@@ -118,15 +101,15 @@ module.exports = {
             } else {
 
                 // Add a new transfers array to the task object if it does not exist
-                if (!tasks.offsiteTransfers) {
-                    tasks.offsiteTransfers = [];
+                if (!tasks.offSiteTransfers) {
+                    tasks.offSiteTransfers = [];
                 }
 
                 let { ewc, wfd, value } = request.payload;
-                const currentOffsiteTransfer = { ewc, wfd, value };
+                const currentOffSiteTransfer = { ewc, wfd, value };
 
                 // Create an proxy offsite transfer and validate it
-                const ewcCode = await Validator.ewcParse(ewc);
+                const ewcCode = await ewcParse(ewc);
 
                 value = Number.isNaN(Number.parseFloat(value)) ? value : Number.parseFloat(value);
 
@@ -143,7 +126,7 @@ module.exports = {
                 }
 
                 // Create an off-site waste transfer object
-                const offsiteTransfer = {
+                const offSiteTransfer = {
                     ewc: ewcCode ? {
                         activityId: ewcCode.activityId,
                         chapterId: ewcCode.chapterId,
@@ -155,17 +138,17 @@ module.exports = {
                     value: value
                 };
 
-                const validationErrors = await Validator.offsite(tasks, offsiteTransfer);
+                const validationErrors = await offSiteValidator(tasks, offSiteTransfer);
 
                 if (!validationErrors) {
                     // If there are no validation errors saved the tasks and redirect to the off-site waste transfers page
-                    tasks.offsiteTransfers.push(offsiteTransfer);
-                    delete tasks.currentOffsiteTransfer;
+                    tasks.offSiteTransfers.push(offSiteTransfer);
+                    delete tasks.currentOffSiteTransfer;
                     await request.server.app.userCache.cache('tasks').set(request, tasks);
                     reply.redirect('/transfers/off-site');
                 } else {
                     // If there are validation errors
-                    tasks.currentOffsiteTransfer = { offsiteTransfer: currentOffsiteTransfer, errors: validationErrors };
+                    tasks.currentOffSiteTransfer = { offSiteTransfer: currentOffSiteTransfer, errors: validationErrors };
                     await request.server.app.userCache.cache('tasks').set(request, tasks);
                     reply.redirect('/transfers/off-site/add');
                 }
