@@ -7,10 +7,139 @@ const logger = require('../../../lib/logging').logger;
 const MasterDataService = require('../../../service/master-data');
 const CacheKeyError = require('../../../lib/user-cache-policies').CacheKeyError;
 const cacheHelper = require('../common').cacheHelper;
-const ewcParse = require('../../../lib/validator').ewcParse;
 const offSiteValidator = require('../../../lib/validator').offSite;
 
+const internals = {
+
+    /**
+     * Creates an unvalidated off-site transfer cache object (ids only)
+     * @param obj - the page object
+     * @return {Promise.<{ewc: {activity: *, chapter: *, subChapter: *}, wfd: {disposal: *, recovery: *}, value}>}
+     */
+    createOffSiteTransferCacheObject: async (pageObj) => {
+
+        const { ewc, wfd, value } = pageObj;
+
+        let ewcObj;
+        let disposal;
+        let recovery;
+
+        if (ewc) {
+            const expr = new RegExp('^\\s*?(\\d{2})[\\s\\-\\.]*?(\\d{2})[\\s-\\.]*?(\\d{2})\\s*$');
+            const matched = ewc.match(expr);
+
+            if (matched) {
+                const [, activity, chapter, subChapter] = matched;
+                ewcObj = await MasterDataService.getEwc(activity, chapter, subChapter);
+            } else {
+                ewcObj = null;
+            }
+        }
+
+        if (wfd) {
+            disposal = await MasterDataService.getDisposalCode(wfd.toUpperCase());
+
+            if (!disposal) {
+                recovery = await MasterDataService.getRecoveryCode(wfd.toUpperCase());
+            }
+        }
+
+        return {
+            ewc: ewcObj ? {
+                activityId: ewcObj.activityId,
+                chapterId: ewcObj.chapterId,
+                subChapterId: ewcObj.subChapterId
+            } : null,
+
+            wfd: disposal || recovery ? {
+                disposalId: disposal ? disposal.id : null,
+                recoveryId: recovery ? recovery.id : null
+            } : null,
+
+            value: Number.isNaN(Number.parseFloat(value)) ? value : Number.parseFloat(value)
+        };
+    },
+
+    /**
+     * Reads the cache (keys and constructs a deep enriched transfer object
+     * @param obj - transfer object
+     * @return {Promise.<{ewc: {activity: *, chapter: *, subChapter: *}, wfd: {disposal: *, recovery: *}, value}>}
+     */
+    enrichOffSiteTransferObject: async (obj) => {
+        return {
+            ewc: {
+                activity: await MasterDataService.getEwcActivityById(obj.ewc.activityId),
+                chapter: await MasterDataService.getEwcChapterById(obj.ewc.chapterId),
+                subChapter: await MasterDataService.getEwcSubChapterById(obj.ewc.subChapterId)
+            },
+
+            wfd: {
+                disposal: obj.wfd.disposalId ? await MasterDataService.getDisposalById(obj.wfd.disposalId) : null,
+                recovery: obj.wfd.recoveryId ? await MasterDataService.getRecoveryById(obj.wfd.recoveryId) : null
+            },
+
+            value: obj.value
+        };
+    },
+
+    /**
+     * Sort by the cache object. Relies on the id's to sort. Possibly good enough.
+     * @param a
+     * @param b
+     * @return <number>
+     */
+    sortOffSiteTransfer: (a, b) => {
+
+        if (a.ewc.activityId < b.ewc.activityId) {
+            return -1;
+        }
+
+        if (a.ewc.activityId > b.ewc.activityId) {
+            return 1;
+        }
+
+        if (a.ewc.chapterId < b.ewc.chapterId) {
+            return -1;
+        }
+
+        if (a.ewc.chapterId > b.ewc.chapterId) {
+            return 1;
+        }
+
+        if (a.ewc.subChapterId < b.ewc.subChapterId) {
+            return -1;
+        }
+
+        if (a.ewc.subChapterId > b.ewc.subChapterId) {
+            return 1;
+        }
+
+        if (a.wfd.disposalId && b.wfd.recoveryId) {
+            return -1;
+        }
+
+        if (a.wfd.recoveryId && b.wfd.disposalId) {
+            return 1;
+        }
+
+        if ((a.wfd.disposalId ? a.wfd.disposalId : a.wfd.recoveryId) < (b.wfd.disposalId ? b.wfd.disposalId : b.wfd.recoveryId)) {
+            return -1;
+        }
+
+        if ((a.wfd.disposalId ? a.wfd.disposalId : a.wfd.recoveryId) > (b.wfd.disposalId ? b.wfd.disposalId : b.wfd.recoveryId)) {
+            return 1;
+        }
+
+        return 0;
+    }
+};
+
 module.exports = {
+
+    // Exposed for unit testing
+    createOffSiteTransferCacheObject: internals.createOffSiteTransferCacheObject,
+    sortOffSiteTransfer: internals.sortOffSiteTransfer,
+    enrichOffSiteTransferObject: internals.enrichOffSiteTransferObject,
 
     /**
      * The challenge page handler
@@ -68,21 +197,7 @@ module.exports = {
                 } else {
                     // Enrich the offSiteTransfers object from the master data
                     const transfers = await Promise.all(tasks.offSiteTransfers.map(async t => {
-                        return {
-
-                            ewc: {
-                                activity: await MasterDataService.getEwcActivityById(t.ewc.activityId),
-                                chapter: await MasterDataService.getEwcChapterById(t.ewc.chapterId),
-                                subChapter: await MasterDataService.getEwcSubChapterById(t.ewc.subChapterId)
-                            },
-
-                            wfd: {
-                                disposal: await MasterDataService.getDisposalById(t.wfd.disposalId),
-                                recovery: await MasterDataService.getRecoveryById(t.wfd.recoveryId)
-                            },
-
-                            value: t.value
-                        };
+                        return internals.enrichOffSiteTransferObject(t);
                     }));
 
                     reply.view('all-sectors/report/off-site', { transfers: transfers });
@@ -111,11 +226,11 @@ module.exports = {
 
             if (request.method === 'get') {
                 // If we have a transfer then set up the values and any errors
-                if (tasks && tasks.currentOffSiteTransfer) {
+                if (tasks && tasks.currentPageOffSiteTransfer) {
 
                     // Display the off site add page (add/change off-site waste transfer)
                     reply.view('all-sectors/report/off-site-add', {
-                        transfer: tasks.currentOffSiteTransfer
+                        transfer: tasks.currentPageOffSiteTransfer
                     });
                 } else {
                     // Display the off site add page (add/change off-site waste transfer)
@@ -129,50 +244,24 @@ module.exports = {
                     tasks.offSiteTransfers = [];
                 }
 
-                let { ewc, wfd, value } = request.payload;
-                const currentOffSiteTransfer = { ewc, wfd, value };
-
-                // Create an proxy offsite transfer and validate it
-                const ewcCode = await ewcParse(ewc);
-
-                value = Number.isNaN(Number.parseFloat(value)) ? value : Number.parseFloat(value);
-
-                // Set the disposal and recovery codes
-                let disposal = null;
-                let recovery = null;
-
-                if (wfd) {
-                    disposal = await MasterDataService.getDisposalCode(wfd.toUpperCase());
-
-                    if (!disposal) {
-                        recovery = await MasterDataService.getRecoveryCode(wfd.toUpperCase());
-                    }
-                }
-
-                // Create an off-site waste transfer object
-                const offSiteTransfer = {
-                    ewc: ewcCode ? {
-                        activityId: ewcCode.activityId,
-                        chapterId: ewcCode.chapterId,
-                        subChapterId: ewcCode.subChapterId
-                    } : null,
-
-                    wfd: { disposalId: disposal ? disposal.id : null, recoveryId: recovery ? recovery.id : null },
-
-                    value: value
-                };
-
-                const validationErrors = await offSiteValidator(tasks, offSiteTransfer);
+                const { ewc, wfd, value } = request.payload;
+                const currentPageOffSiteTransfer = { ewc, wfd, value };
+                const currentCacheOffSiteTransferObject = await internals.createOffSiteTransferCacheObject(currentPageOffSiteTransfer);
+                const validationErrors = await offSiteValidator(tasks, currentCacheOffSiteTransferObject);
 
                 if (!validationErrors) {
                     // If there are no validation errors saved the tasks and redirect to the off-site waste transfers page
-                    tasks.offSiteTransfers.push(offSiteTransfer);
-                    delete tasks.currentOffSiteTransfer;
+                    tasks.offSiteTransfers.push(currentCacheOffSiteTransferObject);
+
+                    // We need to address this by the array index so we need a deterministic sort
+                    tasks.offSiteTransfers.sort(internals.sortOffSiteTransfer);
+
+                    delete tasks.currentPageOffSiteTransfer;
                     await request.server.app.userCache.cache('tasks').set(request, tasks);
                     reply.redirect('/transfers/off-site');
                 } else {
                     // If there are validation errors
-                    tasks.currentOffSiteTransfer = { offSiteTransfer: currentOffSiteTransfer, errors: validationErrors };
+                    tasks.currentPageOffSiteTransfer = { offSiteTransfer: currentPageOffSiteTransfer, errors: validationErrors };
                     await request.server.app.userCache.cache('tasks').set(request, tasks);
                     reply.redirect('/transfers/off-site/add');
                 }

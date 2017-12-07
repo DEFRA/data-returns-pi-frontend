@@ -14,7 +14,7 @@
                 <th class="th-ewc-code">EWC code</th>
                 <th class="th-waste">Waste</th>
                 <th class="th-wfd-code">WFD code</th>
-                <th class="th-2017-total">2017 total</th>
+                <th class="th-total">Total</th>
                 <th class="th-more-detail"><span class="visually-hidden">More detail</span></th>
                 <th class="th-delete"><span class="visually-hidden">Delete</span></th>
             </tr>
@@ -29,7 +29,7 @@
                 {% elif transfer.wfd.recovery %}
                 <td class="td-wfd-code">{{ transfer.wfd.recovery.code }}</td>
                 {% endif %}
-                <td class="td-2017-total">
+                <td class="td-total">
                 <label class="form-label visually-hidden" for="value">Total</label>
                 <input class="form-control" id="value" name="value" type="number" step="0.001" value="{{ transfer.value }}"> tonnes
                 </td>

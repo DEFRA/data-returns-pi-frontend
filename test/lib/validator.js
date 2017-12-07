@@ -6,9 +6,8 @@ const lab = exports.lab = Lab.script();
 const Code = require('code');
 
 const releaseValidator = require('../../src/lib/validator').release;
-const ewcParse = require('../../src/lib/validator').ewcParse;
 const offSiteValidator = require('../../src/lib/validator').offSite;
-const MasterDataService = require('../../src/service/master-data');
+const findOffSiteTransfer = require('../../src/lib/validator').findOffSiteTransfer;
 
 const experiment = lab.experiment;
 const test = lab.test;
@@ -100,43 +99,6 @@ experiment('Validation', async () => {
         expect(validation).to.include({'key': 'unitId', 'errno': 'PI-1002'});
     });
 
-    test('Valid ewc strings', async () => {
-        const expObj = await MasterDataService.getEwc(10, 11, 12);
-        let ewc = await ewcParse('10 11 12');
-        expect(ewc).to.be.not.null();
-        expect(ewc).to.equal(expObj);
-
-        ewc = await ewcParse('10.11.12');
-        expect(ewc).to.be.not.null();
-        expect(ewc).to.equal(expObj);
-
-        ewc = await ewcParse(' 10  11  12 ');
-        expect(ewc).to.be.not.null();
-        expect(ewc).to.equal(expObj);
-
-        ewc = await ewcParse('101112');
-        expect(ewc).to.be.not.null();
-        expect(ewc).to.equal(expObj);
-
-        ewc = await ewcParse('10-11-12');
-        expect(ewc).to.be.not.null();
-        expect(ewc).to.equal(expObj);
-    });
-
-    test('Invalid ewc strings', async () => {
-        let ewc = await ewcParse('10 11');
-        expect(ewc).to.be.null();
-
-        ewc = await ewcParse('10/11/12');
-        expect(ewc).to.be.null();
-
-        ewc = await ewcParse('99 11 12');
-        expect(ewc).to.be.null();
-
-        ewc = await ewcParse('Good morning!');
-        expect(ewc).to.be.null();
-    });
-
     test('Valid off-site transfer object part 1', async () => {
 
         const validObj = {
@@ -154,6 +116,69 @@ experiment('Validation', async () => {
 
         const validation = await offSiteValidator(null, validObj);
         expect(validation).to.be.null();
+    });
+
+    test('Find off-site transfers', () => {
+        const tasks = {};
+
+        tasks.offSiteTransfers = [
+            {
+                ewc: {
+                    activityId: 1,
+                    chapterId: 1,
+                    subChapterId: 1342
+                },
+                wfd: {
+                    disposalId: 5,
+                    recoveryId: null
+                },
+                value: 236.89
+            },
+
+            {
+                ewc: {
+                    activityId: 1,
+                    chapterId: 2,
+                    subChapterId: 1342
+                },
+                wfd: {
+                    disposalId: 1,
+                    recoveryId: 4
+                },
+                value: 236.89
+            }
+        ];
+
+        const rest1 = findOffSiteTransfer(tasks, {
+            ewc: {
+                activityId: 1,
+                chapterId: 2,
+                subChapterId: 1342
+            },
+            wfd: {
+                disposalId: 1,
+                recoveryId: 4
+            },
+            value: 236.89
+        });
+
+        expect(rest1).to.equal(1);
+
+        const rest2 = findOffSiteTransfer(tasks, {
+            ewc: {
+                activityId: 9,
+                chapterId: 2,
+                subChapterId: 1342
+            },
+            wfd: {
+                disposalId: 5,
+                recoveryId: null
+            },
+            value: 236.89
+        });
+
+        expect(rest2).to.equal(-1);
+
     });
 
 });

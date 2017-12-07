@@ -3,7 +3,6 @@
 /**
  * Validate a release object
  */
-const MasterDataService = require('../../src/service/master-data');
 const isNumeric = require('./utils').isNumeric;
 
 const internals = {
@@ -75,47 +74,30 @@ module.exports = {
 
     /**
      * Validate an offsite waste transfer
-     * @param offsite
+     * @param offSite
      * @return {*}
      */
-    offSite: (tasks, offsite) => {
+    offSite: (tasks, offSite) => {
         const result = [];
-        if (!isNumeric(offsite.value)) {
+        if (!isNumeric(offSite.value)) {
             result.push({ key: 'value', errno: 'PI-2000' });
         }
 
         // Test EWC code
-        if (!offsite.ewc) {
+        if (!offSite.ewc) {
             result.push({ key: 'ewc', errno: 'PI-2001' });
         }
 
         // Test the waste code
-        if (!isNumeric(offsite.wfd.disposalId) && !isNumeric(offsite.wfd.recoveryId)) {
+        if (!offSite.wfd || (!offSite.wfd.disposalId && !offSite.wfd.recoveryId)) {
             result.push({ key: 'wfd', errno: 'PI-2002' });
         }
 
         // Test if it already exists
-        if (tasks && internals.findOffSiteTransfer(tasks, offsite) !== -1) {
+        if (tasks && internals.findOffSiteTransfer(tasks, offSite) !== -1) {
             result.push({ key: 'off-site', errno: 'PI-2003' });
         }
 
         return result.length > 0 ? result : null;
-    },
-
-    /**
-     * Takes a user supplied string and attempts to split into three numerical components
-     * representing the activity chapter and sub-chapter components of the ewc code. Returns an
-     * object containing the three validated components or null
-     * @param ewcstr - The string to process
-     */
-    ewcParse: async (ewcStr) => {
-        const expr = new RegExp('^\\s*?(\\d{2})[\\s\\-\\.]*?(\\d{2})[\\s-\\.]*?(\\d{2})\\s*$');
-        const matched = ewcStr.match(expr);
-        if (matched) {
-            const [, activity, chapter, subChapter] = matched;
-            return MasterDataService.getEwc(activity, chapter, subChapter);
-        } else {
-            return null;
-        }
     }
 };
