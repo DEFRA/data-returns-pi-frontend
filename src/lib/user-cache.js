@@ -115,12 +115,17 @@ module.exports = {
     /**
      * Start the user cache engin
      */
-    start: (provider, policies) => { return internals.startCache(provider, policies); },
+    start: async (provider, policies) => { return internals.startCache(provider, policies); },
 
     /**
      * Stop the user cache engine
      */
-    stop: () => { internals.client.stop(); },
+    stop: () => {
+        internals.policies = {};
+        internals.client.stop();
+        delete internals.client;
+        logger.info('Stopped user-cache instance');
+    },
 
     /**
      * Return a given cache policy object which contains the getter and setter methods

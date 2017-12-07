@@ -17,47 +17,50 @@ const AdditionalFilters = require('../service/additional-filters');
 
 const srvcfg = System.configuration.server;
 
-/*
- * Create a Hapi server with a redis cache
- * as the default client cache
- */
-const server = new Hapi.Server({
-    cache: [
-        {
-            engine: require('catbox-redis'),
-            host: process.env.REDIS_HOSTNAME,
-            port: process.env.REDIS_PORT,
-            partition: 'session-cache'
-        }
-    ],
-    app: {
-        foo: 'bar'
-    },
-    load: {
-        sampleInterval: srvcfg.sampleInterval
-    }
-});
-
-// Set the server connection details
-server.connection({
-    host: process.env.HOSTNAME,
-    port: process.env.PORT,
-    routes: {
-        cors: false,
-        timeout: { server: srvcfg.timeout }
-    }
-});
-
 // A map to store the compiled templates
 const templates = new Map();
+const internals = {};
 
 // A function to provision the Hapi server
-const initialize = async () => {
+internals.initialize = async () => {
+
+    /*
+     * Create a Hapi server with a redis cache
+     * as the default client cache
+     */
+    Logging.logger.info('Create hapi server initialization...');
+
+    internals.server = new Hapi.Server({
+        cache: [
+            {
+                engine: require('catbox-redis'),
+                host: process.env.REDIS_HOSTNAME,
+                port: process.env.REDIS_PORT,
+                partition: 'session-cache'
+            }
+        ],
+        app: {
+            foo: 'bar'
+        },
+        load: {
+            sampleInterval: srvcfg.sampleInterval
+        }
+    });
+
+    // Set the server connection details
+    internals.server.connection({
+        host: process.env.HOSTNAME,
+        port: process.env.PORT,
+        routes: {
+            cors: false,
+            timeout: { server: srvcfg.timeout }
+        }
+    });
 
     Logging.logger.info('Starting server initialization...');
 
     // Register the logging plugin to allow Hapi to log using Winston
-    await server.register({
+    await internals.server.register({
         register: require('good'),
         options: {
             reporters: {
@@ -67,17 +70,17 @@ const initialize = async () => {
     });
 
     // Register the static data server
-    await server.register({
+    await internals.server.register({
         register: require('inert')
     });
 
     // Register template rendering plugin support
-    await server.register({
+    await internals.server.register({
         register: require('vision')
     });
 
     // Register Hapi Authorization cookies
-    await server.register({
+    await internals.server.register({
         register: require('hapi-auth-cookie')
     });
 
@@ -89,7 +92,7 @@ const initialize = async () => {
      * });
      * Configure nunjucks
      */
-    server.views({
+    internals.server.views({
         engines: {
             html: {
                 compile: function (src, options) {
@@ -143,15 +146,15 @@ const initialize = async () => {
      * To hold the authenticated user data. This will
      * live in the plug-in cache
      */
-    const cache = server.cache({
+    const cache = internals.server.cache({
         segment: 'authenticated-sessions',
         expiresIn: srvcfg.cache.authorization.timeToLive
     });
 
-    server.app.cache = cache;
+    internals.server.app.cache = cache;
 
     // Set up the authorization strategy
-    server.auth.strategy('session', 'cookie', true, {
+    internals.server.auth.strategy('session', 'cookie', true, {
         password: srvcfg.authorization.cookie.ironCookiePassword,
         cookie: 'sid',
         redirectTo: '/login',
@@ -169,16 +172,16 @@ const initialize = async () => {
         require('./user-cache-policies').policies);
 
     // Add to the server object.
-    server.app.userCache = UserCache;
+    internals.server.app.userCache = UserCache;
 
     // Register the server methods
-    server.method(ServerMethods.methods);
+    internals.server.method(ServerMethods.methods);
 
     // Set up the static routing
-    server.route(require('../routes').staticHandlers);
+    internals.server.route(require('../routes').staticHandlers);
 
     // Set up the dynamic routing
-    server.route(require('../routes').dynamicHandlers);
+    internals.server.route(require('../routes').dynamicHandlers);
 
     // console.log(server.eventNames());
 
@@ -188,6 +191,14 @@ const initialize = async () => {
 
 // Export the server so that it can be used in the integration tests
 module.exports = {
-    server: server,
-    initialize: initialize
+    server: () => { return internals.server; },
+
+    start: async () => { await internals.server.start(); },
+
+    stop: async () => {
+        await internals.server.stop();
+        await UserCache.stop();
+    },
+
+    initialize: async () => { await internals.initialize(); }
 };

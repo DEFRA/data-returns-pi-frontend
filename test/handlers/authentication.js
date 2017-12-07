@@ -1,3 +1,6 @@
+const Common = require('./common');
+const server = Common.server;
+
 const Lab = require('lab');
 const lab = exports.lab = Lab.script();
 const Code = require('code');
@@ -5,38 +8,24 @@ const Code = require('code');
 const experiment = lab.experiment;
 const expect = Code.expect;
 const before = lab.before;
-const test = lab.test;
+const after = lab.after;
 
-const logging = require('../../src/lib/logging');
-const server = require('../../src/lib/server');
+const test = lab.test;
 
 /**
  * Important - this test is run first as it is alphabetically first. This
  * means it is this test that establishes the hapi server.
  * @returns {Promise.<void>}
  */
-
-// Start the server
-const start = async () => {
-    try {
-        await server.initialize();
-        await server.server.start();
-        logging.logger.info(`Server started at ${server.server.info.uri}`);
-    } catch (err) {
-        logging.logger.log('error', err);
-        process.exit(1);
-    }
-};
-
-experiment('Authentication', function () {
+experiment('Authentication', () => {
 
     before(() => {
         // Start the server asynchronously
-        return start();
+        return Common.start();
     });
 
-    test('Test / redirects to login page', () => {
-        server.server.inject({
+    test('Test / redirects to login page', async () => {
+         await server().inject({
             method: 'GET',
             url: '/'
         }, function (response) {
@@ -45,8 +34,8 @@ experiment('Authentication', function () {
         });
     });
 
-    test('Test invalid login', () => {
-        server.server.inject({
+    test('Test invalid login', async () => {
+      await server().inject({
             method: 'POST',
             url: '/login',
             payload: {
@@ -58,8 +47,8 @@ experiment('Authentication', function () {
         });
     });
 
-    test('Test valid login', () => {
-        server.server.inject({
+    test('Test valid login', async () => {
+        await server().inject({
             method: 'POST',
             url: '/login',
             payload: {
@@ -72,7 +61,7 @@ experiment('Authentication', function () {
     });
 
     test('Test start handler', () => {
-        server.server.inject({
+        server().inject({
             method: 'GET',
             url: '/'
         }, function (response) {
@@ -81,13 +70,18 @@ experiment('Authentication', function () {
         });
     });
 
-    test('Test log out', () => {
-        server.server.inject({
+    test('Test log out', async () => {
+        await server().inject({
             method: 'GET',
             url: '/logout'
         }, function (response) {
             expect(response.statusCode).to.equal(302);
             expect(response.headers.location).to.equal('/login');
         });
+    });
+
+    after(() => {
+        // Stop the server asynchronously
+        return Common.stop();
     });
 });
