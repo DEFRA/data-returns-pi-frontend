@@ -159,7 +159,7 @@ const internals = {
         if (tasks.offSiteTransfers) {
             let isValid = true;
             tasks.offSiteTransfers.forEach((offSiteTransfer, index) => {
-                const validationErrors = OffSiteValidator.offSite(tasks, offSiteTransfer);
+                const validationErrors = OffSiteValidator.offSite(offSiteTransfer);
                 if (validationErrors) {
                     tasks.offSiteTransfers[index].errors = validationErrors;
                     isValid = false;
@@ -181,7 +181,7 @@ const internals = {
      * @return NO_WARN, WARN
      */
     canDelete: (tasks, transfer) => {
-        if (OffSiteValidator.offSite(tasks, transfer)) {
+        if (OffSiteValidator.offSite(transfer)) {
             return 'NO_WARN';
         } else {
             return 'WARN';
@@ -459,7 +459,17 @@ module.exports = {
             if (request.method === 'get') {
                 reply.view('all-sectors/report/off-site-detail', { transfer: transfer });
             } else {
-
+                tasks.offSiteTransfers[tasks.currentoffSiteTransferIndex].value = request.payload.value;
+                const validation = OffSiteValidator.offSite(tasks.offSiteTransfers[tasks.currentoffSiteTransferIndex]);
+                if (validation) {
+                    tasks.offSiteTransfers[tasks.currentoffSiteTransferIndex].errors = validation;
+                    await request.server.app.userCache.cache('tasks').set(request, tasks);
+                    reply.redirect('/transfers/off-site/detail');
+                } else {
+                    delete tasks.offSiteTransfers[tasks.currentoffSiteTransferIndex].errors;
+                    await request.server.app.userCache.cache('tasks').set(request, tasks);
+                    reply.redirect('/transfers/off-site');
+                }
             }
         } catch (err) {
             if (err instanceof CacheKeyError) {

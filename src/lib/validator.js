@@ -85,7 +85,7 @@ const internals = {
      * @param offSite
      * @return {*}
      */
-    offSite: (tasks, offSite) => {
+    offSite: (offSite) => {
         const result = [];
         if (!isNumeric(offSite.value)) {
             result.push({ key: 'value', errno: 'PI-2000' });
