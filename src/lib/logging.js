@@ -43,5 +43,7 @@ module.exports = {
     /**
      * Return the winston-good interface for Hapi
      */
-    goodWinstonStream: new GoodWinston({ winston: winlogger })
+    goodWinstonStream: () => {
+        return [ new GoodWinston({ winston: winlogger }) ];
+    }
 };

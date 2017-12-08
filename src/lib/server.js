@@ -64,7 +64,7 @@ internals.initialize = async () => {
         register: require('good'),
         options: {
             reporters: {
-                winston: [Logging.goodWinstonStream]
+                winston: Logging.goodWinstonStream()
             }
         }
     });

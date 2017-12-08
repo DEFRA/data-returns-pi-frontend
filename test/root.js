@@ -24,6 +24,6 @@ describe('Testing Framework', () => {
 
     it('Testing logging is alive', () => {
         expect(() => logging.logger.info('Testing logging...')).to.not.throw();
-        expect(logging.goodWinstonStream).to.be.an.object();
+        expect(logging.goodWinstonStream).to.be.a.function();
     });
 });

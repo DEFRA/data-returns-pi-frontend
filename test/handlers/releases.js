@@ -337,7 +337,7 @@ experiment('Releases', () => {
         expect(response.headers.location).to.equal('/login');
     });
 
-    after(async () => {
+    after(() => {
     // Start the server asynchronously
         return Common.stop();
     });

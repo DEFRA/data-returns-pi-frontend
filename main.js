@@ -30,8 +30,8 @@ AssetManager.start();
 (async () => {
     try {
         await Server.initialize();
-        await Server.server.start();
-        logger.info(`Server started at ${Server.server.info.uri}`);
+        await Server.start();
+        logger.info(`Server started at ${Server.server().info.uri}`);
     } catch (err) {
         logger.log('error', err);
         process.exit(1);
