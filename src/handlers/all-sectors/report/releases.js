@@ -18,7 +18,7 @@ const internals = {
      * @param request
      * @return {Promise.<void>}
      */
-    save: async (request, tasks) => {
+    save: (request, tasks) => {
         if (tasks.releases) {
             Object.keys(tasks.releases).forEach(s => {
                 // Strip the value from the payload and add to the tasks objects
@@ -39,7 +39,7 @@ const internals = {
      * @param tasks - the tasks read from cache
      * @return {Promise.<boolean>} - promises to be true if invalid
      */
-    validate: async (request, tasks) => {
+    validate: (request, tasks) => {
         if (tasks.releases) {
             let isValid = true;
             Object.keys(tasks.releases).forEach(s => {

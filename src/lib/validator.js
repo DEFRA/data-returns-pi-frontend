@@ -32,15 +32,7 @@ const internals = {
         } catch (err) {
             return -1;
         }
-    }
-};
-
-module.exports = {
-
-    /**
-     * Expose findOffSiteTransfer object.
-     */
-    findOffSiteTransfer: internals.findOffSiteTransfer,
+    },
 
     /**
      * Validate a single release.
@@ -73,7 +65,23 @@ module.exports = {
     },
 
     /**
-     * Validate an offsite waste transfer
+     * Validate an offsite waste transfer (when adding)
+     * @param offSite
+     * @return {*}
+     */
+    offSiteAdd: (tasks, offSite) => {
+        const result = internals.offSite(tasks, offSite) || [];
+
+        // Test if it already exists
+        if (tasks && internals.findOffSiteTransfer(tasks, offSite) !== -1) {
+            result.push({ key: 'off-site', errno: 'PI-2003' });
+        }
+
+        return result.length > 0 ? result : null;
+    },
+
+    /**
+     * Validate an offsite waste transfer (when changing)
      * @param offSite
      * @return {*}
      */
@@ -93,11 +101,14 @@ module.exports = {
             result.push({ key: 'wfd', errno: 'PI-2002' });
         }
 
-        // Test if it already exists
-        if (tasks && internals.findOffSiteTransfer(tasks, offSite) !== -1) {
-            result.push({ key: 'off-site', errno: 'PI-2003' });
-        }
-
         return result.length > 0 ? result : null;
     }
+
+};
+
+module.exports = {
+    findOffSiteTransfer: internals.findOffSiteTransfer,
+    release: internals.release,
+    offSite: internals.offSite,
+    offSiteAdd: internals.offSiteAdd
 };

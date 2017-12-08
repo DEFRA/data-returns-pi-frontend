@@ -1,9 +1,9 @@
 {% extends 'layout/layout.html' %}
 
-{% set value_error = (transfer.errors | selectattr("key", "value"))  %}
-{% set ewc_error = (transfer.errors | selectattr("key", "ewc"))  %}
-{% set wfd_error = (transfer.errors | selectattr("key", "wfd"))  %}
-{% set dupe_error = (transfer.errors | selectattr("key", "off-site"))  %}
+{% set value_error = (transfer.errors | selectattr2("key", "value"))  %}
+{% set ewc_error = (transfer.errors | selectattr2("key", "ewc"))  %}
+{% set wfd_error = (transfer.errors | selectattr2("key", "wfd"))  %}
+{% set dupe_error = (transfer.errors | selectattr2("key", "off-site"))  %}
 
 {% macro errtext(errno) %}
 {% if errno === 'PI-2000' %}

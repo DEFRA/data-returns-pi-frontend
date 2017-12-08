@@ -51,8 +51,8 @@
             <td class="td-substance"><div id="substance-{{ release.substance.id }}">{{ release.substance.name }}</div></td>
             <td class="td-reporting-threshold numeric"/>
 
-            {% set value_error = (release.errors | selectattr("key", "value"))  %}
-            {% set unit_error = (release.errors | selectattr("key", "unitId"))  %}
+            {% set value_error = (release.errors | selectattr2("key", "value"))  %}
+            {% set unit_error = (release.errors | selectattr2("key", "unitId"))  %}
 
             {% if value_error or unit_error %}
             <td class="td-release">

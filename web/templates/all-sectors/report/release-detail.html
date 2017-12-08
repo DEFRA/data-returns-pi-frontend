@@ -15,9 +15,9 @@
 {% endmacro %}
 
 {% macro form(description, action) %}
-{% set value_error = (release.errors | selectattr("key", "value"))  %}
-{% set unit_error = (release.errors | selectattr("key", "unitId"))  %}
-{% set method_error = (release.errors | selectattr("key", "methodId"))  %}
+{% set value_error = (release.errors | selectattr2("key", "value"))  %}
+{% set unit_error = (release.errors | selectattr2("key", "unitId"))  %}
+{% set method_error = (release.errors | selectattr2("key", "methodId"))  %}
 <form id="main-form" action="{{ action }}" method="post" class="form">
     <h1 class="heading-large">More detail about the release of {{ release.substance.name }} {{ description }}</h1>
 

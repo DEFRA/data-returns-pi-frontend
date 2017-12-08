@@ -1,4 +1,5 @@
 'use strict';
+
 const Common = require('./common');
 const server = Common.server;
 

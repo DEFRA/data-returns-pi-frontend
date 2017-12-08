@@ -7,7 +7,7 @@ const logger = require('../../../lib/logging').logger;
 const MasterDataService = require('../../../service/master-data');
 const CacheKeyError = require('../../../lib/user-cache-policies').CacheKeyError;
 const cacheHelper = require('../common').cacheHelper;
-const offSiteValidator = require('../../../lib/validator').offSite;
+const OffSiteValidator = require('../../../lib/validator');
 
 const internals = {
 
@@ -78,7 +78,9 @@ const internals = {
                 recovery: obj.wfd.recoveryId ? await MasterDataService.getRecoveryById(obj.wfd.recoveryId) : null
             },
 
-            value: obj.value
+            value: obj.value,
+
+            errors: obj.errors
         };
     },
 
@@ -131,7 +133,46 @@ const internals = {
         }
 
         return 0;
+    },
+
+    /**
+     * Save the off-site transfers in the cache
+     * @param request
+     * @param tasks
+     * @returns {Promise.<void>}
+     */
+    save: (request, tasks) => {
+        if (tasks.offSiteTransfers) {
+            tasks.offSiteTransfers.forEach((offSiteTransfer, index) => {
+                offSiteTransfer.value = request.payload['value-' + index];
+            });
+        }
+    },
+
+    /**
+     * Validate the offsite transfers
+     * @param request
+     * @param tasks
+     * @returns {Promise.<boolean>}
+     */
+    validate: (request, tasks) => {
+        if (tasks.offSiteTransfers) {
+            let isValid = true;
+            tasks.offSiteTransfers.forEach((offSiteTransfer, index) => {
+                const validationErrors = OffSiteValidator.offSite(tasks, offSiteTransfer);
+                if (validationErrors) {
+                    tasks.offSiteTransfers[index].errors = validationErrors;
+                    isValid = false;
+                } else {
+                    delete tasks.offSiteTransfers[index].errors;
+                }
+            });
+            return isValid;
+        }
+
+        return true;
     }
+
 };
 
 module.exports = {
@@ -247,10 +288,11 @@ module.exports = {
                 const { ewc, wfd, value } = request.payload;
                 const currentPageOffSiteTransfer = { ewc, wfd, value };
                 const currentCacheOffSiteTransferObject = await internals.createOffSiteTransferCacheObject(currentPageOffSiteTransfer);
-                const validationErrors = await offSiteValidator(tasks, currentCacheOffSiteTransferObject);
+                const validationErrors = await OffSiteValidator.offSiteAdd(tasks, currentCacheOffSiteTransferObject);
 
                 if (!validationErrors) {
                     // If there are no validation errors saved the tasks and redirect to the off-site waste transfers page
+                    delete currentCacheOffSiteTransferObject.errors;
                     tasks.offSiteTransfers.push(currentCacheOffSiteTransferObject);
 
                     // We need to address this by the array index so we need a deterministic sort
@@ -265,6 +307,58 @@ module.exports = {
                     await request.server.app.userCache.cache('tasks').set(request, tasks);
                     reply.redirect('/transfers/off-site/add');
                 }
+            }
+
+        } catch (err) {
+            if (err instanceof CacheKeyError) {
+                reply.redirect('/');
+            } else {
+                logger.log('error', err);
+                reply.redirect('/logout');
+            }
+        }
+    },
+
+    action: async (request, reply) => {
+        try {
+            const { tasks } = await cacheHelper(request, 'off-site');
+
+            // Save the submission
+            await internals.save(request, tasks);
+
+            // If we continue we will need to validate the submission
+            if (request.payload.continue) {
+
+                // Test if the releases are valid
+                if (internals.validate(request, tasks)) {
+                    // Write the (removed) validations to the cache
+                    await request.server.app.userCache.cache('tasks').set(request, tasks);
+                    reply.redirect('/task-list');
+                } else {
+                    // Update the cache with the validation objects and redirect back to the page
+                    await request.server.app.userCache.cache('tasks').set(request, tasks);
+                    reply.redirect('/transfers/off-site');
+                }
+
+            } else if (Object.keys(request.payload).find(s => s.startsWith('detail'))) {
+
+                // Save the changes to the transfers and redirect to the detail page
+                reply.redirect('/transfers/off-site/detail');
+
+            } else if (Object.keys(request.payload).find(s => s.startsWith('delete'))) {
+                /*
+                 * Save the substance id and redirect to the delete confirmation page
+                 * const substanceId = Number.parseInt(Object.keys(request.payload)
+                 *    .find(s => s.startsWith('delete')).substr(7));
+                 */
+            } else if (request.payload.back) {
+                // Save the release information to the cache and return to the main task-list page
+                await request.server.app.userCache.cache('tasks').set(request, tasks);
+                reply.redirect('/task-list');
+            } else if (request.payload.add) {
+                // Save the release information to the cache and redirect to the add-substances page
+                await request.server.app.userCache.cache('tasks').set(request, tasks);
+                reply.redirect('/transfers/off-site/add');
             }
 
         } catch (err) {

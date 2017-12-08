@@ -195,6 +195,12 @@ const dynamicHandlers = [
     },
 
     {
+        method: 'POST',
+        path: '/transfers/off-site/action',
+        handler: OffSite.action
+    },
+
+    {
         method: 'GET',
         path: '/transfers/overseas',
         config: {
