@@ -201,6 +201,18 @@ const dynamicHandlers = [
     },
 
     {
+        method: ['GET', 'POST'],
+        path: '/transfers/off-site/remove',
+        handler: OffSite.remove
+    },
+
+    {
+        method: ['GET', 'POST'],
+        path: '/transfers/off-site/detail',
+        handler: OffSite.detail
+    },
+
+    {
         method: 'GET',
         path: '/transfers/overseas',
         config: {

@@ -171,8 +171,22 @@ const internals = {
         }
 
         return true;
-    }
+    },
 
+    /**
+     * Determine if a transfer can be deleted
+     * (a) Without warning
+     * (b) With warning
+     * @param the transfer
+     * @return NO_WARN, WARN
+     */
+    canDelete: (tasks, transfer) => {
+        if (OffSiteValidator.offSite(tasks, transfer)) {
+            return 'NO_WARN';
+        } else {
+            return 'WARN';
+        }
+    }
 };
 
 module.exports = {
@@ -319,6 +333,7 @@ module.exports = {
         }
     },
 
+    // The submit actions on the form
     action: async (request, reply) => {
         try {
             const { tasks } = await cacheHelper(request, 'off-site');
@@ -341,16 +356,41 @@ module.exports = {
                 }
 
             } else if (Object.keys(request.payload).find(s => s.startsWith('detail'))) {
+                const transferIndex = Number.parseInt(Object.keys(request.payload)
+                    .find(s => s.startsWith('detail')).substr(7));
+
+                tasks.currentoffSiteTransferIndex = transferIndex;
 
                 // Save the changes to the transfers and redirect to the detail page
+                await request.server.app.userCache.cache('tasks').set(request, tasks);
+
                 reply.redirect('/transfers/off-site/detail');
 
             } else if (Object.keys(request.payload).find(s => s.startsWith('delete'))) {
-                /*
-                 * Save the substance id and redirect to the delete confirmation page
-                 * const substanceId = Number.parseInt(Object.keys(request.payload)
-                 *    .find(s => s.startsWith('delete')).substr(7));
-                 */
+                const transferIndex = Number.parseInt(Object.keys(request.payload)
+                    .find(s => s.startsWith('delete')).substr(7));
+
+                switch (internals.canDelete(tasks, tasks.offSiteTransfers[transferIndex])) {
+
+                    case 'NO_WARN':
+                        // Save the current substance
+                        tasks.offSiteTransfers.splice(transferIndex, 1);
+                        await request.server.app.userCache.cache('tasks').set(request, tasks);
+                        reply.redirect('/transfers/off-site');
+                        break;
+
+                    case 'WARN':
+                        // Send to delete confirmation dialog
+                        tasks.currentoffSiteTransferIndex = transferIndex;
+                        await request.server.app.userCache.cache('tasks').set(request, tasks);
+                        reply.redirect('/transfers/off-site/remove');
+                        break;
+
+                    default:
+                        reply.redirect('/task-list');
+                        break;
+                }
+
             } else if (request.payload.back) {
                 // Save the release information to the cache and return to the main task-list page
                 await request.server.app.userCache.cache('tasks').set(request, tasks);
@@ -361,6 +401,66 @@ module.exports = {
                 reply.redirect('/transfers/off-site/add');
             }
 
+        } catch (err) {
+            if (err instanceof CacheKeyError) {
+                reply.redirect('/');
+            } else {
+                logger.log('error', err);
+                reply.redirect('/logout');
+            }
+        }
+    },
+
+    /**
+     * Remove an off-site transfer
+     * @param request
+     * @param reply
+     * @returns {Promise.<void>}
+     */
+    remove: async (request, reply) => {
+        try {
+            const { route, tasks } = await cacheHelper(request, 'off-site');
+
+            if (request.method === 'get') {
+                reply.view('all-sectors/report/confirm-delete', {
+                    route: route.name,
+                    transfer: await internals.enrichOffSiteTransferObject(tasks.offSiteTransfers[tasks.currentoffSiteTransferIndex])
+                });
+            } else {
+                tasks.offSiteTransfers.splice(tasks.currentoffSiteTransferIndex, 1);
+                await request.server.app.userCache.cache('tasks').set(request, tasks);
+                if (tasks.offSiteTransfers.length > 0) {
+                    reply.redirect('/transfers/off-site');
+                } else {
+                    reply.redirect('/task-list');
+                }
+            }
+        } catch (err) {
+            if (err instanceof CacheKeyError) {
+                reply.redirect('/');
+            } else {
+                logger.log('error', err);
+                reply.redirect('/logout');
+            }
+        }
+    },
+
+    /**
+     * Show the detail page of off-site transfer
+     * @param request
+     * @param reply
+     * @returns {Promise.<void>}
+     */
+    detail: async (request, reply) => {
+        try {
+            const { tasks } = await cacheHelper(request, 'off-site');
+            const transfer = await internals.enrichOffSiteTransferObject(tasks.offSiteTransfers[tasks.currentoffSiteTransferIndex]);
+
+            if (request.method === 'get') {
+                reply.view('all-sectors/report/off-site-detail', { transfer: transfer });
+            } else {
+
+            }
         } catch (err) {
             if (err instanceof CacheKeyError) {
                 reply.redirect('/');

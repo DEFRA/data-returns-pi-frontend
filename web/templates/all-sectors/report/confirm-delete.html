@@ -15,7 +15,6 @@
 {% block content %}
 <main id="content">
     <label id="page-name" hidden>confirm-delete</label>
-
     {% if route === 'RELEASES_TO_LAND' %}
         {% set hdr = 'Confirm you want to remove the release to land of ' +  release.substance.name %}
         {{ form(hdr, '/releases/land') }}
@@ -28,8 +27,10 @@
     {% elif route === 'OFFSITE_TRANSFERS_IN_WASTE_WATER' %}
         {% set hdr = 'Confirm you want to remove the release in waste water of ' +  release.substance.name %}
         {{ form(hdr, '/releases/waste-water') }}
+    {% elif route === 'OFFSITE_WASTE_TRANSFERS' %}
+        {% set hdr = 'Confirm you want to remove the off-site waste transfer ' +  transfer | transferShortDesc %}
+        {{ form(hdr, '/transfers/off-site') }}
     {% endif %}
-
 </main>
 {% endblock %}
 
