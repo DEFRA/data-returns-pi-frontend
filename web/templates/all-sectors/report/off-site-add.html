@@ -58,16 +58,16 @@
         <div class="form-group form-group-error">
             <p class="bold">EWC code</p>
             <label class="form-label visually-hidden" for="ewc-code-err"></label>
-            <span class="form-hint">For example, ‘13 12 01’.</span>
-            <input class="form-control form-control-error ewc-code" id="ewc-code-err" name="ewc" pattern="[0-9]{2} [0-9]{2} [0-9]{2}" value="{{ transfer.offSiteTransfer.ewc }}">
+            <span class="form-hint">For example, ‘01 01 01’.</span>
+            <input class="form-control form-control-error ewc-code" id="ewc-code-err" name="ewc" pattern="^\s*[0-9]{2} [0-9]{2} [0-9]{2}\s*$" value="{{ transfer.offSiteTransfer.ewc }}">
             <span class="error-message">The code is not recognised</span>
         </div>
         {% else %}
         <div class="form-group">
             <p class="bold">EWC code</p>
             <label class="form-label visually-hidden" for="ewc-code"></label>
-            <span class="form-hint">For example, ‘13 12 01’.</span>
-            <input class="form-control ewc-code" id="ewc-code" name="ewc" pattern="[0-9]{2} [0-9]{2} [0-9]{2}" value="{{ transfer.offSiteTransfer.ewc }}">
+            <span class="form-hint">For example, ‘01 01 01’.</span>
+            <input class="form-control ewc-code" id="ewc-code" name="ewc" pattern="^\s*[0-9]{2} [0-9]{2} [0-9]{2}\s*$" value="{{ transfer.offSiteTransfer.ewc }}">
         </div>
         {% endif %}
 
@@ -88,7 +88,7 @@
         </div>
         {% endif %}
 
-        {% if wfd_error %}
+        {% if value_error %}
         <div class="form-group form-group-error">
             <p class="bold">Total</p>
             <label class="form-label visually-hidden" for="value-err"></label>

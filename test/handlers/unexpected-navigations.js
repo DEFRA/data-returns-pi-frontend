@@ -19,7 +19,6 @@ const internals = {};
 experiment('Unexpected navigation', () => {
 
     before(() => {
-    // Start the server asynchronously
         return Common.start();
     });
 
@@ -213,7 +212,6 @@ experiment('Unexpected navigation', () => {
     });
 
     after(() => {
-        // Start the server asynchronously
         return Common.stop();
     });
 });

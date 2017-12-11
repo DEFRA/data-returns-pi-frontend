@@ -19,7 +19,6 @@ const after = lab.after;
 experiment('Off-site transfers', () => {
 
     before(() => {
-    // Start the server asynchronously
         return Common.start();
     });
 
@@ -65,7 +64,6 @@ experiment('Off-site transfers', () => {
     });
 
     test('Select a permit and go to permit list', async () => {
-    // Post a selected permit and relocation to the task list
         let response = await server().inject({
             method: 'POST',
             url: '/select-permit',
@@ -87,7 +85,6 @@ experiment('Off-site transfers', () => {
     });
 
     test('Confirm off-site transfers = no sends you back to the task list', async () => {
-    // request the task list
         let response = await server().inject({
             method: 'GET',
             url: '/transfers/off-site/confirm',
@@ -117,8 +114,6 @@ experiment('Off-site transfers', () => {
     });
 
     test('Confirm off-site transfers = yes sends you to the add an off-site transfer page page', async () => {
-
-        // request off-site transfers page
         let response = await server().inject({
             method: 'GET',
             url: '/transfers/off-site/confirm',
@@ -147,7 +142,6 @@ experiment('Off-site transfers', () => {
         expect(response.statusCode).to.equal(302);
         expect(response.headers.location).to.equal('/transfers/off-site/add');
 
-        // request the releases to air page
         response = await server().inject({
             method: 'GET',
             url: '/transfers/off-site/add',
@@ -158,7 +152,6 @@ experiment('Off-site transfers', () => {
     });
 
     test('Test invalid transfer', async () => {
-        // request the releases to air page
         let response = await server().inject({
             method: 'GET',
             url: '/transfers/off-site/add',
@@ -179,7 +172,6 @@ experiment('Off-site transfers', () => {
         expect(response.statusCode).to.equal(302);
         expect(response.headers.location).to.equal('/transfers/off-site/add');
 
-        // request the releases to air page
         response = await server().inject({
             method: 'GET',
             url: '/transfers/off-site/add',
@@ -190,7 +182,6 @@ experiment('Off-site transfers', () => {
     });
 
     test('Test valid transfer', async () => {
-    // request the releases to air page
         let response = await server().inject({
             method: 'GET',
             url: '/transfers/off-site/add',
@@ -211,10 +202,189 @@ experiment('Off-site transfers', () => {
         expect(response.statusCode).to.equal(302);
         expect(response.headers.location).to.equal('/transfers/off-site');
 
-        // request the releases to air page
         response = await server().inject({
             method: 'GET',
             url: '/transfers/off-site',
+            headers: {cookie: 'sid=' + internals.sid}
+        });
+        expect(response.statusCode).to.equal(200);
+
+    });
+
+    test('Test change transfer to invalid', async () => {
+        let response = await server().inject({
+            method: 'GET',
+            url: '/transfers/off-site',
+            headers: {cookie: 'sid=' + internals.sid}
+        });
+        expect(response.statusCode).to.equal(200);
+
+        response = await server().inject({
+            method: 'POST',
+            url: '/transfers/off-site/action',
+            headers: {cookie: 'sid=' + internals.sid},
+            payload: {
+                'value-0': 'bad',
+                continue: 'Continue'
+            }
+        });
+        expect(response.statusCode).to.equal(302);
+        expect(response.headers.location).to.equal('/transfers/off-site');
+    });
+
+    test('Test change transfer to valid and continue', async () => {
+        let response = await server().inject({
+            method: 'GET',
+            url: '/transfers/off-site',
+            headers: {cookie: 'sid=' + internals.sid}
+        });
+        expect(response.statusCode).to.equal(200);
+
+        response = await server().inject({
+            method: 'POST',
+            url: '/transfers/off-site/action',
+            headers: {cookie: 'sid=' + internals.sid},
+            payload: {
+                'value-0': 221.67,
+                continue: 'Continue'
+            }
+        });
+        expect(response.statusCode).to.equal(302);
+        expect(response.headers.location).to.equal('/task-list');
+    });
+
+    test('Test detail transfer to invalid', async () => {
+        let response = await server().inject({
+            method: 'GET',
+            url: '/transfers/off-site',
+            headers: {cookie: 'sid=' + internals.sid}
+        });
+        expect(response.statusCode).to.equal(200);
+
+        response = await server().inject({
+            method: 'POST',
+            url: '/transfers/off-site/action',
+            headers: {cookie: 'sid=' + internals.sid},
+            payload: {
+                'value-0': 122,
+                'detail-0': 'More detail'
+            }
+        });
+        expect(response.statusCode).to.equal(302);
+        expect(response.headers.location).to.equal('/transfers/off-site/detail');
+
+        response = await server().inject({
+            method: 'GET',
+            url: '/transfers/off-site/detail',
+            headers: {cookie: 'sid=' + internals.sid}
+        });
+        expect(response.statusCode).to.equal(200);
+
+        response = await server().inject({
+            method: 'POST',
+            url: '/transfers/off-site/detail',
+            headers: {cookie: 'sid=' + internals.sid},
+            payload: {
+                value: 'bad'
+            }
+        });
+        expect(response.statusCode).to.equal(302);
+        expect(response.headers.location).to.equal('/transfers/off-site/detail');
+
+        response = await server().inject({
+            method: 'POST',
+            url: '/transfers/off-site/detail',
+            headers: {cookie: 'sid=' + internals.sid},
+            payload: {
+                value: 100
+            }
+        });
+
+        expect(response.statusCode).to.equal(302);
+        expect(response.headers.location).to.equal('/transfers/off-site');
+
+        response = await server().inject({
+            method: 'GET',
+            url: '/transfers/off-site',
+            headers: {cookie: 'sid=' + internals.sid}
+        });
+        expect(response.statusCode).to.equal(200);
+    });
+
+    test('Test delete transfer not confirm', async () => {
+        let response = await server().inject({
+            method: 'GET',
+            url: '/transfers/off-site',
+            headers: {cookie: 'sid=' + internals.sid}
+        });
+        expect(response.statusCode).to.equal(200);
+
+        response = await server().inject({
+            method: 'POST',
+            url: '/transfers/off-site/action',
+            headers: {cookie: 'sid=' + internals.sid},
+            payload: {
+                'value-0': 221.67,
+                'delete-0': 'Delete'
+            }
+        });
+        expect(response.statusCode).to.equal(302);
+        expect(response.headers.location).to.equal('/transfers/off-site/remove');
+
+        response = await server().inject({
+            method: 'GET',
+            url: '/transfers/off-site/remove',
+            headers: {cookie: 'sid=' + internals.sid}
+        });
+        expect(response.statusCode).to.equal(200);
+
+        response = await server().inject({
+            method: 'GET',
+            url: '/transfers/off-site',
+            headers: {cookie: 'sid=' + internals.sid}
+        });
+        expect(response.statusCode).to.equal(200);
+
+    });
+
+    test('Test delete transfer confirm', async () => {
+        let response = await server().inject({
+            method: 'GET',
+            url: '/transfers/off-site',
+            headers: {cookie: 'sid=' + internals.sid}
+        });
+        expect(response.statusCode).to.equal(200);
+
+        response = await server().inject({
+            method: 'POST',
+            url: '/transfers/off-site/action',
+            headers: {cookie: 'sid=' + internals.sid},
+            payload: {
+                'value-0': 221.67,
+                'delete-0': 'Delete'
+            }
+        });
+        expect(response.statusCode).to.equal(302);
+        expect(response.headers.location).to.equal('/transfers/off-site/remove');
+
+        response = await server().inject({
+            method: 'GET',
+            url: '/transfers/off-site/remove',
+            headers: {cookie: 'sid=' + internals.sid}
+        });
+        expect(response.statusCode).to.equal(200);
+
+        response = await server().inject({
+            method: 'POST',
+            url: '/transfers/off-site/remove',
+            headers: {cookie: 'sid=' + internals.sid}
+        });
+        expect(response.statusCode).to.equal(302);
+        expect(response.headers.location).to.equal('/task-list');
+
+        response = await server().inject({
+            method: 'GET',
+            url: '/task-list',
             headers: {cookie: 'sid=' + internals.sid}
         });
         expect(response.statusCode).to.equal(200);
@@ -231,7 +401,6 @@ experiment('Off-site transfers', () => {
     });
 
     after(() => {
-    // Start the server asynchronously
         return Common.stop();
     });
 

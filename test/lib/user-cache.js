@@ -9,10 +9,16 @@ const lab = exports.lab = Lab.script();
 const expect = Code.expect;
 const test = lab.test;
 const experiment = lab.experiment;
+const before = lab.before;
+const after = lab.after;
 
 const UserCache = require('../../src/lib/user-cache');
 
-experiment('User cache', function () {
+experiment('User cache', () => {
+    before(() => {
+        return UserCache.start(require('catbox-redis'),
+            require('../../src/lib/user-cache-policies').policies);
+    });
 
     test('Test basic cache usage', async () => {
         try {
@@ -36,4 +42,7 @@ experiment('User cache', function () {
         }
     });
 
+    after(() => {
+        UserCache.stop();
+    });
 });

@@ -20,7 +20,6 @@ const test = lab.test;
 experiment('Authentication', () => {
 
     before(() => {
-        // Start the server asynchronously
         return Common.start();
     });
 
@@ -81,7 +80,6 @@ experiment('Authentication', () => {
     });
 
     after(() => {
-        // Stop the server asynchronously
         return Common.stop();
     });
 });

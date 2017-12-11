@@ -19,7 +19,6 @@ const after = lab.after;
 experiment('Releases', () => {
 
     before(() => {
-    // Start the server asynchronously
         return Common.start();
     });
 
@@ -339,7 +338,6 @@ experiment('Releases', () => {
     });
 
     after(() => {
-    // Start the server asynchronously
         return Common.stop();
     });
 

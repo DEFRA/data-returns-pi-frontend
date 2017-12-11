@@ -186,6 +186,36 @@ const internals = {
         } else {
             return 'WARN';
         }
+    },
+
+    /**
+     * Remove any invalid off-site transfer objects from the cache
+     * @param tasks
+     * @param transfer
+     * @return {*}
+     */
+    clearInvalid: async (request, tasks) => {
+        let haveRemoved = false;
+
+        if (tasks.currentPageOffSiteTransfer) {
+            delete tasks.currentPageOffSiteTransfer;
+            haveRemoved = true;
+        }
+
+        if (tasks.offSiteTransfers) {
+            tasks.offSiteTransfers.forEach((offSiteTransfer, index) => {
+                if (OffSiteValidator.offSite(offSiteTransfer)) {
+                    tasks.offSiteTransfers.splice(index, 1);
+                    haveRemoved = true;
+                }
+            });
+        }
+
+        if (haveRemoved) {
+            await request.server.app.userCache.cache('tasks').set(request, tasks);
+        }
+
+        return tasks;
     }
 };
 
@@ -207,6 +237,10 @@ module.exports = {
             const { route, tasks } = await cacheHelper(request, 'off-site');
 
             if (request.method === 'get') {
+
+                // Firstly remove any invalid off-site transfer objects due to unexpected navigation
+                await internals.clearInvalid(request, tasks);
+
                 // If we have off-site transfers then redirect directly to the summary page
                 if (tasks && tasks.offSiteTransfers && tasks.offSiteTransfers.length > 0) {
                     reply.redirect('/transfers/off-site');

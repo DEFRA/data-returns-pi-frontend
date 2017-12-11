@@ -6,7 +6,7 @@ const lab = exports.lab = Lab.script();
 const Code = require('code');
 
 const releaseValidator = require('../../src/lib/validator').release;
-const offSiteValidator = require('../../src/lib/validator').offSite;
+const OffSiteValidator = require('../../src/lib/validator');
 const findOffSiteTransfer = require('../../src/lib/validator').findOffSiteTransfer;
 
 const experiment = lab.experiment;
@@ -99,8 +99,7 @@ experiment('Validation', async () => {
         expect(validation).to.include({'key': 'unitId', 'errno': 'PI-1002'});
     });
 
-    test('Valid off-site transfer object part 1', async () => {
-
+    test('Valid off-site transfer object', () => {
         const validObj = {
             ewc: {
                 activityId: 1,
@@ -114,8 +113,15 @@ experiment('Validation', async () => {
             value: 236.89
         };
 
-        const validation = await offSiteValidator(null, validObj);
+        const validation = OffSiteValidator.offSite(validObj);
         expect(validation).to.be.null();
+    });
+
+    test('Invalid off-site transfer object', () => {
+        const validation = OffSiteValidator.offSite({});
+        expect(validation).to.include({'key': 'value', 'errno': 'PI-2000'});
+        expect(validation).to.include({'key': 'ewc', 'errno': 'PI-2001'});
+        expect(validation).to.include({'key': 'wfd', 'errno': 'PI-2002'});
     });
 
     test('Find off-site transfers', () => {

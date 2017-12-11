@@ -65,15 +65,16 @@ const internals = {
     },
 
     /**
-     * Validate an offsite waste transfer (when adding)
-     * @param offSite
+     * Validate an off-site waste transfer (when adding)
+     * @param tasks - the tasks
+     * @param offSiteCacheObject
      * @return {*}
      */
-    offSiteAdd: (tasks, offSite) => {
-        const result = internals.offSite(offSite) || [];
+    offSiteAdd: (tasks, offSiteCacheObject) => {
+        const result = internals.offSite(offSiteCacheObject) || [];
 
         // Test if it already exists
-        if (tasks && internals.findOffSiteTransfer(tasks, offSite) !== -1) {
+        if (tasks && internals.findOffSiteTransfer(tasks, offSiteCacheObject) !== -1) {
             result.push({ key: 'off-site', errno: 'PI-2003' });
         }
 
@@ -81,23 +82,23 @@ const internals = {
     },
 
     /**
-     * Validate an offsite waste transfer (when changing)
-     * @param offSite
+     * Validate an off-site waste transfer (when changing)
+     * @param offSiteCacheObject - an off-site cache object to validate
      * @return {*}
      */
-    offSite: (offSite) => {
+    offSite: (offSiteCacheObject) => {
         const result = [];
-        if (!isNumeric(offSite.value)) {
+        if (!isNumeric(offSiteCacheObject.value)) {
             result.push({ key: 'value', errno: 'PI-2000' });
         }
 
         // Test EWC code
-        if (!offSite.ewc) {
+        if (!offSiteCacheObject.ewc) {
             result.push({ key: 'ewc', errno: 'PI-2001' });
         }
 
         // Test the waste code
-        if (!offSite.wfd || (!offSite.wfd.disposalId && !offSite.wfd.recoveryId)) {
+        if (!offSiteCacheObject.wfd || (!offSiteCacheObject.wfd.disposalId && !offSiteCacheObject.wfd.recoveryId)) {
             result.push({ key: 'wfd', errno: 'PI-2002' });
         }
 
