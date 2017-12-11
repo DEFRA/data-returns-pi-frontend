@@ -3,8 +3,6 @@
 const logger = require('../lib/logging').logger;
 const MasterDataService = require('../service/master-data');
 const SessionHelper = require('./session-helper');
-const TaskList = require('../model/all-sectors/task-list');
-const TaskListService = require('../service/task-list');
 
 /**
  * The handler for the start page

@@ -199,7 +199,7 @@ experiment('Unexpected navigation', () => {
     });
 
     test('Selecting someone else\'s permit logs user out', async () => {
-        const response = await server().inject({
+        let response = await server().inject({
             method: 'POST',
             url: '/select-permit',
             headers: { cookie: 'sid=' + internals.sid },
@@ -209,6 +209,7 @@ experiment('Unexpected navigation', () => {
         });
         expect(response.statusCode).to.equal(302);
         expect(response.headers.location).to.equal('/logout');
+
     });
 
     after(() => {
