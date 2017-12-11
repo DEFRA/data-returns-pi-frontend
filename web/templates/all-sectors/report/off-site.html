@@ -45,10 +45,18 @@
                 <td class="td-wfd-code">{{ transfer.wfd.recovery.code }}</td>
                 {% endif %}
 
+                {% set value_error = (transfer.errors | selectattr2("key", "value"))  %}
+                {% if value_error %}
+                <td class="td-total">
+                    <label class="form-label visually-hidden" for="value-err">Total</label>
+                    <input class="form-control form-control-error" id="value-err" name="value-{{ loop.index0 }}" type="number" step="0.001" value="{{ transfer.value }}"> tonnes
+                </td>
+                {% else %}
                 <td class="td-total">
                     <label class="form-label visually-hidden" for="value">Total</label>
                     <input class="form-control" id="value" name="value-{{ loop.index0 }}" type="number" step="0.001" value="{{ transfer.value }}"> tonnes
                 </td>
+                {% endif %}
 
                 <td>
                     <input class="link" type="submit" id="detail" name="detail-{{ loop.index0 }}" value="More detail"/>

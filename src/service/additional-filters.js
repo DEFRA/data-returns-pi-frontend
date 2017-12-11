@@ -61,7 +61,7 @@ module.exports = [
         functionName: 'transfersWithErrors',
 
         /**
-         * Process the releases object to filter only those transfers  with errors
+         * Process the transfers object to filter only those transfers with errors
          * @param releases - the releases object
          * @returns {*} - The substance name
          */

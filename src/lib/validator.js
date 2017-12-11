@@ -70,7 +70,7 @@ const internals = {
      * @return {*}
      */
     offSiteAdd: (tasks, offSite) => {
-        const result = internals.offSite(tasks, offSite) || [];
+        const result = internals.offSite(offSite) || [];
 
         // Test if it already exists
         if (tasks && internals.findOffSiteTransfer(tasks, offSite) !== -1) {
