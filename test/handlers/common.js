@@ -34,7 +34,7 @@ module.exports = {
         logging.logger.info('Server stopped');
     },
 
-    login: async () => {
+    login: async (username, password) => {
         let response = await server.server().inject({
             method: 'GET',
             url: '/'
@@ -54,8 +54,8 @@ module.exports = {
             method: 'POST',
             url: '/login',
             payload: {
-                username: '1@email.com',
-                password: 'a'
+                username: username,
+                password: password
             }
         });
         assert(response.statusCode === 302);
@@ -69,7 +69,7 @@ module.exports = {
         response = await server.server().inject({
             method: 'GET',
             url: '/',
-            headers: { cookie: 'sid=' + internals.sid }
+            headers: {cookie: 'sid=' + internals.sid}
         });
         assert(response.statusCode === 200);
     },
@@ -100,7 +100,7 @@ module.exports = {
         assert(response.statusCode === 200);
     },
 
-    sid: internals.sid,
+    sid: () => { return internals.sid; },
     server: server.server
 
 };
