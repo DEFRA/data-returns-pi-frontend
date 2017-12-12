@@ -171,6 +171,131 @@ experiment('Unexpected navigation', () => {
         expect(response.headers.location).to.equal('/logout');
     });
 
+    test('Test login', async () => {
+        return Common.login('1@email.com', 'a');
+    });
+
+    test('Half completed off-site waste transfer', async () => {
+
+        let response = await Common.server().inject({
+            method: 'get',
+            url: '/',
+            headers: { cookie: 'sid=' + Common.sid() }
+        });
+        expect(response.statusCode).to.equal(200);
+
+        response = await Common.server().inject({
+            method: 'post',
+            url: '/select-permit',
+            headers: { cookie: 'sid=' + Common.sid() },
+            payload: {
+                eaId: '100311'
+            }
+        });
+        expect(response.statusCode).to.equal(302);
+        expect(response.headers.location).to.equal('/task-list');
+
+        response = await Common.server().inject({
+            method: 'get',
+            url: '/task-list',
+            headers: { cookie: 'sid=' + Common.sid() }
+        });
+        expect(response.statusCode).to.equal(200);
+
+        response = await Common.server().inject({
+            method: 'get',
+            url: '/transfers/off-site/confirm',
+            headers: { cookie: 'sid=' + Common.sid() }
+        });
+        expect(response.statusCode).to.equal(200);
+
+        response = await Common.server().inject({
+            method: 'post',
+            url: '/transfers/off-site/confirm',
+            headers: { cookie: 'sid=' + Common.sid() },
+            payload: {
+                confirmation: 'true'
+            }
+        });
+        expect(response.statusCode).to.equal(302);
+        expect(response.headers.location).to.equal('/transfers/off-site');
+
+        response = await Common.server().inject({
+            method: 'get',
+            url: '/transfers/off-site',
+            headers: { cookie: 'sid=' + Common.sid() }
+        });
+        expect(response.statusCode).to.equal(302);
+        expect(response.headers.location).to.equal('/transfers/off-site/add');
+
+        response = await Common.server().inject({
+            method: 'get',
+            url: '/transfers/off-site/add',
+            headers: { cookie: 'sid=' + Common.sid() }
+        });
+        expect(response.statusCode).to.equal(200);
+
+        response = await Common.server().inject({
+            method: 'post',
+            url: '/transfers/off-site/add',
+            headers: { cookie: 'sid=' + Common.sid() },
+            payload: {
+                ewc: null,
+                wfd: null,
+                value: 'junk'
+            }
+        });
+        expect(response.statusCode).to.equal(302);
+        expect(response.headers.location).to.equal('/transfers/off-site/add');
+
+        response = await Common.server().inject({
+            method: 'get',
+            url: '/transfers/off-site/add',
+            headers: { cookie: 'sid=' + Common.sid() }
+        });
+        expect(response.statusCode).to.equal(200);
+
+        response = await Common.server().inject({
+            method: 'get',
+            url: '/task-list',
+            headers: { cookie: 'sid=' + Common.sid() }
+        });
+        expect(response.statusCode).to.equal(200);
+
+        response = await Common.server().inject({
+            method: 'get',
+            url: '/transfers/off-site/confirm',
+            headers: { cookie: 'sid=' + Common.sid() }
+        });
+        expect(response.statusCode).to.equal(200);
+
+        response = await Common.server().inject({
+            method: 'post',
+            url: '/transfers/off-site/confirm',
+            headers: { cookie: 'sid=' + Common.sid() },
+            payload: {
+                confirmation: 'true'
+            }
+        });
+        expect(response.statusCode).to.equal(302);
+        expect(response.headers.location).to.equal('/transfers/off-site');
+
+        response = await Common.server().inject({
+            method: 'get',
+            url: '/transfers/off-site',
+            headers: { cookie: 'sid=' + Common.sid() }
+        });
+        expect(response.statusCode).to.equal(302);
+        expect(response.headers.location).to.equal('/transfers/off-site/add');
+
+        response = await Common.server().inject({
+            method: 'get',
+            url: '/transfers/off-site/add',
+            headers: { cookie: 'sid=' + Common.sid() }
+        });
+        expect(response.statusCode).to.equal(200);
+    });
+
     after(() => {
         return Common.stop();
     });
