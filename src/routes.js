@@ -9,13 +9,11 @@ const AllSectors = require('./handlers/all-sectors/main');
 const Contact = require('./handlers/all-sectors/check/contact');
 const Site = require('./handlers/all-sectors/check/site');
 const Releases = require('./handlers/all-sectors/report/releases');
-const Details = require('./handlers/all-sectors/report/release-details');
 const OffSite = require('./handlers/all-sectors/report/off-site');
 const Overseas = require('./handlers/all-sectors/report/overseas');
 const Check = require('./handlers/all-sectors/submit/check');
 const Share = require('./handlers/all-sectors/submit/share');
 const Submit = require('./handlers/all-sectors/submit/submit');
-const Substances = require('./handlers/all-sectors/report/substances');
 
 /**
  * Returns routes for the static assets
@@ -156,20 +154,20 @@ const dynamicHandlers = [
         method: ['GET', 'POST'],
         path: '/releases/{route}/add-substance',
         config: {
-            handler: Substances.add
+            handler: Releases.add
         }
     },
 
     {
         method: ['GET', 'POST'],
         path: '/releases/{route}/detail',
-        handler: Details.detail
+        handler: Releases.detail
     },
 
     {
         method: ['GET', 'POST'],
         path: '/releases/{route}/remove',
-        handler: Details.remove
+        handler: Releases.remove
     },
 
     {

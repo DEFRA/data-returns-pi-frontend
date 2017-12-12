@@ -9,6 +9,10 @@ const MasterDataService = require('../../../service/master-data');
 const Validator = require('../../../lib/validator');
 const CacheKeyError = require('../../../lib/user-cache-policies').CacheKeyError;
 const cacheHelper = require('../common').cacheHelper;
+const TaskListService = require('../../../service/task-list');
+const AllSectorsTaskList = require('../../../model/all-sectors/task-list');
+
+const NEW_RELEASE_OBJECT = { value: null, unitId: null, methodId: null };
 
 const internals = {
 
@@ -115,6 +119,27 @@ const internals = {
                 await request.server.app.userCache.cache('tasks').set(request, tasks);
             }
         }
+    },
+
+    /**
+     * Sort the substance list by name alphabetically
+     * @param a
+     * @param b
+     * @return {number}
+     */
+    sortSubstances: (a, b) => {
+        const nameA = a.name.toUpperCase();
+        const nameB = b.name.toUpperCase();
+
+        if (nameA < nameB) {
+            return -1;
+        }
+
+        if (nameA > nameB) {
+            return 1;
+        }
+
+        return 0;
     }
 };
 
@@ -308,6 +333,180 @@ module.exports = {
                 reply.redirect(route.page + '/add-substance');
             }
 
+        } catch (err) {
+            if (err instanceof CacheKeyError) {
+                reply.redirect('/');
+            } else {
+                logger.log('error', err);
+                reply.redirect('/logout');
+            }
+        }
+    },
+
+    /**
+     * Detail action
+     */
+    detail: async (request, reply) => {
+        try {
+            // Check the permit status has been set
+            const permitStatus = await request.server.app.userCache.cache('permit-status').get(request);
+            const tasks = await request.server.app.userCache.cache('tasks').get(request);
+            const route = TaskListService.getRoute(AllSectorsTaskList, request);
+
+            if (!permitStatus || !tasks || !route) {
+                throw new CacheKeyError('invalid cache state');
+            }
+
+            if (request.method === 'get') {
+                // Get the current release and enrich with the substance details
+                const release = tasks.releases[tasks.currentSubstanceId];
+
+                if (!release) {
+                    throw new CacheKeyError('invalid cache state');
+                }
+
+                const substance = await MasterDataService.getSubstanceById(Number.parseInt(tasks.currentSubstanceId));
+                release.substance = substance;
+
+                // Get the methods list
+                const methods = await MasterDataService.getMethods();
+
+                // Get the units list
+                const units = await MasterDataService.getUnits();
+
+                // Display the detail page
+                reply.view('all-sectors/report/release-detail', { route: route.name, release: release, methods: methods, units: units });
+            } else {
+
+                // Set the task detail elements
+                const { unitId, methodId, value } = request.payload;
+                const currentRelease = tasks.releases[tasks.currentSubstanceId];
+
+                // Set up the release object
+                currentRelease.unitId = Number.isNaN(Number.parseInt(unitId)) ? null : Number.parseInt(unitId);
+                currentRelease.methodId = Number.isNaN(Number.parseInt(methodId)) ? null : Number.parseInt(methodId);
+                currentRelease.value = Number.isNaN(Number.parseFloat(value)) ? value : Number.parseFloat(value);
+
+                delete currentRelease.errors;
+
+                // Validate the release object
+                const validation = await Validator.release(tasks.releases[tasks.currentSubstanceId]);
+
+                if (validation) {
+                    // Update the cache with the validation objects and redirect back to the releases page
+                    currentRelease.errors = validation;
+                    await request.server.app.userCache.cache('tasks').set(request, tasks);
+                    reply.redirect(route.page + '/detail');
+                } else {
+                    // Write the (removed) validations and cleared unconfirmed flag to the cache
+                    delete currentRelease.unconfirmed;
+                    await request.server.app.userCache.cache('tasks').set(request, tasks);
+                    reply.redirect(route.page);
+                }
+            }
+        } catch (err) {
+            if (err instanceof CacheKeyError) {
+                reply.redirect('/');
+            } else {
+                logger.log('error', err);
+                reply.redirect('/logout');
+            }
+        }
+    },
+
+    /**
+     * Remove a release
+     * @param request
+     * @param reply
+     * @return {Promise.<void>}
+     */
+    remove: async (request, reply) => {
+        try {
+
+            const tasks = await request.server.app.userCache.cache('tasks').get(request);
+
+            // Check for tasks
+            if (!tasks) {
+                throw new CacheKeyError('invalid cache state');
+            }
+
+            const release = tasks.releases[tasks.currentSubstanceId];
+            const route = TaskListService.getRoute(AllSectorsTaskList, request);
+            const substance = await MasterDataService.getSubstanceById(Number.parseInt(tasks.currentSubstanceId));
+
+            if (request.method === 'get') {
+                release.substance = substance;
+                reply.view('all-sectors/report/confirm-delete', { route: route.name, release: release });
+            } else {
+                delete tasks.releases[tasks.currentSubstanceId];
+                await request.server.app.userCache.cache('tasks').set(request, tasks);
+                reply.redirect(route.page);
+            }
+        } catch (err) {
+            if (err instanceof CacheKeyError) {
+                reply.redirect('/');
+            } else {
+                logger.log('error', err);
+                reply.redirect('/logout');
+            }
+        }
+    },
+
+    /**
+     * Add (single) substance
+     * @param request
+     * @param reply
+     * @return {Promise.<void>}
+     */
+    add: async (request, reply) => {
+        try {
+            // Get cache objects
+            const { route, tasks } = await cacheHelper(request);
+
+            if (request.method === 'get') {
+
+                // Get a list of all of the substances from the master data service
+                let substances = await MasterDataService.getSubstances();
+
+                // Remove any substances already reported
+                if (tasks.releases) {
+                    const substanceIds = Object.keys(tasks.releases).map(k => Number.parseInt(k));
+                    substances = substances.filter(s => !substanceIds.find(i => s.id === i));
+                }
+
+                substances = substances.sort(internals.sortSubstances);
+
+                // Render the add substances page
+                reply.view('all-sectors/report/add-substance', { route: route, substances: substances });
+            } else {
+                const substance = await MasterDataService.getSubstanceById(Number.parseInt(request.payload['substanceId']));
+
+                // Add the selected substances to the task if it exists
+                if (!substance) {
+                    throw new Error('Unknown substance requested from page');
+                }
+
+                // Add a new releases array to the task object if it does not exist
+                if (!tasks.releases) {
+                    tasks.releases = {};
+                }
+
+                // Add the substance to the task provided it does not already exist
+                if (!tasks.releases[substance.id]) {
+                    tasks.releases[substance.id] = NEW_RELEASE_OBJECT;
+                }
+
+                // Set the unconfirmed flag which will be removed on save
+                tasks.releases[substance.id].unconfirmed = true;
+
+                // Set the current task to allow us to get directly to the detail page
+                tasks.currentSubstanceId = substance.id;
+
+                // Write the task object back to the cache
+                await request.server.app.userCache.cache('tasks').set(request, tasks);
+
+                reply.redirect(route.page + '/detail');
+            }
         } catch (err) {
             if (err instanceof CacheKeyError) {
                 reply.redirect('/');
