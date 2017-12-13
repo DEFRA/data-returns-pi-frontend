@@ -7,7 +7,7 @@ const logger = require('../../../lib/logging').logger;
 const MasterDataService = require('../../../service/master-data');
 const CacheKeyError = require('../../../lib/user-cache-policies').CacheKeyError;
 const cacheHelper = require('../common').cacheHelper;
-const OffSiteValidator = require('../../../lib/validator');
+const Validator = require('../../../lib/validator');
 
 const internals = {
 
@@ -159,7 +159,7 @@ const internals = {
         if (tasks.offSiteTransfers) {
             let isValid = true;
             tasks.offSiteTransfers.forEach((offSiteTransfer, index) => {
-                const validationErrors = OffSiteValidator.offSite(offSiteTransfer);
+                const validationErrors = Validator.offSite(offSiteTransfer);
                 if (validationErrors) {
                     tasks.offSiteTransfers[index].errors = validationErrors;
                     isValid = false;
@@ -181,7 +181,7 @@ const internals = {
      * @return NO_WARN, WARN
      */
     canDelete: (tasks, transfer) => {
-        if (OffSiteValidator.offSite(transfer)) {
+        if (Validator.offSite(transfer)) {
             return 'NO_WARN';
         } else {
             return 'WARN';
@@ -204,7 +204,7 @@ const internals = {
 
         if (tasks.offSiteTransfers) {
             tasks.offSiteTransfers.forEach((offSiteTransfer, index) => {
-                if (OffSiteValidator.offSite(offSiteTransfer)) {
+                if (Validator.offSite(offSiteTransfer)) {
                     tasks.offSiteTransfers.splice(index, 1);
                     haveRemoved = true;
                 }
@@ -246,7 +246,7 @@ module.exports = {
                     reply.redirect('/transfers/off-site');
                 } else {
                     reply.view('all-sectors/report/confirm', {
-                        route: route.name,
+                        route: route,
                         selected: false
                     });
                 }
@@ -336,7 +336,7 @@ module.exports = {
                 const { ewc, wfd, value } = request.payload;
                 const currentPageOffSiteTransfer = { ewc, wfd, value };
                 const currentCacheOffSiteTransferObject = await internals.createOffSiteTransferCacheObject(currentPageOffSiteTransfer);
-                const validationErrors = await OffSiteValidator.offSiteAdd(tasks, currentCacheOffSiteTransferObject);
+                const validationErrors = await Validator.offSiteAdd(tasks, currentCacheOffSiteTransferObject);
 
                 if (!validationErrors) {
                     // If there are no validation errors saved the tasks and redirect to the off-site waste transfers page
@@ -494,7 +494,7 @@ module.exports = {
                 reply.view('all-sectors/report/off-site-detail', { transfer: transfer });
             } else {
                 tasks.offSiteTransfers[tasks.currentoffSiteTransferIndex].value = request.payload.value;
-                const validation = OffSiteValidator.offSite(tasks.offSiteTransfers[tasks.currentoffSiteTransferIndex]);
+                const validation = Validator.offSite(tasks.offSiteTransfers[tasks.currentoffSiteTransferIndex]);
                 if (validation) {
                     tasks.offSiteTransfers[tasks.currentoffSiteTransferIndex].errors = validation;
                     await request.server.app.userCache.cache('tasks').set(request, tasks);

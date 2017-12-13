@@ -4,7 +4,6 @@
 
 <main id="content">
     <label id="page-name" hidden>add-substance</label>
-    <h1 class="large">Add substance</h1>
     <form action="{{ route.page }}/add-substance" method="post">
         {% if route.name === 'RELEASES_TO_LAND'%}
         <h1 class="heading-large">Add new release to land</h1>
@@ -14,8 +13,14 @@
         <h1 class="heading-large">Add new release to controlled waters</h1>
         {% elif route.name === 'OFFSITE_TRANSFERS_IN_WASTE_WATER' %}
         <h1 class="heading-large">Add new offsite transfers in waste water</h1>
+        {% elif route.name === 'OVERSEAS_WASTE_TRANSFERS' %}
+
+        <h1 class="heading-large">
+            <span class="heading-secondary">Your overseas waste transfers</span>
+            What waste did you transfer?
+        </h1>
+
         {% endif %}
-        <p>Select one or more substances to continue</p>
         <div id="search-results" class="grid-row">
             <div class="column-two-thirds">
                 <div class="form-group list">

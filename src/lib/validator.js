@@ -67,14 +67,14 @@ const internals = {
     /**
      * Validate an off-site waste transfer (when adding)
      * @param tasks - the tasks
-     * @param offSiteCacheObject
+     * @param offSiteTransferObject
      * @return {*}
      */
-    offSiteAdd: (tasks, offSiteCacheObject) => {
-        const result = internals.offSite(offSiteCacheObject) || [];
+    offSiteAdd: (tasks, offSiteTransferObject) => {
+        const result = internals.offSite(offSiteTransferObject) || [];
 
         // Test if it already exists
-        if (tasks && internals.findOffSiteTransfer(tasks, offSiteCacheObject) !== -1) {
+        if (tasks && internals.findOffSiteTransfer(tasks, offSiteTransferObject) !== -1) {
             result.push({ key: 'off-site', errno: 'PI-2003' });
         }
 
@@ -83,33 +83,60 @@ const internals = {
 
     /**
      * Validate an off-site waste transfer (when changing)
-     * @param offSiteCacheObject - an off-site cache object to validate
+     * @param offSiteTransferObject - an off-site transfer object (cache object) to validate
      * @return {*}
      */
-    offSite: (offSiteCacheObject) => {
+    offSite: (offSiteTransferObject) => {
         const result = [];
-        if (!isNumeric(offSiteCacheObject.value)) {
+        if (!isNumeric(offSiteTransferObject.value)) {
             result.push({ key: 'value', errno: 'PI-2000' });
         }
 
         // Test EWC code
-        if (!offSiteCacheObject.ewc) {
+        if (!offSiteTransferObject.ewc) {
             result.push({ key: 'ewc', errno: 'PI-2001' });
         }
 
         // Test the waste code
-        if (!offSiteCacheObject.wfd || (!offSiteCacheObject.wfd.disposalId && !offSiteCacheObject.wfd.recoveryId)) {
+        if (!offSiteTransferObject.wfd || (!offSiteTransferObject.wfd.disposalId && !offSiteTransferObject.wfd.recoveryId)) {
             result.push({ key: 'wfd', errno: 'PI-2002' });
         }
 
         return result.length > 0 ? result : null;
-    }
+    },
 
+    /**
+     * Validate an overseas transfer object
+     * @param overseasTransferObject
+     * @return {*}
+     */
+    overseas: (overseasTransferObject) => {
+        const result = [];
+
+        if (!isNumeric(overseasTransferObject.substanceId)) {
+            result.push({ key: 'value', errno: 'PI-3000' });
+        }
+
+        if (!isNumeric(overseasTransferObject.value)) {
+            result.push({ key: 'value', errno: 'PI-3001' });
+        }
+
+        if (!overseasTransferObject.transportationCompanyAddress) {
+            result.push({ key: 'transportation-co-addr', errno: 'PI-3003' });
+        }
+
+        if (!overseasTransferObject.destinationAddr) {
+            result.push({ key: 'destination-addr', errno: 'PI-3004' });
+        }
+
+        return result;
+    }
 };
 
 module.exports = {
     findOffSiteTransfer: internals.findOffSiteTransfer,
     release: internals.release,
     offSite: internals.offSite,
-    offSiteAdd: internals.offSiteAdd
+    offSiteAdd: internals.offSiteAdd,
+    overseas: internals.overseas
 };

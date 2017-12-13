@@ -24,16 +24,18 @@
 {% block content %}
 <main id="content">
     <label id="page-name" hidden>confirm-releases</label>
-    {% if route === 'RELEASES_TO_LAND'%}
-        {{ form('Did you release any substances to land?', '/releases/land/confirm') }}
-    {% elif route === 'RELEASES_TO_AIR' %}
-        {{ form('Did you release any substances to air?', '/releases/air/confirm') }}
-    {% elif route === 'RELEASES_TO_CONTROLLED_WATERS' %}
-        {{ form('Did you release any substances to controlled waters?', '/releases/water/confirm') }}
-    {% elif route === 'OFFSITE_TRANSFERS_IN_WASTE_WATER' %}
-        {{ form('Did you transfer any substances off-site in waste water?', '/releases/waste-water/confirm') }}
-    {% elif route === 'OFFSITE_WASTE_TRANSFERS' %}
-        {{ form('Did you transfer any waste off-site?', '/transfers/off-site/confirm') }}
+    {% if route.name === 'RELEASES_TO_LAND'%}
+        {{ form('Did you release any substances to land?', route.page + '/confirm') }}
+    {% elif route.name === 'RELEASES_TO_AIR' %}
+        {{ form('Did you release any substances to air?', route.page + '/confirm') }}
+    {% elif route.name === 'RELEASES_TO_CONTROLLED_WATERS' %}
+        {{ form('Did you release any substances to controlled waters?', route.page + '/confirm') }}
+    {% elif route.name === 'OFFSITE_TRANSFERS_IN_WASTE_WATER' %}
+        {{ form('Did you transfer any substances off-site in waste water?', route.page + '/confirm') }}
+    {% elif route.name === 'OFFSITE_WASTE_TRANSFERS' %}
+        {{ form('Did you transfer any waste off-site?', route.page + '/confirm') }}
+    {% elif route.name === 'OVERSEAS_WASTE_TRANSFERS' %}
+        {{ form('Did you transfer any waste overseas?', route.page + '/confirm') }}
     {% endif %}
 </main>
 {% endblock %}

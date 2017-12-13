@@ -151,6 +151,9 @@ module.exports = {
     // Expose the validate function
     validate: internals.validate,
 
+    // The substances also need to be sorted in the overseas waste
+    sortSubstances: internals.sortSubstances,
+
     /**
      * Display the confirmation pages - skip if the release type is pre-populated
      * @param request
@@ -176,7 +179,7 @@ module.exports = {
                     } else {
                         // Display the releases to air confirmation page
                         reply.view('all-sectors/report/confirm', {
-                            route: route.name,
+                            route: route,
                             selected: false
                         });
                     }
@@ -184,7 +187,7 @@ module.exports = {
                 } else {
                     // Display the appropriate confirmation page
                     reply.view('all-sectors/report/confirm', {
-                        route: route.name,
+                        route: route,
                         selected: false
                     });
                 }

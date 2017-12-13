@@ -351,16 +351,7 @@ experiment('Off-site transfers', () => {
 
     });
 
-    test('Log out', async () => {
-        const response = await Common.server().inject({
-            method: 'GET',
-            url: '/logout'
-        });
-        expect(response.statusCode).to.equal(302);
-        expect(response.headers.location).to.equal('/login');
-    });
-
-    test('Test logout', async () => {
+    test('Logout', async () => {
         return Common.logout();
     });
 

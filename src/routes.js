@@ -211,7 +211,47 @@ const dynamicHandlers = [
     },
 
     {
-        method: 'GET',
+        method: ['GET', 'POST'],
+        path: '/transfers/overseas/confirm',
+        config: {
+            handler: Overseas.confirm
+        }
+    },
+
+    {
+        method: ['GET', 'POST'],
+        path: '/transfers/overseas/add-substance',
+        config: {
+            handler: Overseas.add
+        }
+    },
+
+    {
+        method: ['GET', 'POST'],
+        path: '/transfers/overseas/detail',
+        config: {
+            handler: Overseas.detail
+        }
+    },
+
+    {
+        method: ['GET', 'POST'],
+        path: '/transfers/overseas/transportation-co-addr',
+        config: {
+            handler: Overseas.transportationCompanyAddress
+        }
+    },
+
+    {
+        method: ['GET', 'POST'],
+        path: '/transfers/overseas/destination-addr',
+        config: {
+            handler: Overseas.destinationAddress
+        }
+    },
+
+    {
+        method: ['GET', 'POST'],
         path: '/transfers/overseas',
         config: {
             handler: Overseas.overseas
