@@ -56,7 +56,7 @@ const internals = {
      * @param reply
      * @return {Promise.<void>}
      */
-    genericOverseasHandler: async (request, reply, getHandler, postHandler) => {
+    overseasStageHandler: async (request, reply, getHandler, postHandler) => {
         try {
             const { route, tasks } = await cacheHelper(request, 'overseas');
             const transfer = await internals.getCurrentOverseasWasteTransfer(request, tasks);
@@ -176,7 +176,7 @@ module.exports = {
      * @return {Promise.<void>}
      */
     add: async (request, reply) => {
-        await internals.genericOverseasHandler(request, reply, async (route) => {
+        await internals.overseasStageHandler(request, reply, async (route) => {
             // Get a list of all of the substances from the master data service
             let substances = await MasterDataService.getSubstances();
 
@@ -204,7 +204,7 @@ module.exports = {
      * @return {Promise.<void>}
      */
     detail: async (request, reply) => {
-        await internals.genericOverseasHandler(request, reply, async (route, tasks, transfer) => {
+        await internals.overseasStageHandler(request, reply, async (route, tasks, transfer) => {
             reply.view('all-sectors/report/overseas-detail', { transfer: transfer });
         }, async (route, tasks, transfer) => {
             transfer.value = request.payload.value;
@@ -218,13 +218,18 @@ module.exports = {
      * @return {Promise.<void>}
      */
     transportationCompanyAddress: async (request, reply) => {
-        await internals.genericOverseasHandler(request, reply, async (route, tasks, transfer) => {
+        await internals.overseasStageHandler(request, reply, async (route, tasks, transfer) => {
             reply.view('all-sectors/business-address', {
                 action: '/transfers/overseas/transportation-co-addr',
                 id: 'TRANSPORTATION_COMPANY_ADDRESS'
             });
         }, async (route, tasks, transfer) => {
-            transfer.transportationCompanyAddress = request.payload.value;
+            transfer.transportationCompanyAddress = {};
+            transfer.transportationCompanyAddress.addressLine1 = request.payload['address-line-1'];
+            transfer.transportationCompanyAddress.addressLine2 = request.payload['address-line-2'];
+            transfer.transportationCompanyAddress.businessName = request.payload['business-name'];
+            transfer.transportationCompanyAddress.country = request.payload['country'];
+            transfer.transportationCompanyAddress.townOrCity = request.payload['town-or-city'];
         });
     },
 
@@ -235,13 +240,18 @@ module.exports = {
      * @return {Promise.<void>}
      */
     destinationAddress: async (request, reply) => {
-        await internals.genericOverseasHandler(request, reply, async (route, tasks, transfer) => {
+        await internals.overseasStageHandler(request, reply, async (route, tasks, transfer) => {
             reply.view('all-sectors/business-address', {
                 action: '/transfers/overseas/destination-addr',
                 id: 'DESTINATION_ADDRESS'
             });
         }, async (route, tasks, transfer) => {
-            transfer.destinationAddr = request.payload.value;
+            transfer.destinationAddr = {};
+            transfer.destinationAddr.addressLine1 = request.payload['address-line-1'];
+            transfer.destinationAddr.addressLine2 = request.payload['address-line-2'];
+            transfer.destinationAddr.businessName = request.payload['business-name'];
+            transfer.destinationAddr.country = request.payload['country'];
+            transfer.destinationAddr.townOrCity = request.payload['town-or-city'];
         });
     }
 };

@@ -121,11 +121,21 @@ const internals = {
             result.push({ key: 'value', errno: 'PI-3001' });
         }
 
-        if (!overseasTransferObject.transportationCompanyAddress) {
+        if (overseasTransferObject.transportationCompanyAddress &&
+          overseasTransferObject.transportationCompanyAddress.addressLine1.trim() &&
+          overseasTransferObject.transportationCompanyAddress.businessName.trim() &&
+          overseasTransferObject.transportationCompanyAddress.country.trim() &&
+          overseasTransferObject.transportationCompanyAddress.townOrCity.trim()) {
+        } else {
             result.push({ key: 'transportation-co-addr', errno: 'PI-3003' });
         }
 
-        if (!overseasTransferObject.destinationAddr) {
+        if (overseasTransferObject.destinationAddr &&
+        overseasTransferObject.destinationAddr.addressLine1.trim() &&
+        overseasTransferObject.destinationAddr.businessName.trim() &&
+        overseasTransferObject.destinationAddr.country.trim() &&
+        overseasTransferObject.destinationAddr.townOrCity.trim()) {
+        } else {
             result.push({ key: 'destination-addr', errno: 'PI-3004' });
         }
 

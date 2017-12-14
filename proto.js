@@ -1,5 +1,5 @@
-
-'use strict';
-
-
-console.log(null === null);
+if (' s'.trim()) {
+    console.log('t');
+} else {
+    console.log('f');
+}
