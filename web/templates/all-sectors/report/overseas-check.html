@@ -1,0 +1,19 @@
+{% extends 'layout/layout.html' %}
+
+{% block content %}
+
+<main id="content">
+    <label id="page-name" hidden>overseas-check</label>
+    <h1 class="large">Check your overseas waste transfer</h1>
+    <h2 class="font-medium">EA_ID: {{ eaId }}</h2>
+
+    <form action="/transfers/overseas/check" method="post" class="form">
+        <div class="form-group">
+            <input id="continueBtn" type="submit" class="button" value="Continue">
+        </div>
+    </form>
+
+
+</main>
+
+{% endblock %}

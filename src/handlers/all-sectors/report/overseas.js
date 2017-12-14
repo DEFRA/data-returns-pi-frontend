@@ -28,10 +28,10 @@ const internals = {
         if (!tasks.overseasTransfers) {
             tasks.overseasTransfers = [];
             tasks.overseasTransfers.push(NEW_TRANSFER_OBJECT);
-            tasks.getCurrentOverseasWasteTransfer = 0;
+            tasks.currentOverseasWasteTransferIdx = 0;
             await request.server.app.userCache.cache('tasks').set(request, tasks);
         }
-        return tasks.overseasTransfers[tasks.getCurrentOverseasWasteTransfer];
+        return tasks.overseasTransfers[tasks.currentOverseasWasteTransferIdx];
     },
 
     /**
@@ -112,11 +112,11 @@ module.exports = {
 
             if (request.method === 'get') {
 
-                // Firstly remove any invalid off-site transfer objects due to unexpected navigation
+                // Firstly remove any invalid overseas transfer objects due to unexpected navigation
                 await internals.clearInvalid(request, tasks);
 
-                // If we have off-site transfers then redirect directly to the summary page
-                if (tasks && tasks.offSiteTransfers && tasks.offSiteTransfers.length > 0) {
+                // If we have overseas transfers then redirect directly to the summary page
+                if (tasks && tasks.overseasTransfers && tasks.overseasTransfers.length > 0) {
                     reply.redirect('/transfers/overseas');
                 } else {
                     reply.view('all-sectors/report/confirm', {
@@ -155,9 +155,11 @@ module.exports = {
             if (request.method === 'get') {
                 if (!tasks.overseasTransfers || tasks.overseasTransfers.length === 0) {
                     reply.redirect('/transfers/overseas/add-substance');
+                } else {
+                    reply.view('all-sectors/report/overseas', { transfers: tasks.overseasTransfers });
                 }
             } else {
-                reply.view('all-sectors/report/overseas', { transfers: [] });
+                reply.redirect('/transfers/overseas');
             }
         } catch (err) {
             if (err instanceof CacheKeyError) {
@@ -253,5 +255,71 @@ module.exports = {
             transfer.destinationAddr.country = request.payload['country'];
             transfer.destinationAddr.townOrCity = request.payload['town-or-city'];
         });
+    },
+
+    /**
+     * Check (and allow modification) of overseas waster transfer
+     * @param request
+     * @param reply
+     * @return {Promise.<void>}
+     */
+    check: async (request, reply) => {
+        await internals.overseasStageHandler(request, reply, async (route, tasks, transfer) => {
+            reply.view('all-sectors/report/overseas-check');
+        }, async (route, tasks, transfer) => {
+            reply.redirect('/transfers/overseas');
+        });
+    },
+
+    /**
+     * Form action
+     * @param request
+     * @param reply
+     * @return {Promise.<void>}
+     */
+    action: async (request, reply) => {
+        try {
+            const { tasks } = await cacheHelper(request, 'overseas');
+
+            // If we continue we will need to validate the submission
+            if (request.payload.continue) {
+
+                reply.redirect('/task-list');
+
+            } else if (Object.keys(request.payload).find(s => s.startsWith('detail'))) {
+
+                const transferIndex = Number.parseInt(Object.keys(request.payload)
+                    .find(s => s.startsWith('detail')).substr(7));
+
+                tasks.currentOverseasWasteTransferIdx = transferIndex;
+                reply.redirect('/transfers/off-site/detail');
+
+            } else if (Object.keys(request.payload).find(s => s.startsWith('delete'))) {
+
+                const transferIndex = Number.parseInt(Object.keys(request.payload)
+                    .find(s => s.startsWith('delete')).substr(7));
+
+                // Send to delete confirmation dialog
+                tasks.currentOverseasWasteTransferIdx = transferIndex;
+
+            } else if (request.payload.back) {
+                // Save the release information to the cache and return to the main task-list page
+                await request.server.app.userCache.cache('tasks').set(request, tasks);
+                reply.redirect('/task-list');
+            } else if (request.payload.add) {
+                // Save the release information to the cache and redirect to the add-substances page
+                await request.server.app.userCache.cache('tasks').set(request, tasks);
+                reply.redirect('/transfers/overseas/add');
+            }
+
+        } catch (err) {
+            if (err instanceof CacheKeyError) {
+                reply.redirect('/');
+            } else {
+                logger.log('error', err);
+                reply.redirect('/logout');
+            }
+        }
     }
+
 };

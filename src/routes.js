@@ -252,7 +252,23 @@ const dynamicHandlers = [
 
     {
         method: ['GET', 'POST'],
+        path: '/transfers/overseas/check',
+        config: {
+            handler: Overseas.check
+        }
+    },
+
+    {
+        method: ['GET', 'POST'],
         path: '/transfers/overseas',
+        config: {
+            handler: Overseas.overseas
+        }
+    },
+
+    {
+        method: 'POST',
+        path: '/transfers/overseas/action',
         config: {
             handler: Overseas.overseas
         }

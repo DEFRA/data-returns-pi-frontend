@@ -5,7 +5,22 @@
 <main id="content">
     <label id="page-name" hidden>overseas</label>
     <h1 class="large">Your overseas waste transfer</h1>
-    <h2 class="font-medium">EA_ID: {{ eaId }}</h2>
+    <form action="/transfers/overseas/action" method="post" class="form">
+
+        {% for transfer in transfers %}
+        <p>
+            {{ transfer | dump }}</br>
+            <div class="form-group">
+                <input class="link" type="submit" id="delete" name="delete" value="Remove"/>
+            </div>
+        </p>
+        {% endfor %}
+
+        <div class="form-group">
+            <input class="link" type="submit" id="add" name="add" value="Add"/>
+        </div>
+    </form>
+
 </main>
 
 {% endblock %}
