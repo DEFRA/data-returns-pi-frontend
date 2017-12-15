@@ -108,6 +108,14 @@ experiment('Overseas waste transfers', () => {
             headers: { cookie: 'sid=' + Common.sid() }
         });
         expect(response.statusCode).to.equal(302);
+        expect(response.headers.location).to.equal('/transfers/overseas/add');
+
+        response = await Common.server().inject({
+            method: 'GET',
+            url: '/transfers/overseas/add',
+            headers: { cookie: 'sid=' + Common.sid() }
+        });
+        expect(response.statusCode).to.equal(302);
         expect(response.headers.location).to.equal('/transfers/overseas/add-substance');
 
         // request the task list again
@@ -130,7 +138,6 @@ experiment('Overseas waste transfers', () => {
         expect(response.statusCode).to.equal(302);
         expect(response.headers.location).to.equal('/transfers/overseas/detail');
 
-        // request the task list again
         response = await Common.server().inject({
             method: 'GET',
             url: '/transfers/overseas/detail',
@@ -149,6 +156,73 @@ experiment('Overseas waste transfers', () => {
 
         expect(response.statusCode).to.equal(302);
         expect(response.headers.location).to.equal('/transfers/overseas/transportation-co-addr');
+
+        response = await Common.server().inject({
+            method: 'GET',
+            url: '/transfers/overseas/transportation-co-addr',
+            headers: { cookie: 'sid=' + Common.sid() }
+        });
+        expect(response.statusCode).to.equal(200);
+
+        response = await Common.server().inject({
+            method: 'POST',
+            url: '/transfers/overseas/transportation-co-addr',
+            headers: { cookie: 'sid=' + Common.sid() },
+            payload: {
+                'business-name': 'Druid Wood Limited',
+                'address-line-1': 'Howecroft Court',
+                'address-line-2': 'Stoke Bishop',
+                'town-or-city': 'Bristol',
+                'country': 'England'
+            }
+        });
+        expect(response.statusCode).to.equal(302);
+        expect(response.headers.location).to.equal('/transfers/overseas/destination-addr');
+
+        // request the task list again
+        response = await Common.server().inject({
+            method: 'GET',
+            url: '/transfers/overseas/destination-addr',
+            headers: { cookie: 'sid=' + Common.sid() }
+        });
+        expect(response.statusCode).to.equal(200);
+
+        response = await Common.server().inject({
+            method: 'POST',
+            url: '/transfers/overseas/destination-addr',
+            headers: { cookie: 'sid=' + Common.sid() },
+            payload: {
+                'business-name': 'Some company',
+                'address-line-1': '67 Long Road',
+                'address-line-2': 'In Village',
+                'town-or-city': 'Barcelona',
+                'country': 'Spain'
+            }
+        });
+        expect(response.statusCode).to.equal(302);
+        expect(response.headers.location).to.equal('/transfers/overseas/check');
+
+        response = await Common.server().inject({
+            method: 'GET',
+            url: '/transfers/overseas/check',
+            headers: { cookie: 'sid=' + Common.sid() }
+        });
+        expect(response.statusCode).to.equal(200);
+
+        response = await Common.server().inject({
+            method: 'POST',
+            url: '/transfers/overseas/check',
+            headers: { cookie: 'sid=' + Common.sid() }
+        });
+        expect(response.statusCode).to.equal(302);
+        expect(response.headers.location).to.equal('/transfers/overseas');
+
+        response = await Common.server().inject({
+            method: 'GET',
+            url: '/transfers/overseas',
+            headers: { cookie: 'sid=' + Common.sid() }
+        });
+        expect(response.statusCode).to.equal(200);
     });
 
     test('Logout', async () => {

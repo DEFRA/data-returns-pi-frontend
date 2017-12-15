@@ -4,23 +4,46 @@
 
 <main id="content">
     <label id="page-name" hidden>overseas</label>
-    <h1 class="large">Your overseas waste transfer</h1>
+    <a href="/task-list" class="link-back">Back to sections you must complete</a>
+
+    <h1 class="heading-large">Your overseas hazardous waste transfers</h1>
     <form action="/transfers/overseas/action" method="post" class="form">
+        <table class="table-control mobile-format summary-table">
+            <thead>
+            <tr>
+                <th class="th-business-name">Transfer to</th>
+                <th class="th-transfer-substance">Substance</th>
+                <th class="th-total">2017 total</th>
+                <th class="th-method">Method</th>
+                <th class="th-operation">Operation</th>
+                <th class="th-more-detail"><span class="visually-hidden">More detail</span></th>
+                <th class="th-delete"><span class="visually-hidden">Delete</span></th>
+            </tr>
+            </thead>
+            <tbody>
+            {% for transfer in transfers %}
+            <tr>
+                <td class="td-business-name">{{ transfer.destinationAddr.businessName }}</td>
+                <td class="td-transfer-substance">{{ transfer.substanceId }}</td>
+                <td class="td-total">{{ transfer.value }} tonnes</td>
+                <td class="td-method"></td>
+                <td class="td-operation"></td>
+                <td>
+                    <input class="link" type="submit" id="detail" name="check-{{ loop.index0 }}" value="View transfer"/>
+                </td>
 
-        {% for transfer in transfers %}
-        <p>
-            {{ transfer | dump }}</br>
-            <div class="form-group">
-                <input class="link" type="submit" id="delete" name="delete" value="Remove"/>
-            </div>
-        </p>
-        {% endfor %}
-
-        <div class="form-group">
-            <input class="link" type="submit" id="add" name="add" value="Add"/>
-        </div>
+                <td>
+                    <input class="link" type="submit" id="delete" name="delete-{{ loop.index0 }}" value="Delete"/>
+                </td>
+            </tr>
+            {% endfor %}
+            </tbody>
+        </table>
     </form>
+
+    <a href="/transfers/overseas/add">Add a new overseas waste transfer</a>
 
 </main>
 
 {% endblock %}
+

@@ -5,6 +5,8 @@
 <main id="content">
     <label id="page-name" hidden>add-substance</label>
     <form action="{{ route.page }}/add-substance" method="post">
+        <a href="/task-list" class="link-back">Back to sections you must complete</a>
+
         {% if route.name === 'RELEASES_TO_LAND'%}
         <h1 class="heading-large">Add new release to land</h1>
         {% elif route.name === 'RELEASES_TO_AIR' %}
@@ -16,7 +18,7 @@
         {% elif route.name === 'OVERSEAS_WASTE_TRANSFERS' %}
 
         <h1 class="heading-large">
-            <span class="heading-secondary">Your overseas waste transfers</span>
+            <span class="heading-secondary">Your overseas hazardous waste transfers</span>
             What waste did you transfer?
         </h1>
 

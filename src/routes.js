@@ -193,12 +193,6 @@ const dynamicHandlers = [
     },
 
     {
-        method: 'POST',
-        path: '/transfers/off-site/action',
-        handler: OffSite.action
-    },
-
-    {
         method: ['GET', 'POST'],
         path: '/transfers/off-site/remove',
         handler: OffSite.remove
@@ -219,10 +213,18 @@ const dynamicHandlers = [
     },
 
     {
-        method: ['GET', 'POST'],
-        path: '/transfers/overseas/add-substance',
+        method: 'GET',
+        path: '/transfers/overseas/add',
         config: {
             handler: Overseas.add
+        }
+    },
+
+    {
+        method: ['GET', 'POST'],
+        path: '/transfers/overseas/substance',
+        config: {
+            handler: Overseas.substance
         }
     },
 
@@ -270,7 +272,7 @@ const dynamicHandlers = [
         method: 'POST',
         path: '/transfers/overseas/action',
         config: {
-            handler: Overseas.overseas
+            handler: Overseas.action
         }
     },
 
