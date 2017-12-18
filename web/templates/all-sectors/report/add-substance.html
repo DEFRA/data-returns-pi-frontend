@@ -2,10 +2,33 @@
 
 {% block content %}
 
+{% macro error(heading, item) %}
+<div class="error-summary" role="alert" aria-labelledby="error-summary-heading" tabindex="-1">
+    <h2 class="heading-medium error-summary-heading" id="error-summary-heading">{{ heading }}</h2>
+    <ul class="error-summary-list">
+        <li><a href="#search-results">{{ item }}</a></li>
+    </ul>
+</div>
+{% endmacro %}
+
 <main id="content">
     <label id="page-name" hidden>add-substance</label>
     <form action="{{ route.page }}/add-substance" method="post">
         <a href="/task-list" class="link-back">Back to sections you must complete</a>
+
+        {% if errors %}
+            {% if route.name === 'RELEASES_TO_LAND'%}
+                {{ error('Do you need to report any releases to land?', 'Select the type of waste you released') }}
+            {% elif route.name === 'RELEASES_TO_AIR' %}
+                {{ error('Do you need to report any releases to air?', 'Select the type of waste you released') }}
+            {% elif route.name === 'RELEASES_TO_CONTROLLED_WATERS' %}
+                {{ error('Do you need to report any releases to controlled waters?', 'Select the type of waste you released') }}
+            {% elif route.name === 'OFFSITE_TRANSFERS_IN_WASTE_WATER' %}
+                {{ error('Do you need to report any releases in waste water?', 'Select the type of waste you released') }}
+            {% elif route.name === 'OVERSEAS_WASTE_TRANSFERS' %}
+                {{ error('Do you need to report any waste you transferred?', 'Select the type of waste you  transferred') }}
+            {% endif %}
+        {% endif %}
 
         {% if route.name === 'RELEASES_TO_LAND'%}
         <h1 class="heading-large">Add new release to land</h1>
@@ -23,8 +46,13 @@
         </h1>
 
         {% endif %}
-        <div id="search-results" class="grid-row">
-            <div class="column-two-thirds">
+
+        {% if errors %}
+        <div id="search-results-err" class="grid-row">
+            <div class="column-two-thirds form-group list form-group-error">
+                <span class="error-message">
+							Select the type of waste you transferred
+                </span>
                 <div class="form-group list">
                     {% for substance in substances %}
                     <div class="multiple-choice">
@@ -35,6 +63,21 @@
                 </div>
             </div>
         </div>
+        {% else %}
+        <div id="search-results" class="grid-row">
+            <div class="column-two-thirds form-group list">
+                <div class="form-group list">
+                    {% for substance in substances %}
+                    <div class="multiple-choice">
+                        <input id="substance_{{ substance.id }}" name="substanceId" value="{{ substance.id }}" type="radio">
+                        <label for="substance_{{ substance.id }}"><span class="category"></span> <span class="name">{{ substance.name }}</span></label>
+                    </div>
+                    {% endfor %}
+                </div>
+            </div>
+        </div>
+        {% endif %}
+
         <div class="form-group"><input id="continueBtn" type="submit" class="button" value="Continue"> </div>
     </form>
 </main>

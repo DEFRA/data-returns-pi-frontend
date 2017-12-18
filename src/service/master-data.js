@@ -180,6 +180,18 @@ module.exports = internals = {
     },
 
     /**
+     * Get the set of transfer operations (used by overseas transfers)
+     * @returns {Promise.<Array>}
+     */
+    getTransferOperations: async () => {
+        return Data.transferOperations;
+    },
+
+    getTransferOperationById: async (id) => {
+        return Data.transferOperations.find(o => o.id === id);
+    },
+
+    /**
      * Authenticate a given user. Returns a copy of user object if authenticated or undefined if not.
      * @param username - The given username
      * @param password - The given password

@@ -75,7 +75,7 @@ experiment('Releases', () => {
         expect(response.statusCode).to.equal(200);
     });
 
-    test('Confirm releases to air = yes sends you to the releases page', async () => {
+    test('Confirm releases to air = yes sends you to the add page', async () => {
         // request the task list
         let response = await Common.server().inject({
             method: 'GET',
@@ -102,11 +102,68 @@ experiment('Releases', () => {
             url: '/releases/air',
             headers: { cookie: 'sid=' + Common.sid() }
         });
+        expect(response.statusCode).to.equal(302);
+        expect(response.headers.location).to.equal('/releases/air/add-substance');
+
+        response = await Common.server().inject({
+            method: 'GET',
+            url: '/releases/air/add-substance',
+            headers: { cookie: 'sid=' + Common.sid() }
+        });
+        expect(response.statusCode).to.equal(200);
+
+        response = await Common.server().inject({
+            method: 'POST',
+            url: '/releases/air/add-substance',
+            headers: { cookie: 'sid=' + Common.sid() },
+            payload: {
+                substanceId: '504'
+            }
+        });
+
+        expect(response.statusCode).to.equal(302);
+        expect(response.headers.location).to.equal('/releases/air/detail');
+
+        // Get the detail page
+        response = await Common.server().inject({
+            method: 'GET',
+            url: '/releases/air/detail',
+            headers: { cookie: 'sid=' + Common.sid() }
+        });
+        expect(response.statusCode).to.equal(200);
+
+        response = await Common.server().inject({
+            method: 'POST',
+            url: '/releases/air/detail',
+            headers: { cookie: 'sid=' + Common.sid() },
+            payload: {
+                value: '10',
+                unitId: '5',
+                methodId: '1'
+            }
+        });
+
+        expect(response.statusCode).to.equal(302);
+        expect(response.headers.location).to.equal('/releases/air');
+
+        // Get the releases to air page
+        response = await Common.server().inject({
+            method: 'GET',
+            url: '/releases/air',
+            headers: { cookie: 'sid=' + Common.sid() }
+        });
         expect(response.statusCode).to.equal(200);
     });
 
     test('Add a substance cycle', async () => {
+        // Get the substances page
         let response = await Common.server().inject({
+            method: 'GET',
+            url: '/releases/air',
+            headers: { cookie: 'sid=' + Common.sid() }
+        });
+        expect(response.statusCode).to.equal(200);
+        response = await Common.server().inject({
             method: 'POST',
             url: '/releases/air/action',
             headers: { cookie: 'sid=' + Common.sid() },
@@ -131,7 +188,7 @@ experiment('Releases', () => {
             url: '/releases/air/add-substance',
             headers: { cookie: 'sid=' + Common.sid() },
             payload: {
-                substanceId: '506'
+                substanceId: '509'
             }
         });
 
@@ -190,9 +247,9 @@ experiment('Releases', () => {
             url: '/releases/air/action',
             headers: { cookie: 'sid=' + Common.sid() },
             payload: {
-                'value-506': '10',
-                'unitId-506': '5',
-                'detail-506': 'Detail'
+                'value-509': '10',
+                'unitId-509': '5',
+                'detail-509': 'Detail'
             }
         });
         expect(response.statusCode).to.equal(302);
@@ -212,8 +269,8 @@ experiment('Releases', () => {
             url: '/releases/air/action',
             headers: { cookie: 'sid=' + Common.sid() },
             payload: {
-                'value-506': '10',
-                'unitId-506': null,
+                'value-509': '10',
+                'unitId-509': null,
                 'continue': 'Continue'
             }
         });
@@ -233,13 +290,13 @@ experiment('Releases', () => {
             url: '/releases/air/action',
             headers: { cookie: 'sid=' + Common.sid() },
             payload: {
-                'value-506': '10',
-                'unitId-506': '5',
+                'value-509': '10',
+                'unitId-509': '5',
                 'continue': 'Continue'
             }
         });
         expect(response.statusCode).to.equal(302);
-        expect(response.headers.location).to.equal('/task-list');
+        expect(response.headers.location).to.equal('/releases/air');
 
         // request the task list again
         response = await Common.server().inject({
@@ -255,9 +312,9 @@ experiment('Releases', () => {
             url: '/releases/air/action',
             headers: { cookie: 'sid=' + Common.sid() },
             payload: {
-                'value-506': '10',
-                'unitId-506': '5',
-                'delete-506': 'Delete'
+                'value-509': '10',
+                'unitId-509': '5',
+                'delete-509': 'Delete'
             }
         });
         expect(response.statusCode).to.equal(302);

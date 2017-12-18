@@ -14,7 +14,6 @@
 
 {% macro form(header, errorheader, release) %}
 <form id="main-form" action="{{ release }}/action" method="post" class="form">
-	<input class="link link-back" type="submit" id="back" name="back" value="Back to tasks"/>
 
     {% if (releases | substancesWithErrors | length) === 0 %}
     <h1 class="heading-large">{{ header }}</h1>
@@ -128,8 +127,8 @@
 
 {% block content %}
 <main id="content">
+    <a href="/task-list" class="link-back">Back to sections you must complete</a>
     <h1 class="heading-large">{{ header }}</h1>
-    <div>EA_ID: {{ eaId }}</div>
     <label id="page-name" hidden>{{ route }}</label>
     {% if route === 'RELEASES_TO_LAND' %}
     {{ form('Your releases to land', 'Check what you’re reporting', '/releases/land') }}

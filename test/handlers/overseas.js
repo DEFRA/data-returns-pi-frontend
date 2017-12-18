@@ -150,7 +150,9 @@ experiment('Overseas waste transfers', () => {
             url: '/transfers/overseas/detail',
             headers: { cookie: 'sid=' + Common.sid() },
             payload: {
-                value: '99'
+                value: '99',
+                operationId: '1',
+                methodId: '1'
             }
         });
 
@@ -223,6 +225,48 @@ experiment('Overseas waste transfers', () => {
             headers: { cookie: 'sid=' + Common.sid() }
         });
         expect(response.statusCode).to.equal(200);
+    });
+
+    test('Substance invalidation', async () => {
+        let response = await Common.server().inject({
+            method: 'GET',
+            url: '/transfers/overseas',
+            headers: { cookie: 'sid=' + Common.sid() }
+        });
+        expect(response.statusCode).to.equal(200);
+
+        response = await Common.server().inject({
+            method: 'POST',
+            url: '/transfers/overseas/action',
+            headers: { cookie: 'sid=' + Common.sid() },
+            payload: { 'check-0': 'View transfer' }
+        });
+        expect(response.statusCode).to.equal(302);
+        expect(response.headers.location).to.equal('/transfers/overseas/check');
+
+        response = await Common.server().inject({
+            method: 'GET',
+            url: '/transfers/overseas/check',
+            headers: { cookie: 'sid=' + Common.sid() }
+        });
+        expect(response.statusCode).to.equal(200);
+
+        response = await Common.server().inject({
+            method: 'GET',
+            url: '/transfers/overseas/add-substance',
+            headers: { cookie: 'sid=' + Common.sid() }
+        });
+        expect(response.statusCode).to.equal(200);
+
+        response = await Common.server().inject({
+            method: 'POST',
+            url: '/transfers/overseas/add-substance',
+            headers: { cookie: 'sid=' + Common.sid() },
+            payload: { substanceId: 'not-a-substance' }
+        });
+        expect(response.statusCode).to.equal(302);
+        expect(response.headers.location).to.equal('/transfers/overseas/add-substance');
+
     });
 
     test('Logout', async () => {

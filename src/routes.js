@@ -132,6 +132,9 @@ const dynamicHandlers = [
         }
     },
 
+    /*
+     * Releases
+     */
     {
         method: ['GET', 'POST'],
         path: '/releases/{route}/confirm',
@@ -170,6 +173,9 @@ const dynamicHandlers = [
         handler: Releases.remove
     },
 
+    /*
+     * Transfers off-site
+     */
     {
         method: ['GET', 'POST'],
         path: '/transfers/off-site',
@@ -205,6 +211,17 @@ const dynamicHandlers = [
     },
 
     {
+        method: 'POST',
+        path: '/transfers/off-site/action',
+        config: {
+            handler: OffSite.action
+        }
+    },
+
+    /*
+     * Transfers overseas
+     */
+    {
         method: ['GET', 'POST'],
         path: '/transfers/overseas/confirm',
         config: {
@@ -222,7 +239,7 @@ const dynamicHandlers = [
 
     {
         method: ['GET', 'POST'],
-        path: '/transfers/overseas/substance',
+        path: '/transfers/overseas/add-substance',
         config: {
             handler: Overseas.substance
         }

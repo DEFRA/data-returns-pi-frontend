@@ -119,6 +119,18 @@ experiment('Master data service', function () {
         expect(method.name).to.equal('Measurement');
     });
 
+    test('getTransferOperations', async () => {
+        const methods = await MasterDataService.getTransferOperations();
+        expect(methods).to.be.an.array();
+        expect(methods.length).to.equal(2);
+    });
+
+    test('getTransferOperationById(id)', async () => {
+        const method = await MasterDataService.getTransferOperationById(1);
+        expect(method).to.be.an.object();
+        expect(method.name).to.equal('Disposal');
+    });
+
     test('getEwcSubchapter()', async () => {
         const ewc = await MasterDataService.getEwc('01', '01', '01');
         expect(ewc).to.be.an.object();

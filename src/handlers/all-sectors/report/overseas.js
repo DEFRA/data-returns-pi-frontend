@@ -18,7 +18,29 @@ const internals = {
      * @param tasks
      * @return {Promise.<void>}
      */
-    clearInvalid: async (request, tasks) => {},
+    clearInvalid: async (request, tasks) => {
+        let haveRemoved = false;
+
+        if (tasks.overseasTransfers) {
+            delete tasks.currentOverseasWasteTransferIdx;
+            haveRemoved = true;
+        }
+
+        if (tasks.overseasTransfers) {
+            tasks.overseasTransfers.forEach((overseasTransfer, index) => {
+                if (overseasValidator(overseasTransfer)) {
+                    tasks.overseasTransfers.splice(index, 1);
+                    haveRemoved = true;
+                }
+            });
+        }
+
+        if (haveRemoved) {
+            await request.server.app.userCache.cache('tasks').set(request, tasks);
+        }
+
+        return tasks;
+    },
 
     addNewOverseasWasteTransfer: async (request, tasks) => {
 
@@ -36,7 +58,9 @@ const internals = {
      * @param validation
      */
     validationLocationMapper: (validation) => {
-        if (validation.map(v => v.key).find(k => k === 'value')) {
+        if (validation.map(v => v.key).find(k => k === 'substance')) {
+            return '/transfers/overseas/add-substance';
+        } else if (validation.map(v => v.key).find(k => k === 'value')) {
             return '/transfers/overseas/detail';
         } else if (validation.map(v => v.key).find(k => k === 'transportation-co-addr')) {
             return '/transfers/overseas/transportation-co-addr';
@@ -78,7 +102,6 @@ const internals = {
                     transfer.errors = validation;
                     await request.server.app.userCache.cache('tasks').set(request, tasks);
 
-                    console.log('direct:' + internals.validationLocationMapper(validation));
                     reply.redirect(internals.validationLocationMapper(validation));
                 } else {
                     delete transfer.errors;
@@ -90,6 +113,7 @@ const internals = {
 
             }
         } catch (err) {
+            console.log(err);
             if (err instanceof CacheKeyError) {
                 reply.redirect('/');
             } else {
@@ -97,6 +121,18 @@ const internals = {
                 reply.redirect('/logout');
             }
         }
+    },
+
+    /**
+     * Do a fetch on the transfer entities for the main transfer screen
+     * @param transfer
+     * @returns {Promise.<void>}
+     */
+    enrich: async (transfer) => {
+        transfer.method = await MasterDataService.getMethodById(transfer.methodId);
+        transfer.substance = await MasterDataService.getSubstanceById(transfer.substanceId);
+        transfer.operation = await MasterDataService.getTransferOperationById(transfer.operationId);
+        return transfer;
     }
 
 };
@@ -154,11 +190,17 @@ module.exports = {
         try {
             const { tasks } = await cacheHelper(request, 'overseas');
 
+            // Remove any invalid overseas transfer objects due to unexpected navigation
+            await internals.clearInvalid(request, tasks);
+
             if (request.method === 'get') {
                 if (!tasks.overseasTransfers || tasks.overseasTransfers.length === 0) {
                     reply.redirect('/transfers/overseas/add');
                 } else {
-                    reply.view('all-sectors/report/overseas', { transfers: tasks.overseasTransfers });
+
+                    const enrichedTransfers = await Promise.all(tasks.overseasTransfers.map(async t => internals.enrich(t)));
+
+                    reply.view('all-sectors/report/overseas', { transfers: enrichedTransfers });
                 }
             } else {
                 reply.redirect('/transfers/overseas');
@@ -198,25 +240,32 @@ module.exports = {
      * @return {Promise.<void>}
      */
     substance: async (request, reply) => {
-        await internals.overseasStageHandler(request, reply, async (route, tasks) => {
+        await internals.overseasStageHandler(request, reply, async (route, tasks, transfer) => {
 
             // Get a list of all of the substances from the master data service
             let substances = await MasterDataService.getSubstances();
 
             substances = substances.sort(sortSubstances);
 
-            // Render the add substances page
-            reply.view('all-sectors/report/add-substance', { route: route, substances: substances });
-        }, async (route, tasks, transfer) => {
-            const substance = await MasterDataService.getSubstanceById(Number.parseInt(request.payload['substanceId']));
-
-            // Add the selected substances to the task if it exists
-            if (!substance) {
-                throw new Error('Unknown substance requested from page');
+            let substanceErrors = null;
+            if (transfer.errors) {
+                substanceErrors = transfer.errors.find(k => k.key === 'substance');
             }
 
-            // Assign this substance to the transfer object
-            transfer.substanceId = substance.id;
+            // Render the add substances page
+            reply.view('all-sectors/report/add-substance', { route: route, substances: substances, errors: substanceErrors });
+        }, async (route, tasks, transfer) => {
+            transfer.substanceId = null;
+            if (request.payload.substanceId) {
+                const substance = await MasterDataService.getSubstanceById(Number.parseInt(request.payload['substanceId']));
+
+                // Add the selected substances to the task if it exists
+                if (substance) {
+
+                    // Assign this substance to the transfer object
+                    transfer.substanceId = substance.id;
+                }
+            }
         });
     },
 
@@ -228,9 +277,15 @@ module.exports = {
      */
     detail: async (request, reply) => {
         await internals.overseasStageHandler(request, reply, async (route, tasks, transfer) => {
-            reply.view('all-sectors/report/overseas-detail', { transfer: transfer });
+            reply.view('all-sectors/report/overseas-detail', {
+                methods: await MasterDataService.getMethods(),
+                operations: await MasterDataService.getTransferOperations(),
+                transfer: await internals.enrich(transfer)
+            });
         }, async (route, tasks, transfer) => {
             transfer.value = request.payload.value;
+            transfer.operationId = Number.parseInt(request.payload['operationId']);
+            transfer.methodId = Number.parseInt(request.payload['methodId']);
         });
     },
 
@@ -294,7 +349,9 @@ module.exports = {
 
             if (request.method === 'get') {
                 const transfer = tasks.overseasTransfers[tasks.currentOverseasWasteTransferIdx];
-                reply.view('all-sectors/report/overseas-check', { transfer: transfer });
+                const enrichedTransfer = await internals.enrich(transfer);
+                reply.view('all-sectors/report/overseas-check', {
+                    transfer: enrichedTransfer });
             } else {
                 reply.redirect('/transfers/overseas');
             }
@@ -327,9 +384,10 @@ module.exports = {
             } else if (Object.keys(request.payload).find(s => s.startsWith('check'))) {
 
                 const transferIndex = Number.parseInt(Object.keys(request.payload)
-                    .find(s => s.startsWith('check')).substr(7));
+                    .find(s => s.startsWith('check')).substr(6));
 
                 tasks.currentOverseasWasteTransferIdx = transferIndex;
+                await request.server.app.userCache.cache('tasks').set(request, tasks);
                 reply.redirect('/transfers/overseas/check');
 
             } else if (Object.keys(request.payload).find(s => s.startsWith('delete'))) {
@@ -339,6 +397,7 @@ module.exports = {
 
                 // Send to delete confirmation dialog
                 tasks.currentOverseasWasteTransferIdx = transferIndex;
+                await request.server.app.userCache.cache('tasks').set(request, tasks);
 
             } else if (request.payload.back) {
                 // Save the release information to the cache and return to the main task-list page

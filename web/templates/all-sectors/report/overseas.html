@@ -3,6 +3,7 @@
 {% block content %}
 
 <main id="content">
+
     <label id="page-name" hidden>overseas</label>
     <a href="/task-list" class="link-back">Back to sections you must complete</a>
 
@@ -24,10 +25,10 @@
             {% for transfer in transfers %}
             <tr>
                 <td class="td-business-name">{{ transfer.destinationAddr.businessName }}</td>
-                <td class="td-transfer-substance">{{ transfer.substanceId }}</td>
+                <td class="td-transfer-substance">{{ transfer.substance.name }}</td>
                 <td class="td-total">{{ transfer.value }} tonnes</td>
-                <td class="td-method"></td>
-                <td class="td-operation"></td>
+                <td class="td-method">{{ transfer.method.name }}</td>
+                <td class="td-operation">{{ transfer.operation.name }}</td>
                 <td>
                     <input class="link" type="submit" id="detail" name="check-{{ loop.index0 }}" value="View transfer"/>
                 </td>

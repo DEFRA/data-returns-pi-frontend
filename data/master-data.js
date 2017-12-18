@@ -4419,6 +4419,11 @@ module.exports = {
         { 'id': 3, name: 'Calculation' }
     ],
 
+    transferOperations: [
+        { 'id': 1, name: 'Disposal' },
+        { 'id': 2, name: 'Recovery' }
+    ],
+
     units: [
         { 'id': 1, 'name': 'Bq', 'type': 'R', 'factor': 0.001000000000000, 'description': 'becqerels' },
         { 'id': 2, 'name': 'g', 'type': 'W', 'factor': 0.001000000000000, 'description': 'grammes' },

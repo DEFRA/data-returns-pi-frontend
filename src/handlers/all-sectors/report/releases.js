@@ -11,6 +11,7 @@ const CacheKeyError = require('../../../lib/user-cache-policies').CacheKeyError;
 const cacheHelper = require('../common').cacheHelper;
 const TaskListService = require('../../../service/task-list');
 const AllSectorsTaskList = require('../../../model/all-sectors/task-list');
+const isNumeric = require('../../../lib/utils').isNumeric;
 
 const NEW_RELEASE_OBJECT = { value: null, unitId: null, methodId: null };
 
@@ -24,7 +25,7 @@ const internals = {
      */
     save: (request, tasks) => {
         if (tasks.releases) {
-            Object.keys(tasks.releases).forEach(s => {
+            Object.keys(tasks.releases).filter(r => isNumeric(r)).forEach(s => {
                 // Strip the value from the payload and add to the tasks objects
                 tasks.releases[s].value = request.payload['value-' + s];
 
@@ -46,7 +47,7 @@ const internals = {
     validate: (request, tasks) => {
         if (tasks.releases) {
             let isValid = true;
-            Object.keys(tasks.releases).forEach(s => {
+            Object.keys(tasks.releases).filter(r => isNumeric(r)).forEach(s => {
                 delete tasks.releases[s].errors;
                 const validation = Validator.release(tasks.releases[s]);
                 if (validation) {
@@ -108,12 +109,17 @@ const internals = {
         if (tasks.releases) {
             let haveUnconfirmed = false;
 
-            Object.entries(tasks.releases).forEach(async ([key, value]) => {
+            Object.entries(tasks.releases).filter(r => isNumeric(r)).forEach(async ([key, value]) => {
                 if (value.unconfirmed) {
                     delete tasks.releases[key];
                     haveUnconfirmed = true;
                 }
             });
+
+            if (tasks.releases.substanceError) {
+                delete tasks.releases.substanceError;
+                haveUnconfirmed = true;
+            }
 
             if (haveUnconfirmed) {
                 await request.server.app.userCache.cache('tasks').set(request, tasks);
@@ -167,22 +173,13 @@ module.exports = {
 
             if (request.method === 'get') {
 
-                if (tasks && tasks.releases && Object.entries(tasks.releases).length > 0) {
+                if (tasks && tasks.releases && Object.keys(tasks.releases).filter(r => isNumeric(r)).length > 0) {
 
                     // Clear any unconfirmed releases
                     internals.cleanUnconfirmed(request, tasks);
 
-                    // If releases exist then go straight to the release page
-                    if (Object.entries(tasks.releases).length > 0) {
-                        reply.redirect(route.page);
-
-                    } else {
-                        // Display the releases to air confirmation page
-                        reply.view('all-sectors/report/confirm', {
-                            route: route,
-                            selected: false
-                        });
-                    }
+                    // Redirect to main route page
+                    reply.redirect(route.page);
 
                 } else {
                     // Display the appropriate confirmation page
@@ -224,29 +221,36 @@ module.exports = {
             // Clear any unconfirmed releases
             internals.cleanUnconfirmed(request, tasks);
 
-            // Enrich the stored object for page presentation - add descriptions
-            let releases = [];
+            if (tasks.releases && Object.keys(tasks.releases).filter(r => isNumeric(r)).length > 0) {
+                // Enrich the stored object for page presentation - add descriptions
+                let releases = [];
 
-            if (tasks.releases) {
-                releases = await Promise.all(Object.keys(tasks.releases).map(async id => {
-                    return {
-                        substance: await MasterDataService.getSubstanceById(Number.parseInt(id)),
-                        value: tasks.releases[id].value,
-                        unitId: tasks.releases[id].unitId,
-                        errors: tasks.releases[id].errors
-                    };
-                }));
+                if (tasks.releases) {
 
-                // Sort the releases by substance name
-                releases.sort(internals.sortReleases);
+                    releases = await Promise.all(Object.keys(tasks.releases).filter(r => isNumeric(r)).map(async id => {
+                        return {
+                            substance: await MasterDataService.getSubstanceById(Number.parseInt(id)),
+                            value: tasks.releases[id].value,
+                            unitId: tasks.releases[id].unitId,
+                            errors: tasks.releases[id].errors
+                        };
+                    }));
+
+                    // Sort the releases by substance name
+                    releases.sort(internals.sortReleases);
+                }
+
+                reply.view('all-sectors/report/releases', {
+                    route: route.name,
+                    eaId: submissionStatus.name,
+                    releases: releases,
+                    units: await MasterDataService.getUnits()
+                });
+            } else {
+
+                // Add a release immediately
+                reply.redirect(route.page + '/add-substance');
             }
-
-            reply.view('all-sectors/report/releases', {
-                route: route.name,
-                eaId: submissionStatus.name,
-                releases: releases,
-                units: await MasterDataService.getUnits()
-            });
 
         } catch (err) {
             if (err instanceof CacheKeyError) {
@@ -473,42 +477,65 @@ module.exports = {
 
                 // Remove any substances already reported
                 if (tasks.releases) {
-                    const substanceIds = Object.keys(tasks.releases).map(k => Number.parseInt(k));
+                    const substanceIds = Object.keys(tasks.releases).filter(r => isNumeric(r)).map(k => Number.parseInt(k));
                     substances = substances.filter(s => !substanceIds.find(i => s.id === i));
                 }
 
                 substances = substances.sort(internals.sortSubstances);
 
-                // Render the add substances page
-                reply.view('all-sectors/report/add-substance', { route: route, substances: substances });
-            } else {
-                const substance = await MasterDataService.getSubstanceById(Number.parseInt(request.payload['substanceId']));
-
-                // Add the selected substances to the task if it exists
-                if (!substance) {
-                    throw new Error('Unknown substance requested from page');
+                if (tasks.releases && tasks.releases.substanceError) {
+                    reply.view('all-sectors/report/add-substance', {
+                        route: route,
+                        substances: substances,
+                        errors: tasks.releases.substanceError
+                    });
+                } else {
+                    reply.view('all-sectors/report/add-substance', {
+                        route: route,
+                        substances: substances
+                    });
                 }
+
+            } else {
+                let success = false;
 
                 // Add a new releases array to the task object if it does not exist
                 if (!tasks.releases) {
                     tasks.releases = {};
                 }
 
-                // Add the substance to the task provided it does not already exist
-                if (!tasks.releases[substance.id]) {
-                    tasks.releases[substance.id] = NEW_RELEASE_OBJECT;
+                if (request.payload.substanceId) {
+                    const substance = await MasterDataService.getSubstanceById(Number.parseInt(request.payload['substanceId']));
+
+                    // Add the selected substances to the task if it exists
+                    if (substance) {
+
+                        // Assign this substance to the transfer object
+                        if (!tasks.releases[substance.id]) {
+                            tasks.releases[substance.id] = NEW_RELEASE_OBJECT;
+                        }
+
+                        // Set the unconfirmed flag which will be removed on save
+                        tasks.releases[substance.id].unconfirmed = true;
+
+                        // Set the current task to allow us to get directly to the detail page
+                        tasks.currentSubstanceId = substance.id;
+                        delete tasks.releases.substanceError;
+                        success = true;
+
+                        // If there is no substance then redirect back with an error Write the task object back to the cache
+                        await request.server.app.userCache.cache('tasks').set(request, tasks);
+
+                        reply.redirect(route.page + '/detail');
+                    }
                 }
 
-                // Set the unconfirmed flag which will be removed on save
-                tasks.releases[substance.id].unconfirmed = true;
+                if (!success) {
+                    tasks.releases.substanceError = { key: 'substance', errno: 'PI-1004' };
+                    await request.server.app.userCache.cache('tasks').set(request, tasks);
+                    reply.redirect(route.page + '/add-substance');
+                }
 
-                // Set the current task to allow us to get directly to the detail page
-                tasks.currentSubstanceId = substance.id;
-
-                // Write the task object back to the cache
-                await request.server.app.userCache.cache('tasks').set(request, tasks);
-
-                reply.redirect(route.page + '/detail');
             }
         } catch (err) {
             if (err instanceof CacheKeyError) {
