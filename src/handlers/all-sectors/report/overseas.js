@@ -8,7 +8,12 @@ const cacheHelper = require('../common').cacheHelper;
 const overseasValidator = require('../../../lib/validator').overseas;
 
 const NEW_TRANSFER_OBJECT = {
-    substanceId: null
+    uninitialized: {
+        substance: true,
+        detail: true,
+        transportationAddress: true,
+        destinationAddress: true
+    }
 };
 
 const internals = {
@@ -61,6 +66,10 @@ const internals = {
         if (validation.map(v => v.key).find(k => k === 'substance')) {
             return '/transfers/overseas/add-substance';
         } else if (validation.map(v => v.key).find(k => k === 'value')) {
+            return '/transfers/overseas/detail';
+        } else if (validation.map(v => v.key).find(k => k === 'method')) {
+            return '/transfers/overseas/detail';
+        } else if (validation.map(v => v.key).find(k => k === 'operation')) {
             return '/transfers/overseas/detail';
         } else if (validation.map(v => v.key).find(k => k === 'transportation-co-addr')) {
             return '/transfers/overseas/transportation-co-addr';
@@ -244,18 +253,20 @@ module.exports = {
 
             // Get a list of all of the substances from the master data service
             let substances = await MasterDataService.getSubstances();
+            let substanceErrors = null;
 
             substances = substances.sort(sortSubstances);
 
-            let substanceErrors = null;
-            if (transfer.errors) {
-                substanceErrors = transfer.errors.find(k => k.key === 'substance');
+            if (!transfer.uninitialized.substance) {
+                if (transfer.errors) {
+                    substanceErrors = transfer.errors.filter(k => k.key === 'substance');
+                }
             }
 
-            // Render the add substances page
             reply.view('all-sectors/report/add-substance', { route: route, substances: substances, errors: substanceErrors });
         }, async (route, tasks, transfer) => {
             transfer.substanceId = null;
+            delete transfer.uninitialized.substance;
             if (request.payload.substanceId) {
                 const substance = await MasterDataService.getSubstanceById(Number.parseInt(request.payload['substanceId']));
 
@@ -277,15 +288,29 @@ module.exports = {
      */
     detail: async (request, reply) => {
         await internals.overseasStageHandler(request, reply, async (route, tasks, transfer) => {
+
+            let detailErrors = null;
+            if (!transfer.uninitialized.detail) {
+                if (transfer.errors) {
+                    detailErrors = transfer.errors.filter(k => k.key === 'method' || k.key === 'operation' || k.key === 'value');
+                }
+            }
+
             reply.view('all-sectors/report/overseas-detail', {
                 methods: await MasterDataService.getMethods(),
                 operations: await MasterDataService.getTransferOperations(),
-                transfer: await internals.enrich(transfer)
+                transfer: await internals.enrich(transfer),
+                errors: detailErrors
             });
+
         }, async (route, tasks, transfer) => {
-            transfer.value = request.payload.value;
-            transfer.operationId = Number.parseInt(request.payload['operationId']);
-            transfer.methodId = Number.parseInt(request.payload['methodId']);
+            const { value, operationId, methodId } = request.payload;
+            const operation = await MasterDataService.getTransferOperationById(Number.parseInt(operationId));
+            const method = await MasterDataService.getMethodById(Number.parseInt(methodId));
+            delete transfer.uninitialized.detail;
+            transfer.operationId = operation ? operation.id : null;
+            transfer.methodId = method ? method.id : null;
+            transfer.value = value;
         });
     },
 
@@ -297,17 +322,27 @@ module.exports = {
      */
     transportationCompanyAddress: async (request, reply) => {
         await internals.overseasStageHandler(request, reply, async (route, tasks, transfer) => {
+
+            let transportationAddressErrors = null;
+            if (!transfer.uninitialized.transportationAddress) {
+                if (transfer.errors) {
+                  transportationAddressErrors = transfer.errors.filter(k => k.key === 'method' || k.key === 'operation' || k.key === 'value');
+                }
+            }
+
             reply.view('all-sectors/business-address', {
                 action: '/transfers/overseas/transportation-co-addr',
-                id: 'TRANSPORTATION_COMPANY_ADDRESS'
+                id: 'TRANSPORTATION_COMPANY_ADDRESS',
+                errors: transportationAddressErrors
             });
+
         }, async (route, tasks, transfer) => {
             transfer.transportationCompanyAddress = {};
-            transfer.transportationCompanyAddress.addressLine1 = request.payload['address-line-1'];
-            transfer.transportationCompanyAddress.addressLine2 = request.payload['address-line-2'];
-            transfer.transportationCompanyAddress.businessName = request.payload['business-name'];
-            transfer.transportationCompanyAddress.country = request.payload['country'];
-            transfer.transportationCompanyAddress.townOrCity = request.payload['town-or-city'];
+            transfer.transportationCompanyAddress.addressLine1 = request.payload['address-line-1'].trim();
+            transfer.transportationCompanyAddress.addressLine2 = request.payload['address-line-2'].trim();
+            transfer.transportationCompanyAddress.businessName = request.payload['business-name'].trim();
+            transfer.transportationCompanyAddress.country = request.payload['country'].trim();
+            transfer.transportationCompanyAddress.townOrCity = request.payload['town-or-city'].trim();
         });
     },
 
@@ -325,11 +360,11 @@ module.exports = {
             });
         }, async (route, tasks, transfer) => {
             transfer.destinationAddr = {};
-            transfer.destinationAddr.addressLine1 = request.payload['address-line-1'];
-            transfer.destinationAddr.addressLine2 = request.payload['address-line-2'];
-            transfer.destinationAddr.businessName = request.payload['business-name'];
-            transfer.destinationAddr.country = request.payload['country'];
-            transfer.destinationAddr.townOrCity = request.payload['town-or-city'];
+            transfer.destinationAddr.addressLine1 = request.payload['address-line-1'].trim();
+            transfer.destinationAddr.addressLine2 = request.payload['address-line-2'].trim();
+            transfer.destinationAddr.businessName = request.payload['business-name'].trim();
+            transfer.destinationAddr.country = request.payload['country'].trim();
+            transfer.destinationAddr.townOrCity = request.payload['town-or-city'].trim();
         });
     },
 
@@ -348,6 +383,10 @@ module.exports = {
             }
 
             if (request.method === 'get') {
+                /*
+                 * delete tasks.transfer.uninitialized;
+                 * await request.server.app.userCache.cache('tasks').set(request, tasks);
+                 */
                 const transfer = tasks.overseasTransfers[tasks.currentOverseasWasteTransferIdx];
                 const enrichedTransfer = await internals.enrich(transfer);
                 reply.view('all-sectors/report/overseas-check', {

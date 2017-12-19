@@ -1,24 +1,27 @@
 {% extends 'layout/layout.html' %}
 
 {% macro errtext(errno) %}
-{% if errno === 'PI-1000' %}
-<span class="error-message">Enter a number or ‘BRT’ (below reporting threshold)</span>
-{% elif errno === 'PI-1001' %}
-<span class="error-message">Do not specify a unit with BRT</span>
-{% elif errno === 'PI-1002' %}
-<span class="error-message">Select a type of unit</span>
-{% elif errno === 'PI-1003' %}
-<span class="error-message">Select your method</span>
-{% else %}
-<span class="error-message">Unknown error</span>
-{% endif %}
+    {% if errno === 'PI-1000' %}
+    <span class="error-message">Enter a number or ‘BRT’ (below reporting threshold)</span>
+    {% elif errno === 'PI-1001' %}
+    <span class="error-message">Do not specify a unit with BRT</span>
+    {% elif errno === 'PI-1002' %}
+    <span class="error-message">Select a type of unit</span>
+    {% elif errno === 'PI-1003' %}
+    <span class="error-message">Select your method</span>
+    {% else %}
+    <span class="error-message">Unknown error</span>
+    {% endif %}
 {% endmacro %}
 
 {% macro form(description, action) %}
+
 {% set value_error = (release.errors | selectattr2("key", "value"))  %}
 {% set unit_error = (release.errors | selectattr2("key", "unitId"))  %}
 {% set method_error = (release.errors | selectattr2("key", "methodId"))  %}
+
 <form id="main-form" action="{{ action }}" method="post" class="form">
+    <a href="/task-list" class="link-back">Back to sections you must complete</a>
     <h1 class="heading-large">More detail about the release of {{ release.substance.name }} {{ description }}</h1>
 
     {% if release.errors %}
@@ -49,11 +52,11 @@
                 <thead> </thead>
                 <tbody>
                 <tr>
-                    <th class="2017-reporting-threshold">2017 reporting threshold</th>
-                    <td class="2017-reporting-threshold-value"></td>
+                    <th class="reporting-threshold">Reporting threshold</th>
+                    <td class="reporting-threshold-value"></td>
                 </tr>
                 <tr>
-                    <th class="id=value-check">2017 total</th>
+                    <th class="id=value-check">Total</th>
 
                     {% if value_error %}
                     <td class="td-release">

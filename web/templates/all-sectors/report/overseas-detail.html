@@ -2,10 +2,49 @@
 
 {% block content %}
 
+{% set value_error = (errors | selectattr2("key", "value"))  %}
+{% set operation_error = (errors | selectattr2("key", "operation"))  %}
+{% set method_error = (errors | selectattr2("key", "method"))  %}
+
+{% macro errtext(errno) %}
+    {% if errno === 'PI-3001' %}
+    <span class="error-message">Correct your {{ transfer.substance.name }} total</span>
+    {% elif errno === 'PI-3003' %}
+    <span class="error-message">Tell us your purpose of transfer</span>
+    {% elif errno === 'PI-3002' %}
+    <span class="error-message">Tell us your measurement method</span>
+    {% else %}
+    <span class="error-message">Unknown error</span>
+    {% endif %}
+{% endmacro %}
+
 <main id="content">
     <label id="page-name" hidden>overseas</label>
     <form action="/transfers/overseas/detail" method="post" class="form">
-             <a href="/task-list" class="link-back">Back to sections you must complete</a>
+        <a href="/task-list" class="link-back">Back to sections you must complete</a>
+
+        {% if errors %}
+        <div class="error-summary" role="alert" aria-labelledby="error-summary-heading-example-2" tabindex="-1">
+            <h2 class="heading-large error-summary-heading" id="error-summary-heading-example-2">
+                Check what you’re reporting
+            </h2>
+            <p>There are issues with the data</p>
+            <ul class="error-summary-list">
+                {% if value_error %}
+                <li><a href="#value-check">{{ errtext(value_error.errno) }}</a>
+                    {% endif %}
+
+                    {% if operation_error %}
+                <li><a href="#operation-check">{{ errtext(operation_error.errno) }}</a>
+                    {% endif %}
+
+                    {% if method_error %}
+                <li><a href="#method-check">{{ errtext(method_error.errno) }}</a>
+                    {% endif %}
+            </ul>
+        </div>
+        {% endif %}
+
             <h1 class="heading-large"><span class="heading-secondary">Your overseas hazardous waste transfers</span>
                 Your transfer of {{ transfer.substance.name }}</h1>
             <div class="grid-row">
@@ -13,56 +52,112 @@
                     <table class="more-detail table-control mobile-format">
                         <thead> </thead>
                         <tbody>
+
                         <tr>
                             <th>Total</th>
+                            {% if value_error %}
                             <td>
-                                <label class="form-label visually-hidden" for="value"></label>
-                                <input class="form-control total" id="value" name="value" type="text" value="{{ transfer.value }}"> tonnes
+                                <div class="form-group-error">
+                                    <label class="form-label visually-hidden" for="value-err"></label>
+                                    <input class="form-control form-control-error total" id="value-err" name="value" value="{{ transfer.value }}" type="number" step="0.001"> tonnes
+                                    <span class="error-message">Enter a number</span>
+                                </div>
                             </td>
+                            {% else %}
+                            <td>
+                                <div class="form-group">
+                                    <label class="form-label visually-hidden" for="value"></label>
+                                    <input class="form-control total" id="value" name="value" value="{{ transfer.value }}" type="number" step="0.001"> tonnes
+                                </div>
+                            </td>
+                            {% endif %}
                         </tr>
+
                         <tr>
                             <th class="unit">Purpose of transfer</th>
-                            <td class="unit">
-                                <label class="form-label visually-hidden" for="select-box-operation">Operation</label>
-                                <select class="form-control unit" id="select-box-operation" name="operationId">
-                                    <option selected="">--</option>
-                                    {% for operation in operations %}
-                                    {% if transfer.operationId === operation.id %}
-                                    <option selected value="{{ operation.id }}">{{ operation.name }}</option>
-                                    {% else %}
-                                    <option value="{{ operation.id }}">{{ operation.name }}</option>
-                                    {% endif %}
-                                    {% endfor %}
-                                </select>
+                            {% if operation_error %}
+                            <td class="operation">
+                                <div class="form-group-error">
+                                        <label class="form-label visually-hidden" for="select-box-operation">Operation</label>
+                                        <select class="form-control form-control-error operation" id="select-box-operation-err" name="operationId">
+                                            <option selected="">--</option>
+                                            {% for operation in operations %}
+                                                {% if transfer.operationId === operation.id %}
+                                                <option selected value="{{ operation.id }}">{{ operation.name }}</option>
+                                                {% else %}
+                                                <option value="{{ operation.id }}">{{ operation.name }}</option>
+                                                {% endif %}
+                                            {% endfor %}
+                                        </select>
+                                        <span class="error-message">Tell us your purpose of transfer</span>
+                                </div>
                             </td>
+                            {% else %}
+                            <td class="operation">
+                                <div class="form-group">
+                                        <label class="form-label visually-hidden" for="select-box-operation">Operation</label>
+                                        <select class="form-control operation" id="select-box-operation" name="operationId">
+                                            <option selected="">--</option>
+                                            {% for operation in operations %}
+                                                {% if transfer.operationId === operation.id %}
+                                                <option selected value="{{ operation.id }}">{{ operation.name }}</option>
+                                                {% else %}
+                                                <option value="{{ operation.id }}">{{ operation.name }}</option>
+                                                {% endif %}
+                                            {% endfor %}
+                                        </select>
+                                </div>
+                            </td>
+                            {% endif %}
                         </tr>
+
                         <tr>
                             <th class="method">Method</th>
-                            <td class="method"> <label class="form-label visually-hidden" for="select-box-method">Method</label>
-                                <label class="form-label visually-hidden" for="select-box-method">Method</label>
-                                <select class="form-control method" id="select-box-method" name="methodId">
-                                    <option>--</option>
-                                    {% for method in methods %}
-                                    {% if transfer.methodId === method.id %}
-                                    <option selected value="{{ method.id }}">{{ method.name }}</option>
-                                    {% else %}
-                                    <option value="{{ method.id }}">{{ method.name }}</option>
-                                    {% endif %}
-                                    {% endfor %}
-                                </select>
+
+                            {% if method_error %}
+                            <div class="form-group-error">
+                                <td class="method">
+                                    <label class="form-label visually-hidden" for="select-box-method">Method</label>
+                                    <label class="form-label visually-hidden" for="select-box-method-err">Method</label>
+                                    <select class="form-control form-control-error method" id="select-box-method-err" name="methodId">
+                                        <option>--</option>
+                                        {% for method in methods %}
+                                        {% if transfer.methodId === method.id %}
+                                        <option selected value="{{ method.id }}">{{ method.name }}</option>
+                                        {% else %}
+                                        <option value="{{ method.id }}">{{ method.name }}</option>
+                                        {% endif %}
+                                        {% endfor %}
+                                    </select>
+                                    <span class="error-message">Tell us your measurement method</span>
+                                </td>
+                            </div>
+                            {% else %}
+                            <td class="method">
+                                <div class="form-group">
+                                    <label class="form-label visually-hidden" for="select-box-method">Method</label>
+                                    <label class="form-label visually-hidden" for="select-box-method">Method</label>
+                                    <select class="form-control method" id="select-box-method" name="methodId">
+                                        <option>--</option>
+                                        {% for method in methods %}
+                                        {% if transfer.methodId === method.id %}
+                                        <option selected value="{{ method.id }}">{{ method.name }}</option>
+                                        {% else %}
+                                        <option value="{{ method.id }}">{{ method.name }}</option>
+                                        {% endif %}
+                                        {% endfor %}
+                                    </select>
+                                </div>
                             </td>
+                            {% endif %}
                         </tr>
+
                         </tbody>
                     </table>
                     <div class="form-group"> <input type="submit" class="button" value="Continue"> </div>
                 </div>
             </div>
         </form>
-        <!--<label class="form-label visually-hidden" for="value"></label>-->
-        <!--<input type="number" step="0.001" class="form-control" id="value" name="value" value="{{ transfer.value }}"> tonnes-->
-        <!--<div class="form-group">-->
-            <!--<input id="continueBtn" type="submit" class="button" value="Continue">-->
-        <!--</div>-->
     </form>
 
 </main>

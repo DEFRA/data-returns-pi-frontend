@@ -267,6 +267,77 @@ experiment('Overseas waste transfers', () => {
         expect(response.statusCode).to.equal(302);
         expect(response.headers.location).to.equal('/transfers/overseas/add-substance');
 
+        response = await Common.server().inject({
+            method: 'POST',
+            url: '/transfers/overseas/add-substance',
+            headers: { cookie: 'sid=' + Common.sid() },
+            payload: {
+                substanceId: '506'
+            }
+        });
+
+        expect(response.statusCode).to.equal(302);
+        expect(response.headers.location).to.equal('/transfers/overseas/check');
+
+        response = await Common.server().inject({
+            method: 'GET',
+            url: '/transfers/overseas/check',
+            headers: { cookie: 'sid=' + Common.sid() }
+        });
+        expect(response.statusCode).to.equal(200);
+
+    });
+
+    test('Detail invalidation', async () => {
+        let response = await Common.server().inject({
+            method: 'GET',
+            url: '/transfers/overseas/detail',
+            headers: { cookie: 'sid=' + Common.sid() }
+        });
+        expect(response.statusCode).to.equal(200);
+
+        // Invalid payload
+        response = await Common.server().inject({
+            method: 'POST',
+            url: '/transfers/overseas/detail',
+            headers: { cookie: 'sid=' + Common.sid() },
+            payload: {
+                value: 'not_a_number',
+                operationId: '9000'
+            }
+        });
+
+        expect(response.statusCode).to.equal(302);
+        expect(response.headers.location).to.equal('/transfers/overseas/detail');
+
+        response = await Common.server().inject({
+            method: 'GET',
+            url: '/transfers/overseas/detail',
+            headers: { cookie: 'sid=' + Common.sid() }
+        });
+        expect(response.statusCode).to.equal(200);
+
+        response = await Common.server().inject({
+            method: 'POST',
+            url: '/transfers/overseas/detail',
+            headers: { cookie: 'sid=' + Common.sid() },
+            payload: {
+                value: '99',
+                operationId: '1',
+                methodId: '1'
+            }
+        });
+
+        expect(response.statusCode).to.equal(302);
+        expect(response.headers.location).to.equal('/transfers/overseas/check');
+
+        response = await Common.server().inject({
+            method: 'GET',
+            url: '/transfers/overseas/check',
+            headers: { cookie: 'sid=' + Common.sid() }
+        });
+        expect(response.statusCode).to.equal(200);
+
     });
 
     test('Logout', async () => {

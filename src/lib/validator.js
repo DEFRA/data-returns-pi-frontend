@@ -122,6 +122,14 @@ const internals = {
             result.push({key: 'value', errno: 'PI-3001'});
         }
 
+        if (!isNumeric(overseasTransferObject.methodId)) {
+            result.push({key: 'method', errno: 'PI-3002'});
+        }
+
+        if (!isNumeric(overseasTransferObject.operationId)) {
+            result.push({key: 'operation', errno: 'PI-3003'});
+        }
+
         if (!(overseasTransferObject.transportationCompanyAddress &&
               overseasTransferObject.transportationCompanyAddress.addressLine1 &&
               overseasTransferObject.transportationCompanyAddress.addressLine1.trim() &&
