@@ -2,6 +2,11 @@
 
 {% block content %}
 
+{% set address_line_1_error = (errors | selectattr2("key", "address-line-1"))  %}
+{% set business_name_error = (errors | selectattr2("key", "business-name"))  %}
+{% set town_or_city_error = (errors | selectattr2("key", "town-or-city"))  %}
+{% set country_error = (errors | selectattr2("key", "country"))  %}
+
 <main id="content">
     <label id="page-name" hidden>Address</label>
 
@@ -21,26 +26,64 @@
 
         <div class="form-group">
             <fieldset>
+
+                {% if business_name_error %}
+                <div class="form-group form-group-error">
+                    <label class="form-label" for="business-name-err">Business name</label>
+                    <input class="form-control-error" id="business-name-err" type="text" name="business-name" value="{{ address.businessName }}">
+                    <span class="error-message">You must include a business name</span>
+                </div>
+                {% else %}
                 <div class="form-group">
                     <label class="form-label" for="business-name">Business name</label>
-                    <input class="form-control" id="business-name" type="text" name="business-name" value="">
+                    <input class="form-control" id="business-name" type="text" name="business-name" value="{{ address.businessName }}">
                 </div>
+                {% endif %}
+
+                {% if address_line_1_error %}
+                <div class="form-group form-group-error">
+                    <label class="form-label" for="address-line-1-err">Address line 1</label>
+                    <input class="form-control-error" id="address-line-1-err" type="text" name="address-line-1" value="{{ address.addressLine1 }}">
+                    <span class="error-message">You must include aan address</span>
+                </div>
+                {% else %}
                 <div class="form-group">
                     <label class="form-label" for="address-line-1">Address line 1</label>
-                    <input class="form-control" id="address-line-1" type="text" name="address-line-1" value="">
+                    <input class="form-control" id="address-line-1" type="text" name="address-line-1" value="{{ address.addressLine1 }}">
                 </div>
+                {% endif %}
+                
                 <div class="form-group">
                     <label class="form-label" for="address-line-2">Address line 2 (optional)</label>
-                    <input class="form-control" id="address-line-2" type="text" name="address-line-2" value="">
+                    <input class="form-control" id="address-line-2" type="text" name="address-line-2" value="{{ address.addressLine2 }}">
                 </div>
+
+                {% if town_or_city_error %}
+                <div class="form-group form-group-error">
+                    <label class="form-label" for="town-or-city-err">Town or city</label>
+                    <input class="form-control-error" id="town-or-city-err" type="text" name="town-or-city" value="{{ address.townOrCity }}">
+                    <span class="error-message">You must include a town or city</span>
+                </div>
+                {% else %}
                 <div class="form-group">
                     <label class="form-label" for="town-or-city">Town or city</label>
-                    <input class="form-control" id="town-or-city" type="text" name="town-or-city" value="">
+                    <input class="form-control" id="town-or-city" type="text" name="town-or-city" value="{{ address.townOrCity }}">
                 </div>
+                {% endif %}
+
+                {% if country_error %}
+                <div class="form-group form-group-error">
+                    <label class="form-label" for="country-err">Country</label>
+                    <input class="form-control-error" id="country-err" type="text" name="country" value="{{ address.country }}">
+                    <span class="error-message">You must include a country</span>
+                </div>
+                {% else %}
                 <div class="form-group">
                     <label class="form-label" for="country">Country</label>
-                    <input class="form-control" id="country" type="text" name="country" value="">
+                    <input class="form-control" id="country" type="text" name="country" value="{{ address.country }}">
                 </div>
+                {% endif %}
+
             </fieldset>
         </div>
         <div class="form-group">

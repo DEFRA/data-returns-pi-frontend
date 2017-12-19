@@ -23,7 +23,7 @@
 
 {% block content %}
 <main id="content">
-    <label id="page-name" hidden>confirm-releases</label>
+    <label id="page-name" hidden>confirm-{{ route.pathParam }}</label>
     {% if route.name === 'RELEASES_TO_LAND'%}
         {{ form('Did you release any substances to land?', route.page + '/confirm') }}
     {% elif route.name === 'RELEASES_TO_AIR' %}

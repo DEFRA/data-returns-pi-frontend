@@ -130,34 +130,36 @@ const internals = {
             result.push({key: 'detail.operation', errno: 'PI-3003'});
         }
 
-      //if (!isNumeric(overseasTransferObject.transportationCompanyAddress)) {
-      //  result.push({key: 'detail.operation', errno: 'PI-3003'});
-      //}
-      //transportation-co-address
-      //transportation-co-addr
-
-        if (!(overseasTransferObject.transportationCompanyAddress &&
-              overseasTransferObject.transportationCompanyAddress.addressLine1 &&
-              overseasTransferObject.transportationCompanyAddress.addressLine1.trim() &&
-              overseasTransferObject.transportationCompanyAddress.businessName &&
-              overseasTransferObject.transportationCompanyAddress.businessName.trim() &&
-              overseasTransferObject.transportationCompanyAddress.country &&
-              overseasTransferObject.transportationCompanyAddress.country.trim() &&
-              overseasTransferObject.transportationCompanyAddress.townOrCity &&
-              overseasTransferObject.transportationCompanyAddress.townOrCity.trim())) {
-            result.push({key: 'transportation-co-addr', errno: 'PI-3003'});
+        if (!overseasTransferObject.transportationCompanyAddress.addressLine1) {
+            result.push({key: 'transportation-co-address.address-line-1', errno: 'PI-3010'});
         }
 
-        if (!(overseasTransferObject.destinationAddress &&
-              overseasTransferObject.destinationAddress.addressLine1 &&
-              overseasTransferObject.destinationAddr.addressLine1.trim() &&
-              overseasTransferObject.destinationAddr.businessName &&
-              overseasTransferObject.destinationAddr.businessName.trim() &&
-              overseasTransferObject.destinationAddr.country &&
-              overseasTransferObject.destinationAddr.country.trim() &&
-              overseasTransferObject.destinationAddr.townOrCity &&
-              overseasTransferObject.destinationAddr.townOrCity.trim())) {
-            result.push({key: 'destination-addr', errno: 'PI-3004'});
+        if (!overseasTransferObject.transportationCompanyAddress.businessName) {
+            result.push({key: 'transportation-co-address.business-name', errno: 'PI-3011'});
+        }
+
+        if (!overseasTransferObject.transportationCompanyAddress.country) {
+            result.push({key: 'transportation-co-address.country', errno: 'PI-3012'});
+        }
+
+        if (!overseasTransferObject.transportationCompanyAddress.townOrCity) {
+            result.push({key: 'transportation-co-address.town-or-city', errno: 'PI-3013'});
+        }
+
+        if (!overseasTransferObject.destinationAddress.addressLine1) {
+            result.push({key: 'destination-address.address-line-1', errno: 'PI-3020'});
+        }
+
+        if (!overseasTransferObject.destinationAddress.businessName) {
+            result.push({key: 'destination-address.business-name', errno: 'PI-3021'});
+        }
+
+        if (!overseasTransferObject.destinationAddress.country) {
+            result.push({key: 'destination-address.country', errno: 'PI-3022'});
+        }
+
+        if (!overseasTransferObject.destinationAddress.townOrCity) {
+            result.push({key: 'destination-address.town-or-city', errno: 'PI-3023'});
         }
 
         return result.length > 0 ? result : null;

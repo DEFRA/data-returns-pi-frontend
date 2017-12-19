@@ -9,7 +9,6 @@ const overseasValidator = require('../../../lib/validator').overseas;
 
 const NEW_TRANSFER_OBJECT = {
     substanceId: null,
-    detail: {},
     transportationCompanyAddress: {},
     destinationAddress: {},
     uninitialized: {
@@ -72,9 +71,9 @@ const internals = {
         } else if (validation.map(v => v.key).find(k => k.startsWith('detail'))) {
             return '/transfers/overseas/detail';
         } else if (validation.map(v => v.key).find(k => k.startsWith('transportation-co-address'))) {
-            return '/transfers/overseas/transportation-co-addr';
+            return '/transfers/overseas/transportation-co-address';
         } else if (validation.map(v => v.key).find(k => k.startsWith('destination-address'))) {
-            return '/transfers/overseas/destination-addr';
+            return '/transfers/overseas/destination-address';
         } else {
             return '/transfers/overseas/check';
         }
@@ -326,17 +325,21 @@ module.exports = {
             let transportationAddressErrors = null;
             if (!transfer.uninitialized.transportationAddress) {
                 if (transfer.errors) {
-                    transportationAddressErrors = transfer.errors.filter(k => k.key.startsWith('transportation-co-address'));
+                    transportationAddressErrors = transfer.errors
+                        .filter(k => k.key.startsWith('transportation-co-address'))
+                        .map(v => { return { errno: v.errno, key: v.key.split('.')[1] }; });
                 }
             }
 
             reply.view('all-sectors/business-address', {
-                action: '/transfers/overseas/transportation-co-addr',
+                action: '/transfers/overseas/transportation-co-address',
                 id: 'TRANSPORTATION_COMPANY_ADDRESS',
-                errors: transportationAddressErrors
+                errors: transportationAddressErrors,
+                address: transfer.transportationCompanyAddress
             });
 
         }, async (route, tasks, transfer) => {
+            delete transfer.uninitialized.transportationAddress;
             transfer.transportationCompanyAddress.addressLine1 = request.payload['address-line-1'].trim();
             transfer.transportationCompanyAddress.addressLine2 = request.payload['address-line-2'].trim();
             transfer.transportationCompanyAddress.businessName = request.payload['business-name'].trim();
@@ -353,11 +356,24 @@ module.exports = {
      */
     destinationAddress: async (request, reply) => {
         await internals.overseasStageHandler(request, reply, async (route, tasks, transfer) => {
+
+            let destinationAddressErrors = null;
+            if (!transfer.uninitialized.destinationAddress) {
+                if (transfer.errors) {
+                    destinationAddressErrors = transfer.errors
+                        .filter(k => k.key.startsWith('destination-address'))
+                        .map(v => { return { errno: v.errno, key: v.key.split('.')[1] }; });
+                }
+            }
+
             reply.view('all-sectors/business-address', {
-                action: '/transfers/overseas/destination-addr',
-                id: 'DESTINATION_ADDRESS'
+                action: '/transfers/overseas/destination-address',
+                id: 'DESTINATION_ADDRESS',
+                errors: destinationAddressErrors,
+                address: transfer.destinationAddress
             });
         }, async (route, tasks, transfer) => {
+            delete transfer.uninitialized.destinationAddress;
             transfer.destinationAddress.addressLine1 = request.payload['address-line-1'].trim();
             transfer.destinationAddress.addressLine2 = request.payload['address-line-2'].trim();
             transfer.destinationAddress.businessName = request.payload['business-name'].trim();
@@ -381,14 +397,11 @@ module.exports = {
             }
 
             if (request.method === 'get') {
-                /*
-                 * delete tasks.transfer.uninitialized;
-                 * await request.server.app.userCache.cache('tasks').set(request, tasks);
-                 */
                 const transfer = tasks.overseasTransfers[tasks.currentOverseasWasteTransferIdx];
+                delete transfer.uninitialized;
+                await request.server.app.userCache.cache('tasks').set(request, tasks);
                 const enrichedTransfer = await internals.enrich(transfer);
-                reply.view('all-sectors/report/overseas-check', {
-                    transfer: enrichedTransfer });
+                reply.view('all-sectors/report/overseas-check', { transfer: enrichedTransfer });
             } else {
                 reply.redirect('/transfers/overseas');
             }

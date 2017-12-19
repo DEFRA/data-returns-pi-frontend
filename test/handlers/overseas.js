@@ -157,18 +157,18 @@ experiment('Overseas waste transfers', () => {
         });
 
         expect(response.statusCode).to.equal(302);
-        expect(response.headers.location).to.equal('/transfers/overseas/transportation-co-addr');
+        expect(response.headers.location).to.equal('/transfers/overseas/transportation-co-address');
 
         response = await Common.server().inject({
             method: 'GET',
-            url: '/transfers/overseas/transportation-co-addr',
+            url: '/transfers/overseas/transportation-co-address',
             headers: { cookie: 'sid=' + Common.sid() }
         });
         expect(response.statusCode).to.equal(200);
 
         response = await Common.server().inject({
             method: 'POST',
-            url: '/transfers/overseas/transportation-co-addr',
+            url: '/transfers/overseas/transportation-co-address',
             headers: { cookie: 'sid=' + Common.sid() },
             payload: {
                 'business-name': 'Druid Wood Limited',
@@ -179,19 +179,19 @@ experiment('Overseas waste transfers', () => {
             }
         });
         expect(response.statusCode).to.equal(302);
-        expect(response.headers.location).to.equal('/transfers/overseas/destination-addr');
+        expect(response.headers.location).to.equal('/transfers/overseas/destination-address');
 
         // request the task list again
         response = await Common.server().inject({
             method: 'GET',
-            url: '/transfers/overseas/destination-addr',
+            url: '/transfers/overseas/destination-address',
             headers: { cookie: 'sid=' + Common.sid() }
         });
         expect(response.statusCode).to.equal(200);
 
         response = await Common.server().inject({
             method: 'POST',
-            url: '/transfers/overseas/destination-addr',
+            url: '/transfers/overseas/destination-address',
             headers: { cookie: 'sid=' + Common.sid() },
             payload: {
                 'business-name': 'Some company',

@@ -255,7 +255,7 @@ const dynamicHandlers = [
 
     {
         method: ['GET', 'POST'],
-        path: '/transfers/overseas/transportation-co-addr',
+        path: '/transfers/overseas/transportation-co-address',
         config: {
             handler: Overseas.transportationCompanyAddress
         }
@@ -263,7 +263,7 @@ const dynamicHandlers = [
 
     {
         method: ['GET', 'POST'],
-        path: '/transfers/overseas/destination-addr',
+        path: '/transfers/overseas/destination-address',
         config: {
             handler: Overseas.destinationAddress
         }
