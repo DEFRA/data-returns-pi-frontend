@@ -24,7 +24,7 @@
             <tbody>
             {% for transfer in transfers %}
             <tr>
-                <td class="td-business-name">{{ transfer.destinationAddr.businessName }}</td>
+                <td class="td-business-name">{{ transfer.destinationAddress.businessName }}</td>
                 <td class="td-transfer-substance">{{ transfer.substance.name }}</td>
                 <td class="td-total">{{ transfer.value }} tonnes</td>
                 <td class="td-method">{{ transfer.method.name }}</td>

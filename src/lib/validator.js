@@ -119,16 +119,22 @@ const internals = {
         }
 
         if (!isNumeric(overseasTransferObject.value)) {
-            result.push({key: 'value', errno: 'PI-3001'});
+            result.push({key: 'detail.value', errno: 'PI-3001'});
         }
 
         if (!isNumeric(overseasTransferObject.methodId)) {
-            result.push({key: 'method', errno: 'PI-3002'});
+            result.push({key: 'detail.method', errno: 'PI-3002'});
         }
 
         if (!isNumeric(overseasTransferObject.operationId)) {
-            result.push({key: 'operation', errno: 'PI-3003'});
+            result.push({key: 'detail.operation', errno: 'PI-3003'});
         }
+
+      //if (!isNumeric(overseasTransferObject.transportationCompanyAddress)) {
+      //  result.push({key: 'detail.operation', errno: 'PI-3003'});
+      //}
+      //transportation-co-address
+      //transportation-co-addr
 
         if (!(overseasTransferObject.transportationCompanyAddress &&
               overseasTransferObject.transportationCompanyAddress.addressLine1 &&
@@ -142,8 +148,8 @@ const internals = {
             result.push({key: 'transportation-co-addr', errno: 'PI-3003'});
         }
 
-        if (!(overseasTransferObject.destinationAddr &&
-              overseasTransferObject.destinationAddr.addressLine1 &&
+        if (!(overseasTransferObject.destinationAddress &&
+              overseasTransferObject.destinationAddress.addressLine1 &&
               overseasTransferObject.destinationAddr.addressLine1.trim() &&
               overseasTransferObject.destinationAddr.businessName &&
               overseasTransferObject.destinationAddr.businessName.trim() &&

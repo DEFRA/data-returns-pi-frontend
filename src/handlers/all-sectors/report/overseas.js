@@ -8,6 +8,10 @@ const cacheHelper = require('../common').cacheHelper;
 const overseasValidator = require('../../../lib/validator').overseas;
 
 const NEW_TRANSFER_OBJECT = {
+    substanceId: null,
+    detail: {},
+    transportationCompanyAddress: {},
+    destinationAddress: {},
     uninitialized: {
         substance: true,
         detail: true,
@@ -65,15 +69,11 @@ const internals = {
     validationLocationMapper: (validation) => {
         if (validation.map(v => v.key).find(k => k === 'substance')) {
             return '/transfers/overseas/add-substance';
-        } else if (validation.map(v => v.key).find(k => k === 'value')) {
+        } else if (validation.map(v => v.key).find(k => k.startsWith('detail'))) {
             return '/transfers/overseas/detail';
-        } else if (validation.map(v => v.key).find(k => k === 'method')) {
-            return '/transfers/overseas/detail';
-        } else if (validation.map(v => v.key).find(k => k === 'operation')) {
-            return '/transfers/overseas/detail';
-        } else if (validation.map(v => v.key).find(k => k === 'transportation-co-addr')) {
+        } else if (validation.map(v => v.key).find(k => k.startsWith('transportation-co-address'))) {
             return '/transfers/overseas/transportation-co-addr';
-        } else if (validation.map(v => v.key).find(k => k === 'destination-addr')) {
+        } else if (validation.map(v => v.key).find(k => k.startsWith('destination-address'))) {
             return '/transfers/overseas/destination-addr';
         } else {
             return '/transfers/overseas/check';
@@ -292,7 +292,7 @@ module.exports = {
             let detailErrors = null;
             if (!transfer.uninitialized.detail) {
                 if (transfer.errors) {
-                    detailErrors = transfer.errors.filter(k => k.key === 'method' || k.key === 'operation' || k.key === 'value');
+                    detailErrors = transfer.errors.filter(k => k.key.startsWith('detail'));
                 }
             }
 
@@ -326,7 +326,7 @@ module.exports = {
             let transportationAddressErrors = null;
             if (!transfer.uninitialized.transportationAddress) {
                 if (transfer.errors) {
-                  transportationAddressErrors = transfer.errors.filter(k => k.key === 'method' || k.key === 'operation' || k.key === 'value');
+                    transportationAddressErrors = transfer.errors.filter(k => k.key.startsWith('transportation-co-address'));
                 }
             }
 
@@ -337,7 +337,6 @@ module.exports = {
             });
 
         }, async (route, tasks, transfer) => {
-            transfer.transportationCompanyAddress = {};
             transfer.transportationCompanyAddress.addressLine1 = request.payload['address-line-1'].trim();
             transfer.transportationCompanyAddress.addressLine2 = request.payload['address-line-2'].trim();
             transfer.transportationCompanyAddress.businessName = request.payload['business-name'].trim();
@@ -359,12 +358,11 @@ module.exports = {
                 id: 'DESTINATION_ADDRESS'
             });
         }, async (route, tasks, transfer) => {
-            transfer.destinationAddr = {};
-            transfer.destinationAddr.addressLine1 = request.payload['address-line-1'].trim();
-            transfer.destinationAddr.addressLine2 = request.payload['address-line-2'].trim();
-            transfer.destinationAddr.businessName = request.payload['business-name'].trim();
-            transfer.destinationAddr.country = request.payload['country'].trim();
-            transfer.destinationAddr.townOrCity = request.payload['town-or-city'].trim();
+            transfer.destinationAddress.addressLine1 = request.payload['address-line-1'].trim();
+            transfer.destinationAddress.addressLine2 = request.payload['address-line-2'].trim();
+            transfer.destinationAddress.businessName = request.payload['business-name'].trim();
+            transfer.destinationAddress.country = request.payload['country'].trim();
+            transfer.destinationAddress.townOrCity = request.payload['town-or-city'].trim();
         });
     },
 

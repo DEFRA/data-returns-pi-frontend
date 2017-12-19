@@ -2,9 +2,9 @@
 
 {% block content %}
 
-{% set value_error = (errors | selectattr2("key", "value"))  %}
-{% set operation_error = (errors | selectattr2("key", "operation"))  %}
-{% set method_error = (errors | selectattr2("key", "method"))  %}
+{% set value_error = (errors | selectattr2("key", "detail.value"))  %}
+{% set operation_error = (errors | selectattr2("key", "detail.operation"))  %}
+{% set method_error = (errors | selectattr2("key", "detail.method"))  %}
 
 {% macro errtext(errno) %}
     {% if errno === 'PI-3001' %}

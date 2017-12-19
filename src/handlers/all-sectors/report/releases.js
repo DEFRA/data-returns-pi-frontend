@@ -429,7 +429,6 @@ module.exports = {
      */
     remove: async (request, reply) => {
         try {
-
             const tasks = await request.server.app.userCache.cache('tasks').get(request);
 
             // Check for tasks
@@ -447,7 +446,13 @@ module.exports = {
             } else {
                 delete tasks.releases[tasks.currentSubstanceId];
                 await request.server.app.userCache.cache('tasks').set(request, tasks);
-                reply.redirect(route.page);
+
+                // If this is the last release redirect back to the task list
+                if (Object.keys(tasks.releases).filter(r => isNumeric(r)).length > 0) {
+                    reply.redirect(route.page);
+                } else {
+                    reply.redirect('/task-list');
+                }
             }
         } catch (err) {
             if (err instanceof CacheKeyError) {
