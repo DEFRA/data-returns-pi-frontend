@@ -457,7 +457,7 @@ module.exports = {
 
             if (request.method === 'get') {
                 reply.view('all-sectors/report/confirm-delete', {
-                    route: route.name,
+                    route: route,
                     transfer: await internals.enrichOffSiteTransferObject(tasks.offSiteTransfers[tasks.currentoffSiteTransferIndex])
                 });
             } else {

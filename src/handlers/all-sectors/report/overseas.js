@@ -121,7 +121,6 @@ const internals = {
 
             }
         } catch (err) {
-            console.log(err);
             if (err instanceof CacheKeyError) {
                 reply.redirect('/');
             } else {
@@ -205,9 +204,7 @@ module.exports = {
                 if (!tasks.overseasTransfers || tasks.overseasTransfers.length === 0) {
                     reply.redirect('/transfers/overseas/add');
                 } else {
-
                     const enrichedTransfers = await Promise.all(tasks.overseasTransfers.map(async t => internals.enrich(t)));
-
                     reply.view('all-sectors/report/overseas', { transfers: enrichedTransfers });
                 }
             } else {
@@ -372,6 +369,7 @@ module.exports = {
                 errors: destinationAddressErrors,
                 address: transfer.destinationAddress
             });
+
         }, async (route, tasks, transfer) => {
             delete transfer.uninitialized.destinationAddress;
             transfer.destinationAddress.addressLine1 = request.payload['address-line-1'].trim();
@@ -398,7 +396,6 @@ module.exports = {
 
             if (request.method === 'get') {
                 const transfer = tasks.overseasTransfers[tasks.currentOverseasWasteTransferIdx];
-                delete transfer.uninitialized;
                 await request.server.app.userCache.cache('tasks').set(request, tasks);
                 const enrichedTransfer = await internals.enrich(transfer);
                 reply.view('all-sectors/report/overseas-check', { transfer: enrichedTransfer });

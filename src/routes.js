@@ -68,7 +68,14 @@ const staticHandlers = [
 ];
 
 const dynamicHandlers = [
-    // Authentication handlers
+    {
+        method: '*',
+        path: '/{p*}', // catch-all path
+        handler: function (request, reply) {
+            reply.redirect('/');
+        }
+    },
+
     {
         method: ['GET', 'POST'],
         path: '/login',

@@ -127,16 +127,16 @@
 
 {% block content %}
 <main id="content">
+    <label id="page-name" hidden>releases-{{ route.pathParam }}</label>
     <a href="/task-list" class="link-back">Back to sections you must complete</a>
     <h1 class="heading-large">{{ header }}</h1>
-    <label id="page-name" hidden>{{ route }}</label>
-    {% if route === 'RELEASES_TO_LAND' %}
+    {% if route.name === 'RELEASES_TO_LAND' %}
     {{ form('Your releases to land', 'Check what you’re reporting', '/releases/land') }}
-    {% elif route === 'RELEASES_TO_AIR' %}
+    {% elif route.name === 'RELEASES_TO_AIR' %}
     {{ form('Your releases to air', 'Check what you’re reporting', '/releases/air') }}
-    {% elif route === 'RELEASES_TO_CONTROLLED_WATERS' %}
+    {% elif route.name === 'RELEASES_TO_CONTROLLED_WATERS' %}
     {{ form('Your releases to controlled waters', 'Check what you’re reporting', '/releases/water') }}
-    {% elif route === 'OFFSITE_TRANSFERS_IN_WASTE_WATER' %}
+    {% elif route.name === 'OFFSITE_TRANSFERS_IN_WASTE_WATER' %}
     {{ form('Your transfers of substances off-site in waste water', 'Check what you’re reporting', '/releases/waste-water') }}
     {% endif %}
 </main>

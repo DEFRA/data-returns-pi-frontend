@@ -155,14 +155,14 @@
 {% block content %}
 
 <main id="content">
-    <label id="page-name" hidden>releases-detail</label>
-    {% if route === 'RELEASES_TO_LAND' %}
+    <label id="page-name" hidden>releases-detail-{{ route.pathParam }}</label>
+    {% if route.name === 'RELEASES_TO_LAND' %}
     {{ form('to land', '/releases/land/detail') }}
-    {% elif route === 'RELEASES_TO_AIR' %}
+    {% elif route.name === 'RELEASES_TO_AIR' %}
     {{ form('to air', '/releases/air/detail') }}
-    {% elif route === 'RELEASES_TO_CONTROLLED_WATERS' %}
+    {% elif route.name === 'RELEASES_TO_CONTROLLED_WATERS' %}
     {{ form('to controlled waters', '/releases/water/detail') }}
-    {% elif route === 'OFFSITE_TRANSFERS_IN_WASTE_WATER' %}
+    {% elif route.name === 'OFFSITE_TRANSFERS_IN_WASTE_WATER' %}
     {{ form('in waste water', '/releases/waste-water/detail') }}
     {% endif %}
 </main>

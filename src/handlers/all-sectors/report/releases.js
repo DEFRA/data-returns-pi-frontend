@@ -241,7 +241,7 @@ module.exports = {
                 }
 
                 reply.view('all-sectors/report/releases', {
-                    route: route.name,
+                    route: route,
                     eaId: submissionStatus.name,
                     releases: releases,
                     units: await MasterDataService.getUnits()
@@ -382,7 +382,7 @@ module.exports = {
                 const units = await MasterDataService.getUnits();
 
                 // Display the detail page
-                reply.view('all-sectors/report/release-detail', { route: route.name, release: release, methods: methods, units: units });
+                reply.view('all-sectors/report/release-detail', { route: route, release: release, methods: methods, units: units });
             } else {
 
                 // Set the task detail elements
@@ -442,7 +442,7 @@ module.exports = {
 
             if (request.method === 'get') {
                 release.substance = substance;
-                reply.view('all-sectors/report/confirm-delete', { route: route.name, release: release });
+                reply.view('all-sectors/report/confirm-delete', { route: route, release: release });
             } else {
                 delete tasks.releases[tasks.currentSubstanceId];
                 await request.server.app.userCache.cache('tasks').set(request, tasks);

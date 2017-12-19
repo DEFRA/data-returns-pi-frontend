@@ -340,6 +340,118 @@ experiment('Overseas waste transfers', () => {
 
     });
 
+    test('Transport address invalidation', async () => {
+        let response = await Common.server().inject({
+            method: 'GET',
+            url: '/transfers/overseas/detail',
+            headers: { cookie: 'sid=' + Common.sid() }
+        });
+        expect(response.statusCode).to.equal(200);
+
+        // Invalid payload
+        response = await Common.server().inject({
+            method: 'POST',
+            url: '/transfers/overseas/transportation-co-address',
+            headers: { cookie: 'sid=' + Common.sid() },
+            payload: {
+                'address-line-1': '',
+                'address-line-2': '',
+                'business-name': '',
+                'country': '',
+                'town-or-city': ''
+            }
+        });
+
+        expect(response.statusCode).to.equal(302);
+        expect(response.headers.location).to.equal('/transfers/overseas/transportation-co-address');
+
+        response = await Common.server().inject({
+            method: 'GET',
+            url: '/transfers/overseas/transportation-co-address',
+            headers: { cookie: 'sid=' + Common.sid() }
+        });
+        expect(response.statusCode).to.equal(200);
+
+        response = await Common.server().inject({
+            method: 'POST',
+            url: '/transfers/overseas/transportation-co-address',
+            headers: { cookie: 'sid=' + Common.sid() },
+            payload: {
+                'address-line-1': '56 Ash Tree Close',
+                'address-line-2': 'Little Tossingdon',
+                'business-name': 'Bee-line',
+                'country': 'Endland',
+                'town-or-city': 'Barkshire'
+            }
+        });
+
+        expect(response.statusCode).to.equal(302);
+        expect(response.headers.location).to.equal('/transfers/overseas/check');
+
+        response = await Common.server().inject({
+            method: 'GET',
+            url: '/transfers/overseas/check',
+            headers: { cookie: 'sid=' + Common.sid() }
+        });
+        expect(response.statusCode).to.equal(200);
+    });
+
+    test('Destination address invalidation', async () => {
+        let response = await Common.server().inject({
+            method: 'GET',
+            url: '/transfers/overseas/detail',
+            headers: { cookie: 'sid=' + Common.sid() }
+        });
+        expect(response.statusCode).to.equal(200);
+
+        // Invalid payload
+        response = await Common.server().inject({
+            method: 'POST',
+            url: '/transfers/overseas/destination-address',
+            headers: { cookie: 'sid=' + Common.sid() },
+            payload: {
+                'address-line-1': '',
+                'address-line-2': '',
+                'business-name': '',
+                'country': '',
+                'town-or-city': ''
+            }
+        });
+
+        expect(response.statusCode).to.equal(302);
+        expect(response.headers.location).to.equal('/transfers/overseas/destination-address');
+
+        response = await Common.server().inject({
+            method: 'GET',
+            url: '/transfers/overseas/destination-address',
+            headers: { cookie: 'sid=' + Common.sid() }
+        });
+        expect(response.statusCode).to.equal(200);
+
+        response = await Common.server().inject({
+            method: 'POST',
+            url: '/transfers/overseas/destination-address',
+            headers: { cookie: 'sid=' + Common.sid() },
+            payload: {
+                'address-line-1': '56 Ash Tree Close',
+                'address-line-2': 'Little Tossingdon',
+                'business-name': 'Bee-line',
+                'country': 'Endland',
+                'town-or-city': 'Barkshire'
+            }
+        });
+
+        expect(response.statusCode).to.equal(302);
+        expect(response.headers.location).to.equal('/transfers/overseas/check');
+
+        response = await Common.server().inject({
+            method: 'GET',
+            url: '/transfers/overseas/check',
+            headers: { cookie: 'sid=' + Common.sid() }
+        });
+        expect(response.statusCode).to.equal(200);
+    });
+
     test('Logout', async () => {
         return Common.logout();
     });
