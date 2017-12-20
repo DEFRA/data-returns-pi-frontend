@@ -14,7 +14,7 @@
 
 {% block content %}
 <main id="content">
-    <label id="page-name" hidden>confirm-delete</label>
+    <label id="page-name" hidden>confirm-delete-{{ route.pathParam }}</label>
     {% if route.name === 'RELEASES_TO_LAND' %}
         {% set hdr = 'Confirm you want to remove the release to land of ' +  release.substance.name %}
         {{ form(hdr, '/releases/land') }}
@@ -30,6 +30,10 @@
     {% elif route.name === 'OFFSITE_WASTE_TRANSFERS' %}
         {% set hdr = 'Confirm you want to remove the off-site waste transfer ' +  transfer | transferShortDesc %}
         {{ form(hdr, '/transfers/off-site') }}
+    {% elif route.name === 'OVERSEAS_WASTE_TRANSFERS' %}
+        {% set hdr = 'Confirm you want to remove transfer of ' +  transfer.substance.name + ' to '
+    + transfer.destinationAddress.businessName %}
+        {{ form(hdr, '/transfers/overseas') }}
     {% endif %}
 </main>
 {% endblock %}

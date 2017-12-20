@@ -66,16 +66,14 @@ const internals = {
      * @param validation
      */
     validationLocationMapper: (validation) => {
-        if (validation.map(v => v.key).find(k => k === 'substance')) {
+        if (validation.find(k => k.key === 'substance')) {
             return '/transfers/overseas/add-substance';
-        } else if (validation.map(v => v.key).find(k => k.startsWith('detail'))) {
+        } else if (validation.find(k => k.key.startsWith('detail'))) {
             return '/transfers/overseas/detail';
-        } else if (validation.map(v => v.key).find(k => k.startsWith('transportation-co-address'))) {
+        } else if (validation.find(k => k.key.startsWith('transportation-co-address'))) {
             return '/transfers/overseas/transportation-co-address';
-        } else if (validation.map(v => v.key).find(k => k.startsWith('destination-address'))) {
+        } else if (validation.find(k => k.key.startsWith('destination-address'))) {
             return '/transfers/overseas/destination-address';
-        } else {
-            return '/transfers/overseas/check';
         }
     },
 
@@ -122,6 +120,7 @@ const internals = {
             }
         } catch (err) {
             if (err instanceof CacheKeyError) {
+                logger.debug(err);
                 reply.redirect('/');
             } else {
                 logger.log('error', err);
@@ -181,6 +180,7 @@ module.exports = {
 
         } catch (err) {
             if (err instanceof CacheKeyError) {
+                logger.debug(err);
                 reply.redirect('/');
             } else {
                 logger.log('error', err);
@@ -233,8 +233,13 @@ module.exports = {
             await internals.addNewOverseasWasteTransfer(request, tasks);
             reply.redirect('/transfers/overseas/add-substance');
         } catch (err) {
-            logger.log('error', err);
-            reply.redirect('/logout');
+            if (err instanceof CacheKeyError) {
+                logger.debug(err);
+                reply.redirect('/');
+            } else {
+                logger.log('error', err);
+                reply.redirect('/logout');
+            }
         }
     },
 
@@ -405,6 +410,7 @@ module.exports = {
 
         } catch (err) {
             if (err instanceof CacheKeyError) {
+                logger.debug(err);
                 reply.redirect('/');
             } else {
                 logger.log('error', err);
@@ -445,19 +451,47 @@ module.exports = {
                 // Send to delete confirmation dialog
                 tasks.currentOverseasWasteTransferIdx = transferIndex;
                 await request.server.app.userCache.cache('tasks').set(request, tasks);
+                reply.redirect('/transfers/overseas/remove');
+            }
 
-            } else if (request.payload.back) {
-                // Save the release information to the cache and return to the main task-list page
+        } catch (err) {
+            logger.log('error', err);
+            reply.redirect('/logout');
+        }
+    },
+
+    /**
+     * Remove action
+     * @param request
+     * @param reply
+     * @return {Promise.<void>}
+     */
+    remove: async (request, reply) => {
+        try {
+            const { tasks, route } = await cacheHelper(request, 'overseas');
+
+            if (!tasks.overseasTransfers || tasks.overseasTransfers.length === 0) {
+                throw new CacheKeyError('Expected overseas waste transfer object');
+            }
+
+            if (request.method === 'get') {
+                reply.view('all-sectors/report/confirm-delete', {
+                    route: route,
+                    transfer: await internals.enrich(tasks.overseasTransfers[tasks.currentOverseasWasteTransferIdx])
+                });
+            } else {
+                tasks.overseasTransfers.splice(tasks.currentOverseasWasteTransferIdx, 1);
                 await request.server.app.userCache.cache('tasks').set(request, tasks);
-                reply.redirect('/task-list');
-            } else if (request.payload.add) {
-                // Save the release information to the cache and redirect to the add-substances page
-                await request.server.app.userCache.cache('tasks').set(request, tasks);
-                reply.redirect('/transfers/overseas/add');
+                if (tasks.overseasTransfers.length > 0) {
+                    reply.redirect('/transfers/overseas');
+                } else {
+                    reply.redirect('/task-list');
+                }
             }
 
         } catch (err) {
             if (err instanceof CacheKeyError) {
+                logger.debug(err);
                 reply.redirect('/');
             } else {
                 logger.log('error', err);
@@ -465,5 +499,4 @@ module.exports = {
             }
         }
     }
-
 };

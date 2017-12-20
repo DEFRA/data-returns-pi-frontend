@@ -82,6 +82,66 @@ experiment('Unexpected navigation', () => {
         expect(response.headers.location).to.equal('/');
     });
 
+    test('Go to overseas confirm page without first setting a permit', async () => {
+        const response = await Common.server().inject({
+            method: 'GET',
+            url: '/transfers/overseas/confirm',
+            headers: { cookie: 'sid=' + Common.sid() }
+        });
+        expect(response.statusCode).to.equal(302);
+        expect(response.headers.location).to.equal('/');
+    });
+
+    test('Go to overseas add page without first setting a permit', async () => {
+        const response = await Common.server().inject({
+            method: 'GET',
+            url: '/transfers/overseas/add',
+            headers: { cookie: 'sid=' + Common.sid() }
+        });
+        expect(response.statusCode).to.equal(302);
+        expect(response.headers.location).to.equal('/');
+    });
+
+    test('Go to overseas detail page without first setting a permit', async () => {
+        const response = await Common.server().inject({
+            method: 'GET',
+            url: '/transfers/overseas/detail',
+            headers: { cookie: 'sid=' + Common.sid() }
+        });
+        expect(response.statusCode).to.equal(302);
+        expect(response.headers.location).to.equal('/');
+    });
+
+    test('Go to overseas detail page without first setting a permit', async () => {
+        const response = await Common.server().inject({
+            method: 'GET',
+            url: ' /transfers/overseas/transportation-co-address',
+            headers: { cookie: 'sid=' + Common.sid() }
+        });
+        expect(response.statusCode).to.equal(302);
+        expect(response.headers.location).to.equal('/');
+    });
+
+    test('Go to overseas check page without first setting a permit', async () => {
+        const response = await Common.server().inject({
+            method: 'GET',
+            url: ' /transfers/overseas/check',
+            headers: { cookie: 'sid=' + Common.sid() }
+        });
+        expect(response.statusCode).to.equal(302);
+        expect(response.headers.location).to.equal('/');
+    });
+
+    test('Go to overseas summary page without first setting a permit', async () => {
+        const response = await Common.server().inject({
+            method: 'GET',
+            url: ' /transfers/overseas',
+            headers: { cookie: 'sid=' + Common.sid() }
+        });
+        expect(response.statusCode).to.equal(302);
+        expect(response.headers.location).to.equal('/');
+    });
+
     test('Select a permit and go straight to the substances page', async () => {
         const response = await Common.server().inject({
             method: 'POST',
@@ -407,6 +467,60 @@ experiment('Unexpected navigation', () => {
             headers: { cookie: 'sid=' + Common.sid() }
         });
         expect(response.statusCode).to.equal(200);
+
+    });
+
+    test('Select a permit and go straight to the overseas pages', async () => {
+        let response = await Common.server().inject({
+            method: 'POST',
+            url: '/select-permit',
+            headers: { cookie: 'sid=' + Common.sid() },
+            payload: {
+                eaId: '100311'
+            }
+        });
+        expect(response.statusCode).to.equal(302);
+        expect(response.headers.location).to.equal('/task-list');
+
+        response = await Common.server().inject({
+            method: 'GET',
+            url: '/transfers/overseas/detail',
+            headers: { cookie: 'sid=' + Common.sid() }
+        });
+
+        expect(response.headers.location).to.equal('/');
+
+        response = await Common.server().inject({
+            method: 'GET',
+            url: '/transfers/overseas/check',
+            headers: { cookie: 'sid=' + Common.sid() }
+        });
+        expect(response.statusCode).to.equal(302);
+        expect(response.headers.location).to.equal('/');
+
+        response = await Common.server().inject({
+            method: 'GET',
+            url: '/transfers/overseas/destination-address',
+            headers: { cookie: 'sid=' + Common.sid() }
+        });
+        expect(response.statusCode).to.equal(302);
+        expect(response.headers.location).to.equal('/');
+
+        response = await Common.server().inject({
+            method: 'GET',
+            url: '/transfers/overseas/remove',
+            headers: { cookie: 'sid=' + Common.sid() }
+        });
+        expect(response.statusCode).to.equal(302);
+        expect(response.headers.location).to.equal('/');
+
+        response = await Common.server().inject({
+            method: 'GET',
+            url: '/transfers/overseas',
+            headers: { cookie: 'sid=' + Common.sid() }
+        });
+        expect(response.statusCode).to.equal(302);
+        expect(response.headers.location).to.equal('/transfers/overseas/add');
 
     });
 
