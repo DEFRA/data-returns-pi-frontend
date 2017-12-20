@@ -10,7 +10,7 @@ const System = require('./system');
 const _ = require('lodash');
 
 const commonLoggingOptions = {
-    level: process.env.NODE_ENV === 'local' ? System.configuration.logging.level : 'info',
+    level: process.env.LOG_LEVEL || 'info',
     colorize: true,
     silent: false,
     timestamp: true,

@@ -14,6 +14,8 @@ const after = lab.after;
 
 const UserCache = require('../../src/lib/user-cache');
 
+const TEST_CACHE = require('../../src/lib/user-cache-policies').names.UNIT_TEST
+
 experiment('User cache', () => {
     before(() => {
         return UserCache.start(require('catbox-redis'),
@@ -25,15 +27,15 @@ experiment('User cache', () => {
 
             const value = '150 runs';
 
-            await UserCache.cache('unit-test').set('9045', value);
+            await UserCache.cache(TEST_CACHE).set('9045', value);
 
-            const value2 = await UserCache.cache('unit-test').get('9045');
+            const value2 = await UserCache.cache(TEST_CACHE).get('9045');
 
             expect(value).to.equal(value2);
 
-            await UserCache.cache('unit-test').drop('9045');
+            await UserCache.cache(TEST_CACHE).drop('9045');
 
-            const value3 = await UserCache.cache('unit-test').get('9045');
+            const value3 = await UserCache.cache(TEST_CACHE).get('9045');
 
             expect(value3).to.be.null();
 

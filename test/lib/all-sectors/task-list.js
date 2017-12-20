@@ -61,25 +61,58 @@ const resultInclude = {
 
 const resultExclude = {
 
+    // The name of the task list
     name: 'test',
 
+    // Three stages
     stages: [
+
         {
-            heading: 'Check your details',
+            heading: 'Report your data',
             items: [
+
                 {
-                    name: 'CONTACT',
-                    pathParam: 'contact',
-                    title: 'Your contact details',
-                    page: '/contact'
+                    name: 'OFFSITE_TRANSFERS_IN_WASTE_WATER',
+                    pathParam: 'waste-water',
+                    title: 'Off-site transfers in waste water',
+                    page: '/releases/waste-water'
                 },
 
                 {
-                    name: 'SITE',
-                    pathParam: 'site',
-                    title: 'Your site codes',
-                    page: '/site'
+                    name: 'OFFSITE_WASTE_TRANSFERS',
+                    pathParam: 'off-site',
+                    title: 'Off-site waste transfers',
+                    page: '/transfers/off-site'
+                },
+
+                {
+                    name: 'OVERSEAS_WASTE_TRANSFERS',
+                    pathParam: 'overseas',
+                    title: 'Overseas waste transfers',
+                    page: '/transfers/overseas'
                 }
+
+            ]
+        },
+
+        {
+            heading: 'Check and submit your report',
+            items: [
+
+                {
+                    name: 'CHECK',
+                    pathParam: 'check',
+                    title: 'Check your data',
+                    page: '/check'
+                },
+
+                {
+                    name: 'SHARE',
+                    pathParam: 'share',
+                    title: 'Share your data',
+                    page: '/share'
+                }
+
             ]
         }
     ]
@@ -91,48 +124,38 @@ const resultStatus = {
 
     stages: [
         {
-            heading: 'Check your details',
+            heading: 'Report your data',
             items: [
+
                 {
-                    name: 'CONTACT',
-                    pathParam: 'contact',
-                    title: 'Your contact details',
-                    page: '/contact'
+                    name: 'RELEASES_TO_LAND',
+                    pathParam: 'land',
+                    title: 'Releases to land',
+                    page: '/releases/land'
                 },
 
                 {
-                    name: 'SITE',
-                    pathParam: 'site',
-                    title: 'Your site codes',
-                    page: '/site',
-                    status: 'Completed'
+                    name: 'RELEASES_TO_CONTROLLED_WATERS',
+                    pathParam: 'water',
+                    title: 'Releases to controlled waters',
+                    page: '/releases/water'
                 }
             ]
         }
     ]
 };
 
-const testSet = ['RELEASES_TO_AIR', 'RELEASES_TO_LAND', 'RELEASES_TO_CONTROLLED_WATERS', 'SUBMIT'];
-
 describe('Testing task list library', () => {
 
-    it('Testing include function', () => {
-        expect(tasklistLib.include(allSectorsTaskList, testSet).stages).to.equal(resultInclude.stages);
-    });
-
-    it('Testing exclude function', () => {
-        expect(tasklistLib.exclude(allSectorsTaskList, testSet).stages).to.equal(resultExclude.stages);
-    });
-
     it('Testing names function', () => {
-        expect(tasklistLib.names(resultStatus)).to.equal(['CONTACT', 'SITE']);
+        expect(tasklistLib.names(resultStatus)).to.equal(['RELEASES_TO_LAND', 'RELEASES_TO_CONTROLLED_WATERS']);
     });
 
     it('Testing map function', () => {
         expect(tasklistLib.mapByPathParameter(resultStatus)).to.be.not.null();
-        expect(tasklistLib.mapByPathParameter(resultStatus).get('contact').name).to.equal('CONTACT');
+        expect(tasklistLib.mapByPathParameter(resultStatus).get('land').name).to.equal('RELEASES_TO_LAND');
         expect(tasklistLib.mapByName(resultStatus)).to.be.not.null();
-        expect(tasklistLib.mapByName(resultStatus).get('SITE').name).to.equal('SITE');
+        expect(tasklistLib.mapByName(resultStatus).get('RELEASES_TO_CONTROLLED_WATERS').name).to.equal('RELEASES_TO_CONTROLLED_WATERS');
     });
 
 });

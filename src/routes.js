@@ -5,7 +5,7 @@
  */
 const Authentication = require('./handlers/authentication.js');
 const Start = require('./handlers/start.js');
-const AllSectors = require('./handlers/all-sectors/main');
+const AllSectors = require('./handlers/all-sectors/task-list');
 const Releases = require('./handlers/all-sectors/report/releases');
 const OffSite = require('./handlers/all-sectors/report/off-site');
 const Overseas = require('./handlers/all-sectors/report/overseas');
@@ -73,11 +73,11 @@ const dynamicHandlers = [
     // Authentication and start pages
     { method: ['GET', 'POST'], path: '/login', config: { handler: Authentication.login, auth: { mode: 'try' }, plugins: { 'hapi-auth-cookie': { redirectTo: false }, crumb: {} } } },
     { method: 'GET', path: '/logout', config: {handler: Authentication.logout} },
-    { method: 'GET', path: '/', config: {handler: Start.start} },
+    { method: 'GET', path: '/', config: { handler: Start.start } },
 
-    // Handlers for the all sectors journey
-    { method: 'GET', path: '/task-list', config: { handler: AllSectors.taskList } },
+    // Handlers for the all sectors journey - select permit and tasks list
     { method: 'POST', path: '/select-permit', config: { handler: Start.select } },
+    { method: 'GET', path: '/task-list', config: { handler: AllSectors.taskList } },
 
     // Releases to air, land, controlled waters and in waste-water
     { method: ['GET', 'POST'], path: '/releases/{route}/confirm', handler: Releases.confirm },

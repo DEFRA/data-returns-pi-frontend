@@ -24,38 +24,10 @@ function checkTaskListCorrectness (taskList) {
     }
 }
 
-/**
- * Filter function for the task-list
- * @param taskList
- * @param items to include or exclude
- * @param include
- * @return {{stages: Array}}
- */
-function filter (taskList, names, include) {
-    checkTaskListCorrectness(taskList);
-
-    const newTaskList = { name: taskList.name, stages: [] };
-    taskList.stages.forEach(s => {
-        const newItemList = s.items.filter((i) => {
-            return include ? names.includes(i.name) : !names.includes(i.name);
-        });
-
-        if (newItemList.length > 0) {
-            s.items = newItemList;
-            newTaskList.stages.push(s);
-        }
-    });
-
-    return newTaskList;
-}
-
 let internals = {};
 
 module.exports = internals = {
-    // Filters a task list to only include those items with a 'name' attribute in the array names
-    include: (taskList, names) => { return filter(taskList, names, true); },
-    // Filters a task list to exclude those items with a 'name' attribute in the array names
-    exclude: (taskList, names) => { return filter(taskList, names); },
+
     // Names - retrieves the list of names from a task list
     names: (taskList) => {
         checkTaskListCorrectness(taskList);

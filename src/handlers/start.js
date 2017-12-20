@@ -3,6 +3,7 @@
 const logger = require('../lib/logging').logger;
 const MasterDataService = require('../service/master-data');
 const SessionHelper = require('./session-helper');
+const cacheNames = require('../lib/user-cache-policies').names;
 
 /**
  * The handler for the start page
@@ -60,13 +61,13 @@ module.exports = {
             }
 
             // Set the current permit in the submission cache
-            await request.server.app.userCache.cache('submission-status').set(request, eaId);
+            await request.server.app.userCache.cache(cacheNames.SUBMISSION_STATUS).set(request, eaId);
 
             /*
              * The permit status is object with containing the statuses and other meta-data
              * for each stage within the user journey for a given (current) permit
              */
-            let permitStatus = await request.server.app.userCache.cache('permit-status').get(request);
+            let permitStatus = await request.server.app.userCache.cache(cacheNames.PERMIT_STATUS).get(request);
 
             if (!permitStatus) {
                 // Initialize a permit status if not exists
@@ -77,7 +78,7 @@ module.exports = {
             }
 
             // Save the permit status cache
-            await request.server.app.userCache.cache('permit-status').set(request, permitStatus);
+            await request.server.app.userCache.cache(cacheNames.PERMIT_STATUS).set(request, permitStatus);
 
             reply.redirect('/task-list');
         } catch (err) {

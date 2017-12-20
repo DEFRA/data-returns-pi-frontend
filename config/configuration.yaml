@@ -21,7 +21,6 @@ server:
 # Logging options
 ##############################################
 logging:
-  level: debug              # Only effective when NODE_ENV === local
   file: 'logs/datareturns.log'
 
 ##############################################

@@ -10,29 +10,8 @@ module.exports = {
     // The name of the task list
     name: 'all-sectors',
 
-    // Three stages
+    // Two stages
     stages: [
-
-        {
-            heading: 'Check your details',
-            items: [
-
-                {
-                    name: 'CONTACT',
-                    pathParam: 'contact',
-                    title: 'Your contact details',
-                    page: '/contact'
-                },
-
-                {
-                    name: 'SITE',
-                    pathParam: 'site',
-                    title: 'Your site codes',
-                    page: '/site'
-                }
-
-            ]
-        },
 
         {
             heading: 'Report your data',

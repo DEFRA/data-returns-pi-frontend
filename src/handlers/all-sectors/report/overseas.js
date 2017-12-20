@@ -6,6 +6,7 @@ const CacheKeyError = require('../../../lib/user-cache-policies').CacheKeyError;
 const sortSubstances = require('./releases').sortSubstances;
 const cacheHelper = require('../common').cacheHelper;
 const overseasValidator = require('../../../lib/validator').overseas;
+const cacheNames = require('../../../lib/user-cache-policies').names;
 
 const NEW_TRANSFER_OBJECT = {
     substanceId: null,
@@ -44,7 +45,7 @@ const internals = {
         }
 
         if (haveRemoved) {
-            await request.server.app.userCache.cache('tasks').set(request, tasks);
+            await request.server.app.userCache.cache(cacheNames.TASK_STATUS).set(request, tasks);
         }
 
         return tasks;
@@ -58,7 +59,7 @@ const internals = {
 
         tasks.overseasTransfers.push(NEW_TRANSFER_OBJECT);
         tasks.currentOverseasWasteTransferIdx = tasks.overseasTransfers.length - 1;
-        await request.server.app.userCache.cache('tasks').set(request, tasks);
+        await request.server.app.userCache.cache(cacheNames.TASK_STATUS).set(request, tasks);
     },
 
     /**
@@ -106,12 +107,12 @@ const internals = {
                 if (validation) {
                     // Add validation error to the object
                     transfer.errors = validation;
-                    await request.server.app.userCache.cache('tasks').set(request, tasks);
+                    await request.server.app.userCache.cache(cacheNames.TASK_STATUS).set(request, tasks);
 
                     reply.redirect(internals.validationLocationMapper(validation));
                 } else {
                     delete transfer.errors;
-                    await request.server.app.userCache.cache('tasks').set(request, tasks);
+                    await request.server.app.userCache.cache(cacheNames.TASK_STATUS).set(request, tasks);
 
                     // If the object is valid redirect to the transfer check page
                     reply.redirect('/transfers/overseas/check');
@@ -152,7 +153,7 @@ module.exports = {
      */
     confirm: async (request, reply) => {
         try {
-            const { route, tasks } = await cacheHelper(request, 'overseas');
+            const { route, tasks, permitStatus } = await cacheHelper(request, 'overseas');
 
             if (request.method === 'get') {
 
@@ -174,6 +175,9 @@ module.exports = {
                 if (request.payload.confirmation === 'true') {
                     reply.redirect(route.page);
                 } else {
+                    permitStatus.completed = permitStatus.completed || {};
+                    permitStatus.completed[route.name] = true;
+                    await request.server.app.userCache.cache(cacheNames.PERMIT_STATUS).set(request, permitStatus);
                     reply.redirect('/task-list');
                 }
             }
@@ -401,7 +405,7 @@ module.exports = {
 
             if (request.method === 'get') {
                 const transfer = tasks.overseasTransfers[tasks.currentOverseasWasteTransferIdx];
-                await request.server.app.userCache.cache('tasks').set(request, tasks);
+                await request.server.app.userCache.cache(cacheNames.TASK_STATUS).set(request, tasks);
                 const enrichedTransfer = await internals.enrich(transfer);
                 reply.view('all-sectors/report/overseas-check', { transfer: enrichedTransfer });
             } else {
@@ -440,7 +444,7 @@ module.exports = {
                     .find(s => s.startsWith('check')).substr(6));
 
                 tasks.currentOverseasWasteTransferIdx = transferIndex;
-                await request.server.app.userCache.cache('tasks').set(request, tasks);
+                await request.server.app.userCache.cache(cacheNames.TASK_STATUS).set(request, tasks);
                 reply.redirect('/transfers/overseas/check');
 
             } else if (Object.keys(request.payload).find(s => s.startsWith('delete'))) {
@@ -450,7 +454,7 @@ module.exports = {
 
                 // Send to delete confirmation dialog
                 tasks.currentOverseasWasteTransferIdx = transferIndex;
-                await request.server.app.userCache.cache('tasks').set(request, tasks);
+                await request.server.app.userCache.cache(cacheNames.TASK_STATUS).set(request, tasks);
                 reply.redirect('/transfers/overseas/remove');
             }
 
@@ -481,7 +485,7 @@ module.exports = {
                 });
             } else {
                 tasks.overseasTransfers.splice(tasks.currentOverseasWasteTransferIdx, 1);
-                await request.server.app.userCache.cache('tasks').set(request, tasks);
+                await request.server.app.userCache.cache(cacheNames.TASK_STATUS).set(request, tasks);
                 if (tasks.overseasTransfers.length > 0) {
                     reply.redirect('/transfers/overseas');
                 } else {

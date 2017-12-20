@@ -14,7 +14,7 @@ const logger = require('./logging').logger;
 const internals = {};
 
 // Name of the user cache
-internals.partition_name = 'user-cache-partition';
+internals.partition_name = 'user-cache';
 internals.policies = {};
 
 /**

@@ -5,6 +5,7 @@ const AllSectorsTaskList = require('../../model/all-sectors/task-list');
 const CacheKeyError = require('../../lib/user-cache-policies').CacheKeyError;
 const TaskListService = require('../../service/task-list');
 const Hoek = require('hoek');
+const cacheNames = require('../../lib/user-cache-policies').names;
 
 module.exports = {
 
@@ -23,8 +24,8 @@ module.exports = {
             const route = routeParameter ? TaskListService.mapByPathParameter(AllSectorsTaskList).get(routeParameter)
                 : TaskListService.getRoute(AllSectorsTaskList, request);
 
-            const submissionStatus = await request.server.app.userCache.cache('submission-status').get(request);
-            const permitStatus = await request.server.app.userCache.cache('permit-status').get(request);
+            const submissionStatus = await request.server.app.userCache.cache(cacheNames.SUBMISSION_STATUS).get(request);
+            const permitStatus = await request.server.app.userCache.cache(cacheNames.PERMIT_STATUS).get(request);
 
             Hoek.assert(route, 'Invalid cache state: route');
             Hoek.assert(submissionStatus, 'Invalid cache state: submission-status');
@@ -32,10 +33,10 @@ module.exports = {
 
             // We can always set the current route here
             permitStatus.currentTask = route.name;
-            await request.server.app.userCache.cache('permit-status').set(request, permitStatus);
+            await request.server.app.userCache.cache(cacheNames.PERMIT_STATUS).set(request, permitStatus);
 
             // Get the tasks object or create an empty new one
-            const tasks = await request.server.app.userCache.cache('tasks').get(request) || {};
+            const tasks = await request.server.app.userCache.cache(cacheNames.TASK_STATUS).get(request) || {};
 
             return {
                 route: route,

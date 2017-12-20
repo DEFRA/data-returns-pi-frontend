@@ -10,13 +10,20 @@ class CacheKeyError extends Error {
     }
 };
 
+const names = {
+    SUBMISSION_STATUS: 'submission',
+    PERMIT_STATUS: 'ea-id',
+    TASK_STATUS: 'task',
+    UNIT_TEST: 'unit-test'
+};
+
 /**
  * This module is a definition of the user cache keys and cache names.
  */
 const internals = {
 
     submissionStatus: {
-        name: 'submission-status',
+        name: names.SUBMISSION_STATUS,
         /**
          * Returns a key of the form userid.submission-year to handle
          * all submission level artifacts
@@ -36,7 +43,7 @@ const internals = {
     },
 
     permitStatus: {
-        name: 'permit-status',
+        name: names.PERMIT_STATUS,
         /**
          * Returns a key of the form userid.submission-year.permitId to handle
          * all permit level artifacts. If we cannot calculate a key it returns '_'
@@ -50,7 +57,7 @@ const internals = {
                 const statusKey = await internals.submissionStatus.keyFunc(request);
 
                 // Fetch the permit key
-                const permitStatusKey = await request.server.app.userCache.cache('submission-status').get(request);
+                const permitStatusKey = await request.server.app.userCache.cache(names.SUBMISSION_STATUS).get(request);
 
                 if (permitStatusKey && permitStatusKey.id) {
                     return statusKey + '.' + permitStatusKey.id;
@@ -64,7 +71,7 @@ const internals = {
     },
 
     taskStatus: {
-        name: 'tasks',
+        name: names.TASK_STATUS,
         /**
          * Returns a key for the task object.
          * This is of the form userid.submission-year.permitId.TASK
@@ -77,7 +84,7 @@ const internals = {
                 const statusKey = await internals.permitStatus.keyFunc(request);
 
                 // Fetch the current status
-                const status = await UserCache.cache('permit-status').get(request);
+                const status = await UserCache.cache(names.PERMIT_STATUS).get(request);
 
                 // Construct a key containing the permit status and the current task
                 return statusKey + '.' + status.currentTask;
@@ -89,7 +96,7 @@ const internals = {
 
     unitTest: {
         // Used for the lab tests
-        name: 'unit-test',
+        name: names.UNIT_TEST,
         keyFunc: async (request) => {
             try {
                 return request + '.' + '2017';
@@ -103,8 +110,12 @@ const internals = {
 
 module.exports = {
     CacheKeyError: CacheKeyError,
-    policies: [internals.submissionStatus,
-        internals.permitStatus,
-        internals.taskStatus,
-        internals.unitTest]
+
+    policies:
+      [internals.submissionStatus,
+          internals.permitStatus,
+          internals.taskStatus,
+          internals.unitTest],
+
+    names: names
 };

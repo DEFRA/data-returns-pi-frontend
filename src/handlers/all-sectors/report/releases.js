@@ -12,6 +12,7 @@ const cacheHelper = require('../common').cacheHelper;
 const TaskListService = require('../../../service/task-list');
 const AllSectorsTaskList = require('../../../model/all-sectors/task-list');
 const isNumeric = require('../../../lib/utils').isNumeric;
+const cacheNames = require('../../../lib/user-cache-policies').names;
 
 const NEW_RELEASE_OBJECT = { value: null, unitId: null, methodId: null };
 
@@ -122,7 +123,7 @@ const internals = {
             }
 
             if (haveUnconfirmed) {
-                await request.server.app.userCache.cache('tasks').set(request, tasks);
+                await request.server.app.userCache.cache(cacheNames.TASK_STATUS).set(request, tasks);
             }
         }
     },
@@ -169,7 +170,7 @@ module.exports = {
      */
     confirm: async (request, reply) => {
         try {
-            const { route, tasks } = await cacheHelper(request);
+            const { permitStatus, route, tasks } = await cacheHelper(request);
 
             if (request.method === 'get') {
 
@@ -194,6 +195,9 @@ module.exports = {
                 if (request.payload.confirmation === 'true') {
                     reply.redirect(route.page);
                 } else {
+                    permitStatus.completed = permitStatus.completed || {};
+                    permitStatus.completed[route.name] = true;
+                    await request.server.app.userCache.cache(cacheNames.PERMIT_STATUS).set(request, permitStatus);
                     reply.redirect('/task-list');
                 }
             }
@@ -278,11 +282,11 @@ module.exports = {
                 // Test if the releases are valid
                 if (await internals.validate(request, tasks)) {
                     // Write the (removed) validations to the cache
-                    await request.server.app.userCache.cache('tasks').set(request, tasks);
+                    await request.server.app.userCache.cache(cacheNames.TASK_STATUS).set(request, tasks);
                     reply.redirect('/task-list');
                 } else {
                     // Update the cache with the validation objects and redirect back to the page
-                    await request.server.app.userCache.cache('tasks').set(request, tasks);
+                    await request.server.app.userCache.cache(cacheNames.TASK_STATUS).set(request, tasks);
                     reply.redirect(route.page);
                 }
 
@@ -292,7 +296,7 @@ module.exports = {
                 tasks.currentSubstanceId = Object.keys(request.payload)
                     .find(s => s.startsWith('detail')).substr(7);
 
-                await request.server.app.userCache.cache('tasks').set(request, tasks);
+                await request.server.app.userCache.cache(cacheNames.TASK_STATUS).set(request, tasks);
                 reply.redirect(route.page + '/detail');
 
             } else if (Object.keys(request.payload).find(s => s.startsWith('delete'))) {
@@ -308,20 +312,20 @@ module.exports = {
                         // Save the current substance
                         tasks.currentSubstanceId = substanceId;
                         delete tasks.releases[substanceId];
-                        await request.server.app.userCache.cache('tasks').set(request, tasks);
+                        await request.server.app.userCache.cache(cacheNames.TASK_STATUS).set(request, tasks);
                         reply.redirect(route.page);
                         break;
 
                     case 'WARN':
                         // Send to delete confirmation dialog
                         tasks.currentSubstanceId = substanceId;
-                        await request.server.app.userCache.cache('tasks').set(request, tasks);
+                        await request.server.app.userCache.cache(cacheNames.TASK_STATUS).set(request, tasks);
                         reply.redirect(route.page + '/remove');
                         break;
 
                     case 'FLAG':
                         tasks.releases[substanceId].removed = true;
-                        await request.server.app.userCache.cache('tasks').set(request, tasks);
+                        await request.server.app.userCache.cache(cacheNames.TASK_STATUS).set(request, tasks);
                         reply.redirect(route.page);
                         break;
 
@@ -332,11 +336,11 @@ module.exports = {
 
             } else if (request.payload.back) {
                 // Save the release information to the cache and return to the main task-list page
-                await request.server.app.userCache.cache('tasks').set(request, tasks);
+                await request.server.app.userCache.cache(cacheNames.TASK_STATUS).set(request, tasks);
                 reply.redirect('/task-list');
             } else if (request.payload.add) {
                 // Save the release information to the cache and redirect to the add-substances page
-                await request.server.app.userCache.cache('tasks').set(request, tasks);
+                await request.server.app.userCache.cache(cacheNames.TASK_STATUS).set(request, tasks);
                 reply.redirect(route.page + '/add-substance');
             }
 
@@ -356,21 +360,16 @@ module.exports = {
     detail: async (request, reply) => {
         try {
             // Check the permit status has been set
-            const permitStatus = await request.server.app.userCache.cache('permit-status').get(request);
-            const tasks = await request.server.app.userCache.cache('tasks').get(request);
-            const route = TaskListService.getRoute(AllSectorsTaskList, request);
+            const { route, tasks } = await cacheHelper(request);
 
-            if (!permitStatus || !tasks || !route) {
-                throw new CacheKeyError('invalid cache state');
+            if (!tasks.releases || !tasks.currentSubstanceId) {
+                throw new CacheKeyError('Cache read error');
             }
 
             if (request.method === 'get') {
+
                 // Get the current release and enrich with the substance details
                 const release = tasks.releases[tasks.currentSubstanceId];
-
-                if (!release) {
-                    throw new CacheKeyError('invalid cache state');
-                }
 
                 const substance = await MasterDataService.getSubstanceById(Number.parseInt(tasks.currentSubstanceId));
                 release.substance = substance;
@@ -402,17 +401,18 @@ module.exports = {
                 if (validation) {
                     // Update the cache with the validation objects and redirect back to the releases page
                     currentRelease.errors = validation;
-                    await request.server.app.userCache.cache('tasks').set(request, tasks);
+                    await request.server.app.userCache.cache(cacheNames.TASK_STATUS).set(request, tasks);
                     reply.redirect(route.page + '/detail');
                 } else {
                     // Write the (removed) validations and cleared unconfirmed flag to the cache
                     delete currentRelease.unconfirmed;
-                    await request.server.app.userCache.cache('tasks').set(request, tasks);
+                    await request.server.app.userCache.cache(cacheNames.TASK_STATUS).set(request, tasks);
                     reply.redirect(route.page);
                 }
             }
         } catch (err) {
             if (err instanceof CacheKeyError) {
+                logger.debug(err);
                 reply.redirect('/');
             } else {
                 logger.log('error', err);
@@ -429,7 +429,7 @@ module.exports = {
      */
     remove: async (request, reply) => {
         try {
-            const tasks = await request.server.app.userCache.cache('tasks').get(request);
+            const tasks = await request.server.app.userCache.cache(cacheNames.TASK_STATUS).get(request);
 
             // Check for tasks
             if (!tasks) {
@@ -445,7 +445,7 @@ module.exports = {
                 reply.view('all-sectors/report/confirm-delete', { route: route, release: release });
             } else {
                 delete tasks.releases[tasks.currentSubstanceId];
-                await request.server.app.userCache.cache('tasks').set(request, tasks);
+                await request.server.app.userCache.cache(cacheNames.TASK_STATUS).set(request, tasks);
 
                 // If this is the last release redirect back to the task list
                 if (Object.keys(tasks.releases).filter(r => isNumeric(r)).length > 0) {
@@ -529,7 +529,7 @@ module.exports = {
                         success = true;
 
                         // If there is no substance then redirect back with an error Write the task object back to the cache
-                        await request.server.app.userCache.cache('tasks').set(request, tasks);
+                        await request.server.app.userCache.cache(cacheNames.TASK_STATUS).set(request, tasks);
 
                         reply.redirect(route.page + '/detail');
                     }
@@ -537,7 +537,7 @@ module.exports = {
 
                 if (!success) {
                     tasks.releases.substanceError = { key: 'substance', errno: 'PI-1004' };
-                    await request.server.app.userCache.cache('tasks').set(request, tasks);
+                    await request.server.app.userCache.cache(cacheNames.TASK_STATUS).set(request, tasks);
                     reply.redirect(route.page + '/add-substance');
                 }
 

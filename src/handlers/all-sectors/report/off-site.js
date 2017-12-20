@@ -8,6 +8,7 @@ const MasterDataService = require('../../../service/master-data');
 const CacheKeyError = require('../../../lib/user-cache-policies').CacheKeyError;
 const cacheHelper = require('../common').cacheHelper;
 const Validator = require('../../../lib/validator');
+const cacheNames = require('../../../lib/user-cache-policies').names;
 
 const internals = {
 
@@ -212,7 +213,7 @@ const internals = {
         }
 
         if (haveRemoved) {
-            await request.server.app.userCache.cache('tasks').set(request, tasks);
+            await request.server.app.userCache.cache(cacheNames.TASK_STATUS).set(request, tasks);
         }
 
         return tasks;
@@ -234,7 +235,7 @@ module.exports = {
      */
     confirm: async (request, reply) => {
         try {
-            const { route, tasks } = await cacheHelper(request, 'off-site');
+            const { route, tasks, permitStatus } = await cacheHelper(request, 'off-site');
 
             if (request.method === 'get') {
 
@@ -250,11 +251,15 @@ module.exports = {
                         selected: false
                     });
                 }
+
             } else {
                 // Process the confirmation - set the current route and redirect to the releases page
                 if (request.payload.confirmation === 'true') {
                     reply.redirect(route.page);
                 } else {
+                    permitStatus.completed = permitStatus.completed || {};
+                    permitStatus.completed[route.name] = true;
+                    await request.server.app.userCache.cache(cacheNames.PERMIT_STATUS).set(request, permitStatus);
                     reply.redirect('/task-list');
                 }
             }
@@ -347,12 +352,12 @@ module.exports = {
                     tasks.offSiteTransfers.sort(internals.sortOffSiteTransfer);
 
                     delete tasks.currentPageOffSiteTransfer;
-                    await request.server.app.userCache.cache('tasks').set(request, tasks);
+                    await request.server.app.userCache.cache(cacheNames.TASK_STATUS).set(request, tasks);
                     reply.redirect('/transfers/off-site');
                 } else {
                     // If there are validation errors
                     tasks.currentPageOffSiteTransfer = { offSiteTransfer: currentPageOffSiteTransfer, errors: validationErrors };
-                    await request.server.app.userCache.cache('tasks').set(request, tasks);
+                    await request.server.app.userCache.cache(cacheNames.TASK_STATUS).set(request, tasks);
                     reply.redirect('/transfers/off-site/add');
                 }
             }
@@ -381,11 +386,11 @@ module.exports = {
                 // Test if the releases are valid
                 if (internals.validate(request, tasks)) {
                     // Write the (removed) validations to the cache
-                    await request.server.app.userCache.cache('tasks').set(request, tasks);
+                    await request.server.app.userCache.cache(cacheNames.TASK_STATUS).set(request, tasks);
                     reply.redirect('/task-list');
                 } else {
                     // Update the cache with the validation objects and redirect back to the page
-                    await request.server.app.userCache.cache('tasks').set(request, tasks);
+                    await request.server.app.userCache.cache(cacheNames.TASK_STATUS).set(request, tasks);
                     reply.redirect('/transfers/off-site');
                 }
 
@@ -396,7 +401,7 @@ module.exports = {
                 tasks.currentoffSiteTransferIndex = transferIndex;
 
                 // Save the changes to the transfers and redirect to the detail page
-                await request.server.app.userCache.cache('tasks').set(request, tasks);
+                await request.server.app.userCache.cache(cacheNames.TASK_STATUS).set(request, tasks);
 
                 reply.redirect('/transfers/off-site/detail');
 
@@ -409,14 +414,14 @@ module.exports = {
                     case 'NO_WARN':
                         // Save the current substance
                         tasks.offSiteTransfers.splice(transferIndex, 1);
-                        await request.server.app.userCache.cache('tasks').set(request, tasks);
+                        await request.server.app.userCache.cache(cacheNames.TASK_STATUS).set(request, tasks);
                         reply.redirect('/transfers/off-site');
                         break;
 
                     case 'WARN':
                         // Send to delete confirmation dialog
                         tasks.currentoffSiteTransferIndex = transferIndex;
-                        await request.server.app.userCache.cache('tasks').set(request, tasks);
+                        await request.server.app.userCache.cache(cacheNames.TASK_STATUS).set(request, tasks);
                         reply.redirect('/transfers/off-site/remove');
                         break;
 
@@ -427,11 +432,11 @@ module.exports = {
 
             } else if (request.payload.back) {
                 // Save the release information to the cache and return to the main task-list page
-                await request.server.app.userCache.cache('tasks').set(request, tasks);
+                await request.server.app.userCache.cache(cacheNames.TASK_STATUS).set(request, tasks);
                 reply.redirect('/task-list');
             } else if (request.payload.add) {
                 // Save the release information to the cache and redirect to the add-substances page
-                await request.server.app.userCache.cache('tasks').set(request, tasks);
+                await request.server.app.userCache.cache(cacheNames.TASK_STATUS).set(request, tasks);
                 reply.redirect('/transfers/off-site/add');
             }
 
@@ -462,7 +467,7 @@ module.exports = {
                 });
             } else {
                 tasks.offSiteTransfers.splice(tasks.currentoffSiteTransferIndex, 1);
-                await request.server.app.userCache.cache('tasks').set(request, tasks);
+                await request.server.app.userCache.cache(cacheNames.TASK_STATUS).set(request, tasks);
                 if (tasks.offSiteTransfers.length > 0) {
                     reply.redirect('/transfers/off-site');
                 } else {
@@ -497,11 +502,11 @@ module.exports = {
                 const validation = Validator.offSite(tasks.offSiteTransfers[tasks.currentoffSiteTransferIndex]);
                 if (validation) {
                     tasks.offSiteTransfers[tasks.currentoffSiteTransferIndex].errors = validation;
-                    await request.server.app.userCache.cache('tasks').set(request, tasks);
+                    await request.server.app.userCache.cache(cacheNames.TASK_STATUS).set(request, tasks);
                     reply.redirect('/transfers/off-site/detail');
                 } else {
                     delete tasks.offSiteTransfers[tasks.currentoffSiteTransferIndex].errors;
-                    await request.server.app.userCache.cache('tasks').set(request, tasks);
+                    await request.server.app.userCache.cache(cacheNames.TASK_STATUS).set(request, tasks);
                     reply.redirect('/transfers/off-site');
                 }
             }
