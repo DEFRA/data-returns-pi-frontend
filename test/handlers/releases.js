@@ -4,16 +4,69 @@ const Common = require('./common');
 
 const Lab = require('lab');
 const lab = exports.lab = Lab.script();
-const Code = require('code');
 
 const experiment = lab.experiment;
-const expect = Code.expect;
 const test = lab.test;
 
 const before = lab.before;
 const after = lab.after;
 
-experiment('Releases', () => {
+const steps = Common.steps;
+
+const remove = (substanceId) => {
+    const payload = {};
+    payload['value-' + substanceId] = 'any';
+    payload['unitId-' + substanceId] = 'any';
+    payload['delete-' + substanceId] = 'Delete';
+    return payload;
+};
+
+const detail = (substanceId) => {
+    const payload = {};
+    payload['value-' + substanceId] = 'any';
+    payload['unitId-' + substanceId] = 'any';
+    payload['detail-' + substanceId] = 'Detail';
+    return payload;
+};
+
+const continueInvalid = (substanceId) => {
+    const payload = {};
+    payload['value-' + substanceId] = 'bad_detail';
+    payload['unitId-' + substanceId] = null;
+    payload.continue = 'Continue';
+    return payload;
+};
+
+const continueValid = (substanceId) => {
+    const payload = {};
+    payload['value-' + substanceId] = '34.7';
+    payload['unitId-' + substanceId] = '4';
+    payload.continue = 'Continue';
+    return payload;
+};
+
+const START_PAGE = { method: 'GET', url: '/', expected: '/' };
+const CHOOSE_PERMIT = { method: 'POST', url: '/select-permit', payload: { eaId: '100311' }, expected: '/task-list' };
+const TASK_LIST = { method: 'GET', url: '/task-list', expected: '/task-list' };
+const CONFIRM_PAGE = { method: 'GET', url: '/releases/air/confirm', expected: '/releases/air/confirm' };
+const CONFIRM_PAGE2 = { method: 'GET', url: '/releases/air/confirm', expected: '/releases/air' };
+const CONFIRM_NO = { method: 'POST', url: '/releases/air/confirm', payload: { confirmation: 'false' }, expected: '/task-list' };
+const CONFIRM_YES = { method: 'POST', url: '/releases/air/confirm', payload: { confirmation: 'true' }, expected: '/releases/air/add-substance' };
+const RELEASES_AIR = { method: 'GET', url: '/releases/air', expected: '/releases/air' };
+const ANOTHER_SUBSTANCE = { method: 'POST', url: '/releases/air/action', payload: { add: 'Add substance' }, expected: '/releases/air/add-substance' };
+const CHOOSE_SUBSTANCE = (substanceId) => { return { method: 'POST', url: '/releases/air/add-substance', payload: { substanceId: substanceId }, expected: '/releases/air/detail' }; };
+const CHOOSE_NO_SUBSTANCE = { method: 'POST', url: '/releases/air/add-substance', payload: { substanceId: null }, expected: '/releases/air/add-substance' };
+const CHOOSE_DETAIL = (value, unitId, methodId) => { return { method: 'POST', url: '/releases/air/detail', payload: { value: value, unitId: unitId, methodId: methodId }, expected: '/releases/air' }; };
+const CHOOSE_BAD_DETAIL = { method: 'POST', url: '/releases/air/detail', payload: { value: 'not_a_value', unitId: null, methodId: -8 }, expected: '/releases/air/detail' };
+const REMOVE_SUBSTANCE = (substanceId) => { return { method: 'POST', url: '/releases/air/action', payload: remove(substanceId), expected: '/releases/air/remove' }; };
+const CONFIRM_REMOVE_YES = { method: 'POST', url: '/releases/air/remove', payload: { confirmation: 'true' }, expected: '/releases/air' };
+const CONFIRM_REMOVE_YES_LAST = { method: 'POST', url: '/releases/air/remove', payload: { confirmation: 'true' }, expected: '/task-list' };
+const CONFIRM_REMOVE_NO = RELEASES_AIR;
+const CHANGE_DETAIL = (substanceId) => { return { method: 'POST', url: '/releases/air/action', payload: detail(substanceId), expected: '/releases/air/detail' }; };
+const CONTINUE_INVALID = (substanceId) => { return { method: 'POST', url: '/releases/air/action', payload: continueInvalid(substanceId), expected: '/releases/air' }; };
+const CONTINUE_VALID = (substanceId) => { return { method: 'POST', url: '/releases/air/action', payload: continueValid(substanceId), expected: '/releases/air' }; };
+
+experiment('Proto test', () => {
 
     before(() => {
         return Common.start();
@@ -24,325 +77,50 @@ experiment('Releases', () => {
     });
 
     test('Select a permit and go to permit list', async () => {
-        // Post a selected permit and relocation to the task list
-        let response = await Common.server().inject({
-            method: 'POST',
-            url: '/select-permit',
-            headers: { cookie: 'sid=' + Common.sid() },
-            payload: {
-                eaId: '100311'
-            }
-        });
-        expect(response.statusCode).to.equal(302);
-        expect(response.headers.location).to.equal('/task-list');
-
-        // request the task list
-        response = await Common.server().inject({
-            method: 'GET',
-            url: '/task-list',
-            headers: { cookie: 'sid=' + Common.sid() }
-        });
-        expect(response.statusCode).to.equal(200);
+        await steps([ START_PAGE, CHOOSE_PERMIT ]);
     });
 
     test('Confirm releases to air = no sends you back to the task list', async () => {
-        // request the task list
-        let response = await Common.server().inject({
-            method: 'GET',
-            url: '/releases/air/confirm',
-            headers: { cookie: 'sid=' + Common.sid() }
-        });
-        expect(response.statusCode).to.equal(200);
-
-        // Post No - expect redirection to the task list
-        response = await Common.server().inject({
-            method: 'POST',
-            url: '/releases/air/confirm',
-            headers: { cookie: 'sid=' + Common.sid() },
-            payload: {
-                confirmation: 'false'
-            }
-        });
-        expect(response.statusCode).to.equal(302);
-        expect(response.headers.location).to.equal('/task-list');
-
-        // request the task list again
-        response = await Common.server().inject({
-            method: 'GET',
-            url: '/task-list',
-            headers: { cookie: 'sid=' + Common.sid() }
-        });
-        expect(response.statusCode).to.equal(200);
+        await steps([ TASK_LIST, CONFIRM_PAGE, CONFIRM_NO ]);
     });
 
-    test('Confirm releases to air = yes sends you to the add page', async () => {
-        // request the task list
-        let response = await Common.server().inject({
-            method: 'GET',
-            url: '/releases/air/confirm',
-            headers: { cookie: 'sid=' + Common.sid() }
-        });
-        expect(response.statusCode).to.equal(200);
-
-        // Post Yes - expect redirection to the task list
-        response = await Common.server().inject({
-            method: 'POST',
-            url: '/releases/air/confirm',
-            headers: { cookie: 'sid=' + Common.sid() },
-            payload: {
-                confirmation: 'true'
-            }
-        });
-        expect(response.statusCode).to.equal(302);
-        expect(response.headers.location).to.equal('/releases/air');
-
-        // request the releases to air page
-        response = await Common.server().inject({
-            method: 'GET',
-            url: '/releases/air',
-            headers: { cookie: 'sid=' + Common.sid() }
-        });
-        expect(response.statusCode).to.equal(302);
-        expect(response.headers.location).to.equal('/releases/air/add-substance');
-
-        response = await Common.server().inject({
-            method: 'GET',
-            url: '/releases/air/add-substance',
-            headers: { cookie: 'sid=' + Common.sid() }
-        });
-        expect(response.statusCode).to.equal(200);
-
-        response = await Common.server().inject({
-            method: 'POST',
-            url: '/releases/air/add-substance',
-            headers: { cookie: 'sid=' + Common.sid() },
-            payload: {
-                substanceId: '504'
-            }
-        });
-
-        expect(response.statusCode).to.equal(302);
-        expect(response.headers.location).to.equal('/releases/air/detail');
-
-        // Get the detail page
-        response = await Common.server().inject({
-            method: 'GET',
-            url: '/releases/air/detail',
-            headers: { cookie: 'sid=' + Common.sid() }
-        });
-        expect(response.statusCode).to.equal(200);
-
-        response = await Common.server().inject({
-            method: 'POST',
-            url: '/releases/air/detail',
-            headers: { cookie: 'sid=' + Common.sid() },
-            payload: {
-                value: '10',
-                unitId: '5',
-                methodId: '1'
-            }
-        });
-
-        expect(response.statusCode).to.equal(302);
-        expect(response.headers.location).to.equal('/releases/air');
-
-        // Get the releases to air page
-        response = await Common.server().inject({
-            method: 'GET',
-            url: '/releases/air',
-            headers: { cookie: 'sid=' + Common.sid() }
-        });
-        expect(response.statusCode).to.equal(200);
+    test('Confirm releases to air = yes sends you to the add substance', async () => {
+        await steps([ TASK_LIST, CONFIRM_PAGE, CONFIRM_YES ]);
     });
 
-    test('Add a substance cycle', async () => {
-        // Get the substances page
-        let response = await Common.server().inject({
-            method: 'GET',
-            url: '/releases/air',
-            headers: { cookie: 'sid=' + Common.sid() }
-        });
-        expect(response.statusCode).to.equal(200);
-        response = await Common.server().inject({
-            method: 'POST',
-            url: '/releases/air/action',
-            headers: { cookie: 'sid=' + Common.sid() },
-            payload: {
-                add: 'Add substance'
-            }
-        });
-        expect(response.statusCode).to.equal(302);
-        expect(response.headers.location).to.equal('/releases/air/add-substance');
+    test('Add substance', async () => {
+        await steps([ TASK_LIST, CONFIRM_PAGE, CONFIRM_YES, CHOOSE_NO_SUBSTANCE, CHOOSE_SUBSTANCE('503'), CHOOSE_BAD_DETAIL, CHOOSE_DETAIL('23.4', 5, 1) ]);
+    });
 
-        // Get the substances page
-        response = await Common.server().inject({
-            method: 'GET',
-            url: '/releases/air/add-substance',
-            headers: { cookie: 'sid=' + Common.sid() }
-        });
-        expect(response.statusCode).to.equal(200);
+    test('No redirect to add with second substance', async () => {
+        await steps([ TASK_LIST, CONFIRM_PAGE2, CHOOSE_SUBSTANCE('504'), CHOOSE_BAD_DETAIL, CHOOSE_DETAIL('11.4', 4, 1) ]);
+    });
 
-        // Select alderin
-        response = await Common.server().inject({
-            method: 'POST',
-            url: '/releases/air/add-substance',
-            headers: { cookie: 'sid=' + Common.sid() },
-            payload: {
-                substanceId: '509'
-            }
-        });
+    test('Remove substance', async () => {
+        await steps([ RELEASES_AIR, REMOVE_SUBSTANCE('504'), CONFIRM_REMOVE_NO ]);
+        await steps([ RELEASES_AIR, REMOVE_SUBSTANCE('504'), CONFIRM_REMOVE_YES ]);
+    });
 
-        expect(response.statusCode).to.equal(302);
-        expect(response.headers.location).to.equal('/releases/air/detail');
+    test('Remove last substance', async () => {
+        await steps([ RELEASES_AIR, REMOVE_SUBSTANCE('503'), CONFIRM_REMOVE_YES_LAST ]);
+    });
 
-        // Get the detail page
-        response = await Common.server().inject({
-            method: 'GET',
-            url: '/releases/air/detail',
-            headers: { cookie: 'sid=' + Common.sid() }
-        });
-        expect(response.statusCode).to.equal(200);
+    test('Add another 3 substances', async () => {
+        await steps([ TASK_LIST, CONFIRM_PAGE, CONFIRM_YES, CHOOSE_SUBSTANCE('505'), CHOOSE_DETAIL('23.4', 5, 1) ]);
+        await steps([ TASK_LIST, ANOTHER_SUBSTANCE, CHOOSE_SUBSTANCE('506'), CHOOSE_DETAIL('34.4', 3, 1) ]);
+        await steps([ TASK_LIST, ANOTHER_SUBSTANCE, CHOOSE_SUBSTANCE('505'), CHOOSE_DETAIL('11.6', 4, 2) ]);
+    });
 
-        // Post the detail page invalid redirects you back to the detail page
-        response = await Common.server().inject({
-            method: 'POST',
-            url: '/releases/air/detail',
-            headers: { cookie: 'sid=' + Common.sid() },
-            payload: {
-                value: null,
-                unitId: null,
-                methodId: null
-            }
-        });
+    test('Change detail invalid', async () => {
+        await steps([ RELEASES_AIR, CHANGE_DETAIL('506'), CHOOSE_BAD_DETAIL, CHOOSE_DETAIL('11.4', 4, 1) ]);
+    });
 
-        expect(response.statusCode).to.equal(302);
-        expect(response.headers.location).to.equal('/releases/air/detail');
+    test('Change detail from substances page invalid', async () => {
+        await steps([ RELEASES_AIR, CONTINUE_INVALID('506') ]);
+    });
 
-        // Posting a valid response returns to the release by air page
-        response = await Common.server().inject({
-            method: 'POST',
-            url: '/releases/air/detail',
-            headers: { cookie: 'sid=' + Common.sid() },
-            payload: {
-                value: '10',
-                unitId: '5',
-                methodId: '1'
-            }
-        });
-
-        expect(response.statusCode).to.equal(302);
-        expect(response.headers.location).to.equal('/releases/air');
-
-        // Get the releases to air page
-        response = await Common.server().inject({
-            method: 'GET',
-            url: '/releases/air',
-            headers: { cookie: 'sid=' + Common.sid() }
-        });
-        expect(response.statusCode).to.equal(200);
-
-        // Go back to the detail page from the main releases page
-        response = await Common.server().inject({
-            method: 'POST',
-            url: '/releases/air/action',
-            headers: { cookie: 'sid=' + Common.sid() },
-            payload: {
-                'value-509': '10',
-                'unitId-509': '5',
-                'detail-509': 'Detail'
-            }
-        });
-        expect(response.statusCode).to.equal(302);
-        expect(response.headers.location).to.equal('/releases/air/detail');
-
-        // Use the back button here to go back to the substances page
-        response = await Common.server().inject({
-            method: 'GET',
-            url: '/releases/air',
-            headers: { cookie: 'sid=' + Common.sid() }
-        });
-        expect(response.statusCode).to.equal(200);
-
-        // Attempt continue with an invalid release redirects back to same page
-        response = await Common.server().inject({
-            method: 'POST',
-            url: '/releases/air/action',
-            headers: { cookie: 'sid=' + Common.sid() },
-            payload: {
-                'value-509': '10',
-                'unitId-509': null,
-                'continue': 'Continue'
-            }
-        });
-        expect(response.statusCode).to.equal(302);
-        expect(response.headers.location).to.equal('/releases/air');
-
-        response = await Common.server().inject({
-            method: 'GET',
-            url: '/releases/air',
-            headers: { cookie: 'sid=' + Common.sid() }
-        });
-        expect(response.statusCode).to.equal(200);
-
-        // Allow exit back to the task list
-        response = await Common.server().inject({
-            method: 'POST',
-            url: '/releases/air/action',
-            headers: { cookie: 'sid=' + Common.sid() },
-            payload: {
-                'value-509': '10',
-                'unitId-509': '5',
-                'continue': 'Continue'
-            }
-        });
-        expect(response.statusCode).to.equal(302);
-        expect(response.headers.location).to.equal('/releases/air');
-
-        // request the task list again
-        response = await Common.server().inject({
-            method: 'GET',
-            url: '/task-list',
-            headers: { cookie: 'sid=' + Common.sid() }
-        });
-        expect(response.statusCode).to.equal(200);
-
-        // Test removal of substance
-        response = await Common.server().inject({
-            method: 'POST',
-            url: '/releases/air/action',
-            headers: { cookie: 'sid=' + Common.sid() },
-            payload: {
-                'value-509': '10',
-                'unitId-509': '5',
-                'delete-509': 'Delete'
-            }
-        });
-        expect(response.statusCode).to.equal(302);
-        expect(response.headers.location).to.equal('/releases/air/remove');
-
-        // request the task list again
-        response = await Common.server().inject({
-            method: 'GET',
-            url: '/releases/air/remove',
-            headers: { cookie: 'sid=' + Common.sid() }
-        });
-        expect(response.statusCode).to.equal(200);
-
-        response = await Common.server().inject({
-            method: 'POST',
-            url: '/releases/air/remove',
-            headers: { cookie: 'sid=' + Common.sid() }
-        });
-
-        expect(response.statusCode).to.equal(302);
-        expect(response.headers.location).to.equal('/releases/air');
-
-        response = await Common.server().inject({
-            method: 'GET',
-            url: '/releases/air',
-            headers: { cookie: 'sid=' + Common.sid() }
-        });
-        expect(response.statusCode).to.equal(200);
+    test('Change detail from substances page valid', async () => {
+        await steps([ RELEASES_AIR, CONTINUE_VALID('506') ]);
     });
 
     test('Test logout', async () => {
@@ -352,5 +130,4 @@ experiment('Releases', () => {
     after(() => {
         return Common.stop();
     });
-
 });

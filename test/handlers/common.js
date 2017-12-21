@@ -3,6 +3,9 @@
 const logging = require('../../src/lib/logging');
 const server = require('../../src/lib/server');
 const assert = require('hoek').assert;
+const Code = require('code');
+const expect = Code.expect;
+
 const internals = {};
 
 internals.getCookies = (response) => {
@@ -12,6 +15,39 @@ internals.getCookies = (response) => {
         cookies[parts[1].trim()] = (parts[2] || '').trim();
     });
     return cookies;
+};
+
+internals.step = async (method, url, payload, expected) => {
+
+    let currentUrl = url;
+    let response = null;
+
+    if (method.toUpperCase() === 'GET') {
+        response = await server.server().inject({
+            method: 'GET',
+            url: currentUrl,
+            headers: { cookie: 'sid=' + internals.sid }
+        });
+    } else {
+        response = await server.server().inject({
+            method: 'POST',
+            url: currentUrl,
+            headers: { cookie: 'sid=' + internals.sid },
+            payload: payload
+        });
+    }
+
+    while (response.statusCode === 302) {
+        currentUrl = response.headers.location;
+        response = await server.server().inject({
+            method: 'GET',
+            url: currentUrl,
+            headers: { cookie: 'sid=' + internals.sid }
+        });
+    }
+
+    expect(response.statusCode).to.equal(200);
+    expect(currentUrl).to.equal(expected);
 };
 
 module.exports = {
@@ -101,6 +137,12 @@ module.exports = {
     },
 
     sid: () => { return internals.sid; },
-    server: server.server
+    server: server.server,
+
+    steps: async (arr) => {
+        for (const { method, url, payload, expected } of arr) {
+            await internals.step(method, url, payload, expected);
+        }
+    }
 
 };

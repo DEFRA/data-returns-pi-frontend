@@ -59,8 +59,6 @@ const internals = {
             });
             return isValid;
         }
-
-        return false;
     },
 
     /**
@@ -267,7 +265,7 @@ module.exports = {
     },
 
     /**
-     * Save action
+     * Save action - responds to the post request on the main releases summary page
      */
     action: async (request, reply) => {
         try {

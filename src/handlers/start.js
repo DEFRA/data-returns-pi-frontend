@@ -57,30 +57,35 @@ module.exports = {
             const eaId = eaIds.find((e) => { return e.name === eaIdName; });
 
             if (!eaId) {
-                throw new Error(`The selected eaId is not visible to user ${session.user.username}`);
-            }
+                // If attempt to access incorrect EaId then log out
+                logger.info(`The selected eaId is not visible to user ${session.user.username}`);
+                reply.redirect('/logout');
 
-            // Set the current permit in the submission cache
-            await request.server.app.userCache.cache(cacheNames.SUBMISSION_STATUS).set(request, eaId);
-
-            /*
-             * The permit status is object with containing the statuses and other meta-data
-             * for each stage within the user journey for a given (current) permit
-             */
-            let permitStatus = await request.server.app.userCache.cache(cacheNames.PERMIT_STATUS).get(request);
-
-            if (!permitStatus) {
-                // Initialize a permit status if not exists
-                permitStatus = {};
             } else {
+
+                // Set the current permit in the submission cache
+                await request.server.app.userCache.cache(cacheNames.SUBMISSION_STATUS).set(request, eaId);
+
+                /*
+                 * The permit status is object with containing the statuses and other meta-data
+                 * for each stage within the user journey for a given (current) permit
+                 */
+                let permitStatus = await request.server.app.userCache.cache(cacheNames.PERMIT_STATUS).get(request);
+
+                if (!permitStatus) {
+                // Initialize a permit status if not exists
+                    permitStatus = {};
+                } else {
                 // Always unset the current task
-                delete permitStatus.currentTask;
+                    delete permitStatus.currentTask;
+                }
+
+                // Save the permit status cache
+                await request.server.app.userCache.cache(cacheNames.PERMIT_STATUS).set(request, permitStatus);
+
+                reply.redirect('/task-list');
+
             }
-
-            // Save the permit status cache
-            await request.server.app.userCache.cache(cacheNames.PERMIT_STATUS).set(request, permitStatus);
-
-            reply.redirect('/task-list');
         } catch (err) {
             logger.log('error', err.message);
             reply.redirect('/logout');
