@@ -26,6 +26,17 @@
                             <span class="task-name">{{ item.title }}</span>
                         </a>
                     </td>
+
+                    <td class="numeric" id="task-status">
+                    {% if permitStatus.completed[item.name] %}
+                        <div class="task-status-banner">
+                            <strong class="task-finished">Completed</strong>
+                        </div>
+                    {% else %}
+                        <div class="task-status-banner"/>
+                    {% endif %}
+                    </td>
+
                 </tr>
                 {% endfor %}
                 </tbody>

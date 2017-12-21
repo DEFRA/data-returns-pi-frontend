@@ -9,6 +9,7 @@ const MasterDataService = require('../../../service/master-data');
 const Validator = require('../../../lib/validator');
 const CacheKeyError = require('../../../lib/user-cache-policies').CacheKeyError;
 const cacheHelper = require('../common').cacheHelper;
+const setCompleted = require('../common').setCompleted;
 const TaskListService = require('../../../service/task-list');
 const AllSectorsTaskList = require('../../../model/all-sectors/task-list');
 const isNumeric = require('../../../lib/utils').isNumeric;
@@ -193,11 +194,10 @@ module.exports = {
             } else {
                 // Process the confirmation - the releases page
                 if (request.payload.confirmation === 'true') {
+                    setCompleted(request, permitStatus, route);
                     reply.redirect(route.page);
                 } else {
-                    permitStatus.completed = permitStatus.completed || {};
-                    permitStatus.completed[route.name] = true;
-                    await request.server.app.userCache.cache(cacheNames.PERMIT_STATUS).set(request, permitStatus);
+                    setCompleted(request, permitStatus, route, true);
                     reply.redirect('/task-list');
                 }
             }
@@ -271,7 +271,7 @@ module.exports = {
      */
     action: async (request, reply) => {
         try {
-            const { route, tasks } = await cacheHelper(request);
+            const { route, tasks, permitStatus } = await cacheHelper(request);
 
             // Save the submission
             await internals.save(request, tasks);
@@ -282,10 +282,12 @@ module.exports = {
                 // Test if the releases are valid
                 if (await internals.validate(request, tasks)) {
                     // Write the (removed) validations to the cache
+                    setCompleted(request, permitStatus, route, true);
                     await request.server.app.userCache.cache(cacheNames.TASK_STATUS).set(request, tasks);
                     reply.redirect('/task-list');
                 } else {
                     // Update the cache with the validation objects and redirect back to the page
+                    setCompleted(request, permitStatus, route);
                     await request.server.app.userCache.cache(cacheNames.TASK_STATUS).set(request, tasks);
                     reply.redirect(route.page);
                 }

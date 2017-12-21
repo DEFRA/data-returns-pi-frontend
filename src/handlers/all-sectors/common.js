@@ -48,5 +48,20 @@ module.exports = {
         } catch (err) {
             throw new CacheKeyError(err.message);
         }
+    },
+
+    /**
+     * Set or unset the completed flag for a given route
+     * @param request
+     * @param permitStatus
+     * @param route
+     * @param completed
+     * @return {Promise.<void>}
+     */
+    setCompleted: async (request, permitStatus, route, completed) => {
+        permitStatus.completed = permitStatus.completed || {};
+        permitStatus.completed[route.name] = !!completed;
+        await request.server.app.userCache.cache(cacheNames.PERMIT_STATUS).set(request, permitStatus);
     }
+
 };

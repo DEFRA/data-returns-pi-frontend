@@ -7,6 +7,7 @@ const sortSubstances = require('./releases').sortSubstances;
 const cacheHelper = require('../common').cacheHelper;
 const overseasValidator = require('../../../lib/validator').overseas;
 const cacheNames = require('../../../lib/user-cache-policies').names;
+const setCompleted = require('../common').setCompleted;
 
 const NEW_TRANSFER_OBJECT = {
     substanceId: null,
@@ -173,11 +174,10 @@ module.exports = {
             } else {
                 // Process the confirmation - set the current route and redirect to the releases page
                 if (request.payload.confirmation === 'true') {
+                    setCompleted(request, permitStatus, route);
                     reply.redirect(route.page);
                 } else {
-                    permitStatus.completed = permitStatus.completed || {};
-                    permitStatus.completed[route.name] = true;
-                    await request.server.app.userCache.cache(cacheNames.PERMIT_STATUS).set(request, permitStatus);
+                    setCompleted(request, permitStatus, route, true);
                     reply.redirect('/task-list');
                 }
             }
@@ -431,11 +431,12 @@ module.exports = {
      */
     action: async (request, reply) => {
         try {
-            const { tasks } = await cacheHelper(request, 'overseas');
+            const { tasks, permitStatus, route } = await cacheHelper(request, 'overseas');
 
             // If we continue we will need to validate the submission
             if (request.payload.continue) {
 
+                setCompleted(request, permitStatus, route, true);
                 reply.redirect('/task-list');
 
             } else if (Object.keys(request.payload).find(s => s.startsWith('check'))) {

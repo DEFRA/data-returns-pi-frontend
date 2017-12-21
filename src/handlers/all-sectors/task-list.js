@@ -26,9 +26,7 @@ module.exports = {
             }
 
             const permitStatus = await request.server.app.userCache.cache(cacheNames.PERMIT_STATUS).get(request);
-            console.log(JSON.stringify(permitStatus));
-
-            reply.view('all-sectors/task-list', { eaId: eaId.name, taskList: allSectorsTaskList });
+            reply.view('all-sectors/task-list', { eaId: eaId.name, taskList: allSectorsTaskList, permitStatus: permitStatus });
         } catch (err) {
             if (err instanceof CacheKeyError) {
                 // Probably due to unexpected navigation
