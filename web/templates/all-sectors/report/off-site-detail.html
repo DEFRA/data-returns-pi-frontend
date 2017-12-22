@@ -47,19 +47,19 @@
 		                <th class="wfd-code">WFD code</th>
 		                <td class="wfd-code-value">
 		                    {% if transfer.wfd.disposal %}
-		                    <h2 class="heading-secondary">{{ transfer.wfd.disposal.description }}</h2>
+		                    <h2 class="heading-secondary">{{ transfer.wfd.disposal.code }}</h2>
 		                    {% else %}
-		                    <h2 class="heading-secondary" >{{ transfer.wfd.recovery.code }}</h2>
+		                    <h2 class="heading-secondary">{{ transfer.wfd.recovery.description }}</h2>
 		                    {% endif %}
 		                </td>
 		            </tr>
 		            <tr>
-		                <th class="wfd-code-description">WFD code</th>
-		                <td class="wfd-code-description-value">
+						<th class="wfd-code-description">WFD code</th>
+						<td class="wfd-code-description-value">
 		                    {% if transfer.wfd.disposal %}
-		                    <h2 class="heading-secondary">{{ transfer.wfd.disposal.code }}</h2>
+		                    <h2 class="heading-secondary">{{ transfer.wfd.disposal.description }}</h2>
 		                    {% else %}
-		                    <h2 class="heading-secondary">{{ transfer.wfd.recovery.description }}</h2>
+		                    <h2 class="heading-secondary" >{{ transfer.wfd.recovery.code }}</h2>
 		                    {% endif %}
 		                </td>
 		            </tr>
