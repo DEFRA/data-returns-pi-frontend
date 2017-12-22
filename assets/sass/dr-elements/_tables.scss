@@ -34,6 +34,9 @@
 	.cell-five-sixths {
 		width:percentage(5/6);
 	}
+	th {
+		font-weight: 700;
+	}
 	td {
 		p:first-child {
 			margin-top:0;
@@ -51,9 +54,13 @@
 	.align-top {
 		vertical-align:top;
 	}
+	select {
+		width: auto;
+	}
+	.numeric {
+		font-family: "ntatabularnumbers", "nta", Arial, sans-serif;
+	}
 }
-
-
 
 @include media(mobile) {
 	.table-control {
@@ -235,6 +242,9 @@
 	}
 }
 
+
+
+
 /* PI reporting UI */
 .choose-parameter {
 	td:first-child + td { white-space: nowrap; }
@@ -250,11 +260,10 @@
 	}
 }
 
-table.check-data {
+table.summary-table {
 	th {
 		vertical-align: bottom;
 	}
-
 	  @include media($min-width: 500px){
 	  	.td-substance {
 	  		width:(100%/3);
@@ -263,21 +272,20 @@ table.check-data {
 			white-space: nowrap;
 		}
 	  }
-	.td-action {
+	.td-delete {
 		text-align: right;
 		padding-right: 0;
 	}
 	.td-release {
 		width:10%;
 		input {
-			width:130px;
+			width:135px;
 		}
 	}
-	select {
-		width: 60px;
-	}
-	.numeric {
-		font-family: "ntatabularnumbers", "nta", Arial, sans-serif;
+}
+table.more-detail {
+	th {
+		vertical-align: top;
 	}
 }
 

@@ -6,73 +6,87 @@
 
 <main id="content">
     <form action="/transfers/off-site/detail" method="post" class="form">
+		<h1 class="heading-large">More detail about your off-site transfer of {{ transfer.ewc.subChapter.description }}</h1>
+		{% if transfer.errors %}
+		<div class="error-summary" role="alert" aria-labelledby="error-summary-heading-example-2" tabindex="-1">
+			<h2 class="heading-large error-summary-heading" id="error-summary-heading-example-2">
+				Check what you’re reporting
+			</h2>
+			<p>There are issues with the data</p>
+			<ul class="error-summary-list">
+				<span class="error-message">Value must be a number</span>
+			</ul>
+		</div>
+		{% endif %}
+		<div class="grid-row">
+			<div class="column-two-thirds">
 
-        <h1 class="heading-large">
-            Tell us about your waste transfer:
-            <h2 class="heading-secondary" >{{ transfer.ewc.activity.description }}</h2>
-            <h2 class="heading-medium">{{ transfer.ewc.chapter.description }}</h2>
-            <h2 class="heading-small">{{ transfer.ewc.subChapter.description }}</h2>
-            {% if transfer.wfd.disposal %}
-            <h2 class="heading-secondary">{{ transfer.wfd.disposal.description }}</h2>
-            {% else %}
-            <h2 class="heading-secondary" >{{ transfer.wfd.recovery.description }}</h2>
-            {% endif %}
-        </h1>
+		        <table class="more-detail table-control mobile-format">
+		            <tbody>
 
-        {% if transfer.errors %}
-        <div class="error-summary" role="alert" aria-labelledby="error-summary-heading-example-2" tabindex="-1">
-            <h2 class="heading-large error-summary-heading" id="error-summary-heading-example-2">
-                Check what you’re reporting
-            </h2>
-            <p>There are issues with the data</p>
-            <ul class="error-summary-list">
-                <span class="error-message">Value must be a number</span>
-            </ul>
+		            <tr>
+		                <th class="ewc-code">EWC code</th>
+		                <td class="ewc-code-value">
+							<span class="numeric">
+							{{ transfer.ewc.activity.activity }}
+							{{ transfer.ewc.chapter.chapter }}
+							{{ transfer.ewc.subChapter.subChapter }}
+							</span>
+						</td>
+		            </tr>
+
+		            <tr>
+		                <th class="ewc-code-description">EWC code description</th>
+		                <td class="ewc-code-description-value">
+							{{ transfer.ewc.activity.description }}<br>
+							{{ transfer.ewc.chapter.description }}<br>
+							{{ transfer.ewc.subChapter.description }}
+						</td>
+		            </tr>
+		            <tr>
+		                <th class="wfd-code">WFD code</th>
+		                <td class="wfd-code-value">
+		                    {% if transfer.wfd.disposal %}
+		                    <h2 class="heading-secondary">{{ transfer.wfd.disposal.description }}</h2>
+		                    {% else %}
+		                    <h2 class="heading-secondary" >{{ transfer.wfd.recovery.code }}</h2>
+		                    {% endif %}
+		                </td>
+		            </tr>
+		            <tr>
+		                <th class="wfd-code-description">WFD code</th>
+		                <td class="wfd-code-description-value">
+		                    {% if transfer.wfd.disposal %}
+		                    <h2 class="heading-secondary">{{ transfer.wfd.disposal.code }}</h2>
+		                    {% else %}
+		                    <h2 class="heading-secondary">{{ transfer.wfd.recovery.description }}</h2>
+		                    {% endif %}
+		                </td>
+		            </tr>
+		            <tr>
+		                <th class="">2016 total</th>
+		                <td class=""></td>
+		            </tr>
+
+		            <tr>
+		                <th>2017 total</th>
+		                <td>
+		                {% if value_error %}
+		                    <label class="form-label visually-hidden" for="value-err"></label>
+		                    <input type="number" step="0.001" class="form-control form-control-error total" id="value-err" name="value" value="{{ transfer.value }}"> tonnes
+		                    <span class="error-message">Must be a number</span>
+		                {% else %}
+		                    <p class="bold">Total</p>
+		                    <label class="form-label visually-hidden" for="value"></label>
+		                    <input type="number" step="0.001" class="form-control total" id="value" name="value" value="{{ transfer.value }}"> tonnes
+		                {% endif %}
+		                </td>
+		            </tr>
+
+		            </tbody>
+		        </table>
+	        </div>
         </div>
-        {% endif %}
-
-        <table class="more-detail table-control mobile-format">
-            <tbody>
-
-            <tr>
-                <th class="ewc-code">EWC code</th>
-                <td class="ewc-code-value"><span class="numeric"></span>{{ transfer.ewc.activity.activity }} {{ transfer.ewc.chapter.chapter }} {{ transfer.ewc.subChapter.subChapter }}</td>
-            </tr>
-
-            <tr>
-                <th class="wfd-code">WFD code</th>
-                <td class="wfd-code-value">
-                    {% if transfer.wfd.disposal %}
-                    <h2 class="heading-secondary">{{ transfer.wfd.disposal.code }}</h2>
-                    {% else %}
-                    <h2 class="heading-secondary" >{{ transfer.wfd.recovery.code }}</h2>
-                    {% endif %}
-                </td>
-            </tr>
-
-            <tr>
-                <th class="">2016 total</th>
-                <td class=""></td>
-            </tr>
-
-            <tr>
-                <th>2017 total</th>
-                <td>
-                {% if value_error %}
-                    <label class="form-label visually-hidden" for="value-err"></label>
-                    <input type="number" step="0.001" class="form-control form-control-error total" id="value-err" name="value" value="{{ transfer.value }}"> tonnes
-                    <span class="error-message">Must be a number</span>
-                {% else %}
-                    <p class="bold">Total</p>
-                    <label class="form-label visually-hidden" for="value"></label>
-                    <input type="number" step="0.001" class="form-control total" id="value" name="value" value="{{ transfer.value }}"> tonnes
-                {% endif %}
-                </td>
-            </tr>
-
-            </tbody>
-        </table>
-
         <div class="form-group">
             <input id="continueBtn" type="submit" class="button" value="Continue">
         </div>
