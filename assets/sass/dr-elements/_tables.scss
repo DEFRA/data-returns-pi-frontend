@@ -34,6 +34,9 @@
 	.cell-five-sixths {
 		width:percentage(5/6);
 	}
+	th {
+		font-weight: 700;
+	}
 	td {
 		p:first-child {
 			margin-top:0;
@@ -278,6 +281,11 @@ table.summary-table {
 		input {
 			width:135px;
 		}
+	}
+}
+table.more-detail {
+	th {
+		vertical-align: top;
 	}
 }
 
