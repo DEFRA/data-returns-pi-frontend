@@ -17,7 +17,7 @@ module.exports = {
             reply.view('all-sectors/submit/submit');
         } catch (err) {
             logger.log('error', err);
-            reply.redirect('/logout');
+            reply.redirect('/');
         }
     }
 };

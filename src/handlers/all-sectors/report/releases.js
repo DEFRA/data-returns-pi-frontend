@@ -191,7 +191,7 @@ module.exports = {
 
             } else {
                 // Process the confirmation - the releases page
-                if (request.payload.confirmation === 'true') {
+                if (request.payload && request.payload.confirmation === 'true') {
                     setCompleted(request, permitStatus, route);
                     reply.redirect(route.page);
                 } else {

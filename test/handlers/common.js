@@ -48,6 +48,10 @@ internals.step = async (method, url, payload, expected) => {
 
     expect(response.statusCode).to.equal(200);
     expect(currentUrl).to.equal(expected);
+
+    if (response.statusCode !== 200 || currentUrl !== expected) {
+        logging.logger.info('Mismatched ' + currentUrl + ':' + expected);
+    }
 };
 
 module.exports = {

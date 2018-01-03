@@ -468,8 +468,12 @@ module.exports = {
             }
 
         } catch (err) {
-            logger.log('error', err);
-            reply.redirect('/logout');
+            if (err instanceof CacheKeyError) {
+                reply.redirect('/');
+            } else {
+                logger.log('error', err);
+                reply.redirect('/logout');
+            }
         }
     },
 
