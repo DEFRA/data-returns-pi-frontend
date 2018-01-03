@@ -51,7 +51,7 @@ experiment('Unexpected navigations', () => {
             .includes(f)).map(r => {
             return { method: 'GET', url: r, expected: '/' };
         });
-        console.log('get routes' + JSON.stringify(methods.map(r => r.url), null, 2));
+        // console.log('get routes' + JSON.stringify(methods.map(r => r.url), null, 2));
         await steps(methods);
     });
 
@@ -60,7 +60,7 @@ experiment('Unexpected navigations', () => {
             .includes(f)).map(r => {
             return { method: 'POST', url: r, expected: '/' };
         });
-        console.log('post routes' + JSON.stringify(methods, null, 2));
+        // console.log('post routes' + JSON.stringify(methods, null, 2));
         await steps(methods);
     });
 

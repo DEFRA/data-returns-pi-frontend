@@ -67,7 +67,7 @@ const staticHandlers = [
 
 const dynamicHandlers = [
 
-    // Catch all handlers
+    // Catch all handler
     { method: '*', path: '/{p*}', handler: function (request, reply) { reply.redirect('/'); } },
 
     // Authentication and start pages
@@ -88,7 +88,7 @@ const dynamicHandlers = [
     { method: ['GET', 'POST'], path: '/releases/{route}/remove', handler: Releases.remove },
 
     // Transfers off-site
-    { method: ['GET', 'POST'], path: '/transfers/off-site', config: {handler: OffSite.offSite} },
+    { method: ['GET', 'POST'], path: '/transfers/off-site', config: { handler: OffSite.offSite } },
     { method: ['GET', 'POST'], path: '/transfers/off-site/confirm', handler: OffSite.confirm },
     { method: ['GET', 'POST'], path: '/transfers/off-site/add', config: { handler: OffSite.add } },
     { method: ['GET', 'POST'], path: '/transfers/off-site/remove', handler: OffSite.remove },
