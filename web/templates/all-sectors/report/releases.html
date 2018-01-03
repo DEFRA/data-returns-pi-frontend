@@ -22,10 +22,9 @@
         <h2 class="heading-large error-summary-heading" id="error-summary-heading-example-2">
             {{ errorheader }}
         </h2>
-        <p>You must enter a number or the letters ‘BRT’ (below reporting threshold).</p>
         <ul class="error-summary-list">
             {% for substance in releases | substancesWithErrors %}
-            <li><a href="#substance-{{ substance.id }}">Change your {{ substance.name }} total</a></li>
+            <li><a href="#substance-{{ substance.id }}">Check your {{ substance.name }} report</a></li>
             {% endfor %}
         </ul>
     </div>
@@ -57,13 +56,13 @@
             {% if value_error or unit_error %}
             <td class="td-release">
                 <div class="form-group-error">
+					{% if value_error %}
+						{{ errtext(value_error.errno) }}
+					{% else %}
+						{{ errtext(unit_error.errno) }}
+					{% endif %}
                     <label class="form-label visually-hidden" for="value-err{{ release.substance.id }}">Releases</label>
                     <input class="form-control form-control-error" id="value-err{{ release.substance.id }}" name="value-{{ release.substance.id }}" value="{{ release.value }}">
-                    {% if value_error %}
-                        {{ errtext(value_error.errno) }}
-                    {% else %}
-                        {{ errtext(unit_error.errno) }}
-                    {% endif %}
                 </div>
             </td>
             {% else %}
