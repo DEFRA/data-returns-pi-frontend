@@ -461,6 +461,10 @@ module.exports = {
                 tasks.currentOverseasWasteTransferIdx = transferIndex;
                 await request.server.app.userCache.cache(cacheNames.TASK_STATUS).set(request, tasks);
                 reply.redirect('/transfers/overseas/remove');
+            } else if (request.payload.add) {
+                // Save the release information to the cache and redirect to the add-substances page
+                await request.server.app.userCache.cache(cacheNames.TASK_STATUS).set(request, tasks);
+                reply.redirect('/transfers/overseas/add');
             }
 
         } catch (err) {
