@@ -12,17 +12,32 @@
 
     <form action="{{ action }}" method="post" class="form">
 
-        {% if id === 'TRANSPORTATION_COMPANY_ADDRESS'%}
-        <h1 class="heading-large">
-            <span class="heading-secondary">Your overseas waste transfers</span>
-            Which company transported this waste for you?
-        </h1>
-       {% elif id === 'DESTINATION_ADDRESS' %}
-        <h1 class="heading-large">
-            <span class="heading-secondary">Your overseas waste transfers</span>
-            Where did you send this waste?
-        </h1>
-       {% endif %}
+        {% if errors %}
+        <h1 class="heading-large">{{ header }}</h1>
+        <div class="error-summary" role="alert" aria-labelledby="error-summary-heading-example-2" tabindex="-1">
+            <h2 class="heading-large error-summary-heading" id="error-summary-heading-example-2">
+                Check what you’re reporting
+            </h2>
+            <ul class="error-summary-list">
+                {% if business_name_error %}<li><a href="">You must include a business name</a></li>{% endif %}
+                {% if address_line_1_error %}<li><a href="">You must include an address</a></li>{% endif %}
+                {% if town_or_city_error %}<li><a href="">You must include a town or city</a></li>{% endif %}
+                {% if country_error %}<li><a href="">You must include a country</a></li>{% endif %}
+            </ul>
+        </div>
+        {% else %}
+            {% if id === 'TRANSPORTATION_COMPANY_ADDRESS'%}
+            <h1 class="heading-large">
+                <span class="heading-secondary">Your overseas waste transfers</span>
+                Which company transported this waste for you?
+            </h1>
+            {% elif id === 'DESTINATION_ADDRESS' %}
+            <h1 class="heading-large">
+                <span class="heading-secondary">Your overseas waste transfers</span>
+                Where did you send this waste?
+            </h1>
+            {% endif %}
+        {% endif %}
 
         <div class="form-group">
             <fieldset>
