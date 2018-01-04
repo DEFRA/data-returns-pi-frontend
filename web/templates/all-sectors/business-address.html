@@ -45,8 +45,8 @@
                 {% if business_name_error %}
                 <div class="form-group form-group-error">
                     <label class="form-label" for="business-name-err">Business name</label>
-                    <input class="form-control-error" id="business-name-err" type="text" name="business-name" value="{{ address.businessName }}">
                     <span class="error-message">You must include a business name</span>
+                    <input class="form-control form-control-error" id="business-name-err" type="text" name="business-name" value="{{ address.businessName }}">
                 </div>
                 {% else %}
                 <div class="form-group">
@@ -58,8 +58,8 @@
                 {% if address_line_1_error %}
                 <div class="form-group form-group-error">
                     <label class="form-label" for="address-line-1-err">Address line 1</label>
-                    <input class="form-control-error" id="address-line-1-err" type="text" name="address-line-1" value="{{ address.addressLine1 }}">
-                    <span class="error-message">You must include aan address</span>
+                    <span class="error-message">You must include an address</span>
+                    <input class="form-control form-control-error" id="address-line-1-err" type="text" name="address-line-1" value="{{ address.addressLine1 }}">
                 </div>
                 {% else %}
                 <div class="form-group">
@@ -67,7 +67,7 @@
                     <input class="form-control" id="address-line-1" type="text" name="address-line-1" value="{{ address.addressLine1 }}">
                 </div>
                 {% endif %}
-                
+
                 <div class="form-group">
                     <label class="form-label" for="address-line-2">Address line 2 (optional)</label>
                     <input class="form-control" id="address-line-2" type="text" name="address-line-2" value="{{ address.addressLine2 }}">
@@ -76,8 +76,8 @@
                 {% if town_or_city_error %}
                 <div class="form-group form-group-error">
                     <label class="form-label" for="town-or-city-err">Town or city</label>
-                    <input class="form-control-error" id="town-or-city-err" type="text" name="town-or-city" value="{{ address.townOrCity }}">
                     <span class="error-message">You must include a town or city</span>
+                    <input class="form-control form-control-error" id="town-or-city-err" type="text" name="town-or-city" value="{{ address.townOrCity }}">
                 </div>
                 {% else %}
                 <div class="form-group">
@@ -89,8 +89,8 @@
                 {% if country_error %}
                 <div class="form-group form-group-error">
                     <label class="form-label" for="country-err">Country</label>
-                    <input class="form-control-error" id="country-err" type="text" name="country" value="{{ address.country }}">
                     <span class="error-message">You must include a country</span>
+                    <input class="form-control form-control-error" id="country-err" type="text" name="country" value="{{ address.country }}">
                 </div>
                 {% else %}
                 <div class="form-group">
