@@ -58,10 +58,37 @@ module.exports = {
      * @param completed
      * @return {Promise.<void>}
      */
-    setCompleted: async (request, permitStatus, route, completed) => {
-        permitStatus.completed = permitStatus.completed || {};
-        permitStatus.completed[route.name] = !!completed;
+    setConfirmation: async (request, permitStatus, route, confirmation) => {
+        permitStatus.confirmation = permitStatus.confirmation || {};
+        permitStatus.confirmation[route.name] = !!confirmation;
+        await request.server.app.userCache.cache(cacheNames.PERMIT_STATUS).set(request, permitStatus);
+    },
+
+    /**
+     * Sets the validation status at the permit level.
+     * @param request
+     * @param permitStatus
+     * @param route
+     * @param valid
+     * @return {Promise.<void>}
+     */
+    setValidationStatus: async (request, permitStatus, route, valid) => {
+        permitStatus.valid = permitStatus.valid || {};
+        permitStatus.valid[route.name] = !!valid;
+        await request.server.app.userCache.cache(cacheNames.PERMIT_STATUS).set(request, permitStatus);
+    },
+
+    /**
+     * Set the challenge status flag
+     * @param request
+     * @param permitStatus
+     * @param route
+     * @param challengeStatus
+     * @return {Promise.<void>}
+     */
+    setChallengeStatus: async (request, permitStatus, route, challengeStatus) => {
+        permitStatus.challengeStatus = permitStatus.challengeStatus || {};
+        permitStatus.challengeStatus[route.name] = !!challengeStatus;
         await request.server.app.userCache.cache(cacheNames.PERMIT_STATUS).set(request, permitStatus);
     }
-
 };

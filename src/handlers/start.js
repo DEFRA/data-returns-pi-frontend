@@ -73,10 +73,10 @@ module.exports = {
                 let permitStatus = await request.server.app.userCache.cache(cacheNames.PERMIT_STATUS).get(request);
 
                 if (!permitStatus) {
-                // Initialize a permit status if not exists
+                    // Initialize a permit status if not exists
                     permitStatus = {};
                 } else {
-                // Always unset the current task
+                    // Always unset the current task
                     delete permitStatus.currentTask;
                 }
 

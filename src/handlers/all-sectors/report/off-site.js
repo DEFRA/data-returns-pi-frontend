@@ -9,7 +9,7 @@ const CacheKeyError = require('../../../lib/user-cache-policies').CacheKeyError;
 const cacheHelper = require('../common').cacheHelper;
 const Validator = require('../../../lib/validator');
 const cacheNames = require('../../../lib/user-cache-policies').names;
-const setCompleted = require('../common').setCompleted;
+const setConfirmation = require('../common').setConfirmation;
 
 const internals = {
 
@@ -256,10 +256,10 @@ module.exports = {
             } else {
                 // Process the confirmation - set the current route and redirect to the releases page
                 if (request.payload.confirmation === 'true') {
-                    setCompleted(request, permitStatus, route);
+                    setConfirmation(request, permitStatus, route);
                     reply.redirect(route.page);
                 } else {
-                    setCompleted(request, permitStatus, route, true);
+                    setConfirmation(request, permitStatus, route, true);
                     permitStatus.completed = permitStatus.completed || {};
                     permitStatus.completed[route.name] = true;
                     await request.server.app.userCache.cache(cacheNames.PERMIT_STATUS).set(request, permitStatus);
@@ -389,12 +389,12 @@ module.exports = {
                 // Test if the releases are valid
                 if (internals.validate(request, tasks)) {
                     // Write the (removed) validations to the cache
-                    setCompleted(request, permitStatus, route, true);
+                    setConfirmation(request, permitStatus, route, true);
                     await request.server.app.userCache.cache(cacheNames.TASK_STATUS).set(request, tasks);
                     reply.redirect('/task-list');
                 } else {
                     // Update the cache with the validation objects and redirect back to the page
-                    setCompleted(request, permitStatus, route);
+                    setConfirmation(request, permitStatus, route);
                     await request.server.app.userCache.cache(cacheNames.TASK_STATUS).set(request, tasks);
                     reply.redirect('/transfers/off-site');
                 }

@@ -9,11 +9,12 @@ const MasterDataService = require('../../../service/master-data');
 const Validator = require('../../../lib/validator');
 const CacheKeyError = require('../../../lib/user-cache-policies').CacheKeyError;
 const cacheHelper = require('../common').cacheHelper;
-const setCompleted = require('../common').setCompleted;
-const TaskListService = require('../../../service/task-list');
-const AllSectorsTaskList = require('../../../model/all-sectors/task-list');
 const isNumeric = require('../../../lib/utils').isNumeric;
 const cacheNames = require('../../../lib/user-cache-policies').names;
+
+const setConfirmation = require('../common').setConfirmation;
+const setValidationStatus = require('../common').setValidationStatus;
+const setChallengeStatus = require('../common').setChallengeStatus;
 
 const NEW_RELEASE_OBJECT = { value: null, unitId: null, methodId: null };
 
@@ -99,35 +100,6 @@ const internals = {
     },
 
     /**
-     * Clear any releases with the unconfirmed flag set - this can happen
-     * due to unexpected navigation
-     * @param request
-     * @param tasks
-     */
-    cleanUnconfirmed: async (request, tasks) => {
-        // Clean up any unconfirmed releases
-        if (tasks.releases) {
-            let haveUnconfirmed = false;
-
-            Object.entries(tasks.releases).filter(r => isNumeric(r)).forEach(async ([key, value]) => {
-                if (value.unconfirmed) {
-                    delete tasks.releases[key];
-                    haveUnconfirmed = true;
-                }
-            });
-
-            if (tasks.releases.substanceError) {
-                delete tasks.releases.substanceError;
-                haveUnconfirmed = true;
-            }
-
-            if (haveUnconfirmed) {
-                await request.server.app.userCache.cache(cacheNames.TASK_STATUS).set(request, tasks);
-            }
-        }
-    },
-
-    /**
      * Sort the substance list by name alphabetically
      * @param a
      * @param b
@@ -175,9 +147,6 @@ module.exports = {
 
                 if (tasks && tasks.releases && Object.keys(tasks.releases).filter(r => isNumeric(r)).length > 0) {
 
-                    // Clear any unconfirmed releases
-                    internals.cleanUnconfirmed(request, tasks);
-
                     // Redirect to main route page
                     reply.redirect(route.page);
 
@@ -192,10 +161,14 @@ module.exports = {
             } else {
                 // Process the confirmation - the releases page
                 if (request.payload && request.payload.confirmation === 'true') {
-                    setCompleted(request, permitStatus, route);
+                    await setChallengeStatus(request, permitStatus, route, true);
                     reply.redirect(route.page);
                 } else {
-                    setCompleted(request, permitStatus, route, true);
+                    // If the challenge page results in false then this is a confirmed route
+                    await setConfirmation(request, permitStatus, route, true);
+
+                    // Unset the confirmation status when viewing the page
+                    await setChallengeStatus(request, permitStatus, route);
                     reply.redirect('/task-list');
                 }
             }
@@ -218,10 +191,7 @@ module.exports = {
      */
     releases: async (request, reply) => {
         try {
-            const { route, submissionStatus, tasks } = await cacheHelper(request);
-
-            // Clear any unconfirmed releases
-            internals.cleanUnconfirmed(request, tasks);
+            const { permitStatus, route, submissionStatus, tasks } = await cacheHelper(request);
 
             if (tasks.releases && Object.keys(tasks.releases).filter(r => isNumeric(r)).length > 0) {
                 // Enrich the stored object for page presentation - add descriptions
@@ -242,12 +212,16 @@ module.exports = {
                     releases.sort(internals.sortReleases);
                 }
 
+                // Unset the confirmation status when viewing the page
+                await setConfirmation(request, permitStatus, route);
+
                 reply.view('all-sectors/report/releases', {
                     route: route,
                     eaId: submissionStatus.name,
                     releases: releases,
                     units: await MasterDataService.getUnits()
                 });
+
             } else {
 
                 // Add a release immediately
@@ -279,13 +253,21 @@ module.exports = {
 
                 // Test if the releases are valid
                 if (await internals.validate(request, tasks)) {
-                    // Write the (removed) validations to the cache
-                    setCompleted(request, permitStatus, route, true);
+                    // Set the confirmation flag
+                    await setConfirmation(request, permitStatus, route, true);
+
+                    // Set the overall route validation status
+                    await setValidationStatus(request, permitStatus, route, true);
+
                     await request.server.app.userCache.cache(cacheNames.TASK_STATUS).set(request, tasks);
                     reply.redirect('/task-list');
                 } else {
-                    // Update the cache with the validation objects and redirect back to the page
-                    setCompleted(request, permitStatus, route);
+                    // Write the (removed) validations to the cache
+                    await setConfirmation(request, permitStatus, route);
+
+                    // Set the overall route validation status
+                    await setValidationStatus(request, permitStatus, route);
+
                     await request.server.app.userCache.cache(cacheNames.TASK_STATUS).set(request, tasks);
                     reply.redirect(route.page);
                 }
@@ -312,21 +294,19 @@ module.exports = {
                         // Save the current substance
                         tasks.currentSubstanceId = substanceId;
                         delete tasks.releases[substanceId];
+
+                        // Calculate the overall validation status
+                        await setValidationStatus(request, permitStatus, route, internals.validate(request, tasks));
+
                         await request.server.app.userCache.cache(cacheNames.TASK_STATUS).set(request, tasks);
                         reply.redirect(route.page);
                         break;
 
                     case 'WARN':
-                        // Send to delete confirmation dialog
+                        // Send to the delete confirmation dialog
                         tasks.currentSubstanceId = substanceId;
                         await request.server.app.userCache.cache(cacheNames.TASK_STATUS).set(request, tasks);
                         reply.redirect(route.page + '/remove');
-                        break;
-
-                    case 'FLAG':
-                        tasks.releases[substanceId].removed = true;
-                        await request.server.app.userCache.cache(cacheNames.TASK_STATUS).set(request, tasks);
-                        reply.redirect(route.page);
                         break;
 
                     default:
@@ -335,6 +315,9 @@ module.exports = {
                 }
 
             } else if (request.payload.back) {
+                // The back button unset's the confirmation
+                await setConfirmation(request, permitStatus, route);
+
                 // Save the release information to the cache and return to the main task-list page
                 await request.server.app.userCache.cache(cacheNames.TASK_STATUS).set(request, tasks);
                 reply.redirect('/task-list');
@@ -360,7 +343,7 @@ module.exports = {
     detail: async (request, reply) => {
         try {
             // Check the permit status has been set
-            const { route, tasks } = await cacheHelper(request);
+            const { permitStatus, route, tasks } = await cacheHelper(request);
 
             if (!tasks.releases || !tasks.currentSubstanceId) {
                 throw new CacheKeyError('Cache read error');
@@ -399,13 +382,18 @@ module.exports = {
                 const validation = await Validator.release(tasks.releases[tasks.currentSubstanceId]);
 
                 if (validation) {
+                    // Unset the overall validation status
+                    await setValidationStatus(request, permitStatus, route);
+
                     // Update the cache with the validation objects and redirect back to the releases page
                     currentRelease.errors = validation;
                     await request.server.app.userCache.cache(cacheNames.TASK_STATUS).set(request, tasks);
                     reply.redirect(route.page + '/detail');
                 } else {
-                    // Write the (removed) validations and cleared unconfirmed flag to the cache
-                    delete currentRelease.unconfirmed;
+                    // Calculate the overall validation status
+                    await setValidationStatus(request, permitStatus, route, internals.validate(request, tasks));
+
+                    // Valid to go back to the main releases page
                     await request.server.app.userCache.cache(cacheNames.TASK_STATUS).set(request, tasks);
                     reply.redirect(route.page);
                 }
@@ -429,15 +417,8 @@ module.exports = {
      */
     remove: async (request, reply) => {
         try {
-            const tasks = await request.server.app.userCache.cache(cacheNames.TASK_STATUS).get(request);
-
-            // Check for tasks
-            if (!tasks) {
-                throw new CacheKeyError('invalid cache state');
-            }
-
+            const { route, tasks, permitStatus } = await cacheHelper(request);
             const release = tasks.releases[tasks.currentSubstanceId];
-            const route = TaskListService.getRoute(AllSectorsTaskList, request);
             const substance = await MasterDataService.getSubstanceById(Number.parseInt(tasks.currentSubstanceId));
 
             if (request.method === 'get') {
@@ -447,10 +428,15 @@ module.exports = {
                 delete tasks.releases[tasks.currentSubstanceId];
                 await request.server.app.userCache.cache(cacheNames.TASK_STATUS).set(request, tasks);
 
+                // Recalculate the overall route validation status
+                await setValidationStatus(request, permitStatus, route, internals.validate(request, tasks));
+
                 // If this is the last release redirect back to the task list
                 if (Object.keys(tasks.releases).filter(r => isNumeric(r)).length > 0) {
                     reply.redirect(route.page);
                 } else {
+                    // Here we unset the challenge flag - the user must explicitly say no to the route
+                    await setChallengeStatus(request, permitStatus, route);
                     reply.redirect('/task-list');
                 }
             }
@@ -473,7 +459,7 @@ module.exports = {
     add: async (request, reply) => {
         try {
             // Get cache objects
-            const { route, tasks } = await cacheHelper(request);
+            const { route, tasks, permitStatus } = await cacheHelper(request);
 
             if (request.method === 'get') {
 
@@ -520,8 +506,8 @@ module.exports = {
                             tasks.releases[substance.id] = NEW_RELEASE_OBJECT;
                         }
 
-                        // Set the unconfirmed flag which will be removed on save
-                        tasks.releases[substance.id].unconfirmed = true;
+                        // Immediately set the overall validation status to false
+                        await setValidationStatus(request, permitStatus, route);
 
                         // Set the current task to allow us to get directly to the detail page
                         tasks.currentSubstanceId = substance.id;

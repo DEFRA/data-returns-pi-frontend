@@ -2,6 +2,8 @@
 
 // const journey = require('../../lib/task-list');
 const allSectorsTaskList = require('../../model/all-sectors/task-list');
+const taskListNames = require('../../service/task-list').names(allSectorsTaskList);
+
 const logger = require('../../lib/logging').logger;
 const CacheKeyError = require('../../lib/user-cache-policies').CacheKeyError;
 const cacheNames = require('../../lib/user-cache-policies').names;
@@ -26,6 +28,31 @@ module.exports = {
             }
 
             const permitStatus = await request.server.app.userCache.cache(cacheNames.PERMIT_STATUS).get(request);
+
+            permitStatus.completed = [];
+            for (const name of taskListNames) {
+
+                // Calculate the permit status completed flag for each route
+                permitStatus.completed[name] = false;
+
+                // Completed if confirmed and challenged no - in this case there may or may not be a validation
+                if (permitStatus.confirmation && permitStatus.confirmation[name] &&
+                  (!permitStatus.challengeStatus || !permitStatus.challengeStatus[name]) &&
+                    (!permitStatus.valid || permitStatus.valid[name])) {
+                    permitStatus.completed[name] = true;
+                }
+
+                // Completed if confirmed and challenged yes and valid
+                if (permitStatus.confirmation && permitStatus.confirmation[name] &&
+                  permitStatus.challengeStatus && permitStatus.challengeStatus[name] &&
+                (permitStatus.valid && permitStatus.valid[name])) {
+                    permitStatus.completed[name] = true;
+                }
+
+                // Write the calculated status back to the cache
+                await request.server.app.userCache.cache(cacheNames.PERMIT_STATUS).set(request, permitStatus);
+            }
+
             reply.view('all-sectors/task-list', { eaId: eaId.name, taskList: allSectorsTaskList, permitStatus: permitStatus });
         } catch (err) {
             if (err instanceof CacheKeyError) {
