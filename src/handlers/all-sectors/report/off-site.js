@@ -298,6 +298,9 @@ module.exports = {
             const { permitStatus, route, tasks } = await cacheHelper(request, 'off-site');
 
             if (request.method === 'get') {
+                // Immediately set the overall validation status to false
+                await setValidationStatus(request, permitStatus, route);
+
                 // If we have a transfer then set up the values and any errors
                 if (tasks && tasks.currentPageOffSiteTransfer) {
 
@@ -323,6 +326,9 @@ module.exports = {
                 const validationErrors = await Validator.offSiteAdd(tasks, currentCacheOffSiteTransferObject);
 
                 if (!validationErrors) {
+                    // Recalculate the overall route validation status
+                    await setValidationStatus(request, permitStatus, route, internals.validate(request, tasks));
+
                     // If there are no validation errors saved the tasks and redirect to the off-site waste transfers page
                     delete currentCacheOffSiteTransferObject.errors;
                     tasks.offSiteTransfers.push(currentCacheOffSiteTransferObject);
@@ -334,8 +340,6 @@ module.exports = {
                     await request.server.app.userCache.cache(cacheNames.TASK_STATUS).set(request, tasks);
                     reply.redirect('/transfers/off-site');
                 } else {
-                    // Immediately set the overall validation status to false
-                    await setValidationStatus(request, permitStatus, route);
 
                     // If there are validation errors
                     tasks.currentPageOffSiteTransfer = { offSiteTransfer: currentPageOffSiteTransfer, errors: validationErrors };
@@ -436,7 +440,8 @@ module.exports = {
                 await request.server.app.userCache.cache(cacheNames.TASK_STATUS).set(request, tasks);
                 reply.redirect('/task-list');
             } else if (request.payload.add) {
-                // Save the release information to the cache and redirect to the add-substances page
+                // Save the transfer information to the cache and redirect to the add-substances page
+                delete tasks.currentPageOffSiteTransfer;
                 await request.server.app.userCache.cache(cacheNames.TASK_STATUS).set(request, tasks);
                 reply.redirect('/transfers/off-site/add');
             }
