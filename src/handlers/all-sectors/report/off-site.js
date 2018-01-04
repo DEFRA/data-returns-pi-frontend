@@ -263,8 +263,11 @@ module.exports = {
 
             if (request.method === 'get') {
                 if (!tasks.offSiteTransfers || tasks.offSiteTransfers.length === 0) {
+                    if (tasks.currentPageOffSiteTransfer) {
+                        delete tasks.currentPageOffSiteTransfer;
+                        await request.server.app.userCache.cache(cacheNames.TASK_STATUS).set(request, tasks);
+                    }
                     reply.redirect('/transfers/off-site/add');
-
                 } else {
                     // Enrich the offSiteTransfers object from the master data
                     const transfers = await Promise.all(tasks.offSiteTransfers.map(async t => {
@@ -298,9 +301,6 @@ module.exports = {
             const { permitStatus, route, tasks } = await cacheHelper(request, 'off-site');
 
             if (request.method === 'get') {
-                // Immediately set the overall validation status to false
-                await setValidationStatus(request, permitStatus, route);
-
                 // If we have a transfer then set up the values and any errors
                 if (tasks && tasks.currentPageOffSiteTransfer) {
 
@@ -342,6 +342,7 @@ module.exports = {
                 } else {
 
                     // If there are validation errors
+                    await setValidationStatus(request, permitStatus, route, true);
                     tasks.currentPageOffSiteTransfer = { offSiteTransfer: currentPageOffSiteTransfer, errors: validationErrors };
                     await request.server.app.userCache.cache(cacheNames.TASK_STATUS).set(request, tasks);
                     reply.redirect('/transfers/off-site/add');
@@ -412,12 +413,13 @@ module.exports = {
                 switch (internals.canDelete(tasks, tasks.offSiteTransfers[transferIndex])) {
 
                     case 'NO_WARN':
+                        // Delete the current substance
+                        tasks.offSiteTransfers.splice(transferIndex, 1);
+                        await request.server.app.userCache.cache(cacheNames.TASK_STATUS).set(request, tasks);
+
                         // Recalculate the overall validation status
                         await setValidationStatus(request, permitStatus, route, internals.validate(request, tasks));
 
-                        // Save the current substance
-                        tasks.offSiteTransfers.splice(transferIndex, 1);
-                        await request.server.app.userCache.cache(cacheNames.TASK_STATUS).set(request, tasks);
                         reply.redirect('/transfers/off-site');
                         break;
 
@@ -440,8 +442,6 @@ module.exports = {
                 await request.server.app.userCache.cache(cacheNames.TASK_STATUS).set(request, tasks);
                 reply.redirect('/task-list');
             } else if (request.payload.add) {
-                // Save the transfer information to the cache and redirect to the add-substances page
-                delete tasks.currentPageOffSiteTransfer;
                 await request.server.app.userCache.cache(cacheNames.TASK_STATUS).set(request, tasks);
                 reply.redirect('/transfers/off-site/add');
             }
