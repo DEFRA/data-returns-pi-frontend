@@ -12,6 +12,8 @@ const cacheHelper = require('../common').cacheHelper;
 const overseasValidator = require('../../../lib/validator').overseas;
 const cacheNames = require('../../../lib/user-cache-policies').names;
 const setConfirmation = require('../common').setConfirmation;
+const setValidationStatus = require('../common').setValidationStatus;
+const setChallengeStatus = require('../common').setChallengeStatus;
 
 const NEW_TRANSFER_OBJECT = {
     substanceId: null,
@@ -91,7 +93,7 @@ const internals = {
      */
     overseasStageHandler: async (request, reply, getHandler, postHandler) => {
         try {
-            const {route, tasks} = await cacheHelper(request, 'overseas');
+            const { permitStatus, route, tasks } = await cacheHelper(request, 'overseas');
             const transfer = tasks.overseasTransfers[tasks.currentOverseasWasteTransferIdx];
 
             if (!tasks.overseasTransfers || tasks.overseasTransfers.length === 0) {
@@ -100,16 +102,19 @@ const internals = {
 
             if (request.method === 'get') {
                 // Call the page specific functions of the post handler
-                await getHandler(route, tasks, transfer);
+                await getHandler(permitStatus, route, tasks, transfer);
             } else {
 
                 // Call the page specific functions of the post handler
-                await postHandler(route, tasks, transfer);
+                await postHandler(permitStatus, route, tasks, transfer);
 
                 // Validation
                 const validation = overseasValidator(transfer);
 
                 if (validation) {
+                    // Unset the overall validation status
+                    await setValidationStatus(request, permitStatus, route);
+
                     // Add validation error to the object
                     transfer.errors = validation;
                     await request.server.app.userCache.cache(cacheNames.TASK_STATUS).set(request, tasks);
@@ -178,10 +183,14 @@ module.exports = {
             } else {
                 // Process the confirmation - set the current route and redirect to the releases page
                 if (request.payload.confirmation === 'true') {
-                    setConfirmation(request, permitStatus, route);
+                    await setChallengeStatus(request, permitStatus, route, true);
                     reply.redirect(route.page);
                 } else {
-                    setConfirmation(request, permitStatus, route, true);
+                    // If the challenge page results in false then this is a confirmed route
+                    await setConfirmation(request, permitStatus, route, true);
+
+                    // Unset the confirmation status when viewing the page
+                    await setChallengeStatus(request, permitStatus, route);
                     reply.redirect('/task-list');
                 }
             }
@@ -203,7 +212,7 @@ module.exports = {
      */
     overseas: async (request, reply) => {
         try {
-            const { tasks } = await cacheHelper(request, 'overseas');
+            const { permitStatus, route, tasks } = await cacheHelper(request, 'overseas');
 
             // Remove any invalid overseas transfer objects due to unexpected navigation
             await internals.clearInvalid(request, tasks);
@@ -212,6 +221,9 @@ module.exports = {
                 if (!tasks.overseasTransfers || tasks.overseasTransfers.length === 0) {
                     reply.redirect('/transfers/overseas/add');
                 } else {
+                    // Unset the confirmation status when viewing the page
+                    await setConfirmation(request, permitStatus, route);
+
                     const enrichedTransfers = await Promise.all(tasks.overseasTransfers.map(async t => internals.enrich(t)));
                     reply.view('all-sectors/report/overseas', { transfers: enrichedTransfers });
                 }
@@ -254,11 +266,11 @@ module.exports = {
     /**
      * The substance handler
      * @param request
-     * @param reply
+     * @p internals internals  internals internals aram reply
      * @return {Promise.<void>}
      */
     substance: async (request, reply) => {
-        await internals.overseasStageHandler(request, reply, async (route, tasks, transfer) => {
+        await internals.overseasStageHandler(request, reply, async (permitStatus, route, tasks, transfer) => {
 
             // Get a list of all of the substances from the master data service
             let substances = await MasterDataService.getSubstances();
@@ -272,8 +284,11 @@ module.exports = {
                 }
             }
 
+            // Immediately set the overall validation status to false
+            await setValidationStatus(request, permitStatus, route);
+
             reply.view('all-sectors/report/add-substance', { route: route, substances: substances, errors: substanceErrors });
-        }, async (route, tasks, transfer) => {
+        }, async (permitStatus, route, tasks, transfer) => {
             transfer.substanceId = null;
             delete transfer.uninitialized.substance;
             if (request.payload.substanceId) {
@@ -296,7 +311,7 @@ module.exports = {
      * @return {Promise.<void>}
      */
     detail: async (request, reply) => {
-        await internals.overseasStageHandler(request, reply, async (route, tasks, transfer) => {
+        await internals.overseasStageHandler(request, reply, async (permitStatus, route, tasks, transfer) => {
 
             let detailErrors = null;
             if (!transfer.uninitialized.detail) {
@@ -312,7 +327,7 @@ module.exports = {
                 errors: detailErrors
             });
 
-        }, async (route, tasks, transfer) => {
+        }, async (permitStatus, route, tasks, transfer) => {
             const { value, operationId, methodId } = request.payload;
             const operation = await MasterDataService.getTransferOperationById(Number.parseInt(operationId));
             const method = await MasterDataService.getMethodById(Number.parseInt(methodId));
@@ -330,7 +345,7 @@ module.exports = {
      * @return {Promise.<void>}
      */
     transportationCompanyAddress: async (request, reply) => {
-        await internals.overseasStageHandler(request, reply, async (route, tasks, transfer) => {
+        await internals.overseasStageHandler(request, reply, async (permitStatus, route, tasks, transfer) => {
 
             let transportationAddressErrors = null;
             if (!transfer.uninitialized.transportationAddress) {
@@ -348,7 +363,7 @@ module.exports = {
                 address: transfer.transportationCompanyAddress
             });
 
-        }, async (route, tasks, transfer) => {
+        }, async (permitStatus, route, tasks, transfer) => {
             delete transfer.uninitialized.transportationAddress;
             transfer.transportationCompanyAddress.addressLine1 = request.payload['address-line-1'].trim();
             transfer.transportationCompanyAddress.addressLine2 = request.payload['address-line-2'].trim();
@@ -365,7 +380,7 @@ module.exports = {
      * @return {Promise.<void>}
      */
     destinationAddress: async (request, reply) => {
-        await internals.overseasStageHandler(request, reply, async (route, tasks, transfer) => {
+        await internals.overseasStageHandler(request, reply, async (permitStatus, route, tasks, transfer) => {
 
             let destinationAddressErrors = null;
             if (!transfer.uninitialized.destinationAddress) {
@@ -383,7 +398,7 @@ module.exports = {
                 address: transfer.destinationAddress
             });
 
-        }, async (route, tasks, transfer) => {
+        }, async (permitStatus, route, tasks, transfer) => {
             delete transfer.uninitialized.destinationAddress;
             transfer.destinationAddress.addressLine1 = request.payload['address-line-1'].trim();
             transfer.destinationAddress.addressLine2 = request.payload['address-line-2'].trim();
@@ -401,11 +416,14 @@ module.exports = {
      */
     check: async (request, reply) => {
         try {
-            const { tasks } = await cacheHelper(request, 'overseas');
+            const { permitStatus, route, tasks } = await cacheHelper(request, 'overseas');
 
             if (!tasks.overseasTransfers || tasks.overseasTransfers.length === 0) {
                 throw new CacheKeyError('Expected overseas waste transfer object');
             }
+
+            // Calculate the overall validation status
+            await setValidationStatus(request, permitStatus, route, true);
 
             if (request.method === 'get') {
                 const transfer = tasks.overseasTransfers[tasks.currentOverseasWasteTransferIdx];
@@ -485,7 +503,7 @@ module.exports = {
      */
     remove: async (request, reply) => {
         try {
-            const { tasks, route } = await cacheHelper(request, 'overseas');
+            const { permitStatus, tasks, route } = await cacheHelper(request, 'overseas');
 
             if (!tasks.overseasTransfers || tasks.overseasTransfers.length === 0) {
                 throw new CacheKeyError('Expected overseas waste transfer object');
@@ -502,6 +520,8 @@ module.exports = {
                 if (tasks.overseasTransfers.length > 0) {
                     reply.redirect('/transfers/overseas');
                 } else {
+                    // Here we unset the challenge flag - the user must explicitly say no to the route
+                    await setChallengeStatus(request, permitStatus, route);
                     reply.redirect('/task-list');
                 }
             }
