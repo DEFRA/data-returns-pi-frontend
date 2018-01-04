@@ -58,9 +58,9 @@
                             {% if value_error %}
                             <td>
                                 <div class="form-group-error">
+									<span class="error-message">Enter a number</span>
                                     <label class="form-label visually-hidden" for="value-err"></label>
                                     <input class="form-control form-control-error total" id="value-err" name="value" value="{{ transfer.value }}" type="number" step="0.001"> tonnes
-                                    <span class="error-message">Enter a number</span>
                                 </div>
                             </td>
                             {% else %}
@@ -78,18 +78,18 @@
                             {% if operation_error %}
                             <td class="operation">
                                 <div class="form-group-error">
-                                        <label class="form-label visually-hidden" for="select-box-operation">Operation</label>
-                                        <select class="form-control form-control-error operation" id="select-box-operation-err" name="operationId">
-                                            <option selected="">--</option>
-                                            {% for operation in operations %}
-                                                {% if transfer.operationId === operation.id %}
-                                                <option selected value="{{ operation.id }}">{{ operation.name }}</option>
-                                                {% else %}
-                                                <option value="{{ operation.id }}">{{ operation.name }}</option>
-                                                {% endif %}
-                                            {% endfor %}
-                                        </select>
-                                        <span class="error-message">Tell us your purpose of transfer</span>
+									<span class="error-message">Tell us your purpose of transfer</span>
+                                    <label class="form-label visually-hidden" for="select-box-operation">Operation</label>
+                                    <select class="form-control form-control-error operation" id="select-box-operation-err" name="operationId">
+                                        <option selected="">--</option>
+                                        {% for operation in operations %}
+                                            {% if transfer.operationId === operation.id %}
+                                            <option selected value="{{ operation.id }}">{{ operation.name }}</option>
+                                            {% else %}
+                                            <option value="{{ operation.id }}">{{ operation.name }}</option>
+                                            {% endif %}
+                                        {% endfor %}
+                                    </select>
                                 </div>
                             </td>
                             {% else %}
@@ -117,6 +117,7 @@
                             {% if method_error %}
                             <div class="form-group-error">
                                 <td class="method">
+									<span class="error-message">Tell us your measurement method</span>
                                     <label class="form-label visually-hidden" for="select-box-method">Method</label>
                                     <label class="form-label visually-hidden" for="select-box-method-err">Method</label>
                                     <select class="form-control form-control-error method" id="select-box-method-err" name="methodId">
@@ -129,7 +130,6 @@
                                         {% endif %}
                                         {% endfor %}
                                     </select>
-                                    <span class="error-message">Tell us your measurement method</span>
                                 </td>
                             </div>
                             {% else %}

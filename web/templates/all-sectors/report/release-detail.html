@@ -22,7 +22,7 @@
 
 <form id="main-form" action="{{ action }}" method="post" class="form">
     <a href="/task-list" class="link-back">Back to sections you must complete</a>
-    <h1 class="heading-large">More detail about the release of {{ release.substance.name }} {{ description }}</h1>
+    <h1 class="heading-large">Your release of {{ release.substance.name }} {{ description }}</h1>
 
     {% if release.errors %}
     <div class="error-summary" role="alert" aria-labelledby="error-summary-heading-example-2" tabindex="-1">
@@ -51,19 +51,21 @@
             <table class="more-detail table-control mobile-format">
                 <thead> </thead>
                 <tbody>
+				<!-- jgillies hid this
                 <tr>
                     <th class="reporting-threshold">Reporting threshold</th>
                     <td class="reporting-threshold-value"></td>
                 </tr>
+				-->
                 <tr>
                     <th class="id=value-check">Total</th>
 
                     {% if value_error %}
                     <td class="td-release">
                         <div class="form-group-error">
+							{{ errtext(value_error.errno) }}
                             <label class="form-label visually-hidden" for="value-err">Releases</label>
                             <input class="form-control form-control-error" id="value-err" name="value" value="{{ release.value }}">
-                            {{ errtext(value_error.errno) }}
                         </div>
                     </td>
                     {% else %}
@@ -79,6 +81,7 @@
                     <td class="td-unit">
                         {%if unit_error %}
 	                    <div class="form-group-error">
+							{{ errtext(unit_error.errno) }}
                             <label class="form-label visually-hidden" for="unit-err">Unit</label>
                             <select class="form-control form-control-error unit" id="unit-err" name="unitId">
                                 <option>--</option>
@@ -90,7 +93,6 @@
                                 {% endif %}
                                 {% endfor %}
                             </select>
-	                        {{ errtext(unit_error.errno) }}
                         </div>
                         {% else %}
                         <label class="form-label visually-hidden" for="unit">Unit</label>
@@ -112,6 +114,7 @@
                     <td class="method">
                     {%if method_error %}
 	                    <div class="form-group-error">
+							{{ errtext(method_error.errno) }}
 	                        <label class="form-label visually-hidden" for="method-err">Method</label>
 	                        <select class="form-control form-control-error method" id="method-err" name="methodId">
 	                            <option>--</option>
@@ -123,7 +126,6 @@
 	                            {% endif %}
 	                            {% endfor %}
 	                        </select>
-		                        {{ errtext(method_error.errno) }}
 						</div>
                     {% else %}
                         <label class="form-label visually-hidden" for="method">Method</label>
