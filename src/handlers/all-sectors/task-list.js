@@ -29,23 +29,23 @@ module.exports = {
 
             const permitStatus = await request.server.app.userCache.cache(cacheNames.PERMIT_STATUS).get(request);
 
-            permitStatus.completed = [];
+            // Always re-calculate the completed status
+            permitStatus.completed = {};
             for (const name of taskListNames) {
 
                 // Calculate the permit status completed flag for each route
                 permitStatus.completed[name] = false;
 
+                // Deemed valid if no validity status or validity status true
+                const valid = permitStatus.valid[name] === undefined || permitStatus.valid[name];
+
                 // Completed if confirmed and challenged no - in this case there may or may not be a validation
-                if (permitStatus.confirmation && permitStatus.confirmation[name] &&
-                  (!permitStatus.challengeStatus || !permitStatus.challengeStatus[name]) &&
-                    (!permitStatus.valid || permitStatus.valid[name])) {
+                if (permitStatus.confirmation[name] && !permitStatus.challengeStatus[name] && valid) {
                     permitStatus.completed[name] = true;
                 }
 
                 // Completed if confirmed and challenged yes and valid
-                if (permitStatus.confirmation && permitStatus.confirmation[name] &&
-                  permitStatus.challengeStatus && permitStatus.challengeStatus[name] &&
-                (permitStatus.valid && permitStatus.valid[name])) {
+                if (permitStatus.confirmation[name] && permitStatus.challengeStatus[name] && valid) {
                     permitStatus.completed[name] = true;
                 }
 

@@ -75,6 +75,10 @@ module.exports = {
                 if (!permitStatus) {
                     // Initialize a permit status if not exists
                     permitStatus = {};
+                    permitStatus.confirmation = {};
+                    permitStatus.challengeStatus = {};
+                    permitStatus.valid = {};
+                    permitStatus.completed = {};
                 } else {
                     // Always unset the current task
                     delete permitStatus.currentTask;
@@ -84,7 +88,6 @@ module.exports = {
                 await request.server.app.userCache.cache(cacheNames.PERMIT_STATUS).set(request, permitStatus);
 
                 reply.redirect('/task-list');
-
             }
         } catch (err) {
             logger.log('error', err.message);

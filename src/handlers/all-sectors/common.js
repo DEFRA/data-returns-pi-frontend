@@ -59,7 +59,6 @@ module.exports = {
      * @return {Promise.<void>}
      */
     setConfirmation: async (request, permitStatus, route, confirmation) => {
-        permitStatus.confirmation = permitStatus.confirmation || {};
         permitStatus.confirmation[route.name] = !!confirmation;
         await request.server.app.userCache.cache(cacheNames.PERMIT_STATUS).set(request, permitStatus);
     },
@@ -73,7 +72,6 @@ module.exports = {
      * @return {Promise.<void>}
      */
     setValidationStatus: async (request, permitStatus, route, valid) => {
-        permitStatus.valid = permitStatus.valid || {};
         permitStatus.valid[route.name] = !!valid;
         await request.server.app.userCache.cache(cacheNames.PERMIT_STATUS).set(request, permitStatus);
     },
@@ -87,7 +85,6 @@ module.exports = {
      * @return {Promise.<void>}
      */
     setChallengeStatus: async (request, permitStatus, route, challengeStatus) => {
-        permitStatus.challengeStatus = permitStatus.challengeStatus || {};
         permitStatus.challengeStatus[route.name] = !!challengeStatus;
         await request.server.app.userCache.cache(cacheNames.PERMIT_STATUS).set(request, permitStatus);
     }

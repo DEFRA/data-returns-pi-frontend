@@ -253,21 +253,23 @@ module.exports = {
 
                 // Test if the releases are valid
                 if (await internals.validate(request, tasks)) {
-                    // Set the confirmation flag
+                    // Set the confirmation flag to confirmed
                     await setConfirmation(request, permitStatus, route, true);
 
-                    // Set the overall route validation status
+                    // Set the overall route validation status to valid
                     await setValidationStatus(request, permitStatus, route, true);
 
+                    // Rewrite the tasks with no error and go back to the task-list
                     await request.server.app.userCache.cache(cacheNames.TASK_STATUS).set(request, tasks);
                     reply.redirect('/task-list');
                 } else {
-                    // Write the (removed) validations to the cache
+                    // Unset the confirmation flag
                     await setConfirmation(request, permitStatus, route);
 
-                    // Set the overall route validation status
+                    // Set the overall route validation status to invalid
                     await setValidationStatus(request, permitStatus, route);
 
+                    // Rewrite the tasks and go back to the route page
                     await request.server.app.userCache.cache(cacheNames.TASK_STATUS).set(request, tasks);
                     reply.redirect(route.page);
                 }
