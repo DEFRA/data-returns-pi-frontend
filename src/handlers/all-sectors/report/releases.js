@@ -306,6 +306,8 @@ module.exports = {
             }
 
             if (request.method === 'get') {
+                // Unset the confirmation status when viewing the page
+                await setConfirmation(request, permitStatus, route);
 
                 // Get the current release and enrich with the substance details
                 const release = tasks.releases[tasks.currentSubstanceId];
@@ -418,6 +420,8 @@ module.exports = {
             const { route, tasks, permitStatus } = await cacheHelper(request);
 
             if (request.method === 'get') {
+                // Unset the confirmation status when viewing the page
+                await setConfirmation(request, permitStatus, route);
 
                 // Get a list of all of the substances from the master data service
                 let substances = await MasterDataService.getSubstances();
