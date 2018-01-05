@@ -176,23 +176,7 @@ const internals = {
         }
 
         return true;
-    },
-
-    /**
-     * Determine if a transfer can be deleted
-     * (a) Without warning
-     * (b) With warning
-     * @param the transfer
-     * @return NO_WARN, WARN
-     */
-    canDelete: (tasks, transfer) => {
-        if (Validator.offSite(transfer)) {
-            return 'NO_WARN';
-        } else {
-            return 'WARN';
-        }
     }
-
 };
 
 module.exports = {
@@ -410,30 +394,10 @@ module.exports = {
                 const transferIndex = Number.parseInt(Object.keys(request.payload)
                     .find(s => s.startsWith('delete')).substr(7));
 
-                switch (internals.canDelete(tasks, tasks.offSiteTransfers[transferIndex])) {
-
-                    case 'NO_WARN':
-                        // Delete the current substance
-                        tasks.offSiteTransfers.splice(transferIndex, 1);
-                        await request.server.app.userCache.cache(cacheNames.TASK_STATUS).set(request, tasks);
-
-                        // Recalculate the overall validation status
-                        await setValidationStatus(request, permitStatus, route, internals.validate(request, tasks));
-
-                        reply.redirect('/transfers/off-site');
-                        break;
-
-                    case 'WARN':
-                        // Send to delete confirmation dialog
-                        tasks.currentoffSiteTransferIndex = transferIndex;
-                        await request.server.app.userCache.cache(cacheNames.TASK_STATUS).set(request, tasks);
-                        reply.redirect('/transfers/off-site/remove');
-                        break;
-
-                    default:
-                        reply.redirect('/task-list');
-                        break;
-                }
+                // Send to delete confirmation dialog
+                tasks.currentoffSiteTransferIndex = transferIndex;
+                await request.server.app.userCache.cache(cacheNames.TASK_STATUS).set(request, tasks);
+                reply.redirect('/transfers/off-site/remove');
 
             } else if (request.payload.back) {
                 // The back button unset's the confirmation

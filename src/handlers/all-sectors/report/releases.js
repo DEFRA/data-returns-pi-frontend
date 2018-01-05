@@ -84,22 +84,6 @@ const internals = {
     },
 
     /**
-     * Determine if a releases can be deleted
-     * (a) Without warning
-     * (b) With warning
-     * (c) No - substance in previous submission. Delete flagged
-     * @param release
-     * @return NO_WARN, WARN or FLAG
-     */
-    canDelete: ({ value, unitId, methodId }) => {
-        if (value || unitId || methodId) {
-            return 'WARN';
-        } else {
-            return 'NO_WARN';
-        }
-    },
-
-    /**
      * Sort the substance list by name alphabetically
      * @param a
      * @param b
@@ -288,33 +272,10 @@ module.exports = {
                 const substanceId = Number.parseInt(Object.keys(request.payload)
                     .find(s => s.startsWith('delete')).substr(7));
 
-                const release = tasks.releases[substanceId];
-
-                switch (internals.canDelete(release)) {
-
-                    case 'NO_WARN':
-                        // Save the current substance
-                        tasks.currentSubstanceId = substanceId;
-                        delete tasks.releases[substanceId];
-
-                        // Calculate the overall validation status
-                        await setValidationStatus(request, permitStatus, route, internals.validate(request, tasks));
-
-                        await request.server.app.userCache.cache(cacheNames.TASK_STATUS).set(request, tasks);
-                        reply.redirect(route.page);
-                        break;
-
-                    case 'WARN':
-                        // Send to the delete confirmation dialog
-                        tasks.currentSubstanceId = substanceId;
-                        await request.server.app.userCache.cache(cacheNames.TASK_STATUS).set(request, tasks);
-                        reply.redirect(route.page + '/remove');
-                        break;
-
-                    default:
-                        reply.redirect('/task-list');
-                        break;
-                }
+                // Send to the delete confirmation dialog
+                tasks.currentSubstanceId = substanceId;
+                await request.server.app.userCache.cache(cacheNames.TASK_STATUS).set(request, tasks);
+                reply.redirect(route.page + '/remove');
 
             } else if (request.payload.back) {
                 // The back button unset's the confirmation
