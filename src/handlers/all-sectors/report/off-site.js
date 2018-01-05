@@ -351,6 +351,9 @@ module.exports = {
             // Save the submission
             await internals.save(request, tasks);
 
+            // Any action removes the detail page information
+            delete tasks.currentPageOffSiteTransfer;
+
             // If we continue we will need to validate the submission
             if (request.payload.continue) {
 
