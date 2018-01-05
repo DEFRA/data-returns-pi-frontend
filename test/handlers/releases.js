@@ -64,7 +64,7 @@ const CONFIRM_REMOVE_YES_LAST = { method: 'POST', url: '/releases/air/remove', p
 const CONFIRM_REMOVE_NO = RELEASES_AIR;
 const CHANGE_DETAIL = (substanceId) => { return { method: 'POST', url: '/releases/air/action', payload: detail(substanceId), expected: '/releases/air/detail' }; };
 const CONTINUE_INVALID = (substanceId) => { return { method: 'POST', url: '/releases/air/action', payload: continueInvalid(substanceId), expected: '/releases/air' }; };
-const CONTINUE_VALID = (substanceId) => { return { method: 'POST', url: '/releases/air/action', payload: continueValid(substanceId), expected: '/releases/air' }; };
+const CONTINUE_VALID = (substanceId) => { return { method: 'POST', url: '/releases/air/action', payload: continueValid(substanceId), expected: '/task-list' }; };
 
 experiment('Proto test', () => {
 
@@ -105,10 +105,8 @@ experiment('Proto test', () => {
         await steps([ RELEASES_AIR, REMOVE_SUBSTANCE('503'), CONFIRM_REMOVE_YES_LAST ]);
     });
 
-    test('Add another 3 substances', async () => {
-        await steps([ TASK_LIST, CONFIRM_PAGE, CONFIRM_YES, CHOOSE_SUBSTANCE('505'), CHOOSE_DETAIL('23.4', 5, 1) ]);
-        await steps([ TASK_LIST, ANOTHER_SUBSTANCE, CHOOSE_SUBSTANCE('506'), CHOOSE_DETAIL('34.4', 3, 1) ]);
-        await steps([ TASK_LIST, ANOTHER_SUBSTANCE, CHOOSE_SUBSTANCE('505'), CHOOSE_DETAIL('11.6', 4, 2) ]);
+    test('Add another substance', async () => {
+        await steps([ TASK_LIST, CONFIRM_PAGE, CONFIRM_YES, CHOOSE_SUBSTANCE('506'), CHOOSE_DETAIL('23.4', 5, 1) ]);
     });
 
     test('Change detail invalid', async () => {
@@ -121,6 +119,12 @@ experiment('Proto test', () => {
 
     test('Change detail from substances page valid', async () => {
         await steps([ RELEASES_AIR, CONTINUE_VALID('506') ]);
+    });
+
+    test('Add another 3 substances', async () => {
+        await steps([ TASK_LIST, ANOTHER_SUBSTANCE, CHOOSE_SUBSTANCE('511'), CHOOSE_DETAIL('1.4', 1, 1) ]);
+        await steps([ TASK_LIST, ANOTHER_SUBSTANCE, CHOOSE_SUBSTANCE('510'), CHOOSE_DETAIL('99.4', 2, 2) ]);
+        await steps([ TASK_LIST, ANOTHER_SUBSTANCE, CHOOSE_SUBSTANCE('512'), CHOOSE_DETAIL('88', 3, 2) ]);
     });
 
     test('Test logout', async () => {
