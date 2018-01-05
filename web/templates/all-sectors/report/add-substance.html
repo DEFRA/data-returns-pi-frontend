@@ -24,9 +24,9 @@
             {% elif route.name === 'RELEASES_TO_CONTROLLED_WATERS' %}
                 {{ error('Do you need to report any releases to controlled waters?', 'Select the type of waste you released') }}
             {% elif route.name === 'OFFSITE_TRANSFERS_IN_WASTE_WATER' %}
-                {{ error('Do you need to report any releases in waste water?', 'Select the type of waste you released') }}
+                {{ error('Do you need to report any offsite transfers in wastewater?', 'Select the type of waste you transferred') }}
             {% elif route.name === 'OVERSEAS_WASTE_TRANSFERS' %}
-                {{ error('Do you need to report any waste you transferred?', 'Select the type of waste you  transferred') }}
+                {{ error('Do you need to report any waste you transferred?', 'Select the type of waste you transferred') }}
             {% endif %}
         {% endif %}
 
