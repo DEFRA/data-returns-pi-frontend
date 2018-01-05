@@ -399,12 +399,6 @@ module.exports = {
                 await request.server.app.userCache.cache(cacheNames.TASK_STATUS).set(request, tasks);
                 reply.redirect('/transfers/off-site/remove');
 
-            } else if (request.payload.back) {
-                // The back button unset's the confirmation
-                await setConfirmation(request, permitStatus, route);
-                // Save the release information to the cache and return to the main task-list page
-                await request.server.app.userCache.cache(cacheNames.TASK_STATUS).set(request, tasks);
-                reply.redirect('/task-list');
             } else if (request.payload.add) {
                 await request.server.app.userCache.cache(cacheNames.TASK_STATUS).set(request, tasks);
                 reply.redirect('/transfers/off-site/add');

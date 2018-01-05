@@ -35,7 +35,7 @@ const VALID_DEST_ADDR = { method: 'POST', url: '/transfers/overseas/destination-
 const CHECK_CONTINUE = { method: 'POST', url: '/transfers/overseas/check', payload: {}, expected: '/transfers/overseas' };
 
 const OVERSEAS = { method: 'GET', url: '/transfers/overseas', expected: '/transfers/overseas' };
-const ADD_ANOTHER = { method: 'GET', url: '/transfers/overseas/add', expected: '/transfers/overseas/add-substance' };
+const ADD_ANOTHER = { method: 'POST', url: '/transfers/overseas/action', payload: {'add': 'Add a new overseas waste transfer'}, expected: '/transfers/overseas/add-substance' };
 
 // Check modifications
 const CHECK = (id) => { return { method: 'POST', url: '/transfers/overseas/action', payload: check(id), expected: '/transfers/overseas/check' }; };
@@ -47,6 +47,7 @@ const TC_ADDR = { method: 'GET', url: '/transfers/overseas/transportation-co-add
 const DEST_ADDR = { method: 'GET', url: '/transfers/overseas/destination-address', expected: '/transfers/overseas/destination-address' };
 const VALID_TC_ADDR2 = { method: 'POST', url: '/transfers/overseas/transportation-co-address', payload: { 'business-name': 'Druid Wood Limited', 'address-line-1': 'Howecroft Court', 'address-line-2': 'Stoke Bishop', 'town-or-city': 'Bristol', 'country': 'England' }, expected: '/transfers/overseas/check' };
 const VALID_DEST_ADDR2 = { method: 'POST', url: '/transfers/overseas/destination-address', payload: { 'business-name': 'Some company', 'address-line-1': '67 Long Road', 'address-line-2': 'In Village', 'town-or-city': 'Barcelona', 'country': 'Spain' }, expected: '/transfers/overseas/check' };
+const CONTINUE = { method: 'POST', url: '/transfers/overseas/action', payload: {'continue': 'Continue'}, expected: '/task-list' };
 
 const DELETE = { method: 'POST', url: '/transfers/overseas/action', payload: { 'delete-0': 'Delete' }, expected: '/transfers/overseas/remove' };
 const DELETE_CONFIRM_1 = { method: 'POST', url: '/transfers/overseas/remove', expected: '/transfers/overseas' };
@@ -93,6 +94,10 @@ experiment('Overseas transfers', () => {
 
     test('View Transfer and change destination address', async () => {
         await steps([ OVERSEAS, CHECK(1), DEST_ADDR, VALID_DEST_ADDR2, CHECK_CONTINUE ]);
+    });
+
+    test('Test continue', async () => {
+        await steps([ OVERSEAS, CONTINUE ]);
     });
 
     test('Delete transfers', async () => {
