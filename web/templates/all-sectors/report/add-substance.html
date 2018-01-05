@@ -16,7 +16,7 @@
     <form action="{{ route.page }}/add-substance" method="post">
         <a href="/task-list" class="link-back">Back to sections you must complete</a>
 
-        {% if errors %}
+        {% if errors and errors.length > 0 %}
             {% if route.name === 'RELEASES_TO_LAND'%}
                 {{ error('Do you need to report any releases to land?', 'Select the type of waste you released') }}
             {% elif route.name === 'RELEASES_TO_AIR' %}
@@ -51,7 +51,7 @@
 
         {% endif %}
 
-        {% if errors %}
+        {% if errors and errors.length > 0 %}
         <div id="search-results-err" class="grid-row">
             <div class="column-two-thirds">
                 <span class="error-message">
@@ -60,8 +60,8 @@
                 <div class="form-group list form-group-error ">
                     {% for substance in substances %}
                     <div class="multiple-choice">
-                        <input id="substance_{{ substance.id }}" name="substanceId" value="{{ substance.id }}" type="radio">
-                        <label for="substance_{{ substance.id }}"><span class="category"></span> <span class="name">{{ substance.name }}</span></label>
+                        <input id="substance_{{ substance.id }}_err" name="substanceId" value="{{ substance.id }}" type="radio">
+                        <label for="substance_{{ substance.id }}_err"><span class="category"></span> <span class="name">{{ substance.name }}</span></label>
                     </div>
                     {% endfor %}
                 </div>

@@ -476,11 +476,11 @@ module.exports = {
 
                 substances = substances.sort(internals.sortSubstances);
 
-                if (tasks.releases && tasks.releases.substanceError) {
+                if (tasks.releases && tasks.releases.substanceErrors) {
                     reply.view('all-sectors/report/add-substance', {
                         route: route,
                         substances: substances,
-                        errors: tasks.releases.substanceError
+                        errors: tasks.releases.substanceErrors
                     });
                 } else {
                     reply.view('all-sectors/report/add-substance', {
@@ -513,7 +513,7 @@ module.exports = {
 
                         // Set the current task to allow us to get directly to the detail page
                         tasks.currentSubstanceId = substance.id;
-                        delete tasks.releases.substanceError;
+                        delete tasks.releases.substanceErrors;
                         success = true;
 
                         // If there is no substance then redirect back with an error Write the task object back to the cache
@@ -524,7 +524,7 @@ module.exports = {
                 }
 
                 if (!success) {
-                    tasks.releases.substanceError = { key: 'substance', errno: 'PI-1004' };
+                    tasks.releases.substanceErrors = [ { key: 'substance', errno: 'PI-1004' } ];
                     await request.server.app.userCache.cache(cacheNames.TASK_STATUS).set(request, tasks);
                     reply.redirect(route.page + '/add-substance');
                 }

@@ -5,20 +5,6 @@
 {% set wfd_error = (transfer.errors | selectattr2("key", "wfd"))  %}
 {% set dupe_error = (transfer.errors | selectattr2("key", "off-site"))  %}
 
-{% macro errtext(errno) %}
-{% if errno === 'PI-2000' %}
-<span class="error-message">Update your total</span>
-{% elif errno === 'PI-2001' %}
-<span class="error-message">Enter a different EWC code</span>
-{% elif errno === 'PI-2002' %}
-<span class="error-message">Enter a different WFD code</span>
-{% elif errno === 'PI-2003' %}
-<span class="error-message">You have already specified a transfer against this combination of WFD and EWC codes</span>
-{% else %}
-<span class="error-message">Unknown error</span>
-{% endif %}
-{% endmacro %}
-
 {% block content %}
 
 <main id="content">
@@ -36,27 +22,32 @@
                 Check what you’re reporting
             </h2>
             <ul class="error-summary-list">
-                {% if value_error %}
-                <li><a href="">{{ errtext(value_error.errno) }}</a>
-                {% endif %}
-
                 {% if ewc_error %}
-                <li><a href="">{{ errtext(ewc_error.errno) }}</a>
+                <li><a href=""><span class="error-message">Enter a different EWC code</span></a>
                 {% endif %}
 
                 {% if wfd_error %}
-                <li><a href="">{{ errtext(wfd_error.errno) }}</a>
+                <li><a href=""><span class="error-message">Enter a different WFD code</span></a>
+                {% endif %}
+
+                {% if value_error %}
+                <li><a href=""><span class="error-message">Update your total</span></a>
                 {% endif %}
 
                 {% if dupe_error %}
-                <li><a href="">{{ errtext(dupe_error.errno) }}</a>
+                <li><a href=""><span class="error-message">You have already specified a transfer against this combination of WFD and EWC codes</span></a>
                 {% endif %}
             </ul>
         </div>
         {% endif %}
 
-        {% if ewc_error %}
+        {% if ewc_error or dupe_error %}
         <div class="form-group form-group-error">
+            {% if ewc_error %}
+            <span class="error-message">Enter a correct EWC code</span>
+            {% else %}
+            <span class="error-message">Enter a different EWC code</span>
+            {% endif %}
             <label class="form-label" for="ewc-code-err">EWC code</label>
 			<span class="error-message">Enter a correct EWC code</span>
             <span class="form-hint">For example, ‘01 01 01’.</span>
@@ -70,10 +61,15 @@
         </div>
         {% endif %}
 
-        {% if wfd_error %}
+        {% if wfd_error or dupe_error %}
         <div class="form-group form-group-error wfd_error">
+            {% if wfd_error %}
+            <span class="error-message">Enter a correct WFD code</span>
+            {% else %}
+            <span class="error-message">Or enter a different WFD code</span>
+            {% endif %}
             <label class="form-label" for="wfd-code-err">WFD code</label>
-			<span class="error-message">Enter a correct WFD code</span>
+			      <span class="error-message">Enter a correct WFD code</span>
             <span class="form-hint">For example, ‘D5’ or ‘R13’.</span>
             <input class="form-control form-control-error wfd-code" id="wfd-code-err" name="wfd" value="{{ transfer.offSiteTransfer.wfd }}">
         </div>

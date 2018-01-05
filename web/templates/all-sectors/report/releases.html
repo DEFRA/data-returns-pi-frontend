@@ -4,7 +4,7 @@
 {% if errno === 'PI-1000' %}
 <span class="error-message">Enter a number or ‘BRT’</span>
 {% elif errno === 'PI-1001' %}
-<span class="error-message">Do not specify a unit with BRT</span>
+<span class="error-message">Do not specify units with BRT</span>
 {% elif errno === 'PI-1002' %}
 <span class="error-message">A value must have units</span>
 {% else %}
@@ -52,13 +52,11 @@
             {% set value_error = (release.errors | selectattr2("key", "value"))  %}
             {% set unit_error = (release.errors | selectattr2("key", "unitId"))  %}
 
-            {% if value_error or unit_error %}
+            {% if value_error %}
             <td class="td-release">
                 <div class="form-group-error">
 					{% if value_error %}
 						{{ errtext(value_error.errno) }}
-					{% else %}
-						{{ errtext(unit_error.errno) }}
 					{% endif %}
                     <label class="form-label visually-hidden" for="value-err{{ release.substance.id }}">Releases</label>
                     <input class="form-control form-control-error" id="value-err{{ release.substance.id }}" name="value-{{ release.substance.id }}" value="{{ release.value }}">
@@ -74,7 +72,10 @@
             <td class="td-unit">
                 {%if unit_error %}
 	            <div class="form-group-error">
-	                <label class="form-label visually-hidden" for="unit-err{{ release.substance.id }}">Unit</label>
+                    {% if unit_error %}
+                        {{ errtext(unit_error.errno) }}
+                    {% endif %}
+                    <label class="form-label visually-hidden" for="unit-err{{ release.substance.id }}">Unit</label>
 	                <select class="form-control form-control-error unit" id="unit-err{{ release.substance.id }}" name="unitId-{{ release.substance.id }}">
 	                    <option>--</option>
 	                    {% for unit in units %}

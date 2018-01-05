@@ -1,19 +1,5 @@
 {% extends 'layout/layout.html' %}
 
-{% macro errtext(errno) %}
-    {% if errno === 'PI-1000' %}
-    <span class="error-message">Enter a number or ‘BRT’ (below reporting threshold)</span>
-    {% elif errno === 'PI-1001' %}
-    <span class="error-message">Do not specify a unit with BRT</span>
-    {% elif errno === 'PI-1002' %}
-    <span class="error-message">Select a type of unit</span>
-    {% elif errno === 'PI-1003' %}
-    <span class="error-message">Select your method</span>
-    {% else %}
-    <span class="error-message">Unknown error</span>
-    {% endif %}
-{% endmacro %}
-
 {% macro form(description, action) %}
 
 {% set value_error = (release.errors | selectattr2("key", "value"))  %}
@@ -24,6 +10,8 @@
     <a href="/task-list" class="link-back">Back to sections you must complete</a>
     <h1 class="heading-large">Your release of {{ release.substance.name }} {{ description }}</h1>
 
+    {{ unit_error | dump }}
+
     {% if release.errors %}
     <div class="error-summary" role="alert" aria-labelledby="error-summary-heading-example-2" tabindex="-1">
         <h2 class="heading-medium error-summary-heading" id="error-summary-heading-example-2">
@@ -32,15 +20,19 @@
         <p>There are issues with the data</p>
         <ul class="error-summary-list">
             {% if value_error %}
-            <li><a href="#value-check">{{ errtext(value_error.errno) }}</a>
+            <li><a href="#value-check">Correct your {{ release.substance.name }} total</a>
             {% endif %}
 
-            {% if unit_error %}
-            <li><a href="#unit-check">{{ errtext(unit_error.errno) }}</a>
+            {% if unit_error and unit_error.errno === 'PI-1001' %}
+            <li><a href="#unit-check">Units are not needed with 'BRT'</a>
+            {% endif %}
+
+            {% if unit_error and unit_error.errno === 'PI-1002' %}
+            <li><a href="#unit-check">Tell us your measurement unit</a>
             {% endif %}
 
             {% if method_error %}
-            <li><a href="#method-check">{{ errtext(method_error.errno) }}</a>
+            <li><a href="#method-check">Tell us your measurement method</a>
             {% endif %}
         </ul>
     </div>
@@ -63,7 +55,7 @@
                     {% if value_error %}
                     <td class="td-release">
                         <div class="form-group-error">
-							{{ errtext(value_error.errno) }}
+                            <span class="error-message">Enter a number or ‘BRT’ (below reporting threshold)</span>
                             <label class="form-label visually-hidden" for="value-err">Releases</label>
                             <input class="form-control form-control-error" id="value-err" name="value" value="{{ release.value }}">
                         </div>
@@ -81,7 +73,11 @@
                     <td class="td-unit">
                         {%if unit_error %}
 	                    <div class="form-group-error">
-							{{ errtext(unit_error.errno) }}
+                            {% if unit_error.errno === 'PI-1001' %}
+                                <span class="error-message">Do not select unit</span>
+                            {% else %}
+                                <span class="error-message">Select a type of unit</span>
+                            {% endif %}
                             <label class="form-label visually-hidden" for="unit-err">Unit</label>
                             <select class="form-control form-control-error unit" id="unit-err" name="unitId">
                                 <option>--</option>
@@ -114,7 +110,7 @@
                     <td class="method">
                     {%if method_error %}
 	                    <div class="form-group-error">
-							{{ errtext(method_error.errno) }}
+                            <span class="error-message">Select your method</span>
 	                        <label class="form-label visually-hidden" for="method-err">Method</label>
 	                        <select class="form-control form-control-error method" id="method-err" name="methodId">
 	                            <option>--</option>
