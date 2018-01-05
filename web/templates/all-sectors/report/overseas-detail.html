@@ -6,18 +6,6 @@
 {% set operation_error = (errors | selectattr2("key", "detail.operation"))  %}
 {% set method_error = (errors | selectattr2("key", "detail.method"))  %}
 
-{% macro errtext(errno) %}
-    {% if errno === 'PI-3001' %}
-    <span class="error-message">Correct your {{ transfer.substance.name }} total</span>
-    {% elif errno === 'PI-3003' %}
-    <span class="error-message">Tell us your purpose of transfer</span>
-    {% elif errno === 'PI-3002' %}
-    <span class="error-message">Tell us your measurement method</span>
-    {% else %}
-    <span class="error-message">Unknown error</span>
-    {% endif %}
-{% endmacro %}
-
 <main id="content">
     <label id="page-name" hidden>overseas</label>
     <form action="/transfers/overseas/detail" method="post" class="form">
@@ -25,10 +13,6 @@
 
 		<h1 class="heading-large"><span class="heading-secondary">Your overseas hazardous waste transfers</span> Your transfer of {{ transfer.substance.name }}</h1>
 
-        {% if errors %}
-        <div class="error-summary" role="alert" aria-labelledby="error-summary-heading" tabindex="-1">
-            <h2 class="heading-medium error-summary-heading" id="error-summary-heading">
-        <h1 class="heading-large"><span class="heading-secondary">Your overseas hazardous waste transfers</span> Your transfer of {{ transfer.substance.name }}</h1>      
         {% if errors and errors.length > 0 %}
         <div class="error-summary" role="alert" aria-labelledby="error-summary-heading-example-2" tabindex="-1">
             <h2 class="heading-large error-summary-heading" id="error-summary-heading-example-2">
@@ -37,16 +21,16 @@
             <p>There are issues with the data</p>
             <ul class="error-summary-list">
                 {% if value_error %}
-                <li><a href="#value-check">{{ errtext(value_error.errno) }}</a>
-                    {% endif %}
+                <li><a href="#value-check"><span class="error-message">Correct your {{ transfer.substance.name }} total</a>
+                {% endif %}
 
-                    {% if operation_error %}
-                <li><a href="#operation-check">{{ errtext(operation_error.errno) }}</a>
-                    {% endif %}
+                {% if operation_error %}
+                <li><a href="#operation-check"><span class="error-message">Tell us your purpose of transfer</span></a>
+                {% endif %}
 
-                    {% if method_error %}
-                <li><a href="#method-check">{{ errtext(method_error.errno) }}</a>
-                    {% endif %}
+                {% if method_error %}
+                <li><a href="#method-check"><span class="error-message">Tell us your measurement method</span></a>
+                {% endif %}
             </ul>
         </div>
         {% endif %}
@@ -152,7 +136,6 @@
                     <div class="form-group"> <input type="submit" class="button" value="Continue"> </div>
                 </div>
             </div>
-        </form>
     </form>
 
 </main>

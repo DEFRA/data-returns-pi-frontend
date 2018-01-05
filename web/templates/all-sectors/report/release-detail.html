@@ -10,8 +10,6 @@
     <a href="/task-list" class="link-back">Back to sections you must complete</a>
     <h1 class="heading-large">Your release of {{ release.substance.name }} {{ description }}</h1>
 
-    {{ unit_error | dump }}
-
     {% if release.errors %}
     <div class="error-summary" role="alert" aria-labelledby="error-summary-heading-example-2" tabindex="-1">
         <h2 class="heading-medium error-summary-heading" id="error-summary-heading-example-2">
@@ -43,12 +41,6 @@
             <table class="more-detail table-control">
                 <thead> </thead>
                 <tbody>
-				<!-- jgillies hid this
-                <tr>
-                    <th class="reporting-threshold">Reporting threshold</th>
-                    <td class="reporting-threshold-value"></td>
-                </tr>
-				-->
                 <tr>
                     <th class="id=value-check">Total</th>
 
