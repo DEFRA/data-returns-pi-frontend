@@ -11,17 +11,16 @@
     {% else %}
     <div class="error-summary" role="alert" aria-labelledby="error-summary-heading-example-2" tabindex="-1">
         <h2 class="heading-large error-summary-heading" id="error-summary-heading-example-2">Check what you’re reporting</h2>
-        <p>You must enter a number.</p>
         <ul class="error-summary-list">
             {% for transfer in transfers | transfersWithErrors %}
-            <li><a href="#">Change your total for {{ transfer | transferShortDesc }} </a></li>
+            <li><a href="#">Check your {{ transfer.ewc.activity.activity }} {{ transfer.ewc.chapter.chapter }} {{ transfer.ewc.subChapter.subChapter }} &#40;{{ transfer.ewc.subChapter.description }}&#41; report</a></li>
             {% endfor %}
         </ul>
     </div>
     {% endif %}
 
     <form action="/transfers/off-site/action" method="post" class="form">
-        <table class="check-data table-control mobile-format">
+        <table class="check-data table-control">
             <thead>
             <tr>
                 <th class="th-ewc-code">EWC code</th>
@@ -37,7 +36,7 @@
             <tr>
                 <td class="td-ewc-code">{{ transfer.ewc.activity.activity }} {{ transfer.ewc.chapter.chapter }} {{ transfer.ewc.subChapter.subChapter }}</td>
 
-                <td class="td-ewc-code">{{ transfer.ewc.subChapter.description }}</td>
+                <td class="td-waste">{{ transfer.ewc.subChapter.description }}</td>
 
                 {% if transfer.wfd.disposal %}
                 <td class="td-wfd-code">{{ transfer.wfd.disposal.code }}</td>
@@ -48,8 +47,11 @@
                 {% set value_error = (transfer.errors | selectattr2("key", "value"))  %}
                 {% if value_error %}
                 <td class="td-total">
-                    <label class="form-label visually-hidden" for="value-err">Total</label>
-                    <input class="form-control form-control-error" id="value-err" name="value-{{ loop.index0 }}" type="number" step="0.001" value="{{ transfer.value }}"> tonnes
+			        <div class="form-group-error value_error">
+	                    <label class="form-label visually-hidden" for="value-err">Total</label>
+						<span class="error-message">Your total must be in digits</span>
+	                    <input class="form-control form-control-error" id="value-err" name="value-{{ loop.index0 }}" type="number" step="0.001" value="{{ transfer.value }}"> tonnes
+					</div>
                 </td>
                 {% else %}
                 <td class="td-total">

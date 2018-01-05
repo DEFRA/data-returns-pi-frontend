@@ -16,27 +16,27 @@
                     <table class="codes table-control">
                         <tbody>
                         <tr>
-                            <td class="name">Substance</td>
+                            <th class="name">Substance</th>
                             <td>{{ transfer.substance.name }}</td>
                             <td class="action"><a href="/transfers/overseas/add-substance">Change</a></td>
                         </tr>
                         <tr>
-                            <td class="name">Quantity</td>
+                            <th class="name">Quantity</th>
                             <td>{{ transfer.value }} tonnes</td>
                             <td class="action"><a href="/transfers/overseas/detail">Change</a></td>
                         </tr>
                         <tr>
-                            <td class="name">Method</td>
+                            <th class="name">Method</th>
                             <td>{{ transfer.method.name }}</td>
                             <td class="action"><a href="/transfers/overseas/detail">Change</a></td>
                         </tr>
                         <tr>
-                            <td class="name">Operation</td>
+                            <th class="name">Operation</th>
                             <td>{{ transfer.operation.name }}</td>
                             <td class="action"><a href="/transfers/overseas/detail">Change</a></td>
                         </tr>
                         <tr>
-                            <td class="name">Transported by</td>
+                            <th class="name">Transported by</th>
                             <td>
                                 {{ transfer.transportationCompanyAddress.businessName }}<br>
                                 {{ transfer.transportationCompanyAddress.addressLine1 }}<br>
@@ -47,7 +47,7 @@
                             <td class="action"><a href="/transfers/overseas/transportation-co-address">Change</a></td>
                         </tr>
                         <tr>
-                            <td class="name">Transported to</td>
+                            <th class="name">Transported to</th>
                             <td>
                                 {{ transfer.destinationAddress.businessName }}<br>
                                 {{ transfer.destinationAddress.addressLine1 }}<br>
