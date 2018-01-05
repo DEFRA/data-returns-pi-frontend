@@ -36,16 +36,16 @@
                 Check what you’re reporting
             </h2>
             <ul class="error-summary-list">
-                {% if value_error %}
-                <li><a href="">{{ errtext(value_error.errno) }}</a>
-                {% endif %}
-
                 {% if ewc_error %}
                 <li><a href="">{{ errtext(ewc_error.errno) }}</a>
                 {% endif %}
 
                 {% if wfd_error %}
                 <li><a href="">{{ errtext(wfd_error.errno) }}</a>
+                {% endif %}
+
+                {% if value_error %}
+                <li><a href="">{{ errtext(value_error.errno) }}</a>
                 {% endif %}
 
                 {% if dupe_error %}

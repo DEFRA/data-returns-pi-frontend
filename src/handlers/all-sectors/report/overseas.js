@@ -52,6 +52,8 @@ const internals = {
         }
 
         if (haveRemoved) {
+            const { permitStatus, route } = await cacheHelper(request, 'overseas');
+            await setValidationStatus(request, permitStatus, route, true);
             await request.server.app.userCache.cache(cacheNames.TASK_STATUS).set(request, tasks);
         }
 
@@ -96,38 +98,40 @@ const internals = {
             const { permitStatus, route, tasks } = await cacheHelper(request, 'overseas');
             const transfer = tasks.overseasTransfers[tasks.currentOverseasWasteTransferIdx];
 
-            if (!tasks.overseasTransfers || tasks.overseasTransfers.length === 0) {
-                throw new CacheKeyError('Expected overseas waste transfer object');
-            }
-
-            if (request.method === 'get') {
-                // Call the page specific functions of the post handler
-                await getHandler(permitStatus, route, tasks, transfer);
+            // We expect a current transfer object in each stage
+            if (!tasks.overseasTransfers || tasks.overseasTransfers.length === 0 || !transfer) {
+                reply.redirect('/task-list');
             } else {
 
-                // Call the page specific functions of the post handler
-                await postHandler(permitStatus, route, tasks, transfer);
-
-                // Validation
-                const validation = overseasValidator(transfer);
-
-                if (validation) {
-                    // Unset the overall validation status
-                    await setValidationStatus(request, permitStatus, route);
-
-                    // Add validation error to the object
-                    transfer.errors = validation;
-                    await request.server.app.userCache.cache(cacheNames.TASK_STATUS).set(request, tasks);
-
-                    reply.redirect(internals.validationLocationMapper(validation));
+                if (request.method === 'get') {
+                    // Call the page specific functions of the post handler
+                    await getHandler(permitStatus, route, tasks, transfer);
                 } else {
-                    delete transfer.errors;
-                    await request.server.app.userCache.cache(cacheNames.TASK_STATUS).set(request, tasks);
 
-                    // If the object is valid redirect to the transfer check page
-                    reply.redirect('/transfers/overseas/check');
+                    // Call the page specific functions of the post handler
+                    await postHandler(permitStatus, route, tasks, transfer);
+
+                    // Validation
+                    const validation = overseasValidator(transfer);
+
+                    if (validation) {
+                        // Unset the overall validation status
+                        await setValidationStatus(request, permitStatus, route);
+
+                        // Add validation error to the object
+                        transfer.errors = validation;
+                        await request.server.app.userCache.cache(cacheNames.TASK_STATUS).set(request, tasks);
+
+                        reply.redirect(internals.validationLocationMapper(validation));
+                    } else {
+                        delete transfer.errors;
+                        await request.server.app.userCache.cache(cacheNames.TASK_STATUS).set(request, tasks);
+
+                        // If the object is valid redirect to the transfer check page
+                        reply.redirect('/transfers/overseas/check');
+                    }
+
                 }
-
             }
         } catch (err) {
             if (err instanceof CacheKeyError) {
@@ -427,9 +431,14 @@ module.exports = {
 
             if (request.method === 'get') {
                 const transfer = tasks.overseasTransfers[tasks.currentOverseasWasteTransferIdx];
-                await request.server.app.userCache.cache(cacheNames.TASK_STATUS).set(request, tasks);
-                const enrichedTransfer = await internals.enrich(transfer);
-                reply.view('all-sectors/report/overseas-check', { transfer: enrichedTransfer });
+
+                if (transfer) {
+                    await request.server.app.userCache.cache(cacheNames.TASK_STATUS).set(request, tasks);
+                    const enrichedTransfer = await internals.enrich(transfer);
+                    reply.view('all-sectors/report/overseas-check', { transfer: enrichedTransfer });
+                } else {
+                    reply.redirect('/task-list');
+                }
             } else {
                 reply.redirect('/transfers/overseas');
             }
