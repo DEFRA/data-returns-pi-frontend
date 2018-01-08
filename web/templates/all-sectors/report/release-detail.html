@@ -11,8 +11,8 @@
     <h1 class="heading-large">Your release of {{ release.substance.name }} {{ description }}</h1>
 
     {% if release.errors %}
-    <div class="error-summary" role="alert" aria-labelledby="error-summary-heading-example-2" tabindex="-1">
-        <h2 class="heading-medium error-summary-heading" id="error-summary-heading-example-2">
+    <div class="error-summary" role="alert" aria-labelledby="check-your-report" tabindex="-1">
+        <h2 class="heading-medium error-summary-heading" id="check-your-report">
             Check what you’re reporting
         </h2>
         <p>There are issues with the data</p>
@@ -42,7 +42,7 @@
                 <thead> </thead>
                 <tbody>
                 <tr>
-                    <th class="id=value-check">Total</th>
+                    <th id="value-check">Total</th>
 
                     {% if value_error %}
                     <td class="td-release">
@@ -98,7 +98,7 @@
                     </td>
                 </tr>
                 <tr>
-                    <th class="id=method-check" class="method">Method</th>
+                    <th id="method-check" class="method">Method</th>
                     <td class="method">
                     {%if method_error %}
 	                    <div class="form-group-error">

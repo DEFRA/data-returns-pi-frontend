@@ -6,7 +6,7 @@
 <div class="error-summary" role="alert" aria-labelledby="error-summary-heading" tabindex="-1">
     <h2 class="heading-medium error-summary-heading" id="error-summary-heading">{{ heading }}</h2>
     <ul class="error-summary-list">
-        <li><a href="#search-results">{{ item }}</a></li>
+        <li><a href="#search-results-err">{{ item }}</a></li>
     </ul>
 </div>
 {% endmacro %}
@@ -24,9 +24,9 @@
             {% elif route.name === 'RELEASES_TO_CONTROLLED_WATERS' %}
                 {{ error('Do you need to report any releases to controlled waters?', 'Select the type of waste you released') }}
             {% elif route.name === 'OFFSITE_TRANSFERS_IN_WASTE_WATER' %}
-                {{ error('Do you need to report any releases in waste water?', 'Select the type of waste you released') }}
+                {{ error('Do you need to report any offsite transfers in wastewater?', 'Select the type of waste you transferred') }}
             {% elif route.name === 'OVERSEAS_WASTE_TRANSFERS' %}
-                {{ error('Do you need to report any waste you transferred?', 'Select the type of waste you  transferred') }}
+                {{ error('Do you need to report any waste you transferred?', 'Select the type of waste you transferred') }}
             {% endif %}
         {% endif %}
 

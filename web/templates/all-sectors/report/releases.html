@@ -18,8 +18,8 @@
     {% if (releases | substancesWithErrors | length) === 0 %}
     <h1 class="heading-large">{{ header }}</h1>
     {% else %}
-    <div class="error-summary" role="alert" aria-labelledby="error-summary-heading-example-2" tabindex="-1">
-        <h2 class="heading-large error-summary-heading" id="error-summary-heading-example-2">
+    <div class="error-summary" role="alert" aria-labelledby="check-your-report" tabindex="-1">
+        <h2 class="heading-medium error-summary-heading" id="check-your-report">
             {{ errorheader }}
         </h2>
         <ul class="error-summary-list">
