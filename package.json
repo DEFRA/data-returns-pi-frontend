@@ -29,6 +29,9 @@
     "nunjucks": "3.0.1",
     "lodash": "4.17.4",
     "joi": "13.0.2",
+    "uri-js": "^3.0.2",
+    "request": "2.83.0",
+    "request-promise": "4.2.2",
     "govuk-elements-sass": "3.1.2",
     "govuk_frontend_toolkit": "7.2.0",
     "govuk_template_jinja": "0.23.0"
@@ -57,7 +60,7 @@
     "start": "node main.js",
     "proto": "node proto.js",
     "lint": "./node_modules/eslint/bin/eslint.js .",
-    "test": "redis-cli flushdb && ./node_modules/lab/bin/lab -e local --assert code --verbose",
+    "test": "redis-cli flushdb && ./node_modules/lab/bin/lab --coverage-exclude './src/lib/api-client' --assert code --verbose",
     "clear-cache": "redis-cli flushdb",
     "coverage": "nyc --all npm start",
     "coverage-unittest": "nyc --all npm test"

@@ -1,7 +1,7 @@
 'use strict';
 
 /**
- * This module services requests against the data model.
+ * This module services requests against the test data model.
  */
 
 const _ = require('lodash');

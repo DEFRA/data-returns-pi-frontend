@@ -9,7 +9,7 @@
 const Lab = require('lab');
 const Code = require('code');
 
-const MasterDataService = require('../../src/service/master-data');
+const MasterDataService = require('../../src/service/master-data-test');
 
 const lab = exports.lab = Lab.script();
 const experiment = lab.experiment;
