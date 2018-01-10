@@ -29,6 +29,7 @@ internals.initialize = async () => {
      * as the default client cache
      */
     Logging.logger.info('Create hapi server initialization...');
+    Logging.logger.info('Node environment: ' + process.env.NODE_ENV);
 
     internals.server = new Hapi.Server({
         cache: [
