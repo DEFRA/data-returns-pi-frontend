@@ -5,11 +5,13 @@
 {% block content %}
 
 <main id="content">
+	<label id="page-name" hidden>off-site-detail</label>
+	<a href="/task-list" class="link-back">Back to sections you must complete</a>
     <form action="/transfers/off-site/detail" method="post" class="form">
 		<h1 class="heading-large">More detail about your off-site transfer of {{ transfer.ewc.subChapter.description }}</h1>
 		{% if transfer.errors %}
-		<div class="error-summary" role="alert" aria-labelledby="error-summary-heading-example-2" tabindex="-1">
-			<h2 class="heading-medium error-summary-heading" id="error-summary-heading-example-2">
+		<div class="error-summary" role="alert" aria-labelledby="check-your-report" tabindex="-1">
+			<h2 class="heading-medium error-summary-heading" id="check-your-report">
 				Check what you’re reporting
 			</h2>
 			<ul class="error-summary-list">
@@ -61,21 +63,16 @@
 		                    {% endif %}
 		                </td>
 		            </tr>
-		            <tr>
-		                <th class="">2016 total</th>
-		                <td class=""></td>
-		            </tr>
 
 		            <tr>
-		                <th>2017 total</th>
+		                <th>Total</th>
 		                <td>
 		                {% if value_error %}
-		                    <label class="form-label visually-hidden" for="value-err"></label>
+		                    <label class="form-label visually-hidden" for="value-err">Total</label>
 							<span class="error-message">Your total must be in digits</span>
 		                    <input type="number" step="0.001" class="form-control form-control-error total" id="value-err" name="value" value="{{ transfer.value }}"> tonnes
 		                {% else %}
-		                    <p class="bold">Total</p>
-		                    <label class="form-label visually-hidden" for="value"></label>
+		                    <label class="form-label visually-hidden" for="value">Total</label>
 		                    <input type="number" step="0.001" class="form-control total" id="value" name="value" value="{{ transfer.value }}"> tonnes
 		                {% endif %}
 		                </td>

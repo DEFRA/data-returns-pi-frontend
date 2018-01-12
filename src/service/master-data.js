@@ -1,303 +1,36 @@
 'use strict';
 
 /**
- * This module services requests against the data model.
+ * This module services requests against the data model. It servers up methods from
+ * master-data-api or master data test depending on the run status
  */
 
-const _ = require('lodash');
+const testService = require('./master-data-test');
+const apiService = require('./master-data-api');
 
-// TODO Replace plug in data model with the real deal.
-const Data = require('../../data/master-data');
-
-let internals = {};
-
-module.exports = internals = {
-
-    /**
-     * Return all the user details
-     * @return {*} - The list of users
-     */
-    getUsers: async () => {
-        return Data.users;
-    },
-
-    /**
-     * Return the user object for a given username
-     * @param username
-     * @return {*} - The user
-     */
-    getUser: async (username) => {
-        return Data.users.find((e) => { return e.username === username; }) || null;
-    },
-
-    /**
-     * Return all the permits
-     * @return {*} - The list of permits
-     */
-    getEaIds: async () => {
-        return Data.eaIds;
-    },
-
-    /**
-     * Return the permits for a given user Id
-     * @param id - The permit identifier
-     * @return {*} - The list of permits
-     */
-    getEaIdsForUser: async (id) => {
-        try {
-            return Data.userEaIds
-                .find((e) => { return e.userId === id; }).eaIdId
-                .map((eaId) => {
-                    return Data.eaIds.find((e) => { return e.id === eaId; });
-                });
-        } catch (err) {
-            return null;
-        }
-    },
-
-    /**
-     * Get permit form permit Id (The database key)
-     * @param eaIdId - the permit id
-     */
-    getEaIdFromEaIdId: async (eaIdId) => {
-        return Data.eaIds.find((e) => { return e.id === eaIdId; }) || null;
-    },
-
-    /**
-     * Get the site information for a given permit
-     * @param eaIdId - the permit id
-     */
-    getSiteForEaIdId: async (eaIdId) => {
-        // Get the permit
-        const eaId = await internals.getEaIdFromEaIdId(eaIdId);
-
-        // Get its site
-        return eaId ? Data.sites.find((s) => { return s.id === eaId.siteId; }) : null;
-    },
-
-    /**
-     * Get the distinct set of sites for a set of permits
-     * @param eaIds - an array containing the site objects enriched with an array of the
-     * corresponding permits
-     */
-    getSitesForEaIdIds: async (eaIdIds) => {
-
-        // Get the permits
-        const eaIdsP = eaIdIds.map((id) => {
-            return internals.getEaIdFromEaIdId(id);
-        });
-
-        return Promise.all(eaIdsP).then((eaIds) => {
-            const result = [];
-
-            try {
-
-                // Find the unique site Ids
-                const sites = eaIds
-                    // Sort permits by siteId
-                    .sort((e1, e2) => { return e1.siteId - e2.siteId; })
-                    // Generate an object containing the the site and permit object
-                    .map((e) => {
-                        return {
-                            site: Data.sites.find((s) => { return s.id === e.siteId; }),
-                            eaId: e
-                        };
-                    });
-
-                for (const site of sites) {
-                    if (result.length && site.site.id === result[result.length - 1].id) {
-                        // Its the same site so add the list of eaId
-                        result[result.length - 1].eaIds.push(_.cloneDeep(site.eaId));
-                    } else {
-                        // Its a new site so create a new object
-                        const newSite = _.cloneDeep(site.site);
-                        newSite.eaIds = [_.cloneDeep(site.eaId)];
-                        result.push(newSite);
-                    }
-                }
-
-                return result;
-
-            } catch (err) {
-                return null;
-            }
-        });
-    },
-
-    /**
-     * Return an array of all the substances
-     * @returns {Promise.<Array>}
-     */
-    getSubstances: async () => { return Data.substances; },
-
-    /**
-     * Return a substance object from its id
-     * @param id
-     * @returns {Promise.<*>}
-     */
-    getSubstanceById: async (id) => {
-        if (!internals._substancesMap.size) {
-            Data.substances.forEach((s) => {
-                internals._substancesMap.set(s.id, s);
-            });
-        }
-        return internals._substancesMap.get(id);
-    },
-
-    /**
-     * Return an array of all the substances
-     * @returns {Promise.<Array>}
-     */
-    getUnits: async () => { return Data.units; },
-
-    /**
-     * Return a substance object from its id
-     * @param id
-     * @returns {Promise.<*>}
-     */
-    getUnitById: async (id) => {
-        if (!internals._unitsMap.size) {
-            Data.units.forEach((s) => {
-                internals._unitsMap.set(s.id, s);
-            });
-        }
-        return internals._unitsMap.get(id);
-    },
-
-    /**
-     * Return a list of the value methods
-     */
-    getMethods: async () => {
-        return Data.methods;
-    },
-
-    /**
-     * Return a specific method by Id
-     * @param id
-     */
-    getMethodById: async (id) => {
-        return Data.methods.find(m => m.id === id);
-    },
-
-    /**
-     * Get the set of transfer operations (used by overseas transfers)
-     * @returns {Promise.<Array>}
-     */
-    getTransferOperations: async () => {
-        return Data.transferOperations;
-    },
-
-    getTransferOperationById: async (id) => {
-        return Data.transferOperations.find(o => o.id === id);
-    },
-
-    /**
-     * Authenticate a given user. Returns a copy of user object if authenticated or undefined if not.
-     * @param username - The given username
-     * @param password - The given password
-     * @return {*}
-     */
-    authenticate: async (username, password) => {
-        try {
-            return _.cloneDeep(Data.users.find((e) => {
-                return e.username === username && e.password === password;
-            }));
-        } catch (err) {
-            return undefined;
-        }
-    },
-
-    getEwcActivityById: async (id) => {
-        if (!internals._ewcActivityId.size) {
-            Data.ewcActivity.forEach((s) => {
-                internals._ewcActivityId.set(s.id, s);
-            });
-        }
-        return internals._ewcActivityId.get(id);
-    },
-
-    getEwcChapterById: async (id) => {
-        if (!internals._ewcChapterId.size) {
-            Data.ewcChapter.forEach((s) => {
-                internals._ewcChapterId.set(s.id, s);
-            });
-        }
-        return internals._ewcChapterId.get(id);
-    },
-
-    getEwcSubChapterById: async (id) => {
-        if (!internals._ewcSubChapterId.size) {
-            Data.ewcSubChapter.forEach((s) => {
-                internals._ewcSubChapterId.set(s.id, s);
-            });
-        }
-        return internals._ewcSubChapterId.get(id);
-    },
-
-    getEwc: async (activity, chapter, subChapter) => {
-        if (!internals._ewcActivity.size) {
-            Data.ewcActivity.forEach((a) => {
-                internals._ewcActivity.set(a.activity, a);
-            });
-        }
-        if (!internals._ewcChapter.size) {
-            Data.ewcChapter.forEach((c) => {
-                internals._ewcChapter.set(c.activity + '-' + c.chapter, c);
-            });
-        }
-        if (!internals._ewcSubChapter.size) {
-            Data.ewcSubChapter.forEach((s) => {
-                internals._ewcSubChapter.set(s.activity + '-' + s.chapter + '-' + s.subChapter, s);
-            });
-        }
-
-        const result = {};
-
-        if (activity && chapter && subChapter) {
-            const _subChapter = internals._ewcSubChapter.get(activity + '-' + chapter + '-' + subChapter);
-
-            if (_subChapter) {
-
-                const _chapter = internals._ewcChapter.get(_subChapter.activity + '-' + _subChapter.chapter);
-                if (_chapter) {
-                    const _activity = internals._ewcActivity.get(_chapter.activity);
-
-                    if (_activity) {
-                        result.activityId = _activity.id;
-                        result.chapterId = _chapter.id;
-                        result.subChapterId = _subChapter.id;
-
-                        return result;
-                    }
-                }
-            }
-        }
-
-        return null;
-    },
-
-    getDisposalCode: async (code) => {
-        return Data.disposalCodes.find((e) => { return e.code === code; }) || null;
-    },
-
-    getRecoveryCode: async (code) => {
-        return Data.recoveryCodes.find((e) => { return e.code === code; }) || null;
-    },
-
-    getDisposalById: async (id) => {
-        return Data.disposalCodes.find((e) => { return e.id === id; }) || null;
-    },
-
-    getRecoveryById: async (id) => {
-        return Data.recoveryCodes.find((e) => { return e.id === id; }) || null;
-    }
+module.exports = {
+    authenticate: process.env.NODE_ENV === 'localtest' ? testService.authenticate : testService.authenticate,
+    getUsers: process.env.NODE_ENV === 'localtest' ? testService.getUsers : testService.getUsers,
+    getUser: process.env.NODE_ENV === 'localtest' ? testService.getUser : testService.getUser,
+    getEaIds: process.env.NODE_ENV === 'localtest' ? testService.getEaIds : apiService.getEaIds,
+    getEaIdsForUser: process.env.NODE_ENV === 'localtest' ? testService.getEaIdsForUser : apiService.getEaIdsForUser,
+    getEaIdFromEaIdId: process.env.NODE_ENV === 'localtest' ? testService.getEaIdFromEaIdId : apiService.getEaIdFromEaIdId,
+    getSiteForEaIdId: process.env.NODE_ENV === 'localtest' ? testService.getSiteForEaIdId : testService.getSiteForEaIdId,
+    getSitesForEaIdIds: process.env.NODE_ENV === 'localtest' ? testService.getSitesForEaIdIds : testService.getSitesForEaIdIds,
+    getSubstances: process.env.NODE_ENV === 'localtest' ? testService.getSubstances : testService.getSubstances,
+    getSubstanceById: process.env.NODE_ENV === 'localtest' ? testService.getSubstanceById : testService.getSubstanceById,
+    getUnits: process.env.NODE_ENV === 'localtest' ? testService.getUnits : apiService.getUnits,
+    getUnitById: process.env.NODE_ENV === 'localtest' ? testService.getUnitById : apiService.getUnitById,
+    getTransferOperations: process.env.NODE_ENV === 'localtest' ? testService.getTransferOperations : apiService.getTransferOperations,
+    getTransferOperationById: process.env.NODE_ENV === 'localtest' ? testService.getTransferOperationById : apiService.getTransferOperationById,
+    getMethods: process.env.NODE_ENV === 'localtest' ? testService.getMethods : apiService.getMethods,
+    getMethodById: process.env.NODE_ENV === 'localtest' ? testService.getMethodById : apiService.getMethodById,
+    getEwc: process.env.NODE_ENV === 'localtest' ? testService.getEwc : testService.getEwc,
+    getEwcActivityById: process.env.NODE_ENV === 'localtest' ? testService.getEwcActivityById : apiService.getEwcActivityById,
+    getEwcChapterById: process.env.NODE_ENV === 'localtest' ? testService.getEwcChapterById : apiService.getEwcChapterById,
+    getEwcSubChapterById: process.env.NODE_ENV === 'localtest' ? testService.getEwcSubChapterById : apiService.getEwcSubChapterById,
+    getDisposalCode: process.env.NODE_ENV === 'localtest' ? testService.getDisposalCode : testService.getDisposalCode,
+    getDisposalById: process.env.NODE_ENV === 'localtest' ? testService.getDisposalById : testService.getDisposalById,
+    getRecoveryCode: process.env.NODE_ENV === 'localtest' ? testService.getRecoveryCode : testService.getRecoveryCode,
+    getRecoveryById: process.env.NODE_ENV === 'localtest' ? testService.getRecoveryById : testService.getRecoveryById
 };
-
-internals._substancesMap = new Map();
-internals._unitsMap = new Map();
-internals._ewcActivity = new Map();
-internals._ewcChapter = new Map();
-internals._ewcSubChapter = new Map();
-internals._ewcActivityId = new Map();
-internals._ewcChapterId = new Map();
-internals._ewcSubChapterId = new Map();

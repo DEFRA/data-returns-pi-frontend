@@ -9,8 +9,8 @@
     {% if transfers | map("errors") | length === 0 %}
     <h1 class="heading-large">Report your off-site waste transfers</h1>
     {% else %}
-    <div class="error-summary" role="alert" aria-labelledby="error-summary-heading-example-2" tabindex="-1">
-        <h2 class="heading-large error-summary-heading" id="error-summary-heading-example-2">Check what you’re reporting</h2>
+    <div class="error-summary" role="alert" aria-labelledby="check-your-report" tabindex="-1">
+        <h2 class="heading-medium error-summary-heading" id="check-your-report">Check what you’re reporting</h2>
         <ul class="error-summary-list">
             {% for transfer in transfers | transfersWithErrors %}
             <li><a href="#">Check your {{ transfer.ewc.activity.activity }} {{ transfer.ewc.chapter.chapter }} {{ transfer.ewc.subChapter.subChapter }} &#40;{{ transfer.ewc.subChapter.description }}&#41; report</a></li>
