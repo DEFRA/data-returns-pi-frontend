@@ -42,6 +42,112 @@ module.exports = internals = {
      * Return an array of all the substances
      * @returns {Promise.<Array>}
      */
+    getSites: async () => {
+        return internals.listEntity(internals._entities.sites);
+    },
+
+    /**
+     * Return a substance object from its id
+     * @param id
+     * @returns {Promise.<*>}
+     */
+    getSiteById: async (id) => {
+        return internals.getEntityById(internals._entities.sites, id);
+    },
+
+    /**
+     * Get the site information for a given permit
+     * @param eaIdId - the permit id
+     */
+    getSiteForEaIdId: async (eaIdId) => {
+        try {
+            const eaId = await internals.getEaIdFromEaIdId(eaIdId);
+            return internals.getSiteById(eaId.siteId);
+        } catch (err) {
+            return null;
+        }
+    },
+
+    /*
+     * Get the distinct set of sites for a set of permits
+     * @param eaIds - an array containing the site objects enriched with an array of the
+     * corresponding permits
+     */
+    getSitesForEaIdIds: async (eaIdIds) => {
+
+        // Get the permits
+        const eaIdsP = eaIdIds.map((id) => {
+            return internals.getEaIdFromEaIdId(id);
+        });
+
+        return Promise.all(eaIdsP).then((eaIds) => {
+            const result = [];
+
+            // Find the unique site Ids
+            const sites = eaIds
+                .sort((e1, e2) => { return e1.siteId - e2.siteId; })
+                .filter(e => e)
+                .map(async (e) => {
+                    return {
+                        site: await internals.getSiteById(e.siteId),
+                        eaId: e
+                    };
+                });
+
+                // For each site gather an array of eaIds
+            return Promise.all(sites).then((p) => {
+
+                for (const site of p) {
+                    if (result.length && site.site.id === result[result.length - 1].id) {
+                        result[result.length - 1].eaIds.push(_.cloneDeep(site.eaId));
+                    } else {
+                        const newSite = _.cloneDeep(site.site);
+                        newSite.eaIds = [_.cloneDeep(site.eaId)];
+                        result.push(newSite);
+                    }
+                }
+
+                return result.length ? result : null;
+            });
+
+        }).catch((err) => {
+            Logging.logger.error(err);
+            return null;
+        });
+    },
+
+    /**
+     * Return an array of all the substances
+     * @returns {Promise.<Array>}
+     */
+    getSubstances: async (route) => {
+        switch (route) {
+            case 'RELEASES_TO_AIR':
+                return internals.listEntity(internals._entities.substancesAir);
+            case 'RELEASES_TO_LAND':
+                return internals.listEntity(internals._entities.substancesLand);
+            case 'RELEASES_TO_CONTROLLED_WATERS':
+                return internals.listEntity(internals._entities.substancesWater);
+            case 'OFFSITE_TRANSFERS_IN_WASTE_WATER':
+                return internals.listEntity(internals._entities.substancesWasteWater);
+            default:
+                return internals.listEntity(internals._entities.substances);
+        }
+    },
+
+    /**
+     * Return a substance object from its id
+     * @param id
+     * @returns {Promise.<*>}
+     */
+    getSubstanceById: async (id) => {
+        return internals.getEntityById(internals._entities.substances, id);
+    },
+
+    /**
+     * Return an array of all the substances
+     * @returns {Promise.<Array>}
+     */
     getUnits: async () => {
         return internals.listEntity(internals._entities.units);
     },
@@ -196,7 +302,8 @@ internals.getEntityById = async (entity, id) => {
  */
 internals.entityFetch = async (entity) => {
     try {
-        const result = await client.request(entity.request.api, entity.request.method, entity.request.uri);
+        const result = await client.request(entity.request.api,
+            entity.request.method, entity.request.uri, entity.request.query);
 
         // Set array
         entity.arr = result._embedded[entity.name].map(entity.idMapper);
@@ -233,6 +340,110 @@ internals._entities = {
         request: {
             api: 'MD',
             uri: 'uniqueIdentifierGroups/1/uniqueIdentifiers',
+            query: 'projection=inlineSites',
+            method: 'GET'
+        },
+        idMapper: (i) => {
+            return {
+                id: i.id,
+                name: i.nomenclature,
+                siteId: i.site.id
+            };
+        }
+    },
+
+    sites: {
+        name: 'sites',
+        map: new Map(),
+        arr: [],
+        request: {
+            api: 'MD',
+            uri: 'sites',
+            method: 'GET'
+        },
+        idMapper: (i) => {
+            return {
+                id: i.id,
+                name: i.nomenclature
+            };
+        }
+    },
+
+    substances: {
+        name: 'parameters',
+        map: new Map(),
+        arr: [],
+        request: {
+            api: 'MD',
+            uri: 'parameters',
+            method: 'GET'
+        },
+        idMapper: (i) => {
+            return {
+                id: i.id,
+                name: i.nomenclature
+            };
+        }
+    },
+
+    substancesAir: {
+        name: 'parameters',
+        map: new Map(),
+        arr: [],
+        request: {
+            api: 'MD',
+            uri: 'parameterGroups/3/parameters',
+            method: 'GET'
+        },
+        idMapper: (i) => {
+            return {
+                id: i.id,
+                name: i.nomenclature
+            };
+        }
+    },
+
+    substancesLand: {
+        name: 'parameters',
+        map: new Map(),
+        arr: [],
+        request: {
+            api: 'MD',
+            uri: 'parameterGroups/4/parameters',
+            method: 'GET'
+        },
+        idMapper: (i) => {
+            return {
+                id: i.id,
+                name: i.nomenclature
+            };
+        }
+    },
+
+    substancesWater: {
+        name: 'parameters',
+        map: new Map(),
+        arr: [],
+        request: {
+            api: 'MD',
+            uri: 'parameterGroups/5/parameters',
+            method: 'GET'
+        },
+        idMapper: (i) => {
+            return {
+                id: i.id,
+                name: i.nomenclature
+            };
+        }
+    },
+
+    substancesWasteWater: {
+        name: 'parameters',
+        map: new Map(),
+        arr: [],
+        request: {
+            api: 'MD',
+            uri: 'parameterGroups/2/parameters',
             method: 'GET'
         },
         idMapper: (i) => {

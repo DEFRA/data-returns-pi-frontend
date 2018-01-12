@@ -48,6 +48,18 @@ experiment('Master data service (Test data)', function () {
             expect(na).to.be.null();
         });
 
+        test('getSites()', async () => {
+            const sites = await MasterDataService.getSites();
+            expect(sites).to.be.an.array();
+        });
+
+        test('getSiteById(id)', async () => {
+            const sites = await MasterDataService.getSites();
+            const site = await MasterDataService.getSiteById(sites[0].id);
+            expect(site).to.be.an.object();
+            expect(site.name).to.be.not.null();
+        });
+
         test('getEaIdFromEaIdId (eaIdId)', async () => {
             const eaId = await MasterDataService.getEaIdFromEaIdId(34);
             expect(eaId).to.be.an.object();

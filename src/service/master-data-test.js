@@ -62,6 +62,23 @@ module.exports = internals = {
     },
 
     /**
+     * Return an array of all the substances
+     * @returns {Promise.<Array>}
+     */
+    getSites: async () => {
+        return Data.sites;
+    },
+
+    /**
+     * Return a substance object from its id
+     * @param id
+     * @returns {Promise.<*>}
+     */
+    getSiteById: async (id) => {
+        return Data.sites.find((e) => { return e.id === id; }) || null;
+    },
+
+    /**
      * Get the site information for a given permit
      * @param eaIdId - the permit id
      */

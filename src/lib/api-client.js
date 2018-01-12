@@ -6,7 +6,6 @@
 
 const uriJs = require('uri-js');
 const Hoek = require('hoek');
-const System = require('./system');
 const request = require('request-promise');
 const Logging = require('./logging');
 
@@ -27,14 +26,14 @@ const internals = {
 
             const uriObj = client === 'SUB' ? {
                 scheme: 'http',
-                host: process.env.SM_API_HOSTNAME,
-                port: Number.parseInt(process.env.SM_API_PORT),
+                host: process.env.SM_API_HOSTNAME || 'localhost',
+                port: Number.parseInt(process.env.SM_API_PORT || 9220),
                 path: 'api/' + command,
                 query: query
             } : {
                 scheme: 'http',
-                host: process.env.MD_API_HOSTNAME,
-                port: Number.parseInt(process.env.MD_API_PORT),
+                host: process.env.MD_API_HOSTNAME || 'localhost',
+                port: Number.parseInt(process.env.MD_API_PORT || 9020),
                 path: 'api/' + command,
                 query: query
             };
