@@ -24,11 +24,8 @@ module.exports = {
             // Get the permits for the user
             const eaIds = await MasterDataService.getEaIdsForUser(session.user.id);
 
-            // Get the permits grouped by site
-            const sites = await MasterDataService.getSitesForEaIdIds(eaIds.map(e => e.id));
-
             // Return the start page
-            reply.view('start', { user: session.user, sites: sites });
+            reply.view('start', { user: session.user, eaIds: eaIds });
 
         } catch (err) {
             logger.log('error', err);

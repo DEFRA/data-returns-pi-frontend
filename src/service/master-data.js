@@ -15,10 +15,6 @@ module.exports = {
     getEaIds: process.env.NODE_ENV === 'localtest' ? testService.getEaIds : apiService.getEaIds,
     getEaIdsForUser: process.env.NODE_ENV === 'localtest' ? testService.getEaIdsForUser : apiService.getEaIdsForUser,
     getEaIdFromEaIdId: process.env.NODE_ENV === 'localtest' ? testService.getEaIdFromEaIdId : apiService.getEaIdFromEaIdId,
-    getSites: process.env.NODE_ENV === 'localtest' ? testService.getSites : apiService.getSites,
-    getSiteById: process.env.NODE_ENV === 'localtest' ? testService.getSiteById : apiService.getSiteById,
-    getSiteForEaIdId: process.env.NODE_ENV === 'localtest' ? testService.getSiteForEaIdId : apiService.getSiteForEaIdId,
-    getSitesForEaIdIds: process.env.NODE_ENV === 'localtest' ? testService.getSitesForEaIdIds : apiService.getSitesForEaIdIds,
     getSubstances: process.env.NODE_ENV === 'localtest' ? testService.getSubstances : apiService.getSubstances,
     getSubstanceById: process.env.NODE_ENV === 'localtest' ? testService.getSubstanceById : apiService.getSubstanceById,
     getUnits: process.env.NODE_ENV === 'localtest' ? testService.getUnits : apiService.getUnits,
@@ -27,12 +23,12 @@ module.exports = {
     getTransferOperationById: process.env.NODE_ENV === 'localtest' ? testService.getTransferOperationById : apiService.getTransferOperationById,
     getMethods: process.env.NODE_ENV === 'localtest' ? testService.getMethods : apiService.getMethods,
     getMethodById: process.env.NODE_ENV === 'localtest' ? testService.getMethodById : apiService.getMethodById,
-    getEwc: process.env.NODE_ENV === 'localtest' ? testService.getEwc : testService.getEwc,
+    getEwc: process.env.NODE_ENV === 'localtest' ? testService.getEwc : apiService.getEwc,
     getEwcActivityById: process.env.NODE_ENV === 'localtest' ? testService.getEwcActivityById : apiService.getEwcActivityById,
     getEwcChapterById: process.env.NODE_ENV === 'localtest' ? testService.getEwcChapterById : apiService.getEwcChapterById,
     getEwcSubChapterById: process.env.NODE_ENV === 'localtest' ? testService.getEwcSubChapterById : apiService.getEwcSubChapterById,
-    getDisposalCode: process.env.NODE_ENV === 'localtest' ? testService.getDisposalCode : testService.getDisposalCode,
-    getDisposalById: process.env.NODE_ENV === 'localtest' ? testService.getDisposalById : testService.getDisposalById,
-    getRecoveryCode: process.env.NODE_ENV === 'localtest' ? testService.getRecoveryCode : testService.getRecoveryCode,
-    getRecoveryById: process.env.NODE_ENV === 'localtest' ? testService.getRecoveryById : testService.getRecoveryById
+    getDisposalCode: process.env.NODE_ENV === 'localtest' ? testService.getDisposalCode : apiService.getDisposalCode,
+    getDisposalById: process.env.NODE_ENV === 'localtest' ? testService.getDisposalById : apiService.getDisposalById,
+    getRecoveryCode: process.env.NODE_ENV === 'localtest' ? testService.getRecoveryCode : apiService.getRecoveryCode,
+    getRecoveryById: process.env.NODE_ENV === 'localtest' ? testService.getRecoveryById : apiService.getRecoveryById
 };

@@ -55,88 +55,11 @@ module.exports = internals = {
 
     /**
      * Get permit form permit Id (The database key)
+     * and inline the site id
      * @param eaIdId - the permit id
      */
     getEaIdFromEaIdId: async (eaIdId) => {
         return Data.eaIds.find((e) => { return e.id === eaIdId; }) || null;
-    },
-
-    /**
-     * Return an array of all the substances
-     * @returns {Promise.<Array>}
-     */
-    getSites: async () => {
-        return Data.sites;
-    },
-
-    /**
-     * Return a substance object from its id
-     * @param id
-     * @returns {Promise.<*>}
-     */
-    getSiteById: async (id) => {
-        return Data.sites.find((e) => { return e.id === id; }) || null;
-    },
-
-    /**
-     * Get the site information for a given permit
-     * @param eaIdId - the permit id
-     */
-    getSiteForEaIdId: async (eaIdId) => {
-        // Get the permit
-        const eaId = await internals.getEaIdFromEaIdId(eaIdId);
-
-        // Get its site
-        return eaId ? Data.sites.find((s) => { return s.id === eaId.siteId; }) : null;
-    },
-
-    /**
-     * Get the distinct set of sites for a set of permits
-     * @param eaIds - an array containing the site objects enriched with an array of the
-     * corresponding permits
-     */
-    getSitesForEaIdIds: async (eaIdIds) => {
-
-        // Get the permits
-        const eaIdsP = eaIdIds.map((id) => {
-            return internals.getEaIdFromEaIdId(id);
-        });
-
-        return Promise.all(eaIdsP).then((eaIds) => {
-            const result = [];
-
-            try {
-
-                // Find the unique site Ids
-                const sites = eaIds
-                    // Sort permits by siteId
-                    .sort((e1, e2) => { return e1.siteId - e2.siteId; })
-                    // Generate an object containing the the site and permit object
-                    .map((e) => {
-                        return {
-                            site: Data.sites.find((s) => { return s.id === e.siteId; }),
-                            eaId: e
-                        };
-                    });
-
-                for (const site of sites) {
-                    if (result.length && site.site.id === result[result.length - 1].id) {
-                        // Its the same site so add the list of eaId
-                        result[result.length - 1].eaIds.push(_.cloneDeep(site.eaId));
-                    } else {
-                        // Its a new site so create a new object
-                        const newSite = _.cloneDeep(site.site);
-                        newSite.eaIds = [_.cloneDeep(site.eaId)];
-                        result.push(newSite);
-                    }
-                }
-
-                return result;
-
-            } catch (err) {
-                return null;
-            }
-        });
     },
 
     /**

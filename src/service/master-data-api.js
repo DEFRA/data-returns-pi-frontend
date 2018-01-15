@@ -42,79 +42,6 @@ module.exports = internals = {
      * Return an array of all the substances
      * @returns {Promise.<Array>}
      */
-    getSites: async () => {
-        return internals.listEntity(internals._entities.sites);
-    },
-
-    /**
-     * Return a substance object from its id
-     * @param id
-     * @returns {Promise.<*>}
-     */
-    getSiteById: async (id) => {
-        return internals.getEntityById(internals._entities.sites, id);
-    },
-
-    /**
-     * Get the site information for a given permit
-     * @param eaIdId - the permit id
-     */
-    getSiteForEaIdId: async (eaIdId) => {
-        try {
-            const eaId = await internals.getEaIdFromEaIdId(eaIdId);
-            return internals.getSiteById(eaId.siteId);
-        } catch (err) {
-            return null;
-        }
-    },
-
-    /*
-     * Get the distinct set of sites for a set of permits
-     * @param eaIds - an array containing the site objects enriched with an array of the
-     * corresponding permits
-     */
-    getSitesForEaIdIds: async (eaIdIds) => {
-
-        // Get the permits
-        const eaIdsP = eaIdIds.map((id) => {
-            return internals.getEaIdFromEaIdId(id);
-        });
-
-        return Promise.all(eaIdsP).then((eaIds) => {
-            const result = [];
-
-            // Find the unique site Ids
-            const sites = eaIds
-                .sort((e1, e2) => { return e1.siteId - e2.siteId; })
-                .filter(e => e)
-                .map(async (e) => {
-                    return {
-                        site: await internals.getSiteById(e.siteId),
-                        eaId: e
-                    };
-                });
-
-                // For each site gather an array of eaIds
-            return Promise.all(sites).then((p) => {
-
-                for (const site of p) {
-                    if (result.length && site.site.id === result[result.length - 1].id) {
-                        result[result.length - 1].eaIds.push(_.cloneDeep(site.eaId));
-                    } else {
-                        const newSite = _.cloneDeep(site.site);
-                        newSite.eaIds = [_.cloneDeep(site.eaId)];
-                        result.push(newSite);
-                    }
-                }
-
-                return result.length ? result : null;
-            });
-
-        }).catch((err) => {
-            Logging.logger.error(err);
-            return null;
-        });
-    },
 
     /**
      * Return an array of all the substances
@@ -213,7 +140,7 @@ module.exports = internals = {
      */
     getEwcSubChapterById: async (id) => {
         return internals.getEntityById(internals._entities.ewcSubchapters, id);
-    }
+    },
 
     /**
      * Get a an object containing the id's of the activity, chapter and sub-chapter
@@ -223,51 +150,68 @@ module.exports = internals = {
      * @param subChapter
      * @return {Promise.<*>}
      */
-    // getEwc: async (activity, chapter, subChapter) => {
-    //     /*
-    //      * const ewcActivity = await internals.listEntity(internals._entities.ewcActivities);
-    //      * const ewcChapters = await internals.listEntity(internals._entities.ewcChapters);
-    //      * const ewcSubchapters = await internals.listEntity(internals._entities.ewcSubchapters);
-    //      */
-    //
-    //     const result = {};
-    //
-    //     if (activity && chapter && subChapter) {
-    //         const _subChapter = internals._ewcSubChapter.get(activity + '-' + chapter + '-' + subChapter);
-    //
-    //         if (_subChapter) {
-    //
-    //             const _chapter = internals._ewcChapter.get(_subChapter.activity + '-' + _subChapter.chapter);
-    //             if (_chapter) {
-    //                 const _activity = internals._ewcActivity.get(_chapter.activity);
-    //
-    //                 if (_activity) {
-    //                     result.activityId = _activity.id;
-    //                     result.chapterId = _chapter.id;
-    //                     result.subChapterId = _subChapter.id;
-    //
-    //                     return result;
-    //                 }
-    //             }
-    //         }
-    //     }
-    //
-    //     return null;
-    // }
+    getEwc: async (activity, chapter, subChapter) => {
+        const ewcActivity = await internals.getEntityByNamedMapper(internals._entities.ewcActivities, 'byName', `${chapter} ${subChapter} ${activity}`);
+        const ewcSubchapter = await internals.getEntityByNamedMapper(internals._entities.ewcSubchapters, 'byName', `${chapter} ${subChapter}`);
+        const ewcChapter = await internals.getEntityByNamedMapper(internals._entities.ewcChapters, 'byCode', chapter);
+        const result = {};
 
-    /*
-     * getDisposalCode: async (code) => {
-     * },
-     *
-     * getRecoveryCode: async (code) => {
-     * },
-     *
-     * getDisposalById: async (id) => {
-     * },
-     *
-     * getRecoveryById: async (id) => {
-     * }
+        if (ewcActivity && ewcChapter && ewcSubchapter) {
+            const _subChapter = await internals.getEwcSubChapterById(ewcActivity.ewc_subchapter);
+
+            if (_subChapter && _subChapter.id === ewcSubchapter.id) {
+
+                const _chapter = await internals.getEwcChapterById(_subChapter.ewc_chapter);
+                if (_chapter && _chapter.id === ewcChapter.id) {
+
+                    result.activityId = ewcActivity.id;
+                    result.chapterId = ewcChapter.id;
+                    result.subChapterId = ewcSubchapter.id;
+
+                    return result;
+
+                }
+            }
+        }
+
+        return null;
+    },
+
+    /**
+     * Get the disposal code by the code
+     * @param code
+     * @return {Promise.<*|null>}
      */
+    getDisposalCode: async (code) => {
+        return internals.getEntityByNamedMapper(internals._entities.disposalCodes, 'byCode', code);
+    },
+
+    /**
+     * Get the recovery code by the code
+     * @param code
+     * @return {Promise.<*|null>}
+     */
+    getRecoveryCode: async (code) => {
+        return internals.getEntityByNamedMapper(internals._entities.recoveryCodes, 'byCode', code);
+    },
+
+    /**
+     * Get the disposal code by its id
+     * @param id
+     * @return {Promise.<*>}
+     */
+    getDisposalById: async (id) => {
+        return internals.getEntityById(internals._entities.disposalCodes, id);
+    },
+
+    /**
+     * Get the recovery code by its id
+     * @param id
+     * @return {Promise.<*>}
+     */
+    getRecoveryById: async (id) => {
+        return internals.getEntityById(internals._entities.recoveryCodes, id);
+    }
 
 };
 
@@ -296,6 +240,41 @@ internals.getEntityById = async (entity, id) => {
 };
 
 /**
+ * Fetch entity by single value key using named mapper
+ * @param entity
+ * @param mapper
+ * @param key
+ * @return {Promise.<void>}
+ */
+internals.getEntityByNamedMapper = async (entity, mapper, key) => {
+    try {
+        if (!entity.arr.length) {
+            await internals.entityFetch(entity);
+        }
+        return entity[mapper].get(key);
+    } catch (err) {
+        Logging.logger.error(err);
+        throw err;
+    }
+};
+
+/**
+ * Default ordering function for the arrays uses id
+ * @param a
+ * @param b
+ * @return {number}
+ */
+internals.sortById = (a, b) => {
+    if (a.id < b.id) {
+        return -1;
+    }
+    if (a.id > b.id) {
+        return 1;
+    }
+    return 0;
+};
+
+/**
  * Fetch entity data from the api and populate a map and an array
  * @param entity
  * @return {Promise.<void>}
@@ -306,16 +285,16 @@ internals.entityFetch = async (entity) => {
             entity.request.method, entity.request.uri, entity.request.query);
 
         // Set array
-        entity.arr = result._embedded[entity.name].map(entity.idMapper);
+        entity.arr = result._embedded[entity.name].map(entity.idMapper).sort(entity.sorter || internals.sortById);
 
         // Set map
         entity.arr.forEach((i) => {
             entity.map.set(i.id, i);
         });
 
-        // Set any additional maps
-        if (entity.additionalMappers) {
-            entity.additionalMappers.forEach((mapper) => {
+        // Set any additional named maps
+        if (entity.namedMappers) {
+            entity.namedMappers.forEach((mapper) => {
                 entity[mapper.name] = new Map();
                 entity.arr.forEach((i) => {
                     entity[mapper.name].set(mapper.keyFunc(i), i);
@@ -347,25 +326,17 @@ internals._entities = {
             return {
                 id: i.id,
                 name: i.nomenclature,
-                siteId: i.site.id
+                site: { id: i.site.id, name: i.site.nomenclature }
             };
-        }
-    },
-
-    sites: {
-        name: 'sites',
-        map: new Map(),
-        arr: [],
-        request: {
-            api: 'MD',
-            uri: 'sites',
-            method: 'GET'
         },
-        idMapper: (i) => {
-            return {
-                id: i.id,
-                name: i.nomenclature
-            };
+        sorter: (a, b) => {
+            if (a.name < b.name) {
+                return -1;
+            }
+            if (a.name > b.name) {
+                return 1;
+            }
+            return 0;
         }
     },
 
@@ -383,6 +354,15 @@ internals._entities = {
                 id: i.id,
                 name: i.nomenclature
             };
+        },
+        sorter: (a, b) => {
+            if (a.name < b.name) {
+                return -1;
+            }
+            if (a.name > b.name) {
+                return 1;
+            }
+            return 0;
         }
     },
 
@@ -400,6 +380,15 @@ internals._entities = {
                 id: i.id,
                 name: i.nomenclature
             };
+        },
+        sorter: (a, b) => {
+            if (a.name < b.name) {
+                return -1;
+            }
+            if (a.name > b.name) {
+                return 1;
+            }
+            return 0;
         }
     },
 
@@ -417,6 +406,15 @@ internals._entities = {
                 id: i.id,
                 name: i.nomenclature
             };
+        },
+        sorter: (a, b) => {
+            if (a.name < b.name) {
+                return -1;
+            }
+            if (a.name > b.name) {
+                return 1;
+            }
+            return 0;
         }
     },
 
@@ -434,6 +432,15 @@ internals._entities = {
                 id: i.id,
                 name: i.nomenclature
             };
+        },
+        sorter: (a, b) => {
+            if (a.name < b.name) {
+                return -1;
+            }
+            if (a.name > b.name) {
+                return 1;
+            }
+            return 0;
         }
     },
 
@@ -451,6 +458,15 @@ internals._entities = {
                 id: i.id,
                 name: i.nomenclature
             };
+        },
+        sorter: (a, b) => {
+            if (a.name < b.name) {
+                return -1;
+            }
+            if (a.name > b.name) {
+                return 1;
+            }
+            return 0;
         }
     },
 
@@ -468,6 +484,15 @@ internals._entities = {
                 id: i.id,
                 name: i.nomenclature
             };
+        },
+        sorter: (a, b) => {
+            if (a.name < b.name) {
+                return -1;
+            }
+            if (a.name > b.name) {
+                return 1;
+            }
+            return 0;
         }
     },
 
@@ -478,27 +503,64 @@ internals._entities = {
         request: {
             api: 'MD',
             uri: 'ewcActivities',
+            query: 'projection=includeSubchapterId',
             method: 'GET'
         },
         idMapper: (i) => {
             return {
                 id: i.id,
+                ewc_subchapter: i.ewc_subchapter,
                 name: i.nomenclature,
                 code: i.code,
                 description: i.description,
                 hazardous: i.hazardous
             };
         },
-        additionalMappers: [
-            {
-                name: 'byCode',
-                keyFunc: (i) => {
-                    return {
-                        code: i.code
-                    };
-                }
+        namedMappers: [
+            { name: 'byName', keyFunc: (i) => i.name }
+        ],
+        sorter: (a, b) => {
+            if (a.code < b.code) {
+                return -1;
             }
-        ]
+            if (a.code > b.code) {
+                return 1;
+            }
+            return 0;
+        }
+    },
+
+    ewcSubchapters: {
+        name: 'ewcSubchapters',
+        map: new Map(),
+        arr: [],
+        request: {
+            api: 'MD',
+            uri: 'ewcSubchapters',
+            query: 'projection=includeChapterId',
+            method: 'GET'
+        },
+        idMapper: (i) => {
+            return {
+                id: i.id,
+                ewc_chapter: i.ewc_chapter,
+                name: i.nomenclature,
+                code: i.code,
+                description: i.description
+            };
+        },
+        namedMappers: [
+            { name: 'byName', keyFunc: (i) => i.name }
+        ],
+        sorter: (a, b) => {
+            if (a.code < b.code) {
+                return -1;
+            }
+            if (a.code > b.code) {
+                return 1;
+            }
+            return 0;
+        }
     },
 
     ewcChapters: {
@@ -517,25 +579,78 @@ internals._entities = {
                 code: i.code,
                 description: i.description
             };
+        },
+        namedMappers: [
+            { name: 'byCode', keyFunc: (i) => i.code }
+        ],
+        sorter: (a, b) => {
+            if (a.code < b.code) {
+                return -1;
+            }
+            if (a.code > b.code) {
+                return 1;
+            }
+            return 0;
         }
     },
 
-    ewcSubchapters: {
-        name: 'ewcSubchapters',
+    disposalCodes: {
+        name: 'disposalCodes',
         map: new Map(),
         arr: [],
         request: {
             api: 'MD',
-            uri: 'ewcSubchapters',
+            uri: 'disposalCodes',
             method: 'GET'
         },
         idMapper: (i) => {
             return {
                 id: i.id,
-                name: i.nomenclature,
-                code: i.code,
+                code: i.nomenclature,
                 description: i.description
             };
+        },
+        namedMappers: [
+            { name: 'byCode', keyFunc: (i) => i.code }
+        ],
+        sorter: (a, b) => {
+            if (a.code < b.code) {
+                return -1;
+            }
+            if (a.code > b.code) {
+                return 1;
+            }
+            return 0;
+        }
+    },
+
+    recoveryCodes: {
+        name: 'recoveryCodes',
+        map: new Map(),
+        arr: [],
+        request: {
+            api: 'MD',
+            uri: 'recoveryCodes',
+            method: 'GET'
+        },
+        idMapper: (i) => {
+            return {
+                id: i.id,
+                code: i.nomenclature,
+                description: i.description
+            };
+        },
+        namedMappers: [
+            { name: 'byCode', keyFunc: (i) => i.code }
+        ],
+        sorter: (a, b) => {
+            if (a.code < b.code) {
+                return -1;
+            }
+            if (a.code > b.code) {
+                return 1;
+            }
+            return 0;
         }
     }
 

@@ -35,55 +35,24 @@ experiment('Master data service (Test data)', function () {
         test('getEaIds ()', async () => {
             const eaIds = await MasterDataService.getEaIds();
             expect(eaIds).to.be.an.array();
-            expect(eaIds.length).to.equal(94);
+            expect(eaIds.length).to.equal(20);
         });
 
         test('getEaIdsForUser (id)', async () => {
-            const eaIds = await MasterDataService.getEaIdsForUser(5237);
+            const eaIds = await MasterDataService.getEaIdsForUser(5245);
             expect(eaIds).to.be.an.array();
-            expect(eaIds.length).to.equal(1);
-            expect(eaIds[0].id).to.equal(34);
+            expect(eaIds.length).to.equal(5);
 
             const na = await MasterDataService.getEaIdsForUser(-917678);
             expect(na).to.be.null();
         });
 
-        test('getSites()', async () => {
-            const sites = await MasterDataService.getSites();
-            expect(sites).to.be.an.array();
-        });
-
-        test('getSiteById(id)', async () => {
-            const sites = await MasterDataService.getSites();
-            const site = await MasterDataService.getSiteById(sites[0].id);
-            expect(site).to.be.an.object();
-            expect(site.name).to.be.not.null();
-        });
-
         test('getEaIdFromEaIdId (eaIdId)', async () => {
-            const eaId = await MasterDataService.getEaIdFromEaIdId(34);
+            const eaId = await MasterDataService.getEaIdFromEaIdId(1);
             expect(eaId).to.be.an.object();
-            expect(eaId.name).to.equal('AN9123');
+            expect(eaId.name).to.equal('100311');
 
             const na = await MasterDataService.getEaIdFromEaIdId(-3475);
-            expect(na).to.be.null();
-        });
-
-        test('getSiteForEaIdId (eaIdId)', async () => {
-            const site = await MasterDataService.getSiteForEaIdId(34);
-            expect(site).to.be.an.object();
-            expect(site.id).to.equal(9131055256750);
-
-            const na = await MasterDataService.getSiteForEaIdId(-87);
-            expect(na).to.be.null();
-        });
-
-        test('getSitesForEaIdIds (eaIdIds)', async () => {
-            const sites = await MasterDataService.getSitesForEaIdIds([34, 35, 36]);
-            expect(sites).to.be.an.array();
-            expect(sites[0].id).to.equal(9131055256750);
-
-            const na = await MasterDataService.getSitesForEaIdIds([-34, -35, -36]);
             expect(na).to.be.null();
         });
 
@@ -97,7 +66,7 @@ experiment('Master data service (Test data)', function () {
         test('getSubstances()', async () => {
             const substances = await MasterDataService.getSubstances();
             expect(substances).to.be.an.array();
-            expect(substances.length).to.equal(785);
+            expect(substances.length).to.equal(179);
         });
 
         test('getSubstanceById(id)', async () => {

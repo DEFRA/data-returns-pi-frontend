@@ -61,6 +61,7 @@
     "proto": "node proto.js",
     "lint": "./node_modules/eslint/bin/eslint.js .",
     "test": "redis-cli flushdb && ./node_modules/lab/bin/lab -e localtest --coverage-exclude './src/lib/api-client' --assert code --verbose",
+    "test-api": "./node_modules/lab/bin/lab -e local --assert code --verbose --coverage-path './src/model' ./test/model/master-data-api.js",
     "clear-cache": "redis-cli flushdb",
     "coverage": "nyc --all npm start",
     "coverage-unittest": "nyc --all npm test"

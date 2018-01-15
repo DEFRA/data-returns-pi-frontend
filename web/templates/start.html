@@ -15,16 +15,13 @@
             <table class="table-control">
 				<thead></thead>
 				<tbody>
-	                {% for site in sites %}
+	                {% for eaId in eaIds %}
 					<tr>
 						<td>
-							{% for eaId in site.eaIds %}
                             <input class="link" type="submit" id="continueBtn" name="eaId" value="{{ eaId.name }}">
-							<input type="hidden" name="crumb" value="{{crumb}}"/>
-                        	{% endfor %}
 	                    </td>
 						<td>
-							{{ site.address }}
+							{{ eaId.site.name }}
 						</td>
 					</tr>
 	                {% endfor %}

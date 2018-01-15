@@ -30,59 +30,31 @@ experiment('Master data service (API)', async () => {
             expect(eaId.siteId).to.be.not.null();
         });
 
-        test('getSiteForEaIdId (eaIdId)', async () => {
-            const eaIds = await MasterDataService.getEaIds();
-            const site = await MasterDataService.getSiteForEaIdId(eaIds[4].id);
-            expect(site).to.be.an.object();
-            expect(site.name).to.be.not.null();
-
-            const na = await MasterDataService.getSiteForEaIdId(-87);
-            expect(na).to.be.null();
-        });
-
-        test('getSites()', async () => {
-            const sites = await MasterDataService.getSites();
-            expect(sites).to.be.an.array();
-        });
-
-        test('getSiteById(id)', async () => {
-            const sites = await MasterDataService.getSites();
-            const site = await MasterDataService.getSiteById(sites[0].id);
-            expect(site).to.be.an.object();
-            expect(site.name).to.be.not.null();
-        });
-
-        test('getSitesForEaIdIds (eaIdIds)', async () => {
-            const eaIds = await MasterDataService.getEaIds();
-            const sites = await MasterDataService.getSitesForEaIdIds([ eaIds[0].id, eaIds[1].id, eaIds[2].id ]);
-            expect(sites).to.be.an.array();
-            expect(sites[0].id).to.be.not.null();
-
-            const na = await MasterDataService.getSitesForEaIdIds([-34, -35, -36]);
-            expect(na).to.be.null();
-        });
-
         test('getSubstances(\'RELEASES_TO_AIR\')', async () => {
             const substances1 = await MasterDataService.getSubstances('RELEASES_TO_AIR');
             expect(substances1).to.be.an.array();
             const substances2 = await MasterDataService.getSubstances('RELEASES_TO_AIR');
             expect(substances2).to.be.an.array();
             expect(substances1.length).to.equal(substances2.length);
+            console.log('Releases to air: ' + substances1.length);
         });
 
         test('getSubstances(\'RELEASES_TO_LAND\')', async () => {
             const substances = await MasterDataService.getSubstances('RELEASES_TO_LAND');
             expect(substances).to.be.an.array();
+            console.log('Releases to land: ' + substances.length);
         });
 
         test('getSubstances(\'RELEASES_TO_CONTROLLED_WATERS\')', async () => {
             const substances = await MasterDataService.getSubstances('RELEASES_TO_CONTROLLED_WATERS');
             expect(substances).to.be.an.array();
+            console.log('Releases to controlled waters: ' + substances.length);
         });
 
         test('getSubstances(\'OFFSITE_TRANSFERS_IN_WASTE_WATER\')', async () => {
             const substances = await MasterDataService.getSubstances('OFFSITE_TRANSFERS_IN_WASTE_WATER');
             expect(substances).to.be.an.array();
+            console.log('Off-site transfers in waste water: ' + substances.length);
         });
 
         test('getSubstances() - routes differ', async () => {
@@ -149,32 +121,44 @@ experiment('Master data service (API)', async () => {
             expect(subChapter.id).to.equal(1);
         });
 
-        /*
-         * test('getEwcSubchapter()', async () => {
-         *   const ewc = await MasterDataService.getEwc('01', '01', '01');
-         *   expect(ewc).to.be.an.object();
-         *   expect(ewc.activityId).to.equal(1);
-         *   expect(ewc.chapterId).to.equal(1);
-         *   expect(ewc.subChapterId).to.equal(1342);
-         * });
-         */
+        test('getEwc()', async () => {
+            const ewc = await MasterDataService.getEwc('01', '01', '01');
+            expect(ewc).to.be.an.object();
+            expect(ewc.activityId).to.equal(1);
+            expect(ewc.chapterId).to.equal(1);
+            expect(ewc.subChapterId).to.equal(1);
+        });
 
-        /*
-         * test('getEwcActivity(): none', async () => {
-         *   const ewc = await MasterDataService.getEwc('ff');
-         *   expect(ewc).to.be.null();
-         * });
-         *
-         * test('getEwcChapter(): none', async () => {
-         *   const ewc = await MasterDataService.getEwc('ff', 'ff');
-         *   expect(ewc).to.be.null();
-         * });
-         *
-         * test('getEwcSubchapter(): none', async () => {
-         *   const ewc = await MasterDataService.getEwc('ff', 'ff', 'ff');
-         *   expect(ewc).to.be.null();
-         * });
-         */
+        test('getEwc(): none', async () => {
+            const ewc = await MasterDataService.getEwc('ff');
+            expect(ewc).to.be.null();
+        });
+
+        test('getEwc(): none', async () => {
+            const ewc = await MasterDataService.getEwc('ff', 'ff');
+            expect(ewc).to.be.null();
+        });
+
+        test('getEwc(): none', async () => {
+            const ewc = await MasterDataService.getEwc('ff', 'ff', 'ff');
+            expect(ewc).to.be.null();
+        });
+
+        test('getDisposalCode()', async () => {
+            const disposal = await MasterDataService.getDisposalCode('D1');
+            expect(disposal).to.be.an.object();
+            expect(disposal.code).to.to.equal('D1');
+            const disposal2 = await MasterDataService.getDisposalById(disposal.id);
+            expect(disposal2).to.to.equal(disposal);
+        });
+
+        test('getRecoveryCode()', async () => {
+            const recovery = await MasterDataService.getRecoveryCode('R1');
+            expect(recovery).to.be.an.object();
+            expect(recovery.code).to.to.equal('R1');
+            const recovery2 = await MasterDataService.getRecoveryById(recovery.id);
+            expect(recovery2).to.to.equal(recovery);
+        });
 
     }
 });
