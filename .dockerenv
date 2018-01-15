@@ -1,0 +1,9 @@
+APP_ROOT=.
+
+NODE_ENV=local
+CONFIG=./config/configuration.yaml
+
+HOSTNAME=localhost
+PORT=3000
+REDIS_HOSTNAME=redis
+REDIS_PORT=6379
