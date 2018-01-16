@@ -1,9 +1,20 @@
 APP_ROOT=.
 
-NODE_ENV=local
+NODE_ENV=localtest
 CONFIG=./config/configuration.yaml
 
 HOSTNAME=localhost
 PORT=3000
 REDIS_HOSTNAME=redis
 REDIS_PORT=6379
+
+# Master data API
+MD_API_HOSTNAME=localhost
+MD_API_PORT=9020
+
+# Submissions data API
+SM_API_HOSTNAME=localhost
+SM_API_PORT=100
+
+# Logging level
+LOG_LEVEL=info

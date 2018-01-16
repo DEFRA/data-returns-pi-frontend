@@ -31,3 +31,10 @@ It is designed to encourage use and re-use of information freely and flexibly, w
 If you are using nvm try the following config change
 
 >`npm config set scripts-prepend-node-path true`
+
+Set NODE_ENV=localtest to run the front end in standalone mode using local test data. Any other setting requires the API's to be running at the locations specified in the .env environment file.
+
+The front end may also be run as a standalone docker application 
+
+>docker-compose build
+>docker-compose up 

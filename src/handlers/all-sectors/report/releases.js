@@ -424,7 +424,7 @@ module.exports = {
                 await setConfirmation(request, permitStatus, route);
 
                 // Get a list of all of the substances from the master data service
-                let substances = await MasterDataService.getSubstances();
+                let substances = await MasterDataService.getSubstances(route.name);
 
                 // Remove any substances already reported
                 if (tasks.releases) {

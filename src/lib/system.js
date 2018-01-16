@@ -23,6 +23,10 @@ const environmentSchema = Joi.object({
     APP_ROOT: Joi.string().required(),
     HOSTNAME: Joi.string().required(),
     PORT: Joi.number().required(),
+    MD_API_HOSTNAME: Joi.string().required(),
+    MD_API_PORT: Joi.number().required(),
+    SM_API_HOSTNAME: Joi.string().required(),
+    SM_API_PORT: Joi.number().required(),
     REDIS_HOSTNAME: Joi.string().required(),
     REDIS_PORT: Joi.number().required()
 }).unknown()
