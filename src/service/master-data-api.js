@@ -275,6 +275,33 @@ internals.sortById = (a, b) => {
 };
 
 /**
+ * Sort an entity by a given property
+ * @param a
+ * @param b
+ * @param property
+ * @return {number}
+ */
+internals.sortByProperty = (a, b, property) => {
+    if (a[property] < b[property]) {
+        return -1;
+    }
+    if (a[property] > b[property]) {
+        return 1;
+    }
+    return 0;
+};
+
+/**
+ * Maps id and nomenclature
+ */
+internals.defaultMapper = (i) => {
+    return {
+        id: i.id,
+        name: i.nomenclature
+    };
+};
+
+/**
  * Fetch entity data from the api and populate a map and an array
  * @param entity
  * @return {Promise.<void>}
@@ -316,12 +343,7 @@ internals._entities = {
         name: 'uniqueIdentifiers',
         map: new Map(),
         arr: [],
-        request: {
-            api: 'MD',
-            uri: 'uniqueIdentifierGroups/1/uniqueIdentifiers',
-            query: 'projection=inlineSites',
-            method: 'GET'
-        },
+        request: {api: 'MD', uri: 'uniqueIdentifierGroups/1/uniqueIdentifiers', query: 'projection=inlineSites', method: 'GET'},
         idMapper: (i) => {
             return {
                 id: i.id,
@@ -329,183 +351,68 @@ internals._entities = {
                 site: { id: i.site.id, name: i.site.nomenclature }
             };
         },
-        sorter: (a, b) => {
-            if (a.name < b.name) {
-                return -1;
-            }
-            if (a.name > b.name) {
-                return 1;
-            }
-            return 0;
-        }
+        sorter: (a, b) => internals.sortByProperty(a, b, 'name')
     },
 
     substances: {
         name: 'parameters',
         map: new Map(),
         arr: [],
-        request: {
-            api: 'MD',
-            uri: 'parameters',
-            method: 'GET'
-        },
-        idMapper: (i) => {
-            return {
-                id: i.id,
-                name: i.nomenclature
-            };
-        },
-        sorter: (a, b) => {
-            if (a.name < b.name) {
-                return -1;
-            }
-            if (a.name > b.name) {
-                return 1;
-            }
-            return 0;
-        }
+        request: {api: 'MD', uri: 'parameters', method: 'GET'},
+        idMapper: (i) => internals.defaultMapper(i),
+        sorter: (a, b) => internals.sortByProperty(a, b, 'name')
     },
 
     substancesAir: {
         name: 'parameters',
         map: new Map(),
         arr: [],
-        request: {
-            api: 'MD',
-            uri: 'parameterGroups/3/parameters',
-            method: 'GET'
-        },
-        idMapper: (i) => {
-            return {
-                id: i.id,
-                name: i.nomenclature
-            };
-        },
-        sorter: (a, b) => {
-            if (a.name < b.name) {
-                return -1;
-            }
-            if (a.name > b.name) {
-                return 1;
-            }
-            return 0;
-        }
+        request: { api: 'MD', uri: 'parameterGroups/3/parameters', method: 'GET' },
+        idMapper: (i) => internals.defaultMapper(i),
+        sorter: (a, b) => internals.sortByProperty(a, b, 'name')
     },
 
     substancesLand: {
         name: 'parameters',
         map: new Map(),
         arr: [],
-        request: {
-            api: 'MD',
-            uri: 'parameterGroups/4/parameters',
-            method: 'GET'
-        },
-        idMapper: (i) => {
-            return {
-                id: i.id,
-                name: i.nomenclature
-            };
-        },
-        sorter: (a, b) => {
-            if (a.name < b.name) {
-                return -1;
-            }
-            if (a.name > b.name) {
-                return 1;
-            }
-            return 0;
-        }
+        request: { api: 'MD', uri: 'parameterGroups/4/parameters', method: 'GET' },
+        idMapper: (i) => internals.defaultMapper(i),
+        sorter: (a, b) => internals.sortByProperty(a, b, 'name')
     },
 
     substancesWater: {
         name: 'parameters',
         map: new Map(),
         arr: [],
-        request: {
-            api: 'MD',
-            uri: 'parameterGroups/5/parameters',
-            method: 'GET'
-        },
-        idMapper: (i) => {
-            return {
-                id: i.id,
-                name: i.nomenclature
-            };
-        },
-        sorter: (a, b) => {
-            if (a.name < b.name) {
-                return -1;
-            }
-            if (a.name > b.name) {
-                return 1;
-            }
-            return 0;
-        }
+        request: { api: 'MD', uri: 'parameterGroups/5/parameters', method: 'GET' },
+        idMapper: (i) => internals.defaultMapper(i),
+        sorter: (a, b) => internals.sortByProperty(a, b, 'name')
     },
 
     substancesWasteWater: {
         name: 'parameters',
         map: new Map(),
         arr: [],
-        request: {
-            api: 'MD',
-            uri: 'parameterGroups/2/parameters',
-            method: 'GET'
-        },
-        idMapper: (i) => {
-            return {
-                id: i.id,
-                name: i.nomenclature
-            };
-        },
-        sorter: (a, b) => {
-            if (a.name < b.name) {
-                return -1;
-            }
-            if (a.name > b.name) {
-                return 1;
-            }
-            return 0;
-        }
+        request: { api: 'MD', uri: 'parameterGroups/2/parameters', method: 'GET' },
+        idMapper: (i) => internals.defaultMapper(i),
+        sorter: (a, b) => internals.sortByProperty(a, b, 'name')
     },
 
     units: {
         name: 'units',
         map: new Map(),
         arr: [],
-        request: {
-            api: 'MD',
-            uri: 'units',
-            method: 'GET'
-        },
-        idMapper: (i) => {
-            return {
-                id: i.id,
-                name: i.nomenclature
-            };
-        },
-        sorter: (a, b) => {
-            if (a.name < b.name) {
-                return -1;
-            }
-            if (a.name > b.name) {
-                return 1;
-            }
-            return 0;
-        }
+        request: { api: 'MD', uri: 'unitTypes/18/units', method: 'GET' },
+        idMapper: (i) => internals.defaultMapper(i),
+        sorter: (a, b) => internals.sortByProperty(a, b, 'name')
     },
 
     ewcActivities: {
         name: 'ewcActivities',
         map: new Map(),
         arr: [],
-        request: {
-            api: 'MD',
-            uri: 'ewcActivities',
-            query: 'projection=includeSubchapterId',
-            method: 'GET'
-        },
+        request: {api: 'MD', uri: 'ewcActivities', query: 'projection=includeSubchapterId', method: 'GET'},
         idMapper: (i) => {
             return {
                 id: i.id,
@@ -519,59 +426,26 @@ internals._entities = {
         namedMappers: [
             { name: 'byName', keyFunc: (i) => i.name }
         ],
-        sorter: (a, b) => {
-            if (a.code < b.code) {
-                return -1;
-            }
-            if (a.code > b.code) {
-                return 1;
-            }
-            return 0;
-        }
+        sorter: (a, b) => internals.sortByProperty(a, b, 'code')
     },
 
     ewcSubchapters: {
         name: 'ewcSubchapters',
         map: new Map(),
         arr: [],
-        request: {
-            api: 'MD',
-            uri: 'ewcSubchapters',
-            query: 'projection=includeChapterId',
-            method: 'GET'
-        },
-        idMapper: (i) => {
-            return {
-                id: i.id,
-                ewc_chapter: i.ewc_chapter,
-                name: i.nomenclature,
-                code: i.code,
-                description: i.description
-            };
-        },
+        request: { api: 'MD', uri: 'ewcSubchapters', query: 'projection=includeChapterId', method: 'GET' },
+        idMapper: (i) => { return { id: i.id, ewc_chapter: i.ewc_chapter, name: i.nomenclature, code: i.code, description: i.description }; },
         namedMappers: [
             { name: 'byName', keyFunc: (i) => i.name }
         ],
-        sorter: (a, b) => {
-            if (a.code < b.code) {
-                return -1;
-            }
-            if (a.code > b.code) {
-                return 1;
-            }
-            return 0;
-        }
+        sorter: (a, b) => internals.sortByProperty(a, b, 'code')
     },
 
     ewcChapters: {
         name: 'ewcChapters',
         map: new Map(),
         arr: [],
-        request: {
-            api: 'MD',
-            uri: 'ewcChapters',
-            method: 'GET'
-        },
+        request: { api: 'MD', uri: 'ewcChapters', method: 'GET' },
         idMapper: (i) => {
             return {
                 id: i.id,
@@ -583,26 +457,14 @@ internals._entities = {
         namedMappers: [
             { name: 'byCode', keyFunc: (i) => i.code }
         ],
-        sorter: (a, b) => {
-            if (a.code < b.code) {
-                return -1;
-            }
-            if (a.code > b.code) {
-                return 1;
-            }
-            return 0;
-        }
+        sorter: (a, b) => internals.sortByProperty(a, b, 'code')
     },
 
     disposalCodes: {
         name: 'disposalCodes',
         map: new Map(),
         arr: [],
-        request: {
-            api: 'MD',
-            uri: 'disposalCodes',
-            method: 'GET'
-        },
+        request: {api: 'MD', uri: 'disposalCodes', method: 'GET'},
         idMapper: (i) => {
             return {
                 id: i.id,
@@ -613,26 +475,14 @@ internals._entities = {
         namedMappers: [
             { name: 'byCode', keyFunc: (i) => i.code }
         ],
-        sorter: (a, b) => {
-            if (a.code < b.code) {
-                return -1;
-            }
-            if (a.code > b.code) {
-                return 1;
-            }
-            return 0;
-        }
+        sorter: (a, b) => internals.sortByProperty(a, b, 'code')
     },
 
     recoveryCodes: {
         name: 'recoveryCodes',
         map: new Map(),
         arr: [],
-        request: {
-            api: 'MD',
-            uri: 'recoveryCodes',
-            method: 'GET'
-        },
+        request: {api: 'MD', uri: 'recoveryCodes', method: 'GET'},
         idMapper: (i) => {
             return {
                 id: i.id,
@@ -643,15 +493,7 @@ internals._entities = {
         namedMappers: [
             { name: 'byCode', keyFunc: (i) => i.code }
         ],
-        sorter: (a, b) => {
-            if (a.code < b.code) {
-                return -1;
-            }
-            if (a.code > b.code) {
-                return 1;
-            }
-            return 0;
-        }
+        sorter: (a, b) => internals.sortByProperty(a, b, 'code')
     }
 
 };
