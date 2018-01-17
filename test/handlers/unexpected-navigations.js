@@ -43,11 +43,11 @@ experiment('Unexpected navigations', () => {
     });
 
     test('Test login', async () => {
-        return Common.login('3@email.com', 'a');
+        return Common.login('4@email.com', 'a');
     });
 
     test('No permit set - GET routes', async () => {
-        const methods = getHandlerRoutes.filter(f => ![ '/login', '/', '/logout', '/check', '/share', '/submit' ]
+        const methods = getHandlerRoutes.filter(f => ![ '/login', '/', '/logout', '/check/confirm', '/share/confirm', '/submit/confirm' ]
             .includes(f)).map(r => {
             return { method: 'GET', url: r, expected: '/' };
         });

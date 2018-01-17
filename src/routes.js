@@ -108,9 +108,9 @@ const dynamicHandlers = [
     { method: ['GET', 'POST'], path: '/transfers/overseas/remove', handler: Overseas.remove },
 
     // Completion
-    { method: 'GET', path: '/check', config: { handler: Check.check } },
-    { method: 'GET', path: '/share', config: { handler: Share.share } },
-    { method: 'GET', path: '/submit', config: { handler: Submit.submit } }
+    { method: 'GET', path: '/check/confirm', config: { handler: Check.check } },
+    { method: 'GET', path: '/share/confirm', config: { handler: Share.share } },
+    { method: 'GET', path: '/submit/confirm', config: { handler: Submit.submit } }
 
 ];
 

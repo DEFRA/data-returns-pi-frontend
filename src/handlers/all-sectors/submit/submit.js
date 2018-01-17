@@ -14,7 +14,12 @@ module.exports = {
      */
     submit: async (request, reply) => {
         try {
-            reply.view('all-sectors/submit/submit');
+            if (request.method === 'get') {
+                reply.view('all-sectors/submit/submit');
+            } else {
+                // We have confirmed the submission so send data to the API
+
+            }
         } catch (err) {
             logger.log('error', err);
             reply.redirect('/');

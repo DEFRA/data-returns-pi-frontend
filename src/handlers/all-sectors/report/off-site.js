@@ -34,8 +34,8 @@ const internals = {
             const matched = ewc.match(expr);
 
             if (matched) {
-                const [, activity, chapter, subChapter] = matched;
-                ewcObj = await MasterDataService.getEwc(activity, chapter, subChapter);
+                const [ , chapter, subChapter, activity ] = matched;
+                ewcObj = await MasterDataService.getEwc(chapter, subChapter, activity);
             } else {
                 ewcObj = null;
             }
@@ -97,14 +97,6 @@ const internals = {
      */
     sortOffSiteTransfer: (a, b) => {
 
-        if (a.ewc.activityId < b.ewc.activityId) {
-            return -1;
-        }
-
-        if (a.ewc.activityId > b.ewc.activityId) {
-            return 1;
-        }
-
         if (a.ewc.chapterId < b.ewc.chapterId) {
             return -1;
         }
@@ -118,6 +110,14 @@ const internals = {
         }
 
         if (a.ewc.subChapterId > b.ewc.subChapterId) {
+            return 1;
+        }
+
+        if (a.ewc.activityId < b.ewc.activityId) {
+            return -1;
+        }
+
+        if (a.ewc.activityId > b.ewc.activityId) {
             return 1;
         }
 
@@ -307,7 +307,7 @@ module.exports = {
                 const { ewc, wfd, value } = request.payload;
                 const currentPageOffSiteTransfer = { ewc, wfd, value };
                 const currentCacheOffSiteTransferObject = await internals.createOffSiteTransferCacheObject(currentPageOffSiteTransfer);
-                const validationErrors = await Validator.offSiteAdd(tasks, currentCacheOffSiteTransferObject);
+                const validationErrors = Validator.offSiteAdd(tasks, currentCacheOffSiteTransferObject);
 
                 if (!validationErrors) {
                     // Recalculate the overall route validation status

@@ -172,35 +172,35 @@ module.exports = internals = {
         return internals._ewcSubChapterId.get(id);
     },
 
-    getEwc: async (activity, chapter, subChapter) => {
-        if (!internals._ewcActivity.size) {
-            Data.ewcActivity.forEach((a) => {
-                internals._ewcActivity.set(a.activity, a);
-            });
-        }
+    getEwc: async (chapter, subChapter, activity) => {
         if (!internals._ewcChapter.size) {
             Data.ewcChapter.forEach((c) => {
-                internals._ewcChapter.set(c.activity + '-' + c.chapter, c);
+                internals._ewcChapter.set(c.chapter, c);
             });
         }
         if (!internals._ewcSubChapter.size) {
             Data.ewcSubChapter.forEach((s) => {
-                internals._ewcSubChapter.set(s.activity + '-' + s.chapter + '-' + s.subChapter, s);
+                internals._ewcSubChapter.set(s.chapter + '-' + s.subChapter, s);
+            });
+        }
+        if (!internals._ewcActivity.size) {
+            Data.ewcActivity.forEach((a) => {
+                internals._ewcActivity.set(a.chapter + '-' + a.subChapter + '-' + a.activity, a);
             });
         }
 
         const result = {};
 
         if (activity && chapter && subChapter) {
-            const _subChapter = internals._ewcSubChapter.get(activity + '-' + chapter + '-' + subChapter);
+            const _chapter = internals._ewcChapter.get(chapter);
+            if (_chapter) {
+                const _subChapter = internals._ewcSubChapter.get(chapter + '-' + subChapter);
 
-            if (_subChapter) {
-
-                const _chapter = internals._ewcChapter.get(_subChapter.activity + '-' + _subChapter.chapter);
-                if (_chapter) {
-                    const _activity = internals._ewcActivity.get(_chapter.activity);
+                if (_subChapter) {
+                    const _activity = internals._ewcActivity.get(chapter + '-' + subChapter + '-' + activity);
 
                     if (_activity) {
+
                         result.activityId = _activity.id;
                         result.chapterId = _chapter.id;
                         result.subChapterId = _subChapter.id;

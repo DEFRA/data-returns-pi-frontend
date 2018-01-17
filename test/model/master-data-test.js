@@ -114,9 +114,9 @@ experiment('Master data service (Test data)', function () {
         test('getEwcSubchapter()', async () => {
             const ewc = await MasterDataService.getEwc('01', '01', '01');
             expect(ewc).to.be.an.object();
-            expect(ewc.activityId).to.equal(1);
+            expect(ewc.activityId).to.equal(1342);
             expect(ewc.chapterId).to.equal(1);
-            expect(ewc.subChapterId).to.equal(1342);
+            expect(ewc.subChapterId).to.equal(1);
         });
 
         test('getEwcActivity(): none', async () => {
@@ -147,9 +147,9 @@ experiment('Master data service (Test data)', function () {
         });
 
         test('getEwcActivityById(id)', async () => {
-            const activity = await MasterDataService.getEwcActivityById(1);
+            const activity = await MasterDataService.getEwcActivityById(1342);
             expect(activity).to.be.an.object();
-            expect(activity.id).to.equal(1);
+            expect(activity.id).to.equal(1342);
         });
 
         test('getEwcChapterById(id)', async () => {
@@ -159,9 +159,9 @@ experiment('Master data service (Test data)', function () {
         });
 
         test('getEwcSubChapterById(id)', async () => {
-            const subChapter = await MasterDataService.getEwcSubChapterById(1342);
+            const subChapter = await MasterDataService.getEwcSubChapterById(1);
             expect(subChapter).to.be.an.object();
-            expect(subChapter.id).to.equal(1342);
+            expect(subChapter.id).to.equal(1);
         });
 
         test('getDisposalById(id)', async () => {

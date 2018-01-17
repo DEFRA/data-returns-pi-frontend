@@ -19,33 +19,33 @@ const test = lab.test;
 
 experiment('Off-site transfers', async () => {
     test('Valid ewc strings', async () => {
-        const expObj = await MasterDataService.getEwc(10, 11, 12);
-        let to = await createOffSiteTransferCacheObject({ ewc: '10 11 12', wfd: null, value: null });
+        const expObj = await MasterDataService.getEwc('01', '04', '07');
+        let to = await createOffSiteTransferCacheObject({ ewc: '01 04 07', wfd: null, value: null });
         expect(to.ewc).to.be.not.null();
         expect(to.ewc).to.equal(expObj);
 
-        to = await createOffSiteTransferCacheObject({ ewc: '10.11.12', wfd: null, value: null });
+        to = await createOffSiteTransferCacheObject({ ewc: '01.04.07', wfd: null, value: null });
         expect(to.ewc).to.be.not.null();
         expect(to.ewc).to.equal(expObj);
 
-        to = await createOffSiteTransferCacheObject({ ewc: ' 10  11  12 ', wfd: null, value: null });
+        to = await createOffSiteTransferCacheObject({ ewc: ' 01  04  07 ', wfd: null, value: null });
         expect(to.ewc).to.be.not.null();
         expect(to.ewc).to.equal(expObj);
 
-        to = await createOffSiteTransferCacheObject({ ewc: '101112', wfd: null, value: null });
+        to = await createOffSiteTransferCacheObject({ ewc: '010407', wfd: null, value: null });
         expect(to.ewc).to.be.not.null();
         expect(to.ewc).to.equal(expObj);
 
-        to = await createOffSiteTransferCacheObject({ ewc: '10-11-12', wfd: null, value: null });
+        to = await createOffSiteTransferCacheObject({ ewc: '01-04-07', wfd: null, value: null });
         expect(to.ewc).to.be.not.null();
         expect(to.ewc).to.equal(expObj);
     });
 
     test('Invalid ewc strings', async () => {
-        let to = await createOffSiteTransferCacheObject({ ewc: '10 11', wfd: null, value: null });
+        let to = await createOffSiteTransferCacheObject({ ewc: '01 03', wfd: null, value: null });
         expect(to.ewc).to.be.null();
 
-        to = await createOffSiteTransferCacheObject({ ewc: '10/11/12', wfd: null, value: null });
+        to = await createOffSiteTransferCacheObject({ ewc: '01/03/07', wfd: null, value: null });
         expect(to.ewc).to.be.null();
 
         to = await createOffSiteTransferCacheObject({ ewc: '99 11 12', wfd: null, value: null });
@@ -84,10 +84,10 @@ experiment('Off-site transfers', async () => {
     });
 
     test('Off-site transfer object enrichment 1', async () => {
-        const expObj = await MasterDataService.getEwc(10, 11, 12);
+        const expObj = await MasterDataService.getEwc('01', '03', '07');
         const rec = await MasterDataService.getRecoveryCode('R1');
 
-        const to = await createOffSiteTransferCacheObject({ ewc: '10 11 12', wfd: 'R1', value: '898' });
+        const to = await createOffSiteTransferCacheObject({ ewc: '01 03 07', wfd: 'R1', value: '898' });
         const co = await enrichOffSiteTransferObject(to);
         expect(co.ewc.activity.id).to.equal(expObj.activityId);
         expect(co.ewc.chapter.id).to.equal(expObj.chapterId);
@@ -99,10 +99,10 @@ experiment('Off-site transfers', async () => {
     });
 
     test('Off-site transfer object enrichment 2', async () => {
-        const expObj = await MasterDataService.getEwc(10, 11, 12);
+        const expObj = await MasterDataService.getEwc('01', '03', '07');
         const rec = await MasterDataService.getRecoveryCode('R1');
 
-        const to = await createOffSiteTransferCacheObject({ ewc: '10 11 12', wfd: 'D1', value: '898' });
+        const to = await createOffSiteTransferCacheObject({ ewc: '01 03 07', wfd: 'D1', value: '898' });
         const co = await enrichOffSiteTransferObject(to);
         expect(co.ewc.activity.id).to.equal(expObj.activityId);
         expect(co.ewc.chapter.id).to.equal(expObj.chapterId);
@@ -116,35 +116,23 @@ experiment('Off-site transfers', async () => {
     test('Off-site transfer object sort', async () => {
 
         const start = [
-            await createOffSiteTransferCacheObject({ ewc: '01 01 02', wfd: 'R1', value: '898' }),
-            await createOffSiteTransferCacheObject({ ewc: '01 01 01', wfd: 'D2', value: '898' }),
-            await createOffSiteTransferCacheObject({ ewc: '03 01 04', wfd: 'R1', value: '898' }),
-            await createOffSiteTransferCacheObject({ ewc: '01 03 07', wfd: 'R2', value: '898' }),
-            await createOffSiteTransferCacheObject({ ewc: '01 01 01', wfd: 'D1', value: '898' }),
-            await createOffSiteTransferCacheObject({ ewc: '03 01 05', wfd: 'R2', value: '898' }),
-            await createOffSiteTransferCacheObject({ ewc: '01 01 01', wfd: 'R2', value: '898' }),
-            await createOffSiteTransferCacheObject({ ewc: '01 04 07', wfd: 'R2', value: '898' }),
-            await createOffSiteTransferCacheObject({ ewc: '03 01 05', wfd: 'R1', value: '898' }),
-            await createOffSiteTransferCacheObject({ ewc: '03 01 05', wfd: 'D1', value: '898' }),
-            await createOffSiteTransferCacheObject({ ewc: '03 01 05', wfd: 'D2', value: '898' }),
-            await createOffSiteTransferCacheObject({ ewc: '03 01 05', wfd: 'R2', value: '898' }),
-            await createOffSiteTransferCacheObject({ ewc: '01 01 01', wfd: 'R1', value: '898' })
+            await createOffSiteTransferCacheObject({ ewc: '01 03 07', wfd: 'R1', value: '898' }),
+            await createOffSiteTransferCacheObject({ ewc: '04 02 10', wfd: 'R2', value: '898' }),
+            await createOffSiteTransferCacheObject({ ewc: '01 03 05', wfd: 'R1', value: '898' }),
+            await createOffSiteTransferCacheObject({ ewc: '02 02 02', wfd: 'R2', value: '898' }),
+            await createOffSiteTransferCacheObject({ ewc: '01 03 06', wfd: 'D2', value: '898' }),
+            await createOffSiteTransferCacheObject({ ewc: '02 03 04', wfd: 'D1', value: '898' }),
+            await createOffSiteTransferCacheObject({ ewc: '04 02 14', wfd: 'R2', value: '898' })
         ];
 
         const sorted = [
-            await createOffSiteTransferCacheObject({ ewc: '01 01 01', wfd: 'D1', value: '898' }),
-            await createOffSiteTransferCacheObject({ ewc: '01 01 01', wfd: 'D2', value: '898' }),
-            await createOffSiteTransferCacheObject({ ewc: '01 01 01', wfd: 'R1', value: '898' }),
-            await createOffSiteTransferCacheObject({ ewc: '01 01 01', wfd: 'R2', value: '898' }),
-            await createOffSiteTransferCacheObject({ ewc: '01 01 02', wfd: 'R1', value: '898' }),
-            await createOffSiteTransferCacheObject({ ewc: '01 03 07', wfd: 'R2', value: '898' }),
-            await createOffSiteTransferCacheObject({ ewc: '01 04 07', wfd: 'R2', value: '898' }),
-            await createOffSiteTransferCacheObject({ ewc: '03 01 04', wfd: 'R1', value: '898' }),
-            await createOffSiteTransferCacheObject({ ewc: '03 01 05', wfd: 'D1', value: '898' }),
-            await createOffSiteTransferCacheObject({ ewc: '03 01 05', wfd: 'D2', value: '898' }),
-            await createOffSiteTransferCacheObject({ ewc: '03 01 05', wfd: 'R1', value: '898' }),
-            await createOffSiteTransferCacheObject({ ewc: '03 01 05', wfd: 'R2', value: '898' }),
-            await createOffSiteTransferCacheObject({ ewc: '03 01 05', wfd: 'R2', value: '898' })
+            await createOffSiteTransferCacheObject({ ewc: '01 03 05', wfd: 'R1', value: '898' }),
+            await createOffSiteTransferCacheObject({ ewc: '01 03 06', wfd: 'D2', value: '898' }),
+            await createOffSiteTransferCacheObject({ ewc: '01 03 07', wfd: 'R1', value: '898' }),
+            await createOffSiteTransferCacheObject({ ewc: '02 02 02', wfd: 'R2', value: '898' }),
+            await createOffSiteTransferCacheObject({ ewc: '02 03 04', wfd: 'D1', value: '898' }),
+            await createOffSiteTransferCacheObject({ ewc: '04 02 10', wfd: 'R2', value: '898' }),
+            await createOffSiteTransferCacheObject({ ewc: '04 02 14', wfd: 'R2', value: '898' })
         ];
 
         start.sort(sortOffSiteTransfer);

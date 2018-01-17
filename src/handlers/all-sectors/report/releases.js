@@ -337,7 +337,7 @@ module.exports = {
                 delete currentRelease.errors;
 
                 // Validate the release object
-                const validation = await Validator.release(tasks.releases[tasks.currentSubstanceId]);
+                const validation = Validator.release(tasks.releases[tasks.currentSubstanceId]);
 
                 if (validation) {
                     // Unset the overall validation status

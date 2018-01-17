@@ -64,7 +64,8 @@
     "test-api": "./node_modules/lab/bin/lab -e local --assert code --verbose --coverage-path './src/model' ./test/model/master-data-api.js",
     "clear-cache": "redis-cli flushdb",
     "coverage": "nyc --all npm start",
-    "coverage-unittest": "nyc --all npm test"
+    "coverage-unittest": "nyc --all npm test",
+    "docker-build": "docker build -t defra/data-returns-pi-frontend . && docker images"
   },
   "keywords": [
     "Data Returns",
