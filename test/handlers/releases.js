@@ -45,26 +45,26 @@ const continueValid = (substanceId) => {
     return payload;
 };
 
-const START_PAGE = { method: 'GET', url: '/', expected: '/' };
-const CHOOSE_PERMIT = { method: 'POST', url: '/select-permit', payload: { eaId: '100311' }, expected: '/task-list' };
-const TASK_LIST = { method: 'GET', url: '/task-list', expected: '/task-list' };
-const CONFIRM_PAGE = { method: 'GET', url: '/releases/air/confirm', expected: '/releases/air/confirm' };
-const CONFIRM_PAGE2 = { method: 'GET', url: '/releases/air/confirm', expected: '/releases/air' };
-const CONFIRM_NO = { method: 'POST', url: '/releases/air/confirm', payload: { confirmation: 'false' }, expected: '/task-list' };
-const CONFIRM_YES = { method: 'POST', url: '/releases/air/confirm', payload: { confirmation: 'true' }, expected: '/releases/air/add-substance' };
-const RELEASES_AIR = { method: 'GET', url: '/releases/air', expected: '/releases/air' };
-const ANOTHER_SUBSTANCE = { method: 'POST', url: '/releases/air/action', payload: { add: 'Add substance' }, expected: '/releases/air/add-substance' };
-const CHOOSE_SUBSTANCE = (substanceId) => { return { method: 'POST', url: '/releases/air/add-substance', payload: { substanceId: substanceId }, expected: '/releases/air/detail' }; };
-const CHOOSE_NO_SUBSTANCE = { method: 'POST', url: '/releases/air/add-substance', payload: { substanceId: null }, expected: '/releases/air/add-substance' };
-const CHOOSE_DETAIL = (value, unitId, methodId) => { return { method: 'POST', url: '/releases/air/detail', payload: { value: value, unitId: unitId, methodId: methodId }, expected: '/releases/air' }; };
-const CHOOSE_BAD_DETAIL = { method: 'POST', url: '/releases/air/detail', payload: { value: 'not_a_value', unitId: null, methodId: -8 }, expected: '/releases/air/detail' };
-const REMOVE_SUBSTANCE = (substanceId) => { return { method: 'POST', url: '/releases/air/action', payload: remove(substanceId), expected: '/releases/air/remove' }; };
-const CONFIRM_REMOVE_YES = { method: 'POST', url: '/releases/air/remove', payload: { confirmation: 'true' }, expected: '/releases/air' };
-const CONFIRM_REMOVE_YES_LAST = { method: 'POST', url: '/releases/air/remove', payload: { confirmation: 'true' }, expected: '/task-list' };
+const START_PAGE = { id: 'RELEASES_START_PAGE', method: 'GET', url: '/', expected: '/' };
+const CHOOSE_PERMIT = { id: 'RELEASES_CHOOSE_PERMIT', method: 'POST', url: '/select-permit', payload: { eaId: '100311' }, expected: '/task-list' };
+const TASK_LIST = { id: 'RELEASES_TASK_LIST', method: 'GET', url: '/task-list', expected: '/task-list' };
+const CONFIRM_PAGE = { id: 'RELEASES_CONFIRM_PAGE', method: 'GET', url: '/releases/air/confirm', expected: '/releases/air/confirm' };
+const CONFIRM_PAGE2 = { id: 'RELEASES_CONFIRM_PAGE2', method: 'GET', url: '/releases/air/confirm', expected: '/releases/air' };
+const CONFIRM_NO = { id: 'RELEASES_CONFIRM_NO', method: 'POST', url: '/releases/air/confirm', payload: { confirmation: 'false' }, expected: '/task-list' };
+const CONFIRM_YES = { id: 'RELEASES_CONFIRM_YES', method: 'POST', url: '/releases/air/confirm', payload: { confirmation: 'true' }, expected: '/releases/air/add-substance' };
+const RELEASES_AIR = { id: 'RELEASES_RELEASES_AIR', method: 'GET', url: '/releases/air', expected: '/releases/air' };
+const ANOTHER_SUBSTANCE = { id: 'RELEASES_ANOTHER_SUBSTANCE', method: 'POST', url: '/releases/air/action', payload: { add: 'Add substance' }, expected: '/releases/air/add-substance' };
+const CHOOSE_SUBSTANCE = (substanceId) => { return { id: 'RELEASES_CHOOSE_SUBSTANCE', method: 'POST', url: '/releases/air/add-substance', payload: { substanceId: substanceId }, expected: '/releases/air/detail' }; };
+const CHOOSE_NO_SUBSTANCE = { id: 'RELEASES_CHOOSE_NO_SUBSTANCE', method: 'POST', url: '/releases/air/add-substance', payload: { substanceId: null }, expected: '/releases/air/add-substance' };
+const CHOOSE_DETAIL = (value, unitId, methodId) => { return { id: 'RELEASES_CHOOSE_DETAIL', method: 'POST', url: '/releases/air/detail', payload: { value: value, unitId: unitId, methodId: methodId }, expected: '/releases/air' }; };
+const CHOOSE_BAD_DETAIL = { id: 'RELEASES_CHOOSE_BAD_DETAIL', method: 'POST', url: '/releases/air/detail', payload: { value: 'not_a_value', unitId: null, methodId: -8 }, expected: '/releases/air/detail' };
+const REMOVE_SUBSTANCE = (substanceId) => { return { id: 'RELEASES_REMOVE_SUBSTANCE', method: 'POST', url: '/releases/air/action', payload: remove(substanceId), expected: '/releases/air/remove' }; };
+const CONFIRM_REMOVE_YES = { id: 'RELEASES_CONFIRM_REMOVE_YES', method: 'POST', url: '/releases/air/remove', payload: { confirmation: 'true' }, expected: '/releases/air' };
+const CONFIRM_REMOVE_YES_LAST = { id: 'RELEASES_CONFIRM_REMOVE_YES_LAST', method: 'POST', url: '/releases/air/remove', payload: { confirmation: 'true' }, expected: '/task-list' };
 const CONFIRM_REMOVE_NO = RELEASES_AIR;
-const CHANGE_DETAIL = (substanceId) => { return { method: 'POST', url: '/releases/air/action', payload: detail(substanceId), expected: '/releases/air/detail' }; };
-const CONTINUE_INVALID = (substanceId) => { return { method: 'POST', url: '/releases/air/action', payload: continueInvalid(substanceId), expected: '/releases/air' }; };
-const CONTINUE_VALID = (substanceId) => { return { method: 'POST', url: '/releases/air/action', payload: continueValid(substanceId), expected: '/task-list' }; };
+const CHANGE_DETAIL = (substanceId) => { return { id: 'RELEASES_CHANGE_DETAIL', method: 'POST', url: '/releases/air/action', payload: detail(substanceId), expected: '/releases/air/detail' }; };
+const CONTINUE_INVALID = (substanceId) => { return { id: 'RELEASES_CONTINUE_INVALID', method: 'POST', url: '/releases/air/action', payload: continueInvalid(substanceId), expected: '/releases/air' }; };
+const CONTINUE_VALID = (substanceId) => { return { id: 'RELEASES_CONTINUE_VALID', method: 'POST', url: '/releases/air/action', payload: continueValid(substanceId), expected: '/task-list' }; };
 
 experiment('Proto test', () => {
 

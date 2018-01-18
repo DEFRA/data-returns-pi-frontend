@@ -29,24 +29,22 @@ const offsitePayLoadBuilder = (submission, index) => {
     return payload;
 };
 // Releases
-const START_PAGE = { method: 'GET', url: '/', expected: '/' };
-const CHOOSE_PERMIT = { method: 'POST', url: '/select-permit', payload: { eaId: 'AB7469' }, expected: '/task-list' };
-const CONFIRM_PAGE = (type, route) => { return { method: 'GET', url: `/${type}/${route}/confirm`, expected: `/${type}/${route}/confirm` }; };
-const CONFIRM_YES = (type, route, dest) => { return { method: 'POST', url: `/${type}/${route}/confirm`, payload: { confirmation: 'true' }, expected: `/${type}/${route}/${dest}` }; };
-const CHOOSE_SUBSTANCE = (route, substanceId) => { return { method: 'POST', url: `/releases/${route}/add-substance`, payload: { substanceId: substanceId }, expected: `/releases/${route}/detail` }; };
-const CHOOSE_DETAIL = (route, value, unitId, methodId) => { return { method: 'POST', url: `/releases/${route}/detail`, payload: { value: value, unitId: unitId, methodId: methodId }, expected: `/releases/${route}` }; };
-const ANOTHER_SUBSTANCE = (route, payload) => { return { method: 'POST', url: `/releases/${route}/action`, payload: payload, expected: `/releases/${route}/add-substance` }; };
-const CONTINUE = (type, route, payload) => { return { method: 'POST', url: `/${type}/${route}/action`, payload: payload, expected: '/task-list' }; };
+const START_PAGE = { id: 'SUBMISSION_START_PAGE', method: 'GET', url: '/', expected: '/' };
+const CHOOSE_PERMIT = { id: 'SUBMISSION_CHOOSE_PERMIT', method: 'POST', url: '/select-permit', payload: { eaId: 'AB7469' }, expected: '/task-list' };
+const CONFIRM_PAGE = (type, route) => { return { id: 'SUBMISSION_CONFIRM_PAGE', method: 'GET', url: `/${type}/${route}/confirm`, expected: `/${type}/${route}/confirm` }; };
+const CONFIRM_YES = (type, route, dest) => { return { id: 'SUBMISSION_CONFIRM_YES', method: 'POST', url: `/${type}/${route}/confirm`, payload: { confirmation: 'true' }, expected: `/${type}/${route}/${dest}` }; };
+const CONFIRM_NO = (type, route) => { return { id: 'SUBMISSION_CONFIRM_YES', method: 'POST', url: `/${type}/${route}/confirm`, payload: { confirmation: 'false' }, expected: '/task-list' }; };
+const CHOOSE_SUBSTANCE = (route, substanceId) => { return { id: 'SUBMISSION_CHOOSE_SUBSTANCE', method: 'POST', url: `/releases/${route}/add-substance`, payload: { substanceId: substanceId }, expected: `/releases/${route}/detail` }; };
+const CHOOSE_DETAIL = (route, value, unitId, methodId) => { return { id: 'SUBMISSION_CHOOSE_DETAIL', method: 'POST', url: `/releases/${route}/detail`, payload: { value: value, unitId: unitId, methodId: methodId }, expected: `/releases/${route}` }; };
+const ANOTHER_SUBSTANCE = (route, payload) => { return { id: 'SUBMISSION_ANOTHER_SUBSTANCE', method: 'POST', url: `/releases/${route}/action`, payload: payload, expected: `/releases/${route}/add-substance` }; };
+const CONTINUE = (type, route, payload) => { return { id: 'SUBMISSION_CONTINUE', method: 'POST', url: `/${type}/${route}/action`, payload: payload, expected: '/task-list' }; };
 
-/*
- * value-0=345.3&value-1=343&add=Add+a+new+off-site+waste+transfer
- *{ ewc: '01 01 01', wfd: 'R1', value: 100.88 }
- */
+const TASK_LIST = { id: 'SUBMISSION_TASK_LIST', method: 'GET', url: '/task-list', expected: '/task-list' };
+const ADD_VALID = (payload) => { return { id: 'SUBMISSION_ADD_VALID', method: 'POST', url: '/transfers/off-site/add', payload: payload, expected: '/transfers/off-site' }; };
+const ADD_ANOTHER = (payload) => { return { id: 'SUBMISSION_ADD_ANOTHER', method: 'POST', url: '/transfers/off-site/action', payload: payload, expected: '/transfers/off-site/add' }; };
 
-// Off-site
-const TASK_LIST = { method: 'GET', url: '/task-list', expected: '/task-list' };
-const ADD_VALID = (payload) => { return { method: 'POST', url: '/transfers/off-site/add', payload: payload, expected: '/transfers/off-site' }; };
-const ADD_ANOTHER = (payload) => { return { method: 'POST', url: '/transfers/off-site/action', payload: payload, expected: '/transfers/off-site/add' }; };
+const SUBMIT = { id: 'SUBMISSION_SUBMIT', method: 'GET', url: '/submit/confirm', expected: '/submit/confirm' };
+const CONFIRM = { id: 'SUBMISSION_CONFIRM', method: 'POST', url: '/submit/confirm', expected: '/task-list' };
 
 experiment('Submit data test', () => {
 
@@ -145,7 +143,16 @@ experiment('Submit data test', () => {
             }
         });
         // console.log(JSON.stringify(stepBuilder.splice(0, 5), null, 4));
-        await steps(stepBuilder.splice(0, 5));
+        await steps(stepBuilder);
+    });
+
+    test('Create overseas waste transfers', async () => {
+        await steps([ START_PAGE, CHOOSE_PERMIT, CONFIRM_PAGE('releases', 'overseas'),
+            CONFIRM_NO('transfers', 'overseas') ]);
+    });
+
+    test('Submit', async () => {
+        await steps([SUBMIT, CONFIRM]);
     });
 
     after(() => {

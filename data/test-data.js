@@ -1,7 +1,7 @@
 'use strict';
 
 /**
- * Standalone data used for front end development
+ * Standalone test data used for front end development
  */
 module.exports = {
 
@@ -4240,17 +4240,6 @@ module.exports = {
         { 'id': 4461, 'name': '99.00', 'nacehId': 104, 'description': 'Activities of extraterritorial organisations and bodies' },
         { 'id': 4462, 'name': '99.0', 'nacehId': 104, 'description': 'Activities of extraterritorial organisations and bodies' },
         { 'id': 4463, 'name': '99', 'nacehId': 104, 'description': 'Activities of extraterritorial organisations and bodies' }
-    ],
-
-    methods: [
-        { 'id': 1, name: 'Measurement' },
-        { 'id': 2, name: 'Estimation' },
-        { 'id': 3, name: 'Calculation' }
-    ],
-
-    transferOperations: [
-        { 'id': 1, name: 'Disposal' },
-        { 'id': 2, name: 'Recovery' }
     ],
 
     units: [

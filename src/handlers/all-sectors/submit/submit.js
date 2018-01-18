@@ -4,6 +4,8 @@
  * Route handlers for submit your report
  */
 const logger = require('../../../lib/logging').logger;
+const Submission = require('../../../lib/submission');
+const CacheKeyError = require('../../../lib/user-cache-policies').CacheKeyError;
 
 module.exports = {
     /**
@@ -18,11 +20,17 @@ module.exports = {
                 reply.view('all-sectors/submit/submit');
             } else {
                 // We have confirmed the submission so send data to the API
-
+                await Submission.submit(request);
+                reply.redirect('/task-list');
             }
         } catch (err) {
-            logger.log('error', err);
-            reply.redirect('/');
+            if (err instanceof CacheKeyError) {
+                logger.debug(err);
+                reply.redirect('/');
+            } else {
+                logger.error(err);
+                reply.redirect('/logout');
+            }
         }
     }
 };

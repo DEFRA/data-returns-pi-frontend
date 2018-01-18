@@ -18,40 +18,40 @@ const check = (id) => {
     return payload;
 };
 
-const START_PAGE = { method: 'GET', url: '/', expected: '/' };
-const CHOOSE_PERMIT = { method: 'POST', url: '/select-permit', payload: { eaId: '100311' }, expected: '/task-list' };
-const TASK_LIST = { method: 'GET', url: '/task-list', expected: '/task-list' };
-const CONFIRM_PAGE = { method: 'GET', url: '/transfers/overseas/confirm', expected: '/transfers/overseas/confirm' };
-const CONFIRM_NO = { method: 'POST', url: '/transfers/overseas/confirm', payload: { confirmation: 'false' }, expected: '/task-list' };
-const CONFIRM_YES = { method: 'POST', url: '/transfers/overseas/confirm', payload: { confirmation: 'true' }, expected: '/transfers/overseas/add-substance' };
-const CHOOSE_NO_SUBSTANCE = { method: 'POST', url: '/transfers/overseas/add-substance', payload: { substanceId: null }, expected: '/transfers/overseas/add-substance' };
-const CHOOSE_SUBSTANCE = (substanceId) => { return { method: 'POST', url: '/transfers/overseas/add-substance', payload: { substanceId: substanceId }, expected: '/transfers/overseas/detail' }; };
-const INVALID_DETAIL = { method: 'POST', url: '/transfers/overseas/detail', payload: { value: 'wqer', operationId: null, methodId: -56 }, expected: '/transfers/overseas/detail' };
-const VALID_DETAIL = { method: 'POST', url: '/transfers/overseas/detail', payload: { value: 34, operationId: 1, methodId: 2 }, expected: '/transfers/overseas/transportation-co-address' };
-const INVALID_TC_ADDR = { method: 'POST', url: '/transfers/overseas/transportation-co-address', payload: { 'business-name': '', 'address-line-1': 'Druid House', 'address-line-2': 'Stoke Bishop', 'town-or-city': 'Bristol', 'country': 'England' }, expected: '/transfers/overseas/transportation-co-address' };
-const VALID_TC_ADDR = { method: 'POST', url: '/transfers/overseas/transportation-co-address', payload: { 'business-name': 'Druid Wood Limited', 'address-line-1': 'Howecroft Court', 'address-line-2': 'Stoke Bishop', 'town-or-city': 'Bristol', 'country': 'England' }, expected: '/transfers/overseas/destination-address' };
-const INVALID_DEST_ADDR = { method: 'POST', url: '/transfers/overseas/destination-address', payload: { 'business-name': '', 'address-line-1': '67 Long Road', 'address-line-2': 'In Village', 'town-or-city': 'Barcelona', 'country': 'Spain' }, expected: '/transfers/overseas/destination-address' };
-const VALID_DEST_ADDR = { method: 'POST', url: '/transfers/overseas/destination-address', payload: { 'business-name': 'Some company', 'address-line-1': '67 Long Road', 'address-line-2': 'In Village', 'town-or-city': 'Barcelona', 'country': 'Spain' }, expected: '/transfers/overseas/check' };
-const CHECK_CONTINUE = { method: 'POST', url: '/transfers/overseas/check', payload: {}, expected: '/transfers/overseas' };
+const START_PAGE = { id: 'OVERSEAS_START_PAGE', method: 'GET', url: '/', expected: '/' };
+const CHOOSE_PERMIT = { id: 'OVERSEAS_CHOOSE_PERMIT', method: 'POST', url: '/select-permit', payload: { eaId: '100311' }, expected: '/task-list' };
+const TASK_LIST = { id: 'OVERSEAS_TASK_LIST', method: 'GET', url: '/task-list', expected: '/task-list' };
+const CONFIRM_PAGE = { id: 'OVERSEAS_CONFIRM_PAGE', method: 'GET', url: '/transfers/overseas/confirm', expected: '/transfers/overseas/confirm' };
+const CONFIRM_NO = { id: 'OVERSEAS_CONFIRM_NO', method: 'POST', url: '/transfers/overseas/confirm', payload: { confirmation: 'false' }, expected: '/task-list' };
+const CONFIRM_YES = { id: 'OVERSEAS_CONFIRM_YES', method: 'POST', url: '/transfers/overseas/confirm', payload: { confirmation: 'true' }, expected: '/transfers/overseas/add-substance' };
+const CHOOSE_NO_SUBSTANCE = { id: 'OVERSEAS_CHOOSE_NO_SUBSTANCE', method: 'POST', url: '/transfers/overseas/add-substance', payload: { substanceId: null }, expected: '/transfers/overseas/add-substance' };
+const CHOOSE_SUBSTANCE = (substanceId) => { return { id: 'OVERSEAS_CHOOSE_SUBSTANCE', method: 'POST', url: '/transfers/overseas/add-substance', payload: { substanceId: substanceId }, expected: '/transfers/overseas/detail' }; };
+const INVALID_DETAIL = { id: 'OVERSEAS_INVALID_DETAIL', method: 'POST', url: '/transfers/overseas/detail', payload: { value: 'wqer', operationId: null, methodId: -56 }, expected: '/transfers/overseas/detail' };
+const VALID_DETAIL = { id: 'OVERSEAS_VALID_DETAIL', method: 'POST', url: '/transfers/overseas/detail', payload: { value: 34, operationId: 1, methodId: 2 }, expected: '/transfers/overseas/transportation-co-address' };
+const INVALID_TC_ADDR = { id: 'OVERSEAS_INVALID_TC_ADDR', method: 'POST', url: '/transfers/overseas/transportation-co-address', payload: { 'business-name': '', 'address-line-1': 'Druid House', 'address-line-2': 'Stoke Bishop', 'town-or-city': 'Bristol', 'country': 'England' }, expected: '/transfers/overseas/transportation-co-address' };
+const VALID_TC_ADDR = { id: 'OVERSEAS_VALID_TC_ADDR', method: 'POST', url: '/transfers/overseas/transportation-co-address', payload: { 'business-name': 'Druid Wood Limited', 'address-line-1': 'Howecroft Court', 'address-line-2': 'Stoke Bishop', 'town-or-city': 'Bristol', 'country': 'England' }, expected: '/transfers/overseas/destination-address' };
+const INVALID_DEST_ADDR = { id: 'OVERSEAS_INVALID_DEST_ADDR', method: 'POST', url: '/transfers/overseas/destination-address', payload: { 'business-name': '', 'address-line-1': '67 Long Road', 'address-line-2': 'In Village', 'town-or-city': 'Barcelona', 'country': 'Spain' }, expected: '/transfers/overseas/destination-address' };
+const VALID_DEST_ADDR = { id: 'OVERSEAS_VALID_DEST_ADDR', method: 'POST', url: '/transfers/overseas/destination-address', payload: { 'business-name': 'Some company', 'address-line-1': '67 Long Road', 'address-line-2': 'In Village', 'town-or-city': 'Barcelona', 'country': 'Spain' }, expected: '/transfers/overseas/check' };
+const CHECK_CONTINUE = { id: 'OVERSEAS_CHECK_CONTINUE', method: 'POST', url: '/transfers/overseas/check', payload: {}, expected: '/transfers/overseas' };
 
-const OVERSEAS = { method: 'GET', url: '/transfers/overseas', expected: '/transfers/overseas' };
-const ADD_ANOTHER = { method: 'POST', url: '/transfers/overseas/action', payload: {'add': 'Add a new overseas waste transfer'}, expected: '/transfers/overseas/add-substance' };
+const OVERSEAS = { id: 'OVERSEAS_OVERSEAS', method: 'GET', url: '/transfers/overseas', expected: '/transfers/overseas' };
+const ADD_ANOTHER = { id: 'OVERSEAS_ADD_ANOTHER', method: 'POST', url: '/transfers/overseas/action', payload: {'add': 'Add a new overseas waste transfer'}, expected: '/transfers/overseas/add-substance' };
 
 // Check modifications
-const CHECK = (id) => { return { method: 'POST', url: '/transfers/overseas/action', payload: check(id), expected: '/transfers/overseas/check' }; };
-const SUBSTANCE = { method: 'GET', url: '/transfers/overseas/add-substance', expected: '/transfers/overseas/add-substance' };
-const CHOOSE_SUBSTANCE2 = (substanceId) => { return { method: 'POST', url: '/transfers/overseas/add-substance', payload: { substanceId: substanceId }, expected: '/transfers/overseas/check' }; };
-const DETAIL = { method: 'GET', url: '/transfers/overseas/detail', expected: '/transfers/overseas/detail' };
-const VALID_DETAIL2 = { method: 'POST', url: '/transfers/overseas/detail', payload: { value: 99, operationId: 2, methodId: 2 }, expected: '/transfers/overseas/check' };
-const TC_ADDR = { method: 'GET', url: '/transfers/overseas/transportation-co-address', expected: '/transfers/overseas/transportation-co-address' };
-const DEST_ADDR = { method: 'GET', url: '/transfers/overseas/destination-address', expected: '/transfers/overseas/destination-address' };
-const VALID_TC_ADDR2 = { method: 'POST', url: '/transfers/overseas/transportation-co-address', payload: { 'business-name': 'Druid Wood Limited', 'address-line-1': 'Howecroft Court', 'address-line-2': 'Stoke Bishop', 'town-or-city': 'Bristol', 'country': 'England' }, expected: '/transfers/overseas/check' };
-const VALID_DEST_ADDR2 = { method: 'POST', url: '/transfers/overseas/destination-address', payload: { 'business-name': 'Some company', 'address-line-1': '67 Long Road', 'address-line-2': 'In Village', 'town-or-city': 'Barcelona', 'country': 'Spain' }, expected: '/transfers/overseas/check' };
-const CONTINUE = { method: 'POST', url: '/transfers/overseas/action', payload: {'continue': 'Continue'}, expected: '/task-list' };
+const CHECK = (id) => { return { id: 'OVERSEAS_CHECK', method: 'POST', url: '/transfers/overseas/action', payload: check(id), expected: '/transfers/overseas/check' }; };
+const SUBSTANCE = { id: 'OVERSEAS_SUBSTANCE', method: 'GET', url: '/transfers/overseas/add-substance', expected: '/transfers/overseas/add-substance' };
+const CHOOSE_SUBSTANCE2 = (substanceId) => { return { id: 'OVERSEAS_CHOOSE_SUBSTANCE2', method: 'POST', url: '/transfers/overseas/add-substance', payload: { substanceId: substanceId }, expected: '/transfers/overseas/check' }; };
+const DETAIL = { id: 'OVERSEAS_DETAIL', method: 'GET', url: '/transfers/overseas/detail', expected: '/transfers/overseas/detail' };
+const VALID_DETAIL2 = { id: 'OVERSEAS_VALID_DETAIL2', method: 'POST', url: '/transfers/overseas/detail', payload: { value: 99, operationId: 2, methodId: 2 }, expected: '/transfers/overseas/check' };
+const TC_ADDR = { id: 'OVERSEAS_TC_ADDR', method: 'GET', url: '/transfers/overseas/transportation-co-address', expected: '/transfers/overseas/transportation-co-address' };
+const DEST_ADDR = { id: 'OVERSEAS_DEST_ADDR', method: 'GET', url: '/transfers/overseas/destination-address', expected: '/transfers/overseas/destination-address' };
+const VALID_TC_ADDR2 = { id: 'OVERSEAS_VALID_TC_ADDR2', method: 'POST', url: '/transfers/overseas/transportation-co-address', payload: { 'business-name': 'Druid Wood Limited', 'address-line-1': 'Howecroft Court', 'address-line-2': 'Stoke Bishop', 'town-or-city': 'Bristol', 'country': 'England' }, expected: '/transfers/overseas/check' };
+const VALID_DEST_ADDR2 = { id: 'OVERSEAS_VALID_DEST_ADDR2', method: 'POST', url: '/transfers/overseas/destination-address', payload: { 'business-name': 'Some company', 'address-line-1': '67 Long Road', 'address-line-2': 'In Village', 'town-or-city': 'Barcelona', 'country': 'Spain' }, expected: '/transfers/overseas/check' };
+const CONTINUE = { id: 'OVERSEAS_CONTINUE', method: 'POST', url: '/transfers/overseas/action', payload: {'continue': 'Continue'}, expected: '/task-list' };
 
-const DELETE = { method: 'POST', url: '/transfers/overseas/action', payload: { 'delete-0': 'Delete' }, expected: '/transfers/overseas/remove' };
-const DELETE_CONFIRM_1 = { method: 'POST', url: '/transfers/overseas/remove', expected: '/transfers/overseas' };
-const DELETE_CONFIRM_2 = { method: 'POST', url: '/transfers/overseas/remove', expected: '/task-list' };
+const DELETE = { id: 'OVERSEAS_DELETE', method: 'POST', url: '/transfers/overseas/action', payload: { 'delete-0': 'Delete' }, expected: '/transfers/overseas/remove' };
+const DELETE_CONFIRM_1 = { id: 'OVERSEAS_DELETE_CONFIRM_1', method: 'POST', url: '/transfers/overseas/remove', expected: '/transfers/overseas' };
+const DELETE_CONFIRM_2 = { id: 'OVERSEAS_DELETE_CONFIRM_2', method: 'POST', url: '/transfers/overseas/remove', expected: '/task-list' };
 
 experiment('Overseas transfers', () => {
 

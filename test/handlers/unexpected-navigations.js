@@ -47,18 +47,18 @@ experiment('Unexpected navigations', () => {
     });
 
     test('No permit set - GET routes', async () => {
-        const methods = getHandlerRoutes.filter(f => ![ '/login', '/', '/logout', '/check/confirm', '/share/confirm', '/submit/confirm' ]
+        const methods = getHandlerRoutes.filter(f => ![ '/login', '/', '/logout', '/select-permit', '/check/confirm', '/share/confirm', '/submit/confirm' ]
             .includes(f)).map(r => {
-            return { method: 'GET', url: r, expected: '/' };
+            return { id: 'UNEXPECTED_GET_' + r, method: 'GET', url: r, expected: '/' };
         });
         // console.log('get routes' + JSON.stringify(methods.map(r => r.url), null, 2));
         await steps(methods);
     });
 
     test('No permit set - POST routes', async () => {
-        const methods = postHandlerRoutes.filter(f => ![ '/login', '/select-permit' ]
+        const methods = postHandlerRoutes.filter(f => ![ '/login', '/select-permit', '/check/confirm', '/share/confirm', '/submit/confirm' ]
             .includes(f)).map(r => {
-            return { method: 'POST', url: r, expected: '/' };
+            return { id: 'UNEXPECTED_POST_' + r, method: 'POST', url: r, expected: '/' };
         });
         // console.log('post routes' + JSON.stringify(methods, null, 2));
         await steps(methods);

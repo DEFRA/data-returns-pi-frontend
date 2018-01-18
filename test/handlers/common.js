@@ -17,7 +17,7 @@ internals.getCookies = (response) => {
     return cookies;
 };
 
-internals.step = async (method, url, payload, expected) => {
+internals.step = async (id, method, url, payload, expected) => {
 
     let currentUrl = url;
     let response = null;
@@ -46,12 +46,12 @@ internals.step = async (method, url, payload, expected) => {
         });
     }
 
+    if (response.statusCode !== 200 || currentUrl !== expected) {
+        logging.logger.error(`Failure in step: ${id}: method; ${method} url; ${url} payload; ${JSON.stringify(payload)} expected; ${expected}`);
+    }
+
     expect(response.statusCode).to.equal(200);
     expect(currentUrl).to.equal(expected);
-
-    if (response.statusCode !== 200 || currentUrl !== expected) {
-        logging.logger.info('Mismatched ' + currentUrl + ':' + expected);
-    }
 };
 
 module.exports = {
@@ -144,8 +144,8 @@ module.exports = {
     server: server.server,
 
     steps: async (arr) => {
-        for (const { method, url, payload, expected } of arr) {
-            await internals.step(method, url, payload, expected);
+        for (const { id, method, url, payload, expected } of arr) {
+            await internals.step(id, method, url, payload, expected);
         }
     }
 

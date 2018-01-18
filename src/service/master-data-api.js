@@ -3,10 +3,9 @@
 /**
  * This module services requests against the api.
  */
-const _ = require('lodash');
 const client = require('../lib/api-client');
 const Logging = require('../lib/logging');
-const Data = require('../../data/master-data');
+const Static = require('../../data/static-data');
 
 let internals = {};
 
@@ -92,7 +91,7 @@ module.exports = internals = {
      * Return a list of the value methods
      */
     getMethods: async () => {
-        return Data.methods;
+        return Static.methods;
     },
 
     /**
@@ -100,7 +99,7 @@ module.exports = internals = {
      * @param id
      */
     getMethodById: async (id) => {
-        return Data.methods.find(m => m.id === id);
+        return Static.methods.find(m => m.id === id);
     },
 
     /**
@@ -108,11 +107,11 @@ module.exports = internals = {
      * @returns {Promise.<Array>}
      */
     getTransferOperations: async () => {
-        return Data.transferOperations;
+        return Static.transferOperations;
     },
 
     getTransferOperationById: async (id) => {
-        return Data.transferOperations.find(o => o.id === id);
+        return Static.transferOperations.find(o => o.id === id);
     },
 
     /**
