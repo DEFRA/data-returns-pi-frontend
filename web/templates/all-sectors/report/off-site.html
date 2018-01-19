@@ -13,7 +13,7 @@
         <h2 class="heading-medium error-summary-heading" id="check-your-report">Check what you’re reporting</h2>
         <ul class="error-summary-list">
             {% for transfer in transfers | transfersWithErrors %}
-            <li><a href="#">Check your {{ transfer.ewc.activity.activity }} {{ transfer.ewc.chapter.chapter }} {{ transfer.ewc.subChapter.subChapter }} &#40;{{ transfer.ewc.subChapter.description }}&#41; report</a></li>
+            <li><a href="#">Check your {{ transfer.ewc.chapter.code }} {{ transfer.ewc.subChapter.code }} {{ transfer.ewc.activity.code }} &#40;{{ transfer.ewc.subChapter.description }}&#41; report</a></li>
             {% endfor %}
         </ul>
     </div>
@@ -34,7 +34,7 @@
             <tbody>
             {% for transfer in transfers %}
             <tr>
-                <td class="td-ewc-code">{{ transfer.ewc.activity.activity }} {{ transfer.ewc.chapter.chapter }} {{ transfer.ewc.subChapter.subChapter }}</td>
+                <td class="td-ewc-code">{{ transfer.ewc.chapter.code }} {{ transfer.ewc.subChapter.code }} {{ transfer.ewc.activity.code }}</td>
 
                 <td class="td-waste">{{ transfer.ewc.subChapter.description }}</td>
 

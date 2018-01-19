@@ -149,7 +149,7 @@ module.exports = internals = {
      * @param subChapter
      * @return {Promise.<*>}
      */
-    getEwc: async (activity, chapter, subChapter) => {
+    getEwc: async (chapter, subChapter, activity) => {
         const ewcActivity = await internals.getEntityByNamedMapper(internals._entities.ewcActivities, 'byName', `${chapter} ${subChapter} ${activity}`);
         const ewcSubchapter = await internals.getEntityByNamedMapper(internals._entities.ewcSubchapters, 'byName', `${chapter} ${subChapter}`);
         const ewcChapter = await internals.getEntityByNamedMapper(internals._entities.ewcChapters, 'byCode', chapter);

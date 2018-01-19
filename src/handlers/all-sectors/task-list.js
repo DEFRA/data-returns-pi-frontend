@@ -7,6 +7,7 @@ const taskListNames = require('../../service/task-list').names(allSectorsTaskLis
 const logger = require('../../lib/logging').logger;
 const CacheKeyError = require('../../lib/user-cache-policies').CacheKeyError;
 const cacheNames = require('../../lib/user-cache-policies').names;
+
 /**
  * Route handlers for the all-sectors journey
  */
@@ -53,7 +54,11 @@ module.exports = {
                 await request.server.app.userCache.cache(cacheNames.PERMIT_STATUS).set(request, permitStatus);
             }
 
-            reply.view('all-sectors/task-list', { eaId: eaId.name, taskList: allSectorsTaskList, permitStatus: permitStatus });
+            reply.view('all-sectors/task-list', { eaId: eaId.name,
+                taskList: allSectorsTaskList,
+                permitStatus: permitStatus
+            });
+
         } catch (err) {
             if (err instanceof CacheKeyError) {
                 // Probably due to unexpected navigation

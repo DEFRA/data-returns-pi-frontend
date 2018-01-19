@@ -7,6 +7,10 @@
         <div class="phase-banner">
             <p> <strong class="phase-tag">BETA</strong> <span>This is a new service – your <a target="blank" href="">feedback</a> will help us to improve it.</span> </p>
         </div>
+
+        <a href="/task-list" class="link-back">Back to sections you must complete</a>
+
+        {% if canSubmit %}
         <h1 class="heading-large">Submit your report</h1>
         <div class="grid-row">
             <div class="column-two-thirds">
@@ -23,6 +27,9 @@
                 <div class="form-group"> <input type="submit" class="button" value="Continue"> </div>
             </div>
         </div>
+        {% else %}
+        <p>Please complete your report</p>
+        {% endif %}
     </form>
 </main>
 

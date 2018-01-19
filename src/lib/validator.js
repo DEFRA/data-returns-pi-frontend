@@ -167,6 +167,7 @@ const internals = {
 };
 
 module.exports = {
+    isBrt: internals.isBrt,
     findOffSiteTransfer: internals.findOffSiteTransfer,
     release: internals.release,
     offSite: internals.offSite,

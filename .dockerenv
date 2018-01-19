@@ -14,7 +14,7 @@ MD_API_PORT=9020
 
 # Submissions data API
 SM_API_HOSTNAME=localhost
-SM_API_PORT=100
+SM_API_PORT=9220
 
 # Logging level
 LOG_LEVEL=info

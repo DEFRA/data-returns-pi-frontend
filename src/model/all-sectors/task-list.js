@@ -21,42 +21,48 @@ module.exports = {
                     name: 'RELEASES_TO_AIR',
                     pathParam: 'air',
                     title: 'Releases to air',
-                    page: '/releases/air'
+                    page: '/releases/air',
+                    required: true
                 },
 
                 {
                     name: 'RELEASES_TO_LAND',
                     pathParam: 'land',
                     title: 'Releases to land',
-                    page: '/releases/land'
+                    page: '/releases/land',
+                    required: true
                 },
 
                 {
                     name: 'RELEASES_TO_CONTROLLED_WATERS',
                     pathParam: 'water',
                     title: 'Releases to controlled waters',
-                    page: '/releases/water'
+                    page: '/releases/water',
+                    required: true
                 },
 
                 {
                     name: 'OFFSITE_TRANSFERS_IN_WASTE_WATER',
                     pathParam: 'waste-water',
                     title: 'Off-site transfers in waste water',
-                    page: '/releases/waste-water'
+                    page: '/releases/waste-water',
+                    required: true
                 },
 
                 {
                     name: 'OFFSITE_WASTE_TRANSFERS',
                     pathParam: 'off-site',
                     title: 'Off-site waste transfers',
-                    page: '/transfers/off-site'
+                    page: '/transfers/off-site',
+                    required: true
                 },
 
                 {
                     name: 'OVERSEAS_WASTE_TRANSFERS',
                     pathParam: 'overseas',
                     title: 'Overseas waste transfers',
-                    page: '/transfers/overseas'
+                    page: '/transfers/overseas',
+                    required: false
                 }
 
             ]
@@ -70,21 +76,24 @@ module.exports = {
                     name: 'CHECK',
                     pathParam: 'check',
                     title: 'Check your data',
-                    page: '/check'
+                    page: '/check',
+                    required: false
                 },
 
                 {
                     name: 'SHARE',
                     pathParam: 'share',
                     title: 'Share your data',
-                    page: '/share'
+                    page: '/share',
+                    required: false
                 },
 
                 {
                     name: 'SUBMIT',
                     pathParam: 'submit',
                     title: 'Submit your report',
-                    page: '/submit'
+                    page: '/submit',
+                    required: false
                 }
 
             ]

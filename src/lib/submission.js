@@ -5,27 +5,41 @@
  * It converts the contents of the redis cache and produces the final message
  */
 const Joi = require('joi');
-const logger = require('./logging').logger;
 const MasterDataService = require('../service/master-data');
+
 const cacheNames = require('./user-cache-policies').names;
 const CacheKeyError = require('./user-cache-policies').CacheKeyError;
-const _ = require('lodash');
+const Api = require('./api-client');
+const allSectorsTaskList = require('../model/all-sectors/task-list');
+const required = require('../service/task-list').required(allSectorsTaskList);
 const isNumeric = require('./utils').isNumeric;
+const isBrt = require('../lib/validator').isBrt;
+const logger = require('./logging').logger;
 
 const releaseSchema = Joi.object({
     substanceId: Joi.number().integer().required(),
-    value: Joi.number().optional(),
-    unit_id: Joi.number().integer().optional(),
+    below_reporting_threshold: Joi.boolean().required(),
     method: Joi.valid(['Measurement', 'Calculation', 'Estimation']),
-    below_reporting_threshold: Joi.boolean().required()
+    value: Joi.alternatives().when('below_reporting_threshold', {
+        is: true, then: Joi.forbidden(), otherwise: Joi.number().required()
+    }),
+    unit_id: Joi.alternatives().when('below_reporting_threshold', {
+        is: true, then: Joi.forbidden(), otherwise: Joi.number().integer().required()
+    })
 });
 
-const offsiteWasteTransfersSchema = Joi.object({
+const offsiteWasteTransfersSchema = Joi.alternatives().try(Joi.object({
     ewc_activity_id: Joi.number().integer(),
-    wfd_disposal_id: Joi.number().integer(),
-    wfd_recovery_id: Joi.number().integer(),
+    wfd_disposal_id: Joi.number().integer().required(),
+    wfd_recovery_id: Joi.forbidden(),
     tonnage: Joi.number()
-}).optional();
+}), Joi.object({
+    ewc_activity_id: Joi.number().integer(),
+    wfd_disposal_id: Joi.forbidden(),
+    wfd_recovery_id: Joi.number().integer().required(),
+    tonnage: Joi.number()
+})
+).optional();
 
 const transmissionSchema = Joi.object({
     applicable_year: Joi.number().integer().required(),
@@ -41,13 +55,23 @@ const internals = {
 
     // Create release element of message
     releasesObj: async (task, release) => {
-        return {
-            substanceId: release,
-            value: isNumeric(task.releases[release].value) ? task.releases[release].value : null,
-            unit_id: task.releases[release].unitId,
-            method: (await MasterDataService.getMethodById(task.releases[release].methodId)).name,
-            below_reporting_threshold: task.releases[release].value === 'BRT'
-        };
+        if (isBrt(task.releases[release].value)) {
+            return {
+                substanceId: Number.parseInt(release),
+                method: (await MasterDataService.getMethodById(task.releases[release].methodId)).name,
+                below_reporting_threshold: true
+            };
+        } else if (isNumeric(task.releases[release].value)) {
+            return {
+                substanceId: Number.parseInt(release),
+                value: Number.parseFloat(task.releases[release].value),
+                unit_id: task.releases[release].unitId,
+                method: (await MasterDataService.getMethodById(task.releases[release].methodId)).name,
+                below_reporting_threshold: false
+            };
+        } else {
+            throw new CacheKeyError('Malformed release object: ' + JSON.stringify(release));
+        }
     },
 
     /*
@@ -59,9 +83,16 @@ const internals = {
         const submission = await request.server.app.userCache.cache(cacheNames.SUBMISSION_STATUS).get(request);
         const eaId = await request.server.app.userCache.cache(cacheNames.PERMIT_STATUS).get(request);
 
-        const completed = Object.keys(eaId.completed).filter(k => eaId.completed[k]);
-        const valid = Object.keys(eaId.valid).filter(k => eaId.valid[k]);
-        const routes = _.union(completed, valid);
+        const permitStatus = await request.server.app.userCache.cache(cacheNames.PERMIT_STATUS).get(request);
+        const challengeStatus = Object.keys(permitStatus.challengeStatus).filter(p => permitStatus.challengeStatus[p]);
+        const valid = Object.keys(permitStatus.valid).filter(p => permitStatus.valid[p]);
+        const completed = Object.keys(permitStatus.completed).filter(p => permitStatus.completed[p]);
+
+        const routes = required.filter(r => {
+            return challengeStatus.find(c => c === r) &&
+              valid.find(v => v === r) &&
+              completed.find(d => d === r);
+        });
 
         const transmissionObject = {};
         transmissionObject.applicable_year = 2017;
@@ -75,42 +106,63 @@ const internals = {
 
             switch (route) {
                 case 'RELEASES_TO_AIR':
-                    transmissionObject.releases_to_air = transmissionObject.releases_to_air || [];
-                    for (const release of Object.keys(task.releases)) {
-                        transmissionObject.releases_to_air.push(await internals.releasesObj(task, release));
+                    if (task.releases) {
+                        transmissionObject.releases_to_air = transmissionObject.releases_to_air || [];
+                        for (const release of Object.keys(task.releases)) {
+                            transmissionObject.releases_to_air.push(await internals.releasesObj(task, release));
+                        }
                     }
                     break;
 
                 case 'RELEASES_TO_LAND':
-                    transmissionObject.releases_to_land = transmissionObject.releases_to_land || [];
-                    for (const release of Object.keys(task.releases)) {
-                        transmissionObject.releases_to_land.push(await internals.releasesObj(task, release));
+                    if (task.releases) {
+                        transmissionObject.releases_to_land = transmissionObject.releases_to_land || [];
+                        for (const release of Object.keys(task.releases)) {
+                            transmissionObject.releases_to_land.push(await internals.releasesObj(task, release));
+                        }
                     }
                     break;
 
                 case 'RELEASES_TO_CONTROLLED_WATERS':
-                    transmissionObject.releases_to_controlled_water = transmissionObject.releases_to_controlled_water || [];
-                    for (const release of Object.keys(task.releases)) {
-                        transmissionObject.releases_to_controlled_water.push(await internals.releasesObj(task, release));
+                    if (task.releases) {
+                        transmissionObject.releases_to_controlled_water = transmissionObject.releases_to_controlled_water || [];
+                        for (const release of Object.keys(task.releases)) {
+                            transmissionObject.releases_to_controlled_water.push(await internals.releasesObj(task, release));
+                        }
                     }
                     break;
 
                 case 'OFFSITE_TRANSFERS_IN_WASTE_WATER':
-                    transmissionObject.releases_to_waste_water = transmissionObject.releases_to_waste_water || [];
-                    for (const release of Object.keys(task.releases)) {
-                        transmissionObject.releases_to_waste_water.push(await internals.releasesObj(task, release));
+                    if (task.releases) {
+                        transmissionObject.releases_to_waste_water = transmissionObject.releases_to_waste_water || [];
+                        for (const release of Object.keys(task.releases)) {
+                            transmissionObject.releases_to_waste_water.push(await internals.releasesObj(task, release));
+                        }
                     }
                     break;
 
                 case 'OFFSITE_WASTE_TRANSFERS':
-                    transmissionObject.offsite_waste_transfers = transmissionObject.offsite_waste_transfers || [];
-                    for (const transfer of task.offSiteTransfers) {
-                        transmissionObject.offsite_waste_transfers.push({
-                            ewc_activity_id: transfer.ewc.activityId,
-                            wfd_disposal_id: transfer.wfd.disposalId,
-                            wfd_recovery_id: transfer.wfd.recoveryId,
-                            tonnage: transfer.value
-                        });
+                    if (task.offSiteTransfers) {
+                        transmissionObject.offsite_waste_transfers = transmissionObject.offsite_waste_transfers || [];
+                        for (const transfer of task.offSiteTransfers) {
+                            if (transfer.wfd.disposalId) {
+                                transmissionObject.offsite_waste_transfers.push({
+                                    ewc_activity_id: transfer.ewc.activityId,
+                                    wfd_disposal_id: transfer.wfd.disposalId,
+                                    tonnage: transfer.value
+                                });
+
+                            } else if (transfer.wfd.recoveryId) {
+                                transmissionObject.offsite_waste_transfers.push({
+                                    ewc_activity_id: transfer.ewc.activityId,
+                                    wfd_recovery_id: transfer.wfd.recoveryId,
+                                    tonnage: transfer.value
+                                });
+
+                            } else {
+                                throw new CacheKeyError('Malformed transfer object' + JSON.stringify(transfer, null, 2));
+                            }
+                        }
                     }
                     break;
 
@@ -141,10 +193,17 @@ module.exports = {
         // Create the transmission message
         const message = await internals.createSubmissionMessage(request);
 
+        // Log message in debug mode
+        logger.debug('Submission message: ' + JSON.stringify(message, null, 2));
+
         // Validate that we have a properly formed submission message
         Joi.assert(message, transmissionSchema);
 
-        // new TransmissionMessageError(JSON.stringify(message, null, 2)));
+        // If we are not in test mode then make the submission
+        if (process.env.NODE_ENV !== 'localtest') {
+            const response = await Api.request('SUB', 'POST', 'submissions', null, message);
+            console.log(response);
+        }
 
     }
 };

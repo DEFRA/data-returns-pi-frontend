@@ -28,15 +28,17 @@ const internals = {
                 scheme: 'http',
                 host: process.env.SM_API_HOSTNAME || 'localhost',
                 port: Number.parseInt(process.env.SM_API_PORT || 9220),
-                path: 'api/' + command,
-                query: query
+                path: 'api/' + command
             } : {
                 scheme: 'http',
                 host: process.env.MD_API_HOSTNAME || 'localhost',
                 port: Number.parseInt(process.env.MD_API_PORT || 9020),
-                path: 'api/' + command,
-                query: query
+                path: 'api/' + command
             };
+
+            if (query) {
+                uriObj.query = query;
+            }
 
             return uriJs.serialize(uriObj);
 

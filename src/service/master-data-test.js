@@ -176,17 +176,17 @@ module.exports = internals = {
     getEwc: async (chapter, subChapter, activity) => {
         if (!internals._ewcChapter.size) {
             Data.ewcChapter.forEach((c) => {
-                internals._ewcChapter.set(c.chapter, c);
+                internals._ewcChapter.set(c.code, c);
             });
         }
         if (!internals._ewcSubChapter.size) {
             Data.ewcSubChapter.forEach((s) => {
-                internals._ewcSubChapter.set(s.chapter + '-' + s.subChapter, s);
+                internals._ewcSubChapter.set(s.chapter + '-' + s.code, s);
             });
         }
         if (!internals._ewcActivity.size) {
             Data.ewcActivity.forEach((a) => {
-                internals._ewcActivity.set(a.chapter + '-' + a.subChapter + '-' + a.activity, a);
+                internals._ewcActivity.set(a.chapter + '-' + a.subChapter + '-' + a.code, a);
             });
         }
 

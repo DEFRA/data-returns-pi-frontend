@@ -34,6 +34,12 @@ module.exports = internals = {
         return ([].concat(...taskList.stages.map(i => i.items))).map(n => n.name);
     },
 
+    // The required tasks for submission
+    required: (taskList) => {
+        checkTaskListCorrectness(taskList);
+        return ([].concat(...taskList.stages.map(i => i.items))).filter(i => i.required).map(n => n.name);
+    },
+
     // Map by parameter
     mapByPathParameter: (taskList) => {
         checkTaskListCorrectness(taskList);
