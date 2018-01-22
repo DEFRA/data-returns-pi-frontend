@@ -418,7 +418,7 @@ module.exports = {
      * @param reply
      * @return {Promise.<void>}
      */
-    check: async (request, reply) => {
+    review: async (request, reply) => {
         try {
             const { permitStatus, route, tasks } = await cacheHelper(request, 'overseas');
 

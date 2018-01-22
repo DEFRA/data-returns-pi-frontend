@@ -73,19 +73,11 @@ module.exports = {
             items: [
 
                 {
-                    name: 'CHECK',
-                    pathParam: 'check',
+                    name: 'REVIEW',
+                    pathParam: 'review',
                     title: 'Check your data',
-                    page: '/check',
-                    required: false
-                },
-
-                {
-                    name: 'SHARE',
-                    pathParam: 'share',
-                    title: 'Share your data',
-                    page: '/share',
-                    required: false
+                    page: '/review',
+                    required: true
                 },
 
                 {

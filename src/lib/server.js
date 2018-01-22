@@ -101,7 +101,7 @@ internals.initialize = async () => {
                     // Store the templates on compilation unless local
                     let template = null;
 
-                    if (templates.has(options.filename) && process.env.NODE_ENV !== 'local') {
+                    if (templates.has(options.filename) && process.env.NODE_ENV !== 'localtest') {
                         template = templates.get(options.filename);
                     } else {
                         template = Nunjucks.compile(src, options.environment);

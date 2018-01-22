@@ -1,11 +1,97 @@
 {% extends 'layout/layout.html' %}
 
+{% macro releasesTable(releases, desc) %}
+    <table class="releases-to-air table-control mobile-format">
+        <thead>
+        <tr>
+            <th class="th-substance">Substance</th>
+            <th class="th-action">Method</th>
+            <th class="th-release numeric">Total</th>
+        </tr>
+        </thead>
+        <tbody>
+        <h2 class="heading-medium">{{ desc }}</h2>
+        {% for release in releases %}
+        <tr>
+            <td class="td-substance">{{ release.substance_name }}</td>
+            <td class="td-method">{{ release.method }}</td>
+            {% if release.below_reporting_threshold %}
+            <td class="td-release numeric">BRT</td>
+            {% else %}
+            <td class="td-release numeric">{{ release.value }} {{ release.units }}</td>
+            {% endif %}
+        </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+{% endmacro %}
+
+{% macro transfersTable(transfers, desc) %}
+    <table class="releases-to-air table-control mobile-format">
+        <thead>
+        <tr>
+            <th class="th-substance">Description</th>
+            <th class="th-action">EWC code</th>
+            <th class="th-release">WFD code</th>
+            <th class="th-release numeric">Total</th>
+        </tr>
+        </thead>
+        <tbody>
+        <h2 class="heading-medium">{{ desc }}</h2>
+        {% for transfer in transfers %}
+        <tr>
+            <td class="td-description">{{ transfer.ewc_activity.description }}</td>
+            <td class="td-ewc-code numeric">{{ transfer.ewc_chapter.code }} {{ transfer.ewc_sub_chapter.code }} {{ transfer.ewc_activity.code }}</td>
+            {% if transfer.disposal %}
+                <td class="td-wfd-code numeric">{{ transfer.disposal }}</td>
+            {% else %}
+                <td class="td-wfd-code numeric">{{ transfer.recovery }}</td>
+            {% endif %}
+            <td class="td-2016-total numeric">{{ transfer.tonnage }}</td>
+        </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+{% endmacro %}
+
 {% block content %}
 
 <main id="content">
-    <label id="page-name" hidden>content</label>
-    <h1 class="large">Check your data</h1>
-    <h2 class="font-medium">EA_ID: {{ eaId }}</h2>
+    <a href="/task-list" class="link-back">Back to sections you must complete</a>
+    <form action="/review/confirm" method="post" class="form">
+
+        <h1 class="heading-large"><span class="heading-secondary">Review pollution inventory submissions</span>
+            {{ review.permitNumber }} - {{ review.site }}
+        </h1>
+
+        {% if review.releases_to_air %}
+            {{ releasesTable(review.releases_to_air, 'Your releases to air') }}
+        {% endif %}
+
+        {% if review.releases_to_land %}
+            {{ releasesTable(review.releases_to_land, 'Your releases to land') }}
+        {% endif %}
+
+        {% if review.releases_to_controlled_water %}
+            {{ releasesTable(review.releases_to_controlled_water, 'Your releases to controlled water') }}
+        {% endif %}
+
+        {% if review.releases_to_waste_water %}
+            {{ releasesTable(review.releases_to_waste_water, 'Your off-site transfers in waste water') }}
+        {% endif %}
+
+        {% if review.offsite_waste_transfers %}
+            {{ transfersTable(review.offsite_waste_transfers, 'Your off-site waste transfers') }}
+        {% endif %}
+
+        <div class="form-group">
+            <input type="submit" class="button" value="Accept">
+        </div>
+
+        <div class="form-group">
+            <p><a href="/task-list">Do not accept</a></p>
+        </div>
+    </form>
 </main>
 
 {% endblock %}

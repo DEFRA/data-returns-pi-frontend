@@ -9,6 +9,8 @@ const CacheKeyError = require('../../../lib/user-cache-policies').CacheKeyError;
 const allSectorsTaskList = require('../../../model/all-sectors/task-list');
 const required = require('../../../service/task-list').required(allSectorsTaskList);
 const cacheNames = require('../../../lib/user-cache-policies').names;
+const cacheHelper = require('../common').cacheHelper;
+const setConfirmation = require('../common').setConfirmation;
 
 module.exports = {
     /**
@@ -19,15 +21,17 @@ module.exports = {
      */
     submit: async (request, reply) => {
         try {
+            const { route, permitStatus } = await cacheHelper(request, 'submit');
+
             if (request.method === 'get') {
-                const permitStatus = await request.server.app.userCache.cache(cacheNames.PERMIT_STATUS).get(request);
                 const completed = Object.keys(permitStatus.completed).filter(p => permitStatus.completed[p]);
                 const canSubmit = required.every(r => { return completed.find(c => c === r); });
-
+                await setConfirmation(request, permitStatus, route, false);
                 reply.view('all-sectors/submit/submit', { canSubmit: canSubmit });
             } else {
                 // We have confirmed the submission so send data to the API
                 await Submission.submit(request);
+                await setConfirmation(request, permitStatus, route, true);
                 reply.redirect('/task-list');
             }
         } catch (err) {
