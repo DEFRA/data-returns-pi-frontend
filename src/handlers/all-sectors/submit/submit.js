@@ -8,7 +8,6 @@ const Submission = require('../../../lib/submission');
 const CacheKeyError = require('../../../lib/user-cache-policies').CacheKeyError;
 const allSectorsTaskList = require('../../../model/all-sectors/task-list');
 const required = require('../../../service/task-list').required(allSectorsTaskList);
-const cacheNames = require('../../../lib/user-cache-policies').names;
 const cacheHelper = require('../common').cacheHelper;
 const setConfirmation = require('../common').setConfirmation;
 
@@ -45,3 +44,4 @@ module.exports = {
         }
     }
 };
+
