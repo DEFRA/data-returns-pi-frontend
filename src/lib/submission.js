@@ -17,7 +17,7 @@ const isBrt = require('../lib/validator').isBrt;
 const logger = require('./logging').logger;
 
 const releaseSchema = Joi.object({
-    substanceId: Joi.number().integer().required(),
+    substance_id: Joi.number().integer().required(),
     below_reporting_threshold: Joi.boolean().required(),
     method: Joi.valid(['Measurement', 'Calculation', 'Estimation']),
     value: Joi.alternatives().when('below_reporting_threshold', {
@@ -57,13 +57,13 @@ const internals = {
     releasesObj: async (task, release) => {
         if (isBrt(task.releases[release].value)) {
             return {
-                substanceId: Number.parseInt(release),
+                substance_id: Number.parseInt(release),
                 method: (await MasterDataService.getMethodById(task.releases[release].methodId)).name,
                 below_reporting_threshold: true
             };
         } else if (isNumeric(task.releases[release].value)) {
             return {
-                substanceId: Number.parseInt(release),
+                substance_id: Number.parseInt(release),
                 value: Number.parseFloat(task.releases[release].value),
                 unit_id: task.releases[release].unitId,
                 method: (await MasterDataService.getMethodById(task.releases[release].methodId)).name,

@@ -56,7 +56,8 @@ const internals = {
      */
     makeRequest: async (uri, method, body) => {
         try {
-            Hoek.assert(method === 'GET' || method === 'POST', 'Method must be either \'GET\' or \'POST\'');
+            const methods = ['GET', 'POST', 'PUT', 'DELETE', 'PATCH'];
+            Hoek.assert(methods.includes(method), `Method must be one of ${methods}`);
 
             Logging.logger.debug(`API Call; ${method}:${uri} `);
 
