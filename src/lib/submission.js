@@ -42,8 +42,9 @@ const offsiteWasteTransfersSchema = Joi.alternatives().try(Joi.object({
 ).optional();
 
 const transmissionSchema = Joi.object({
-    applicableYear: Joi.number().integer().required(),
-    reportingReference: Joi.number().integer().required().optional(),
+    applicable_year: Joi.number().integer().required(),
+    reporting_reference: Joi.number().integer().required().optional(),
+    status: Joi.string().valid(['Unsubmitted', 'Submitted', 'Approved']),
     releases_to_land: Joi.array().items(releaseSchema).optional(),
     releases_to_controlled_water: Joi.array().items(releaseSchema).optional(),
     releases_to_waste_water: Joi.array().items(releaseSchema).optional(),
@@ -94,9 +95,11 @@ const internals = {
               completed.find(d => d === r);
         });
 
-        const transmissionObject = {};
-        transmissionObject.applicableYear = 2017;
-        transmissionObject.reportingReference = submission.id;
+        const transmissionObject = {
+            applicable_year: 2017,
+            reporting_reference: submission.id,
+            status: 'Submitted'
+        };
 
         for (const route of routes) {
             // We need to se the current task in the eaId
