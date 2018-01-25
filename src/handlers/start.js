@@ -2,6 +2,8 @@
 
 const logger = require('../lib/logging').logger;
 const MasterDataService = require('../service/master-data');
+const Submission = require('../lib/submission');
+
 const SessionHelper = require('./session-helper');
 const cacheNames = require('../lib/user-cache-policies').names;
 
@@ -20,9 +22,13 @@ module.exports = {
     start: async (request, reply) => {
         try {
             const session = await SessionHelper.get(request, request.server.app.sid);
+            const isOperator = session.user.roles.includes('OPERATOR');
 
             // Get the permits for the user
-            const eaIds = await MasterDataService.getEaIdsForUser(session.user.id);
+            let eaIds = await MasterDataService.getEaIdsForUser(session.user.id);
+
+            // We need to get the submission status for each permit and map it to the permit
+            eaIds = await Submission.addStatusToEaIds(eaIds);
 
             // Return the start page
             reply.view('start', { user: session.user, eaIds: eaIds });
@@ -34,9 +40,13 @@ module.exports = {
     },
 
     /**
-     * select handler
+     * An internal user can see and edit any submitted or approved submissions
+     * the operators can only go into the task list for open permits
+     * otherwise they are redirected to the read only review page.
+     *
      * Selects the appropriate use journey for a given permit and if necessary creates
      * the submission object within the cache
+     *
      * @param {internals.Request} request - The server request object
      * @param {function} reply - The server reply function
      * @return {undefined}
@@ -45,20 +55,37 @@ module.exports = {
         try {
             const session = await SessionHelper.get(request, request.server.app.sid);
 
-            // Get the permits for the user
-            const eaIds = await MasterDataService.getEaIdsForUser(session.user.id);
+            // Determine if the logged in user in an operator or an internal user
+            const isOperator = session.user.roles.includes('OPERATOR');
 
-            // Validate ownership of the EaId
-            const eaIdName = request.payload.eaId;
+            // Get the chosen permit
+            let eaId = await MasterDataService.getEaIdFromEaId(request.payload.eaId);
 
-            const eaId = eaIds.find((e) => { return e.name === eaIdName; });
+            // Determine the submission status
+            eaId = await Submission.addStatusToEaId(eaId);
 
-            if (!eaId) {
-                // If attempt to access incorrect EaId then log out
-                logger.info(`The selected eaId is not visible to user ${session.user.username}`);
-                reply.redirect('/logout');
+            if (isOperator && (
+                eaId.status === Submission.submissionStatusCodes.SUBMITTED ||
+                eaId.status === Submission.submissionStatusCodes.APPROVED)) {
 
-            } else {
+                // Operator review
+
+                // Set the current permit in the submission cache
+                await request.server.app.userCache.cache(cacheNames.SUBMISSION_STATUS).set(request, eaId);
+
+                // If there is no permit cache then read from the database layer
+                const permitStatus = await request.server.app.userCache.cache(cacheNames.PERMIT_STATUS).get(request);
+
+                if (!permitStatus) {
+                    // Rewrite the redis cache from the database
+                    await Submission.restore(request, eaId);
+                }
+
+                reply.redirect('/review/confirm');
+
+            } else if (isOperator && eaId.status === Submission.submissionStatusCodes.UNSUBMITTED) {
+
+                // Operator edit
 
                 // Set the current permit in the submission cache
                 await request.server.app.userCache.cache(cacheNames.SUBMISSION_STATUS).set(request, eaId);
@@ -85,9 +112,48 @@ module.exports = {
                 await request.server.app.userCache.cache(cacheNames.PERMIT_STATUS).set(request, permitStatus);
 
                 reply.redirect('/task-list');
+
+            } else if (!isOperator && eaId.status === Submission.submissionStatusCodes.SUBMITTED) {
+
+                // Internal user edit
+
+                // Set the current permit in the submission cache
+                await request.server.app.userCache.cache(cacheNames.SUBMISSION_STATUS).set(request, eaId);
+
+                // If there is no permit cache then read from the database layer
+                const permitStatus = await request.server.app.userCache.cache(cacheNames.PERMIT_STATUS).get(request);
+
+                if (!permitStatus) {
+                // Rewrite the redis cache from the database
+                    await Submission.restore(request, eaId);
+                }
+
+                reply.redirect('/task-list');
+            } else if (!isOperator && eaId.status === Submission.submissionStatusCodes.UNSUBMITTED) {
+
+                // Not allowed
+                reply.redirect('/');
+
+            } else if (!isOperator && eaId.status === Submission.submissionStatusCodes.APPROVED) {
+
+                // Internal user review
+
+                // Set the current permit in the submission cache
+                await request.server.app.userCache.cache(cacheNames.SUBMISSION_STATUS).set(request, eaId);
+
+                // If there is no permit cache then read from the database layer
+                const permitStatus = await request.server.app.userCache.cache(cacheNames.PERMIT_STATUS).get(request);
+
+                if (!permitStatus) {
+                    // Rewrite the redis cache from the database
+                    await Submission.restore(request, eaId);
+                }
+
+                reply.redirect('/review/confirm');
             }
+
         } catch (err) {
-            logger.log('error', err.message);
+            logger.log('error', err);
             reply.redirect('/logout');
         }
     }

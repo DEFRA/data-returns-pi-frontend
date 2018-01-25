@@ -55,15 +55,18 @@ module.exports = {
                     title: 'Off-site waste transfers',
                     page: '/transfers/off-site',
                     required: true
-                },
-
-                {
-                    name: 'OVERSEAS_WASTE_TRANSFERS',
-                    pathParam: 'overseas',
-                    title: 'Overseas waste transfers',
-                    page: '/transfers/overseas',
-                    required: false
                 }
+
+                /*
+                 *TODO - Removed until we know more
+                 * {
+                 *     name: 'OVERSEAS_WASTE_TRANSFERS',
+                 *     pathParam: 'overseas',
+                 *     title: 'Overseas waste transfers',
+                 *     page: '/transfers/overseas',
+                 *     required: false
+                 * }
+                 */
 
             ]
         },

@@ -27,8 +27,9 @@ module.exports = {
             server.app.sid = session.sid;
 
             // Return a validated callback function
-            return callback(null, true, cached.account);
+            return callback(null, true, cached.user);
         });
 
     }
+
 };

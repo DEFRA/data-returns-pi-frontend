@@ -12,6 +12,7 @@ const Overseas = require('./handlers/all-sectors/report/overseas');
 const Review = require('./handlers/all-sectors/submit/review');
 const Share = require('./handlers/all-sectors/submit/share');
 const Submit = require('./handlers/all-sectors/submit/submit');
+const Permissions = require('./handlers/permissions');
 
 /**
  * Returns routes for the static assets
@@ -126,5 +127,7 @@ module.exports = {
         h.config.cache.privacy = 'private';
         h.config.cache.otherwise = 'no-cache, no-store, must-revalidate';
         return h;
-    })
+    }),
+
+    preHandlerMethods: [ Permissions.checkPermissions ]
 };

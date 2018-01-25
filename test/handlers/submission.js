@@ -1,7 +1,6 @@
 'use strict';
 
 const Common = require('./common');
-const Submission = require('../../src/lib/submission');
 
 const Lab = require('lab');
 const lab = exports.lab = Lab.script();
@@ -44,7 +43,7 @@ const ADD_VALID = (payload) => { return { id: 'SUBMISSION_ADD_VALID', method: 'P
 const ADD_ANOTHER = (payload) => { return { id: 'SUBMISSION_ADD_ANOTHER', method: 'POST', url: '/transfers/off-site/action', payload: payload, expected: '/transfers/off-site/add' }; };
 
 const SUBMIT = { id: 'SUBMISSION_SUBMIT', method: 'GET', url: '/submit/confirm', expected: '/submit/confirm' };
-const CONFIRM = { id: 'SUBMISSION_CONFIRM', method: 'POST', url: '/submit/confirm', expected: '/task-list' };
+const CONFIRM = { id: 'SUBMISSION_CONFIRM', method: 'POST', url: '/submit/confirm', expected: '/' };
 
 experiment('Submit data test', () => {
 
@@ -146,10 +145,11 @@ experiment('Submit data test', () => {
         await steps(stepBuilder);
     });
 
-    test('Create overseas waste transfers', async () => {
-        await steps([ START_PAGE, CHOOSE_PERMIT, CONFIRM_PAGE('releases', 'overseas'),
-            CONFIRM_NO('transfers', 'overseas') ]);
-    });
+    // TODO - removed for now
+    // test('Create overseas waste transfers', async () => {
+    //     await steps([ START_PAGE, CHOOSE_PERMIT, CONFIRM_PAGE('releases', 'overseas'),
+    //         CONFIRM_NO('transfers', 'overseas') ]);
+    // });
 
     test('Submit', async () => {
         await steps([SUBMIT, CONFIRM]);

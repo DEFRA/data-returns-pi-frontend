@@ -11,7 +11,6 @@ const Nunjucks = require('nunjucks');
 const System = require('./system');
 const Logging = require('./logging');
 const Authorization = require('./authorization');
-const ServerMethods = require('./server-methods');
 const UserCache = require('./user-cache');
 const AdditionalFilters = require('../service/additional-filters');
 
@@ -101,7 +100,7 @@ internals.initialize = async () => {
                     // Store the templates on compilation unless local
                     let template = null;
 
-                    if (templates.has(options.filename) && process.env.NODE_ENV !== 'localtest') {
+                    if (templates.has(options.filename) && process.env.NODE_ENV === 'production') {
                         template = templates.get(options.filename);
                     } else {
                         template = Nunjucks.compile(src, options.environment);
@@ -175,16 +174,14 @@ internals.initialize = async () => {
     // Add to the server object.
     internals.server.app.userCache = UserCache;
 
-    // Register the server methods
-    internals.server.method(ServerMethods.methods);
+    // Set up the onPreHandler methods
+    internals.server.ext('onPreHandler', require('../routes').preHandlerMethods);
 
     // Set up the static routing
     internals.server.route(require('../routes').staticHandlers);
 
     // Set up the dynamic routing
     internals.server.route(require('../routes').dynamicHandlers);
-
-    // console.log(server.eventNames());
 
     Logging.logger.info('Completed server initialization');
 

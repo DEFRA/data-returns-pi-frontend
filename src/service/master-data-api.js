@@ -38,6 +38,15 @@ module.exports = internals = {
     },
 
     /**
+     * Get the disposal code by the code
+     * @param code
+     * @return {Promise.<*|null>}
+     */
+    getEaIdFromEaId: async (eaId) => {
+        return internals.getEntityByNamedMapper(internals._entities.eaId, 'byEaId', eaId);
+    },
+
+    /**
      * Return an array of all the substances
      * @returns {Promise.<Array>}
      */
@@ -350,6 +359,9 @@ internals._entities = {
                 site: { id: i.site.id, name: i.site.nomenclature }
             };
         },
+        namedMappers: [
+            { name: 'byEaId', keyFunc: (i) => i.name }
+        ],
         sorter: (a, b) => internals.sortByProperty(a, b, 'name')
     },
 

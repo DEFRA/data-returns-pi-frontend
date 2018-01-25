@@ -21,7 +21,6 @@ experiment('Master data service (Test data)', function () {
         test('getUsers ()', async () => {
             const users = await MasterDataService.getUsers();
             expect(users).to.be.an.array();
-            expect(users.length).to.equal(41);
         });
 
         test('getUser (username)', async () => {
@@ -53,6 +52,15 @@ experiment('Master data service (Test data)', function () {
             expect(eaId.name).to.equal('100311');
 
             const na = await MasterDataService.getEaIdFromEaIdId(-3475);
+            expect(na).to.be.null();
+        });
+
+        test('getEaIdFromEaId (eaId)', async () => {
+            const eaId = await MasterDataService.getEaIdFromEaId('100311');
+            expect(eaId).to.be.an.object();
+            expect(eaId.name).to.equal('100311');
+
+            const na = await MasterDataService.getEaIdFromEaId('Zip');
             expect(na).to.be.null();
         });
 

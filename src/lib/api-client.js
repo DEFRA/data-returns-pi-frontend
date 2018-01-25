@@ -28,12 +28,12 @@ const internals = {
                 scheme: 'http',
                 host: process.env.SM_API_HOSTNAME || 'localhost',
                 port: Number.parseInt(process.env.SM_API_PORT || 9220),
-                path: 'api/' + command
+                path: process.env.SM_API_PATH + command
             } : {
                 scheme: 'http',
                 host: process.env.MD_API_HOSTNAME || 'localhost',
                 port: Number.parseInt(process.env.MD_API_PORT || 9020),
-                path: 'api/' + command
+                path: process.env.MD_API_PATH + command
             };
 
             if (query) {
@@ -77,6 +77,12 @@ const internals = {
 
             return result;
         } catch (err) {
+
+            // Allow 404 - Not found is a legitimate result for searches
+            if (err.statusCode === 404) {
+                return null;
+            }
+
             Logging.logger.error(err);
             throw err;
         }
@@ -85,6 +91,10 @@ const internals = {
 
 module.exports = {
     request: async (client, method, command, query, body) => {
-        return internals.makeRequest(internals.createRequest(client, command, query), method, body);
+        if (process.env.NODE_ENV !== 'localtest') {
+            return internals.makeRequest(internals.createRequest(client, command, query), method, body);
+        }
+
+        return null;
     }
 };

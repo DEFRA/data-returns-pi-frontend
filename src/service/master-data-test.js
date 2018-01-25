@@ -55,12 +55,21 @@ module.exports = internals = {
     },
 
     /**
-     * Get permit form permit Id (The database key)
+     * Get permit from permit Id (The database key)
      * and inline the site id
      * @param eaIdId - the permit id
      */
     getEaIdFromEaIdId: async (eaIdId) => {
         return Data.eaIds.find((e) => { return e.id === eaIdId; }) || null;
+    },
+
+    /**
+     * Get permit from permit number (EA_ID)
+     * and inline the site id
+     * @param eaIdId - the permit id
+     */
+    getEaIdFromEaId: async (eaIdId) => {
+        return Data.eaIds.find((e) => { return e.name === eaIdId; }) || null;
     },
 
     /**

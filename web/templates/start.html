@@ -23,6 +23,16 @@
 						<td>
 							{{ eaId.site.name }}
 						</td>
+                        <td>
+                            {% if eaId.status %}
+                                <td class="numeric" id="task-status">
+                                    <div class="task-status-banner">
+                                        <strong class="task-finished">{{ eaId.status }}</strong>
+                                    </div>
+                                </td>
+                            {% else %}
+                                <td class="numeric"></td>
+                            {% endif %}
 					</tr>
 	                {% endfor %}
 				</tbody>

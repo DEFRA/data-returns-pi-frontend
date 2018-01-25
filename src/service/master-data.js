@@ -14,6 +14,7 @@ module.exports = {
     getUser: process.env.NODE_ENV === 'localtest' ? testService.getUser : testService.getUser,
     getEaIds: process.env.NODE_ENV === 'localtest' ? testService.getEaIds : apiService.getEaIds,
     getEaIdsForUser: process.env.NODE_ENV === 'localtest' ? testService.getEaIdsForUser : apiService.getEaIdsForUser,
+    getEaIdFromEaId: process.env.NODE_ENV === 'localtest' ? testService.getEaIdFromEaId : apiService.getEaIdFromEaId,
     getEaIdFromEaIdId: process.env.NODE_ENV === 'localtest' ? testService.getEaIdFromEaIdId : apiService.getEaIdFromEaIdId,
     getSubstances: process.env.NODE_ENV === 'localtest' ? testService.getSubstances : apiService.getSubstances,
     getSubstanceById: process.env.NODE_ENV === 'localtest' ? testService.getSubstanceById : apiService.getSubstanceById,

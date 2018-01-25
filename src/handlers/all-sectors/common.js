@@ -88,4 +88,6 @@ module.exports = {
         permitStatus.challengeStatus[route.name] = !!challengeStatus;
         await request.server.app.userCache.cache(cacheNames.PERMIT_STATUS).set(request, permitStatus);
     }
+
+
 };

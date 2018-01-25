@@ -127,7 +127,7 @@ experiment('Validation', async () => {
     test('Find off-site transfers', () => {
         const tasks = {};
 
-        tasks.offSiteTransfers = [
+        tasks.transfers = [
             {
                 ewc: {
                     activityId: 1,

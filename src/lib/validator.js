@@ -22,7 +22,7 @@ const internals = {
      */
     findOffSiteTransfer: (tasks, offSiteTransfer) => {
         try {
-            return tasks.offSiteTransfers.findIndex(t =>
+            return tasks.transfers.findIndex(t =>
                 t.ewc.activityId === offSiteTransfer.ewc.activityId &&
                 t.ewc.chapterId === offSiteTransfer.ewc.chapterId &&
                 t.ewc.subChapterId === offSiteTransfer.ewc.subChapterId &&

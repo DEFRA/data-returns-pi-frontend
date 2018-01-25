@@ -19,22 +19,27 @@ const internals = {
 
     // Create release element of message
     releasesObj: async (task, release) => {
-        if (isBrt(task.releases[release].value)) {
-            return {
-                substance_name: (await MasterDataService.getSubstanceById(Number.parseInt(release))).name,
-                method: (await MasterDataService.getMethodById(task.releases[release].methodId)).name,
-                below_reporting_threshold: true
-            };
-        } else if (isNumeric(task.releases[release].value)) {
-            return {
-                substance_name: (await MasterDataService.getSubstanceById(Number.parseInt(release))).name,
-                value: Number.parseFloat(task.releases[release].value),
-                units: (await MasterDataService.getUnitById(task.releases[release].unitId)).name,
-                method: (await MasterDataService.getMethodById(task.releases[release].methodId)).name,
-                below_reporting_threshold: false
-            };
-        } else {
-            throw new CacheKeyError('Malformed release object: ' + JSON.stringify(release));
+        try {
+            if (isBrt(task.releases[release].value)) {
+                return {
+                    substance_name: (await MasterDataService.getSubstanceById(Number.parseInt(release))).name,
+                    method: (await MasterDataService.getMethodById(task.releases[release].methodId)).name,
+                    below_reporting_threshold: true
+                };
+            } else if (isNumeric(task.releases[release].value)) {
+                return {
+                    substance_name: (await MasterDataService.getSubstanceById(Number.parseInt(release))).name,
+                    value: Number.parseFloat(task.releases[release].value),
+                    units: (await MasterDataService.getUnitById(task.releases[release].unitId)).name,
+                    method: (await MasterDataService.getMethodById(task.releases[release].methodId)).name,
+                    below_reporting_threshold: false
+                };
+            } else {
+                throw new CacheKeyError('Malformed release object: ' + JSON.stringify(release));
+            }
+        } catch (err) {
+            logger.log('error', 'Error creating view object: ' + err);
+            throw err;
         }
     }
 };
@@ -88,6 +93,8 @@ module.exports = {
                             if (task.releases) {
                                 reviewObject.releases_to_land = reviewObject.releases_to_land || [];
                                 for (const release of Object.keys(task.releases)) {
+                                    const x = await internals.releasesObj(task, release);
+                                    console.log(JSON.stringify(x));
                                     reviewObject.releases_to_land.push(await internals.releasesObj(task, release));
                                 }
                             }
@@ -112,9 +119,9 @@ module.exports = {
                             break;
 
                         case 'OFFSITE_WASTE_TRANSFERS':
-                            if (task.offSiteTransfers) {
+                            if (task.transfers) {
                                 reviewObject.offsite_waste_transfers = reviewObject.offsite_waste_transfers || [];
-                                for (const transfer of task.offSiteTransfers) {
+                                for (const transfer of task.transfers) {
                                     if (transfer.wfd.disposalId) {
                                         reviewObject.offsite_waste_transfers.push({
                                             ewc_chapter: (await MasterDataService.getEwcChapterById(Number.parseInt(transfer.ewc.chapterId))),

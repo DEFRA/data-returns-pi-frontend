@@ -1,5 +1,8 @@
 'use strict';
 
+const allSectorsTaskList = require('../../src/model/all-sectors/task-list');
+const required = require('../../src/service/task-list').required(allSectorsTaskList);
+
 const Common = require('./common');
 
 const Lab = require('lab');
@@ -55,60 +58,64 @@ const DELETE_CONFIRM_2 = { id: 'OVERSEAS_DELETE_CONFIRM_2', method: 'POST', url:
 
 experiment('Overseas transfers', () => {
 
-    before(() => {
-        return Common.start();
-    });
+    if (required.includes('OVERSEAS_WASTE_TRANSFERS')) {
 
-    test('Test login', async () => {
-        return Common.login('1@email.com', 'a');
-    });
+        before(() => {
+            return Common.start();
+        });
 
-    test('Select a permit and go to permit list', async () => {
-        await steps([ START_PAGE, CHOOSE_PERMIT ]);
-    });
+        test('Test login', async () => {
+            return Common.login('1@email.com', 'a');
+        });
 
-    test('Confirm transfers overseas = no sends you back to the task list', async () => {
-        await steps([ TASK_LIST, CONFIRM_PAGE, CONFIRM_NO ]);
-    });
+        test('Select a permit and go to permit list', async () => {
+            await steps([START_PAGE, CHOOSE_PERMIT]);
+        });
 
-    test('Confirm transfers overseas = go though the add transfer process', async () => {
-        await steps([ TASK_LIST, CONFIRM_PAGE, CONFIRM_YES, CHOOSE_NO_SUBSTANCE, CHOOSE_SUBSTANCE(506), INVALID_DETAIL,
-            VALID_DETAIL, INVALID_TC_ADDR, VALID_TC_ADDR, INVALID_DEST_ADDR, VALID_DEST_ADDR, CHECK_CONTINUE ]);
-    });
+        test('Confirm transfers overseas = no sends you back to the task list', async () => {
+            await steps([TASK_LIST, CONFIRM_PAGE, CONFIRM_NO]);
+        });
 
-    test('Add another', async () => {
-        await steps([ OVERSEAS, ADD_ANOTHER, CHOOSE_SUBSTANCE(512), VALID_DETAIL, VALID_TC_ADDR, VALID_DEST_ADDR, CHECK_CONTINUE ]);
-    });
+        test('Confirm transfers overseas = go though the add transfer process', async () => {
+            await steps([TASK_LIST, CONFIRM_PAGE, CONFIRM_YES, CHOOSE_NO_SUBSTANCE, CHOOSE_SUBSTANCE(506), INVALID_DETAIL,
+                VALID_DETAIL, INVALID_TC_ADDR, VALID_TC_ADDR, INVALID_DEST_ADDR, VALID_DEST_ADDR, CHECK_CONTINUE]);
+        });
 
-    test('View Transfer and change substance', async () => {
-        await steps([ OVERSEAS, CHECK(1), SUBSTANCE, CHOOSE_SUBSTANCE2(518), CHECK_CONTINUE ]);
-    });
+        test('Add another', async () => {
+            await steps([OVERSEAS, ADD_ANOTHER, CHOOSE_SUBSTANCE(512), VALID_DETAIL, VALID_TC_ADDR, VALID_DEST_ADDR, CHECK_CONTINUE]);
+        });
 
-    test('View Transfer and change detail', async () => {
-        await steps([ OVERSEAS, CHECK(1), DETAIL, VALID_DETAIL2, CHECK_CONTINUE ]);
-    });
+        test('View Transfer and change substance', async () => {
+            await steps([OVERSEAS, CHECK(1), SUBSTANCE, CHOOSE_SUBSTANCE2(518), CHECK_CONTINUE]);
+        });
 
-    test('View Transfer and change transportation address', async () => {
-        await steps([ OVERSEAS, CHECK(1), TC_ADDR, VALID_TC_ADDR2, CHECK_CONTINUE ]);
-    });
+        test('View Transfer and change detail', async () => {
+            await steps([OVERSEAS, CHECK(1), DETAIL, VALID_DETAIL2, CHECK_CONTINUE]);
+        });
 
-    test('View Transfer and change destination address', async () => {
-        await steps([ OVERSEAS, CHECK(1), DEST_ADDR, VALID_DEST_ADDR2, CHECK_CONTINUE ]);
-    });
+        test('View Transfer and change transportation address', async () => {
+            await steps([OVERSEAS, CHECK(1), TC_ADDR, VALID_TC_ADDR2, CHECK_CONTINUE]);
+        });
 
-    test('Test continue', async () => {
-        await steps([ OVERSEAS, CONTINUE ]);
-    });
+        test('View Transfer and change destination address', async () => {
+            await steps([OVERSEAS, CHECK(1), DEST_ADDR, VALID_DEST_ADDR2, CHECK_CONTINUE]);
+        });
 
-    test('Delete transfers', async () => {
-        await steps([ OVERSEAS, DELETE, DELETE_CONFIRM_1, DELETE, DELETE_CONFIRM_2 ]);
-    });
+        test('Test continue', async () => {
+            await steps([OVERSEAS, CONTINUE]);
+        });
 
-    test('Test logout', async () => {
-        return Common.logout();
-    });
+        test('Delete transfers', async () => {
+            await steps([OVERSEAS, DELETE, DELETE_CONFIRM_1, DELETE, DELETE_CONFIRM_2]);
+        });
 
-    after(() => {
-        return Common.stop();
-    });
+        test('Test logout', async () => {
+            return Common.logout();
+        });
+
+        after(() => {
+            return Common.stop();
+        });
+
+    }
 });

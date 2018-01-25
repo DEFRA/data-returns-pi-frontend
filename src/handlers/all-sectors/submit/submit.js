@@ -30,8 +30,9 @@ module.exports = {
             } else {
                 // We have confirmed the submission so send data to the API
                 await Submission.submit(request);
-                await setConfirmation(request, permitStatus, route, true);
-                reply.redirect('/task-list');
+
+                // Back to the start page
+                reply.redirect('/');
             }
         } catch (err) {
             if (err instanceof CacheKeyError) {
@@ -44,4 +45,3 @@ module.exports = {
         }
     }
 };
-

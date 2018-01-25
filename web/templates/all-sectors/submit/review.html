@@ -42,10 +42,10 @@
         <tr>
             <td class="td-description">{{ transfer.ewc_activity.description }}</td>
             <td class="td-ewc-code numeric">{{ transfer.ewc_chapter.code }} {{ transfer.ewc_sub_chapter.code }} {{ transfer.ewc_activity.code }}</td>
-            {% if transfer.disposal %}
-                <td class="td-wfd-code numeric">{{ transfer.disposal }}</td>
+            {% if transfer.wfd_disposal %}
+                <td class="td-wfd-code numeric">{{ transfer.wfd_disposal }}</td>
             {% else %}
-                <td class="td-wfd-code numeric">{{ transfer.recovery }}</td>
+                <td class="td-wfd-code numeric">{{ transfer.wfd_recovery }}</td>
             {% endif %}
             <td class="td-2016-total numeric">{{ transfer.tonnage }}</td>
         </tr>
