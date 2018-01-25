@@ -539,12 +539,14 @@ module.exports = {
         if (process.env.NODE_ENV !== 'localtest') {
 
             // Submit the validated message to the API
-            if (request.app.info.status === submissionStatusCodes.UNSUBMITTED) {
+            if (request.app.info.submission.status === submissionStatusCodes.UNSUBMITTED) {
                 await Api.request('SUB', 'POST', 'submissions', null, message);
-            } else if (request.app.info.status === submissionStatusCodes.SUBMITTED) {
-                await Api.request('SUB', 'PUT', 'submissions', null, message);
+            } else if (request.app.info.submission.status === submissionStatusCodes.SUBMITTED) {
+                const eaId = await request.server.app.userCache.cache(cacheNames.SUBMISSION_STATUS).get(request);
+                const submissionId = await internals.getSubmissionStatusForEaIdAndYear(eaId.id, 2017);
+                await Api.request('SUB', 'PUT', `submissions/${submissionId.id}`, null, message);
             } else {
-                throw new Error('Illegal submission status: ' + request.app.info.status);
+                throw new Error('Illegal submission status: ' + request.app.info.submission.status);
             }
 
             // Remove the current cache entries for this submission

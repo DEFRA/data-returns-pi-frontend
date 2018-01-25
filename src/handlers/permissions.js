@@ -103,7 +103,9 @@ module.exports = {
                 // These can be used anywhere in the permit specific paths listed above
                 request.app.info = {
                     user: session.user,
-                    status: eaId.status
+                    submission: {
+                        status: eaId.status
+                    }
                 };
             }
 
