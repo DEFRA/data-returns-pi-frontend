@@ -57,7 +57,13 @@
 {% block content %}
 
 <main id="content">
-    <a href="/task-list" class="link-back">Back to sections you must complete</a>
+
+    {% if mode %}
+        <a href="/task-list" class="link-back">Back to sections you must complete</a>
+    {% else %}
+        <a href="/" class="link-back">Back</a>
+    {% endif %}
+
     <form action="/review/confirm" method="post" class="form">
 
         <h1 class="heading-large"><span class="heading-secondary">Review pollution inventory submissions</span>
@@ -84,13 +90,16 @@
             {{ transfersTable(review.offsite_waste_transfers, 'Your off-site waste transfers') }}
         {% endif %}
 
-        <div class="form-group">
-            <input type="submit" class="button" value="Accept">
-        </div>
+        {% if mode %}
+            <div class="form-group">
+                <input type="submit" class="button" value="Accept">
+            </div>
 
-        <div class="form-group">
-            <p><a href="/task-list">Do not accept</a></p>
-        </div>
+            <div class="form-group">
+                <p><a href="/task-list">Do not accept</a></p>
+            </div>
+        {% endif %}
+
     </form>
 </main>
 

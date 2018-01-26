@@ -51,7 +51,9 @@ module.exports = {
     },
 
     /**
-     * Set or unset the completed flag for a given route
+     * Set or unset the confirmation flag for a given route - this is where the user
+     * Ok's the route either by challenge no or by the continue button on the
+     * main route page. If the user causes and unconfirm this will also unset the review confirmation.
      * @param request
      * @param permitStatus
      * @param route
@@ -60,6 +62,12 @@ module.exports = {
      */
     setConfirmation: async (request, permitStatus, route, confirmation) => {
         permitStatus.confirmation[route.name] = !!confirmation;
+
+        if (!confirmation) {
+            permitStatus.confirmation['REVIEW'] = false;
+            permitStatus.confirmation['SUBMIT'] = false;
+        }
+
         await request.server.app.userCache.cache(cacheNames.PERMIT_STATUS).set(request, permitStatus);
     },
 
@@ -87,7 +95,31 @@ module.exports = {
     setChallengeStatus: async (request, permitStatus, route, challengeStatus) => {
         permitStatus.challengeStatus[route.name] = !!challengeStatus;
         await request.server.app.userCache.cache(cacheNames.PERMIT_STATUS).set(request, permitStatus);
-    }
+    },
 
+    /**
+     * Calculate teh TASK completed status - the status required to make the submission for a given route
+     * @param permitStatus
+     * @param name
+     */
+    setCompletedStatus: (permitStatus, name) => {
+        permitStatus.completed = permitStatus.completed || {};
+
+        // Calculate the permit status completed flag for each route
+        permitStatus.completed[name] = false;
+
+        // Deemed valid if no validity status or validity status true
+        const valid = permitStatus.valid[name] === undefined || permitStatus.valid[name];
+
+        // Completed if confirmed and challenged no - in this case there may or may not be a validation
+        if (permitStatus.confirmation[name] && !permitStatus.challengeStatus[name] && valid) {
+            permitStatus.completed[name] = true;
+        }
+
+        // Completed if confirmed and challenged yes and valid
+        if (permitStatus.confirmation[name] && permitStatus.challengeStatus[name] && valid) {
+            permitStatus.completed[name] = true;
+        }
+    }
 
 };

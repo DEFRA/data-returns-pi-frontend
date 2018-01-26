@@ -3,9 +3,7 @@
 // const journey = require('../../lib/task-list');
 const allSectorsTaskList = require('../../model/all-sectors/task-list');
 const taskListNames = require('../../service/task-list').names(allSectorsTaskList);
-const setCompletedStatus = require('../../lib/submission').setCompletedStatus;
-const Submission = require('../../lib/submission');
-const SessionHelper = require('../session-helper');
+const setCompletedStatus = require('./common').setCompletedStatus;
 
 const logger = require('../../lib/logging').logger;
 const CacheKeyError = require('../../lib/user-cache-policies').CacheKeyError;

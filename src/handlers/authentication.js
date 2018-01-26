@@ -45,7 +45,7 @@ module.exports = {
             delete authenticated.password;
 
             // Set the authentication details in the authorization cache
-            await SessionHelper.set(request, sid, {user: authenticated, loggedInAt: System.time()});
+            await SessionHelper.set(request, sid, { user: authenticated, loggedInAt: (new Date()).toISOString() });
 
             // Set the get authorization cookie - it will encode the get id to identify the cache
             request.cookieAuth.set({sid: sid});

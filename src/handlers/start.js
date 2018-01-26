@@ -28,7 +28,7 @@ module.exports = {
             let eaIds = await MasterDataService.getEaIdsForUser(session.user.id);
 
             // We need to get the submission status for each permit and map it to the permit
-            eaIds = await Submission.addStatusToEaIds(eaIds);
+            eaIds = await Submission.addStatusToEaIds(eaIds, 2017);
 
             // Return the start page
             reply.view('start', { user: session.user, eaIds: eaIds });
@@ -59,14 +59,15 @@ module.exports = {
             const isOperator = session.user.roles.includes('OPERATOR');
 
             // Get the chosen permit
-            let eaId = await MasterDataService.getEaIdFromEaId(request.payload.eaId);
+            const eaId = await MasterDataService.getEaIdFromEaId(request.payload.eaId);
 
             // Determine the submission status
-            eaId = await Submission.addStatusToEaId(eaId);
+            const submission = await Submission.getSubmissionForEaIdAndYear(eaId.id, 2017);
+            const submissionStatus = submission ? submission.status : Submission.submissionStatusCodes.UNSUBMITTED;
 
             if (isOperator && (
-                eaId.status === Submission.submissionStatusCodes.SUBMITTED ||
-                eaId.status === Submission.submissionStatusCodes.APPROVED)) {
+                submissionStatus === Submission.submissionStatusCodes.SUBMITTED ||
+                submissionStatus === Submission.submissionStatusCodes.APPROVED)) {
 
                 // Operator review
 
@@ -78,12 +79,12 @@ module.exports = {
 
                 if (!permitStatus) {
                     // Rewrite the redis cache from the database
-                    await Submission.restore(request, eaId);
+                    await Submission.restore(request, submission.id);
                 }
 
                 reply.redirect('/review/confirm');
 
-            } else if (isOperator && eaId.status === Submission.submissionStatusCodes.UNSUBMITTED) {
+            } else if (isOperator && submissionStatus === Submission.submissionStatusCodes.UNSUBMITTED) {
 
                 // Operator edit
 
@@ -99,6 +100,10 @@ module.exports = {
                 if (!permitStatus) {
                     // Initialize a permit status if not exists
                     permitStatus = {};
+                    permitStatus.submission = {
+                        status: Submission.submissionStatusCodes.UNSUBMITTED,
+                        statusDate: (new Date()).toISOString()
+                    };
                     permitStatus.confirmation = {};
                     permitStatus.challengeStatus = {};
                     permitStatus.valid = {};
@@ -113,7 +118,7 @@ module.exports = {
 
                 reply.redirect('/task-list');
 
-            } else if (!isOperator && eaId.status === Submission.submissionStatusCodes.SUBMITTED) {
+            } else if (!isOperator && submissionStatus === Submission.submissionStatusCodes.SUBMITTED) {
 
                 // Internal user edit
 
@@ -124,8 +129,8 @@ module.exports = {
                 const permitStatus = await request.server.app.userCache.cache(cacheNames.PERMIT_STATUS).get(request);
 
                 if (!permitStatus) {
-                // Rewrite the redis cache from the database
-                    await Submission.restore(request, eaId);
+                    // Rewrite the redis cache from the database
+                    await Submission.restore(request, submission.id);
                 }
 
                 reply.redirect('/task-list');
@@ -134,7 +139,7 @@ module.exports = {
                 // Not allowed
                 reply.redirect('/');
 
-            } else if (!isOperator && eaId.status === Submission.submissionStatusCodes.APPROVED) {
+            } else if (!isOperator && submissionStatus === Submission.submissionStatusCodes.APPROVED) {
 
                 // Internal user review
 
@@ -146,7 +151,7 @@ module.exports = {
 
                 if (!permitStatus) {
                     // Rewrite the redis cache from the database
-                    await Submission.restore(request, eaId);
+                    await Submission.restore(request, submission.id);
                 }
 
                 reply.redirect('/review/confirm');

@@ -1,14 +1,9 @@
+const event = new Date();
+console.log((new Date()).toISOString());
 
-const Service = require('./src/service/master-data');
+const newevent = new Date('2018-01-26T13:28:33.931Z');
+console.log(newevent.toISOString());
 
-(async () => {
-    try {
-        let result = await Service.getEaIds();
-        console.log(JSON.stringify(result));
-        result = await Service.getEaIdsForUser(0);
-        console.log(JSON.stringify(result));
-    } catch (err) {
-        console.log('error', err);
-        process.exit(1);
-    }
-})();
+const newevent2 = new Date('018-01-26T08:17:02.651+0000');
+console.log(newevent.toISOString());
+console.log(newevent.toString());

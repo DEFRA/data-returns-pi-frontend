@@ -25,8 +25,10 @@ const environmentSchema = Joi.object({
     PORT: Joi.number().required(),
     MD_API_HOSTNAME: Joi.string().required(),
     MD_API_PORT: Joi.number().required(),
+    MD_API_PATH: Joi.string().required(),
     SM_API_HOSTNAME: Joi.string().required(),
     SM_API_PORT: Joi.number().required(),
+    SM_API_PATH: Joi.string().required(),
     REDIS_HOSTNAME: Joi.string().required(),
     REDIS_PORT: Joi.number().required()
 }).unknown()
@@ -59,12 +61,5 @@ module.exports = {
      * Return the system configuration as a javascript object
      * @returns {*} The global system configuration
      */
-    configuration: getSystemConfiguration(),
-
-    /**
-     * Standard timestamp used throughout the application
-     */
-    time: () => {
-        return Timestamp('YYYY/MM/DD HH:mm:ss');
-    }
+    configuration: getSystemConfiguration()
 };

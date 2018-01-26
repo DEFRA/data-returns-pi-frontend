@@ -1,6 +1,8 @@
 'use strict';
 
 const MasterDataService = require('../../../service/master-data');
+const Submission = require('../../../lib/submission');
+
 const cacheHelper = require('../common').cacheHelper;
 const cacheNames = require('../../../lib/user-cache-policies').names;
 const CacheKeyError = require('../../../lib/user-cache-policies').CacheKeyError;
@@ -46,7 +48,11 @@ const internals = {
 
 module.exports = {
     /**
-     * Confirm submission handler
+     * Confirm submission handler.
+     *
+     * This page operates in two basic modes - view only or review mode
+     * depending on weather the status is submitted
+     *
      * @param {internals.Request} request - The server request object
      * @param {function} reply - The server reply function
      * @return {undefined}
@@ -56,6 +62,7 @@ module.exports = {
             const { route, permitStatus, submissionStatus } = await cacheHelper(request, 'review');
 
             if (request.method === 'get') {
+
                 const challengeStatus = Object.keys(permitStatus.challengeStatus).filter(p => permitStatus.challengeStatus[p]);
                 const valid = Object.keys(permitStatus.valid).filter(p => permitStatus.valid[p]);
                 const completed = Object.keys(permitStatus.completed).filter(p => permitStatus.completed[p]);
@@ -68,6 +75,13 @@ module.exports = {
 
                 await setConfirmation(request, permitStatus, route, false);
 
+                // Determine the mode
+                const reviewMode = !!((
+                    request.app.info.submission.status === Submission.submissionStatusCodes.UNSUBMITTED ||
+                (request.app.info.submission.status === Submission.submissionStatusCodes.SUBMITTED && request.app.info.user.roles.includes('SITE_OFFICER'))
+                )) && required.filter(r => r !== 'REVIEW').every(r => completed.includes(r));
+
+                // Build the display objects
                 const reviewObject = {};
                 reviewObject.applicableYear = 2017;
                 reviewObject.permitNumber = submissionStatus.name;
@@ -155,7 +169,7 @@ module.exports = {
                     }
                 }
 
-                reply.view('all-sectors/submit/review', { review: reviewObject });
+                reply.view('all-sectors/submit/review', { review: reviewObject, mode: reviewMode });
             } else {
                 await setConfirmation(request, permitStatus, route, true);
                 reply.redirect('/task-list');

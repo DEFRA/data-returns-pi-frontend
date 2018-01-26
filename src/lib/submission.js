@@ -14,6 +14,7 @@ const CacheKeyError = require('./user-cache-policies').CacheKeyError;
 const Api = require('./api-client');
 const allSectorsTaskList = require('../model/all-sectors/task-list');
 const required = require('../service/task-list').required(allSectorsTaskList);
+const setCompletedStatus = require('../handlers/all-sectors/common').setCompletedStatus;
 
 const isNumeric = require('./utils').isNumeric;
 const isBrt = require('../lib/validator').isBrt;
@@ -76,15 +77,25 @@ const internals = {
     },
 
     /**
-     * Singular version of the above
+     * Get a submission from eaId and year
      * @param eaIdIds
      * @param year
      * @return {Promise.<*>}
      */
-    getSubmissionStatusForEaIdAndYear: async (eaIdId, year) => {
+    getSubmissionForEaIdAndYear: async (eaIdId, year) => {
         const query = 'applicable_year=' + year.toString() + '&reporting_reference=' + eaIdId;
-        const response = await Api.request('SUB', 'GET', 'submissions/search/getByReportingReferenceAndApplicableYear', query);
-        return response;
+        const submissionResponse = await Api.request('SUB', 'GET', 'submissions/search/getByReportingReferenceAndApplicableYear', query);
+
+        if (submissionResponse) {
+            const submissions = submissionResponse._embedded.submissions;
+
+            Hoek.assert(Array.isArray(submissions),
+                `Invalid submission response: ${submissionResponse}`);
+
+            if (submissions.length === 1) {
+                return submissionResponse._embedded.submissions[0];
+            }
+        }
     },
 
     // Create release element of message
@@ -108,6 +119,7 @@ const internals = {
         }
     },
 
+    // TODO move
     statusHelper: (permitStatus) => {
         const result = {};
         result.challengeStatus = Object.keys(permitStatus.challengeStatus).filter(p => permitStatus.challengeStatus[p]);
@@ -221,31 +233,6 @@ const internals = {
     },
 
     /**
-     * Calculate completed status - the status required to make the submission for a given route
-     * @param permitStatus
-     * @param name
-     */
-    setCompletedStatus: (permitStatus, name) => {
-        permitStatus.completed = permitStatus.completed || {};
-
-        // Calculate the permit status completed flag for each route
-        permitStatus.completed[name] = false;
-
-        // Deemed valid if no validity status or validity status true
-        const valid = permitStatus.valid[name] === undefined || permitStatus.valid[name];
-
-        // Completed if confirmed and challenged no - in this case there may or may not be a validation
-        if (permitStatus.confirmation[name] && !permitStatus.challengeStatus[name] && valid) {
-            permitStatus.completed[name] = true;
-        }
-
-        // Completed if confirmed and challenged yes and valid
-        if (permitStatus.confirmation[name] && permitStatus.challengeStatus[name] && valid) {
-            permitStatus.completed[name] = true;
-        }
-    },
-
-    /**
      * Remove the cache entries after a (successful) submission
      * @param request
      * @return {Promise.<void>}
@@ -269,14 +256,14 @@ const internals = {
         await request.server.app.userCache.cache(cacheNames.PERMIT_STATUS).drop(request);
     },
 
+    getSubmission: async (id) => {
+        const result = await Api.request('SUB', 'GET', `submissions/${id}`);
+        return result;
+    },
+
     getReleasesToControlledWater: async (id) => {
         const result = await Api.request('SUB', 'GET', `submissions/${id}/releasesToControlledWater`);
         return result._embedded.releasesToControlledWater;
-    },
-
-    getOverseasWasteTransfers: async (id) => {
-        const result = await Api.request('SUB', 'GET', `submissions/${id}/overseasWasteTransfers`);
-        return result._embedded.overseasWasteTransfers;
     },
 
     getReleasesToWasteWater: async (id) => {
@@ -326,7 +313,7 @@ const internals = {
             permitStatus.confirmation[releaseType] = true;
             permitStatus.challengeStatus[releaseType] = true;
             permitStatus.valid[releaseType] = true;
-            internals.setCompletedStatus(permitStatus, releaseType);
+            setCompletedStatus(permitStatus, releaseType);
 
             for (const release of releases) {
                 if (release.below_reporting_threshold) {
@@ -350,7 +337,7 @@ const internals = {
             permitStatus.currentTask = releaseType;
             permitStatus.confirmation[releaseType] = true;
             permitStatus.challengeStatus[releaseType] = false;
-            internals.setCompletedStatus(permitStatus, releaseType);
+            setCompletedStatus(permitStatus, releaseType);
 
             await request.server.app.userCache.cache(cacheNames.PERMIT_STATUS).set(request, permitStatus);
         }
@@ -383,7 +370,7 @@ const internals = {
             permitStatus.confirmation[transferType] = true;
             permitStatus.challengeStatus[transferType] = true;
             permitStatus.valid[transferType] = true;
-            internals.setCompletedStatus(permitStatus, transferType);
+            setCompletedStatus(permitStatus, transferType);
 
             for (const transfer of transfers) {
                 const activity = await MasterDataService.getEwcActivityById(transfer.ewc_activity_id);
@@ -411,7 +398,7 @@ const internals = {
             permitStatus.currentTask = transferType;
             permitStatus.confirmation[transferType] = true;
             permitStatus.challengeStatus[transferType] = false;
-            internals.setCompletedStatus(permitStatus, transferType);
+            setCompletedStatus(permitStatus, transferType);
             await request.server.app.userCache.cache(cacheNames.PERMIT_STATUS).set(request, permitStatus);
         }
     },
@@ -422,16 +409,16 @@ const internals = {
      * @param eaId
      * @return {Promise.<null>}
      */
-    restore: async (request, eaId) => {
+    restore: async (request, id) => {
         try {
-            Hoek.assert(['Submitted', 'Approved'].includes(eaId.status), 'Cannot restore un-persisted cache state');
-            Hoek.assert(eaId.submissionId, 'Required for restore persisted cache: submission id');
+            const submission = await internals.getSubmission(id);
+            Hoek.assert(['Submitted', 'Approved'].includes(submission.status), `Cannot restore submission: ${id}`);
 
             // Releases
-            const releasesToAir = await internals.getReleasesToAir(eaId.submissionId);
-            const releasesToLand = await internals.getReleasesToLand(eaId.submissionId);
-            const releasesToControlledWater = await internals.getReleasesToControlledWater(eaId.submissionId);
-            const releasesToWasteWater = await internals.getReleasesToWasteWater(eaId.submissionId);
+            const releasesToAir = await internals.getReleasesToAir(id);
+            const releasesToLand = await internals.getReleasesToLand(id);
+            const releasesToControlledWater = await internals.getReleasesToControlledWater(id);
+            const releasesToWasteWater = await internals.getReleasesToWasteWater(id);
 
             await internals.setReleasesCache(request, releasesToAir, 'RELEASES_TO_AIR');
             await internals.setReleasesCache(request, releasesToLand, 'RELEASES_TO_LAND');
@@ -439,7 +426,7 @@ const internals = {
             await internals.setReleasesCache(request, releasesToWasteWater, 'OFFSITE_TRANSFERS_IN_WASTE_WATER');
 
             // Transfers
-            const offsiteWasteTransfers = await internals.getOffsiteWasteTransfers(eaId.submissionId);
+            const offsiteWasteTransfers = await internals.getOffsiteWasteTransfers(id);
             await internals.setTransfersCache(request, offsiteWasteTransfers, 'OFFSITE_WASTE_TRANSFERS');
 
             // When restoring the submitted and checked tasks are also always complete
@@ -448,42 +435,35 @@ const internals = {
             ['REVIEW', 'SUBMIT'].forEach(e => {
                 permitStatus.confirmation[e] = true;
                 permitStatus.challengeStatus[e] = true;
-                internals.setCompletedStatus(permitStatus, e);
+                setCompletedStatus(permitStatus, e);
             });
+
+            permitStatus.submission = {
+                id: submission.id,
+                status: submission.status,
+                statusDate: (new Date(submission._last_modified)).toISOString()
+            };
 
             await request.server.app.userCache.cache(cacheNames.PERMIT_STATUS).set(request, permitStatus);
         } catch (err) {
             logger.error(err);
             throw err;
         }
-    }
-
-};
-
-module.exports = {
-
-    // Expose redis cache restore
-    restore: internals.restore,
-
-    // Expose the prepare stage for unit testing
-    setCompletedStatus: internals.setCompletedStatus,
-
-    // Expose the function for setting completed status - used by the task list
-    createSubmissionMessage: internals.createSubmissionMessage,
-
-    // The submission status codes
-    submissionStatusCodes: submissionStatusCodes,
+    },
 
     /**
      * Append the submission status to each permit object
      * @param eaIds
      * @return {Promise.<*>}
      */
-    addStatusToEaIds: async (eaIds) => {
+    addStatusToEaIds: async (eaIds, year) => {
         // We need to get the submission status for each permit and map it to the permit
-        const submissionResponse = await internals.getSubmissionStatusForEaIdsAndYear(eaIds.map(e => e.id), 2017);
+        const submissionResponse = await internals.getSubmissionStatusForEaIdsAndYear(eaIds.map(e => e.id), year);
 
         if (submissionResponse) {
+
+            Hoek.assert(Array.isArray(submissionResponse._embedded.submissions),
+                `Invalid submission response: ${submissionResponse}`);
 
             const submissionStatus = submissionResponse._embedded.submissions
                 .map(s => { return { eaIdId: s.reporting_reference, status: s.status }; });
@@ -499,27 +479,26 @@ module.exports = {
         }
 
         return eaIds;
-    },
+    }
 
-    /**
-     * Singular version of the above
-     * @param eaId
-     * @return {Promise.<*>}
-     */
-    addStatusToEaId: async (eaId) => {
-        const submissionResponse = await internals.getSubmissionStatusForEaIdAndYear(eaId.id, 2017);
+};
 
-        if (submissionResponse) {
-            const newObject = Object.assign(eaId);
-            newObject.status = submissionResponse.status;
-            newObject.submissionId = submissionResponse.id;
-            return newObject;
-        } else {
-            const newObject = Object.assign(eaId);
-            newObject.status = submissionStatusCodes.UNSUBMITTED;
-            return newObject;
-        }
-    },
+module.exports = {
+
+    // Expose redis cache restore
+    restore: internals.restore,
+
+    // Expose the function for setting completed status - used by the task list
+    createSubmissionMessage: internals.createSubmissionMessage,
+
+    // The submission status codes
+    submissionStatusCodes: submissionStatusCodes,
+
+    // Needed to get the submission
+    getSubmissionForEaIdAndYear: internals.getSubmissionForEaIdAndYear,
+
+    // Need for permit summery
+    addStatusToEaIds: internals.addStatusToEaIds,
 
     /**
      * Prepare the final submission JSON message and submit to the submissions API

@@ -78,11 +78,6 @@ const internals = {
             return result;
         } catch (err) {
 
-            // Allow 404 - Not found is a legitimate result for searches
-            if (err.statusCode === 404) {
-                return null;
-            }
-
             Logging.logger.error(err);
             throw err;
         }

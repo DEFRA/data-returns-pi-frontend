@@ -1,10 +1,9 @@
 'set strict';
 
 /**
- * Functions to determine if the service state allows particular actions
+ * Handlers to determine if the service state allows particular actions
  * such as changing an already submitted permit
  */
-const MasterDataService = require('../service/master-data');
 const Hoek = require('hoek');
 const Submission = require('../lib/submission');
 const SessionHelper = require('./session-helper');
@@ -22,6 +21,10 @@ const expand = (p) => {
     return [ p ];
 };
 
+/**
+ * The set of paths that may change a permit / submission
+ * @type {Array.<*>}
+ */
 const editSubmission = [].concat(...[
     '/task-list',
     '/releases/{route}/confirm',
@@ -43,7 +46,8 @@ const viewSubmission = ['/review/confirm'];
 module.exports = {
 
     /**
-     * Handle the access to any edit pages.
+     * Handler the access to any edit/view pages.
+     *
      * (1) If the submission status is un-submitted then only the permit originator may perform edit functions or
      * view the permit
      *
@@ -73,27 +77,32 @@ module.exports = {
                 // Get the chosen permit
                 let eaId = await request.server.app.userCache.cache(cacheNames.SUBMISSION_STATUS).get(request);
 
-                // Determine the submission status
-                eaId = await Submission.addStatusToEaId(eaId);
+                if (!eaId) {
+                    logger.debug('Excepted: EA_ID');
+                    return reply.redirect('/');
+                }
 
-                Hoek.assert(Object.values(Submission.submissionStatusCodes).includes(eaId.status),
-                    `Unknown submission status: ${eaId.status}`);
+                // Determine the submission status
+                const submission = await Submission.getSubmissionForEaIdAndYear(eaId.id, 2017);
+                const submissionStatus = submission ? submission.status : Submission.submissionStatusCodes.UNSUBMITTED;
+
+                Hoek.assert(Object.values(Submission.submissionStatusCodes).includes(submissionStatus),
+                    `Unknown submission status: ${submissionStatus}`);
 
                 if (editSubmission.includes(request.path)) {
-                    if (eaId.status === Submission.submissionStatusCodes.UNSUBMITTED) {
+                    if (submissionStatus === Submission.submissionStatusCodes.UNSUBMITTED) {
                         if (!isOperator) {
                             return reply.redirect('/');
                         }
-                    } else if (eaId.status === Submission.submissionStatusCodes.SUBMITTED) {
+                    } else if (submissionStatus === Submission.submissionStatusCodes.SUBMITTED) {
                         if (isOperator) {
-                            console.log('blah');
                             return reply.redirect('/');
                         }
-                    } else if (eaId.status === Submission.submissionStatusCodes.APPROVED) {
+                    } else if (submissionStatus === Submission.submissionStatusCodes.APPROVED) {
                         reply.redirect('/');
                     }
                 } else {
-                    if (eaId.status === Submission.submissionStatusCodes.UNSUBMITTED) {
+                    if (submissionStatus === Submission.submissionStatusCodes.UNSUBMITTED) {
                         if (!isOperator) {
                             return reply.redirect('/');
                         }
@@ -104,7 +113,7 @@ module.exports = {
                 request.app.info = {
                     user: session.user,
                     submission: {
-                        status: eaId.status
+                        status: submissionStatus
                     }
                 };
             }
