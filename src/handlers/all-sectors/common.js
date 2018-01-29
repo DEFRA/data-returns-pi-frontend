@@ -120,6 +120,19 @@ module.exports = {
         if (permitStatus.confirmation[name] && permitStatus.challengeStatus[name] && valid) {
             permitStatus.completed[name] = true;
         }
+    },
+
+    /**
+     * Helper function for status
+     * @param permitStatus
+     * @return {{}}
+     */
+    statusHelper: (permitStatus) => {
+        const result = {};
+        result.challengeStatus = Object.keys(permitStatus.challengeStatus).filter(p => permitStatus.challengeStatus[p]);
+        result.valid = Object.keys(permitStatus.valid).filter(p => permitStatus.valid[p]);
+        result.completed = Object.keys(permitStatus.completed).filter(p => permitStatus.completed[p]);
+        return result;
     }
 
 };

@@ -4,36 +4,58 @@
 
 <main id="content">
     <label hidden id="page-name">start</label>
-    <p class="heading-medium"><span id="title">Signed in as {{ user.username }}</span></p>
     {% if eaIds.length === 0 %}
         <div class="error-message">
             <p>You have no permits</p>
         </div>
     {% else %}
+
         <form action="/select-permit" method="post">
-            <h1 class="heading-large">Choose a permit</h1>
+            <h1 class="heading-large">Pollution inventory submissions</h1>
             <table class="table-control">
-				<thead></thead>
+				<thead>
+                <th>Permit No.</th>
+                <th>Site address</th>
+                <th>Status</th>
+                <th>Status change date</th>
+                <th>Action</th>
+                </thead>
 				<tbody>
 	                {% for eaId in eaIds %}
 					<tr>
-						<td>
-                            <input class="link" type="submit" id="continueBtn" name="eaId" value="{{ eaId.name }}">
-	                    </td>
-						<td>
-							{{ eaId.site.name }}
-						</td>
-                        <td>
-                            {% if eaId.status %}
-                                <td class="numeric" id="task-status">
-                                    <div class="task-status-banner">
-                                        <strong class="task-finished">{{ eaId.status }}</strong>
-                                    </div>
-                                </td>
-                            {% else %}
-                                <td class="numeric"></td>
+                        <td>{{ eaId.name }}</td>
+
+                        <td>{{ eaId.site.name }}</td>
+
+                        {% if eaId.status === 'Unsubmitted' %}
+                            <td>Open</td>
+                        {% else %}
+                            <td class="numeric" id="task-status">
+                                <div class="task-status-banner">
+                                    <strong class="task-finished">{{ eaId.status }}</strong>
+                                </div>
+                            </td>
+                        {% endif %}
+
+                        <td class="nobreak">{{ eaId.changed }}</td>
+
+                        {% if is_operator %}
+                            {% if eaId.status === 'Unsubmitted' %}
+                                <td><input class="link" type="submit" id="open" name="{{ eaId.id }}" value="Open"></td>
+                            {% elif eaId.status === 'Submitted' or eaId.status === 'Approved' %}
+                                <td><input class="link" type="submit" id="o-view" name="{{ eaId.id }}" value="View"></td>
                             {% endif %}
-					</tr>
+                        {% else %}
+                            {% if eaId.status === 'Unsubmitted' %}
+                                <td></td>
+                            {% elif eaId.status === 'Submitted' %}
+                                <td><input class="link" type="submit" id="review" name="{{ eaId.id }}" value="Review"></td>
+                            {% elif eaId.status === 'Approved' %}
+                                <td><input class="link" type="submit" id="i-view" name="{{ eaId.id }}" value="View"></td>
+                            {% endif %}
+                        {% endif %}
+
+                    </tr>
 	                {% endfor %}
 				</tbody>
             </table>

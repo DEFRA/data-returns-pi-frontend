@@ -46,7 +46,7 @@ const continueValid = (substanceId) => {
 };
 
 const START_PAGE = { id: 'RELEASES_START_PAGE', method: 'GET', url: '/', expected: '/' };
-const CHOOSE_PERMIT = { id: 'RELEASES_CHOOSE_PERMIT', method: 'POST', url: '/select-permit', payload: { eaId: '100311' }, expected: '/task-list' };
+const CHOOSE_PERMIT = { id: 'RELEASES_CHOOSE_PERMIT', method: 'POST', url: '/select-permit', payload: { '1': 'Open' }, expected: '/task-list' };
 const TASK_LIST = { id: 'RELEASES_TASK_LIST', method: 'GET', url: '/task-list', expected: '/task-list' };
 const CONFIRM_PAGE = { id: 'RELEASES_CONFIRM_PAGE', method: 'GET', url: '/releases/air/confirm', expected: '/releases/air/confirm' };
 const CONFIRM_PAGE2 = { id: 'RELEASES_CONFIRM_PAGE2', method: 'GET', url: '/releases/air/confirm', expected: '/releases/air' };

@@ -15,7 +15,7 @@ const Api = require('./api-client');
 const allSectorsTaskList = require('../model/all-sectors/task-list');
 const required = require('../service/task-list').required(allSectorsTaskList);
 const setCompletedStatus = require('../handlers/all-sectors/common').setCompletedStatus;
-
+const statusHelper = require('../handlers/all-sectors/common').statusHelper;
 const isNumeric = require('./utils').isNumeric;
 const isBrt = require('../lib/validator').isBrt;
 const logger = require('./logging').logger;
@@ -119,15 +119,6 @@ const internals = {
         }
     },
 
-    // TODO move
-    statusHelper: (permitStatus) => {
-        const result = {};
-        result.challengeStatus = Object.keys(permitStatus.challengeStatus).filter(p => permitStatus.challengeStatus[p]);
-        result.valid = Object.keys(permitStatus.valid).filter(p => permitStatus.valid[p]);
-        result.completed = Object.keys(permitStatus.completed).filter(p => permitStatus.completed[p]);
-        return result;
-    },
-
     /*
      * Reads the redis cache objects and generates the JSON payload for the submission message
      * @param request
@@ -139,7 +130,7 @@ const internals = {
 
         const permitStatus = await request.server.app.userCache.cache(cacheNames.PERMIT_STATUS).get(request);
 
-        const { challengeStatus, valid, completed } = internals.statusHelper(permitStatus);
+        const { challengeStatus, valid, completed } = statusHelper(permitStatus);
 
         const routes = required.filter(r => {
             return challengeStatus.find(c => c === r) &&
@@ -240,7 +231,7 @@ const internals = {
     remove: async (request) => {
         const permitStatus = await request.server.app.userCache.cache(cacheNames.PERMIT_STATUS).get(request);
 
-        const { challengeStatus, valid, completed } = internals.statusHelper(permitStatus);
+        const { challengeStatus, valid, completed } = statusHelper(permitStatus);
 
         const routes = required.filter(r => {
             return challengeStatus.find(c => c === r) &&
@@ -457,7 +448,7 @@ const internals = {
      * @return {Promise.<*>}
      */
     addStatusToEaIds: async (eaIds, year) => {
-        // We need to get the submission status for each permit and map it to the permit
+        // We need to get the submission status and date for each permit and map it to the permit
         const submissionResponse = await internals.getSubmissionStatusForEaIdsAndYear(eaIds.map(e => e.id), year);
 
         if (submissionResponse) {
@@ -466,13 +457,21 @@ const internals = {
                 `Invalid submission response: ${submissionResponse}`);
 
             const submissionStatus = submissionResponse._embedded.submissions
-                .map(s => { return { eaIdId: s.reporting_reference, status: s.status }; });
+                .map(s => { return { eaIdId: s.reporting_reference, status: s.status, changed: s._last_modified }; });
 
             return eaIds.map(e => {
                 // We don't want to write the status into the map so clone
-                const newObject = Object.assign(e);
+                const newObject = Object.assign({}, e);
                 const status = submissionStatus.find(s => s.eaIdId === e.id);
-                newObject.status = status ? status.status : null;
+                newObject.status = status ? status.status : submissionStatusCodes.UNSUBMITTED;
+                newObject.changed = status ? Intl.DateTimeFormat('en-GB', {
+                    year: 'numeric',
+                    month: 'numeric',
+                    day: 'numeric',
+                    hour: 'numeric',
+                    minute: 'numeric',
+                    second: 'numeric' }).format(new Date(status.changed)) : null;
+
                 return newObject;
             });
 
@@ -501,6 +500,26 @@ module.exports = {
     addStatusToEaIds: internals.addStatusToEaIds,
 
     /**
+     * Set the status on a given submission
+     * @param request
+     * @return {Promise.<void>}
+     */
+    setStatusForSubmission: async (request, status) => {
+        try {
+
+            Hoek.assert(['Submitted', 'Approved'].includes(status), `Unknown status: ${status}`);
+
+            const eaId = await request.server.app.userCache.cache(cacheNames.SUBMISSION_STATUS).get(request);
+            const submission = await internals.getSubmissionForEaIdAndYear(eaId.id, 2017);
+            submission.status = status;
+            await Api.request('SUB', 'PUT', `submissions/${submission.id}`, null, submission);
+        } catch (err) {
+            logger.error(err);
+            throw err;
+        }
+    },
+
+    /**
      * Prepare the final submission JSON message and submit to the submissions API
      * @param request
      * @return {Promise.<void>}
@@ -522,8 +541,8 @@ module.exports = {
                 await Api.request('SUB', 'POST', 'submissions', null, message);
             } else if (request.app.info.submission.status === submissionStatusCodes.SUBMITTED) {
                 const eaId = await request.server.app.userCache.cache(cacheNames.SUBMISSION_STATUS).get(request);
-                const submissionId = await internals.getSubmissionStatusForEaIdAndYear(eaId.id, 2017);
-                await Api.request('SUB', 'PUT', `submissions/${submissionId.id}`, null, message);
+                const submission = await internals.getSubmissionForEaIdAndYear(eaId.id, 2017);
+                await Api.request('SUB', 'PUT', `submissions/${submission.id}`, null, message);
             } else {
                 throw new Error('Illegal submission status: ' + request.app.info.submission.status);
             }

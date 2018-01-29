@@ -15,9 +15,6 @@ const UserCache = require('./user-cache');
 const AdditionalFilters = require('../service/additional-filters');
 
 const srvcfg = System.configuration.server;
-
-// A map to store the compiled templates
-const templates = new Map();
 const internals = {};
 
 // A function to provision the Hapi server
@@ -96,24 +93,15 @@ internals.initialize = async () => {
         engines: {
             html: {
                 compile: function (src, options) {
-
-                    // Store the templates on compilation unless local
-                    let template = null;
-
-                    if (templates.has(options.filename) && process.env.NODE_ENV === 'production') {
-                        template = templates.get(options.filename);
-                    } else {
-                        template = Nunjucks.compile(src, options.environment);
-                        templates.set(options.filename, template);
-                    }
-
+                    const template = Nunjucks.compile(src, options.environment);
                     return function (context) {
                         return template.render(context);
                     };
                 },
 
                 prepare: function (options, next) {
-                    options.compileOptions.environment = Nunjucks.configure(options.path, { watch: false });
+                    options.compileOptions.environment = Nunjucks.configure(options.path,
+                        { watch: process.env.NODE_ENV !== 'production' });
 
                     // Add in additional nunjunks filter functions
                     for (const filter of AdditionalFilters) {

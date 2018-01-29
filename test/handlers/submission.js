@@ -29,7 +29,7 @@ const offsitePayLoadBuilder = (submission, index) => {
 };
 // Releases
 const START_PAGE = { id: 'SUBMISSION_START_PAGE', method: 'GET', url: '/', expected: '/' };
-const CHOOSE_PERMIT = { id: 'SUBMISSION_CHOOSE_PERMIT', method: 'POST', url: '/select-permit', payload: { eaId: 'AB7469' }, expected: '/task-list' };
+const CHOOSE_PERMIT = { id: 'SUBMISSION_CHOOSE_PERMIT', method: 'POST', url: '/select-permit', payload: { '4': 'Open' }, expected: '/task-list' };
 const CONFIRM_PAGE = (type, route) => { return { id: 'SUBMISSION_CONFIRM_PAGE', method: 'GET', url: `/${type}/${route}/confirm`, expected: `/${type}/${route}/confirm` }; };
 const CONFIRM_YES = (type, route, dest) => { return { id: 'SUBMISSION_CONFIRM_YES', method: 'POST', url: `/${type}/${route}/confirm`, payload: { confirmation: 'true' }, expected: `/${type}/${route}/${dest}` }; };
 const CONFIRM_NO = (type, route) => { return { id: 'SUBMISSION_CONFIRM_YES', method: 'POST', url: `/${type}/${route}/confirm`, payload: { confirmation: 'false' }, expected: '/task-list' }; };
@@ -145,11 +145,13 @@ experiment('Submit data test', () => {
         await steps(stepBuilder);
     });
 
-    // TODO - removed for now
-    // test('Create overseas waste transfers', async () => {
-    //     await steps([ START_PAGE, CHOOSE_PERMIT, CONFIRM_PAGE('releases', 'overseas'),
-    //         CONFIRM_NO('transfers', 'overseas') ]);
-    // });
+    /*
+     * TODO - removed for now
+     * test('Create overseas waste transfers', async () => {
+     *     await steps([ START_PAGE, CHOOSE_PERMIT, CONFIRM_PAGE('releases', 'overseas'),
+     *         CONFIRM_NO('transfers', 'overseas') ]);
+     * });
+     */
 
     test('Submit', async () => {
         await steps([SUBMIT, CONFIRM]);

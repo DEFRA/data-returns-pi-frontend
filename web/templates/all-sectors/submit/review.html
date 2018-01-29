@@ -58,7 +58,7 @@
 
 <main id="content">
 
-    {% if mode %}
+    {% if is_operator and submission_status === 'Unsubmitted' %}
         <a href="/task-list" class="link-back">Back to sections you must complete</a>
     {% else %}
         <a href="/" class="link-back">Back</a>
@@ -90,14 +90,24 @@
             {{ transfersTable(review.offsite_waste_transfers, 'Your off-site waste transfers') }}
         {% endif %}
 
-        {% if mode %}
-            <div class="form-group">
-                <input type="submit" class="button" value="Accept">
-            </div>
+        {% if review_mode %}
+            {% if is_operator %}
+                <div class="form-group">
+                    <input type="submit" class="button" value="Accept">
+                </div>
 
-            <div class="form-group">
-                <p><a href="/task-list">Do not accept</a></p>
-            </div>
+                <div class="form-group">
+                    <p><a href="/task-list">Do not accept</a></p>
+                </div>
+            {% else %}
+                <div class="form-group">
+                    <input type="submit" class="button" value="Approve">
+                </div>
+
+                <div class="form-group">
+                    <p><a href="/">Do not approve</a></p>
+                </div>
+            {% endif %}
         {% endif %}
 
     </form>

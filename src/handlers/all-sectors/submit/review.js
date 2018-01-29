@@ -2,7 +2,7 @@
 
 const MasterDataService = require('../../../service/master-data');
 const Submission = require('../../../lib/submission');
-
+const SessionHelper = require('../../session-helper');
 const cacheHelper = require('../common').cacheHelper;
 const cacheNames = require('../../../lib/user-cache-policies').names;
 const CacheKeyError = require('../../../lib/user-cache-policies').CacheKeyError;
@@ -51,7 +51,12 @@ module.exports = {
      * Confirm submission handler.
      *
      * This page operates in two basic modes - view only or review mode
-     * depending on weather the status is submitted
+     * depending on weather the situation
+     *
+     *              Open    Complete    Submitted   Approved
+     *              ----    --------    ---------   --------
+     * Operator |   View    Review      View        View
+     * Internal |                       Review      View
      *
      * @param {internals.Request} request - The server request object
      * @param {function} reply - The server reply function
@@ -61,25 +66,30 @@ module.exports = {
         try {
             const { route, permitStatus, submissionStatus } = await cacheHelper(request, 'review');
 
+            const session = await SessionHelper.get(request, request.server.app.sid);
+
+            // Determine if the logged in user in an operator or an internal user
+            const isOperator = session.user.roles.includes('OPERATOR');
+
+            const challengeStatus = Object.keys(permitStatus.challengeStatus).filter(p => permitStatus.challengeStatus[p]);
+            const valid = Object.keys(permitStatus.valid).filter(p => permitStatus.valid[p]);
+            const completed = Object.keys(permitStatus.completed).filter(p => permitStatus.completed[p]);
+
+            const routes = required.filter(r => {
+                return challengeStatus.find(c => c === r) &&
+              valid.find(v => v === r) &&
+              completed.find(d => d === r);
+            });
+
+            // Determine the mode
+            const reviewMode = !!((
+                request.app.info.submission.status === Submission.submissionStatusCodes.UNSUBMITTED ||
+            (request.app.info.submission.status === Submission.submissionStatusCodes.SUBMITTED &&
+              request.app.info.user.roles.includes('SITE_OFFICER'))
+            )) && required.filter(r => r !== 'REVIEW').every(r => completed.includes(r));
+
             if (request.method === 'get') {
-
-                const challengeStatus = Object.keys(permitStatus.challengeStatus).filter(p => permitStatus.challengeStatus[p]);
-                const valid = Object.keys(permitStatus.valid).filter(p => permitStatus.valid[p]);
-                const completed = Object.keys(permitStatus.completed).filter(p => permitStatus.completed[p]);
-
-                const routes = required.filter(r => {
-                    return challengeStatus.find(c => c === r) &&
-                    valid.find(v => v === r) &&
-                    completed.find(d => d === r);
-                });
-
                 await setConfirmation(request, permitStatus, route, false);
-
-                // Determine the mode
-                const reviewMode = !!((
-                    request.app.info.submission.status === Submission.submissionStatusCodes.UNSUBMITTED ||
-                (request.app.info.submission.status === Submission.submissionStatusCodes.SUBMITTED && request.app.info.user.roles.includes('SITE_OFFICER'))
-                )) && required.filter(r => r !== 'REVIEW').every(r => completed.includes(r));
 
                 // Build the display objects
                 const reviewObject = {};
@@ -169,10 +179,26 @@ module.exports = {
                     }
                 }
 
-                reply.view('all-sectors/submit/review', { review: reviewObject, mode: reviewMode });
+                reply.view('all-sectors/submit/review', {
+                    review: reviewObject,
+                    review_mode: reviewMode,
+                    is_operator: isOperator,
+                    submission_status: request.app.info.submission.status
+                });
+
             } else {
-                await setConfirmation(request, permitStatus, route, true);
-                reply.redirect('/task-list');
+
+                if (reviewMode && isOperator) {
+                    await setConfirmation(request, permitStatus, route, true);
+                    reply.redirect('/task-list');
+                } else if (!reviewMode && isOperator) {
+                    reply.redirect('/task-list');
+                } else if (reviewMode && !isOperator) {
+                    await Submission.setStatusForSubmission(request, 'Approved');
+                    reply.redirect('/');
+                } else {
+                    reply.redirect('/');
+                }
             }
         } catch (err) {
             logger.log('error', err);
