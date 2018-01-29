@@ -27,7 +27,7 @@
 
                         <td>{{ eaId.site.name }}</td>
 
-                        {% if eaId.status === 'Unsubmitted' %}
+                        {% if not eaId.status or eaId.status === 'Unsubmitted' %}
                             <td>Open</td>
                         {% else %}
                             <td class="numeric" id="task-status">
@@ -39,22 +39,25 @@
 
                         <td class="nobreak">{{ eaId.changed }}</td>
 
-                        {% if is_operator %}
-                            {% if eaId.status === 'Unsubmitted' %}
-                                <td><input class="link" type="submit" id="open" name="{{ eaId.id }}" value="Open"></td>
-                            {% elif eaId.status === 'Submitted' or eaId.status === 'Approved' %}
-                                <td><input class="link" type="submit" id="o-view" name="{{ eaId.id }}" value="View"></td>
+                        {% if eaId.status %}
+                            {% if is_operator %}
+                                {% if eaId.status === 'Unsubmitted' %}
+                                    <td><input class="link" type="submit" id="o-open" name="{{ eaId.id }}" value="Open"></td>
+                                {% elif eaId.status === 'Submitted' or eaId.status === 'Approved' %}
+                                    <td><input class="link" type="submit" id="o-view" name="{{ eaId.id }}" value="View"></td>
+                                {% endif %}
+                            {% else %}
+                                {% if eaId.status === 'Unsubmitted' %}
+                                    <td></td>
+                                {% elif eaId.status === 'Submitted' %}
+                                    <td><input class="link" type="submit" id="review" name="{{ eaId.id }}" value="Review"></td>
+                                {% elif eaId.status === 'Approved' %}
+                                    <td><input class="link" type="submit" id="i-view" name="{{ eaId.id }}" value="View"></td>
+                                {% endif %}
                             {% endif %}
                         {% else %}
-                            {% if eaId.status === 'Unsubmitted' %}
-                                <td></td>
-                            {% elif eaId.status === 'Submitted' %}
-                                <td><input class="link" type="submit" id="review" name="{{ eaId.id }}" value="Review"></td>
-                            {% elif eaId.status === 'Approved' %}
-                                <td><input class="link" type="submit" id="i-view" name="{{ eaId.id }}" value="View"></td>
-                            {% endif %}
+                            <td><input class="link" type="submit" id="t-open" name="{{ eaId.id }}" value="Open"></td>
                         {% endif %}
-
                     </tr>
 	                {% endfor %}
 				</tbody>
