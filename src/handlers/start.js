@@ -59,6 +59,9 @@ module.exports = {
             // Determine if the logged in user in an operator or an internal user
             const isOperator = session.user.roles.includes('OPERATOR');
 
+            // Hard code year in single place
+            const year = 2017;
+
             const eaIdId = Number.parseInt(Object.keys(request.payload)[0]);
             const action = Object.values(request.payload)[0];
 
@@ -66,6 +69,11 @@ module.exports = {
 
             // Get the chosen permit
             const eaId = await MasterDataService.getEaIdFromEaIdId(eaIdId);
+
+            // Set the current permit and the current year in the user context to the user context
+            await request.server.app.userCache.cache(cacheNames.USER_CONTEXT).set(request, {
+                year: year, eaId: eaId, roles: session.user.roles
+            });
 
             // Determine the submission status
             const submission = await Submission.getSubmissionForEaIdAndYear(eaIdId, 2017);
@@ -77,13 +85,10 @@ module.exports = {
 
                 // Operator View summary
 
-                // Set the current permit in the submission cache
-                await request.server.app.userCache.cache(cacheNames.SUBMISSION_STATUS).set(request, eaId);
-
                 // If there is no permit cache then read from the database layer
-                const permitStatus = await request.server.app.userCache.cache(cacheNames.PERMIT_STATUS).get(request);
+                const submissionContext = await request.server.app.userCache.cache(cacheNames.SUBMISSION_CONTEXT).get(request);
 
-                if (!permitStatus) {
+                if (!submissionContext) {
                     // Rewrite the redis cache from the database
                     await Submission.restore(request, submission.id);
                 }
@@ -94,33 +99,30 @@ module.exports = {
 
                 // Operator edit
 
-                // Set the current permit in the submission cache
-                await request.server.app.userCache.cache(cacheNames.SUBMISSION_STATUS).set(request, eaId);
-
                 /*
                  * The permit status is object with containing the statuses and other meta-data
                  * for each stage within the user journey for a given (current) permit
                  */
-                let permitStatus = await request.server.app.userCache.cache(cacheNames.PERMIT_STATUS).get(request);
+                let submissionContext = await request.server.app.userCache.cache(cacheNames.SUBMISSION_CONTEXT).get(request);
 
-                if (!permitStatus) {
+                if (!submissionContext) {
                     // Initialize a permit status if not exists
-                    permitStatus = {};
-                    permitStatus.submission = {
+                    submissionContext = {};
+                    submissionContext.submission = {
                         status: Submission.submissionStatusCodes.UNSUBMITTED,
                         statusDate: (new Date()).toISOString()
                     };
-                    permitStatus.confirmation = {};
-                    permitStatus.challengeStatus = {};
-                    permitStatus.valid = {};
-                    permitStatus.completed = {};
+                    submissionContext.confirmation = {};
+                    submissionContext.challengeStatus = {};
+                    submissionContext.valid = {};
+                    submissionContext.completed = {};
                 } else {
                     // Always unset the current task
-                    delete permitStatus.currentTask;
+                    delete submissionContext.currentTask;
                 }
 
                 // Save the permit status cache
-                await request.server.app.userCache.cache(cacheNames.PERMIT_STATUS).set(request, permitStatus);
+                await request.server.app.userCache.cache(cacheNames.SUBMISSION_CONTEXT).set(request, submissionContext);
 
                 reply.redirect('/task-list');
 
@@ -128,13 +130,10 @@ module.exports = {
 
                 // Internal user open - this is not yet implemented
 
-                // Set the current permit in the submission cache
-                await request.server.app.userCache.cache(cacheNames.SUBMISSION_STATUS).set(request, eaId);
-
                 // If there is no permit cache then read from the database layer
-                const permitStatus = await request.server.app.userCache.cache(cacheNames.PERMIT_STATUS).get(request);
+                const submissionContext = await request.server.app.userCache.cache(cacheNames.SUBMISSION_CONTEXT).get(request);
 
-                if (!permitStatus) {
+                if (!submissionContext) {
                     // Rewrite the redis cache from the database
                     await Submission.restore(request, submission.id);
                 }
@@ -149,13 +148,10 @@ module.exports = {
 
                 // Internal user review
 
-                // Set the current permit in the submission cache
-                await request.server.app.userCache.cache(cacheNames.SUBMISSION_STATUS).set(request, eaId);
-
                 // If there is no permit cache then read from the database layer
-                const permitStatus = await request.server.app.userCache.cache(cacheNames.PERMIT_STATUS).get(request);
+                const submissionContext = await request.server.app.userCache.cache(cacheNames.SUBMISSION_CONTEXT).get(request);
 
-                if (!permitStatus) {
+                if (!submissionContext) {
                 // Rewrite the redis cache from the database
                     await Submission.restore(request, submission.id);
                 }
@@ -165,13 +161,10 @@ module.exports = {
 
                 // Internal user view
 
-                // Set the current permit in the submission cache
-                await request.server.app.userCache.cache(cacheNames.SUBMISSION_STATUS).set(request, eaId);
-
                 // If there is no permit cache then read from the database layer
-                const permitStatus = await request.server.app.userCache.cache(cacheNames.PERMIT_STATUS).get(request);
+                const submissionContext = await request.server.app.userCache.cache(cacheNames.SUBMISSION_CONTEXT).get(request);
 
-                if (!permitStatus) {
+                if (!submissionContext) {
                     // Rewrite the redis cache from the database
                     await Submission.restore(request, submission.id);
                 }

@@ -194,7 +194,7 @@ module.exports = {
      */
     confirm: async (request, reply) => {
         try {
-            const { route, tasks, permitStatus } = await cacheHelper(request, 'off-site');
+            const { route, tasks, submissionContext } = await cacheHelper(request, 'off-site');
 
             if (request.method === 'get') {
 
@@ -211,16 +211,16 @@ module.exports = {
             } else {
                 // Process the confirmation - set the current route and redirect to the releases page
                 if (request.payload.confirmation === 'true') {
-                    await setChallengeStatus(request, permitStatus, route, true);
+                    await setChallengeStatus(request, submissionContext, route, true);
                     reply.redirect(route.page);
                 } else {
                     // If the challenge page results in false then this is a confirmed route
-                    await setConfirmation(request, permitStatus, route, true);
+                    await setConfirmation(request, submissionContext, route, true);
 
                     // Unset the confirmation status when viewing the page
-                    await setChallengeStatus(request, permitStatus, route);
+                    await setChallengeStatus(request, submissionContext, route);
 
-                    await request.server.app.userCache.cache(cacheNames.PERMIT_STATUS).set(request, permitStatus);
+                    await request.server.app.userCache.cache(cacheNames.SUBMISSION_CONTEXT).set(request, submissionContext);
                     reply.redirect('/task-list');
                 }
             }
@@ -243,13 +243,13 @@ module.exports = {
      */
     offSite: async (request, reply) => {
         try {
-            const { permitStatus, route, tasks } = await cacheHelper(request, 'off-site');
+            const { submissionContext, route, tasks } = await cacheHelper(request, 'off-site');
 
             if (request.method === 'get') {
                 if (!tasks.transfers || tasks.transfers.length === 0) {
                     if (tasks.currentPageOffSiteTransfer) {
                         delete tasks.currentPageOffSiteTransfer;
-                        await request.server.app.userCache.cache(cacheNames.TASK_STATUS).set(request, tasks);
+                        await request.server.app.userCache.cache(cacheNames.TASK_CONTEXT).set(request, tasks);
                     }
                     reply.redirect('/transfers/off-site/add');
                 } else {
@@ -259,7 +259,7 @@ module.exports = {
                     }));
 
                     // Unset the confirmation status when viewing the page
-                    await setConfirmation(request, permitStatus, route);
+                    await setConfirmation(request, submissionContext, route);
                     reply.view('all-sectors/report/off-site', { transfers: transfers });
                 }
             }
@@ -282,11 +282,11 @@ module.exports = {
      */
     add: async (request, reply) => {
         try {
-            const { permitStatus, route, tasks } = await cacheHelper(request, 'off-site');
+            const { submissionContext, route, tasks } = await cacheHelper(request, 'off-site');
 
             if (request.method === 'get') {
                 // Unset the confirmation status when viewing the page
-                await setConfirmation(request, permitStatus, route);
+                await setConfirmation(request, submissionContext, route);
 
                 // If we have a transfer then set up the values and any errors
                 if (tasks && tasks.currentPageOffSiteTransfer) {
@@ -314,7 +314,7 @@ module.exports = {
 
                 if (!validationErrors) {
                     // Recalculate the overall route validation status
-                    await setValidationStatus(request, permitStatus, route, internals.validate(request, tasks));
+                    await setValidationStatus(request, submissionContext, route, internals.validate(request, tasks));
 
                     // If there are no validation errors saved the tasks and redirect to the off-site waste transfers page
                     delete currentCacheOffSiteTransferObject.errors;
@@ -324,14 +324,14 @@ module.exports = {
                     tasks.transfers.sort(internals.sortOffSiteTransfer);
 
                     delete tasks.currentPageOffSiteTransfer;
-                    await request.server.app.userCache.cache(cacheNames.TASK_STATUS).set(request, tasks);
+                    await request.server.app.userCache.cache(cacheNames.TASK_CONTEXT).set(request, tasks);
                     reply.redirect('/transfers/off-site');
                 } else {
 
                     // If there are validation errors
-                    await setValidationStatus(request, permitStatus, route, true);
+                    await setValidationStatus(request, submissionContext, route, true);
                     tasks.currentPageOffSiteTransfer = { offSiteTransfer: currentPageOffSiteTransfer, errors: validationErrors };
-                    await request.server.app.userCache.cache(cacheNames.TASK_STATUS).set(request, tasks);
+                    await request.server.app.userCache.cache(cacheNames.TASK_CONTEXT).set(request, tasks);
                     reply.redirect('/transfers/off-site/add');
                 }
             }
@@ -349,7 +349,7 @@ module.exports = {
     // The submit actions on the form
     action: async (request, reply) => {
         try {
-            const { tasks, permitStatus, route } = await cacheHelper(request, 'off-site');
+            const { tasks, submissionContext, route } = await cacheHelper(request, 'off-site');
 
             // Save the submission
             await internals.save(request, tasks);
@@ -363,25 +363,25 @@ module.exports = {
                 // Test if the releases are valid
                 if (internals.validate(request, tasks)) {
                     // Set the confirmation flag
-                    await setConfirmation(request, permitStatus, route, true);
+                    await setConfirmation(request, submissionContext, route, true);
 
                     // Set the overall route validation status to valid
-                    await setValidationStatus(request, permitStatus, route, true);
+                    await setValidationStatus(request, submissionContext, route, true);
 
                     // Write the (removed) validations to the cache
-                    await request.server.app.userCache.cache(cacheNames.TASK_STATUS).set(request, tasks);
+                    await request.server.app.userCache.cache(cacheNames.TASK_CONTEXT).set(request, tasks);
 
                     // Back to the task list
                     reply.redirect('/task-list');
                 } else {
                     // Unset the confirmation flag
-                    await setConfirmation(request, permitStatus, route);
+                    await setConfirmation(request, submissionContext, route);
 
                     // Set the overall route validation status to invalid
-                    await setValidationStatus(request, permitStatus, route);
+                    await setValidationStatus(request, submissionContext, route);
 
                     // Update the cache with the validation objects and redirect back to the page
-                    await request.server.app.userCache.cache(cacheNames.TASK_STATUS).set(request, tasks);
+                    await request.server.app.userCache.cache(cacheNames.TASK_CONTEXT).set(request, tasks);
                     reply.redirect('/transfers/off-site');
                 }
 
@@ -392,7 +392,7 @@ module.exports = {
                 tasks.currentoffSiteTransferIndex = transferIndex;
 
                 // Save the changes to the transfers and redirect to the detail page
-                await request.server.app.userCache.cache(cacheNames.TASK_STATUS).set(request, tasks);
+                await request.server.app.userCache.cache(cacheNames.TASK_CONTEXT).set(request, tasks);
 
                 reply.redirect('/transfers/off-site/detail');
 
@@ -402,11 +402,11 @@ module.exports = {
 
                 // Send to delete confirmation dialog
                 tasks.currentoffSiteTransferIndex = transferIndex;
-                await request.server.app.userCache.cache(cacheNames.TASK_STATUS).set(request, tasks);
+                await request.server.app.userCache.cache(cacheNames.TASK_CONTEXT).set(request, tasks);
                 reply.redirect('/transfers/off-site/remove');
 
             } else if (request.payload.add) {
-                await request.server.app.userCache.cache(cacheNames.TASK_STATUS).set(request, tasks);
+                await request.server.app.userCache.cache(cacheNames.TASK_CONTEXT).set(request, tasks);
                 reply.redirect('/transfers/off-site/add');
             }
 
@@ -428,7 +428,7 @@ module.exports = {
      */
     remove: async (request, reply) => {
         try {
-            const { permitStatus, route, tasks } = await cacheHelper(request, 'off-site');
+            const { submissionContext, route, tasks } = await cacheHelper(request, 'off-site');
 
             if (request.method === 'get') {
                 reply.view('all-sectors/report/confirm-delete', {
@@ -437,16 +437,16 @@ module.exports = {
                 });
             } else {
                 tasks.transfers.splice(tasks.currentoffSiteTransferIndex, 1);
-                await request.server.app.userCache.cache(cacheNames.TASK_STATUS).set(request, tasks);
+                await request.server.app.userCache.cache(cacheNames.TASK_CONTEXT).set(request, tasks);
 
                 // Recalculate the overall route validation status
-                await setValidationStatus(request, permitStatus, route, internals.validate(request, tasks));
+                await setValidationStatus(request, submissionContext, route, internals.validate(request, tasks));
 
                 if (tasks.transfers.length > 0) {
                     reply.redirect('/transfers/off-site');
                 } else {
                     // Here we unset the challenge flag - the user must explicitly say no to the route
-                    await setChallengeStatus(request, permitStatus, route);
+                    await setChallengeStatus(request, submissionContext, route);
                     reply.redirect('/task-list');
                 }
             }
@@ -468,7 +468,7 @@ module.exports = {
      */
     detail: async (request, reply) => {
         try {
-            const { permitStatus, route, tasks } = await cacheHelper(request, 'off-site');
+            const { submissionContext, route, tasks } = await cacheHelper(request, 'off-site');
             const transfer = await internals.enrichOffSiteTransferObject(tasks.transfers[tasks.currentoffSiteTransferIndex]);
 
             if (request.method === 'get') {
@@ -478,19 +478,19 @@ module.exports = {
                 const validation = Validator.offSite(tasks.transfers[tasks.currentoffSiteTransferIndex]);
                 if (validation) {
                     // Unset the overall validation status
-                    await setValidationStatus(request, permitStatus, route);
+                    await setValidationStatus(request, submissionContext, route);
 
                     // Set the errors on the task cache and redirect back to the detail page
                     tasks.transfers[tasks.currentoffSiteTransferIndex].errors = validation;
-                    await request.server.app.userCache.cache(cacheNames.TASK_STATUS).set(request, tasks);
+                    await request.server.app.userCache.cache(cacheNames.TASK_CONTEXT).set(request, tasks);
                     reply.redirect('/transfers/off-site/detail');
                 } else {
                     // Calculate the overall validation status
-                    await setValidationStatus(request, permitStatus, route, internals.validate(request, tasks));
+                    await setValidationStatus(request, submissionContext, route, internals.validate(request, tasks));
 
                     // Delete the errors and redirect back to off-site main page
                     delete tasks.transfers[tasks.currentoffSiteTransferIndex].errors;
-                    await request.server.app.userCache.cache(cacheNames.TASK_STATUS).set(request, tasks);
+                    await request.server.app.userCache.cache(cacheNames.TASK_CONTEXT).set(request, tasks);
                     reply.redirect('/transfers/off-site');
                 }
             }

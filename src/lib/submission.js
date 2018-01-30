@@ -125,12 +125,12 @@ const internals = {
      * @return {Promise.<void>}
      */
     createSubmissionMessage: async (request) => {
-        const submission = await request.server.app.userCache.cache(cacheNames.SUBMISSION_STATUS).get(request);
-        const eaId = await request.server.app.userCache.cache(cacheNames.PERMIT_STATUS).get(request);
+        const submission = await request.server.app.userCache.cache(cacheNames.USER_CONTEXT).get(request);
+        const eaId = await request.server.app.userCache.cache(cacheNames.SUBMISSION_CONTEXT).get(request);
 
-        const permitStatus = await request.server.app.userCache.cache(cacheNames.PERMIT_STATUS).get(request);
+        const submissionContext = await request.server.app.userCache.cache(cacheNames.SUBMISSION_CONTEXT).get(request);
 
-        const { challengeStatus, valid, completed } = statusHelper(permitStatus);
+        const { challengeStatus, valid, completed } = statusHelper(submissionContext);
 
         const routes = required.filter(r => {
             return challengeStatus.find(c => c === r) &&
@@ -147,8 +147,8 @@ const internals = {
         for (const route of routes) {
             // We need to se the current task in the eaId
             eaId.currentTask = route;
-            await request.server.app.userCache.cache(cacheNames.PERMIT_STATUS).set(request, eaId);
-            const task = await request.server.app.userCache.cache(cacheNames.TASK_STATUS).get(request);
+            await request.server.app.userCache.cache(cacheNames.SUBMISSION_CONTEXT).set(request, eaId);
+            const task = await request.server.app.userCache.cache(cacheNames.TASK_CONTEXT).get(request);
 
             switch (route) {
                 case 'RELEASES_TO_AIR':
@@ -229,9 +229,9 @@ const internals = {
      * @return {Promise.<void>}
      */
     remove: async (request) => {
-        const permitStatus = await request.server.app.userCache.cache(cacheNames.PERMIT_STATUS).get(request);
+        const submissionContext = await request.server.app.userCache.cache(cacheNames.SUBMISSION_CONTEXT).get(request);
 
-        const { challengeStatus, valid, completed } = statusHelper(permitStatus);
+        const { challengeStatus, valid, completed } = statusHelper(submissionContext);
 
         const routes = required.filter(r => {
             return challengeStatus.find(c => c === r) &&
@@ -240,11 +240,11 @@ const internals = {
         });
 
         for (const route of routes) {
-            permitStatus.currentTask = route;
-            await request.server.app.userCache.cache(cacheNames.PERMIT_STATUS).set(request, permitStatus);
-            await request.server.app.userCache.cache(cacheNames.TASK_STATUS).drop(request);
+            submissionContext.currentTask = route;
+            await request.server.app.userCache.cache(cacheNames.SUBMISSION_CONTEXT).set(request, submissionContext);
+            await request.server.app.userCache.cache(cacheNames.TASK_CONTEXT).drop(request);
         }
-        await request.server.app.userCache.cache(cacheNames.PERMIT_STATUS).drop(request);
+        await request.server.app.userCache.cache(cacheNames.SUBMISSION_CONTEXT).drop(request);
     },
 
     getSubmission: async (id) => {
@@ -284,14 +284,14 @@ const internals = {
      */
     setReleasesCache: async (request, releases, releaseType) => {
         // Initialize a new permit status
-        let permitStatus = await request.server.app.userCache.cache(cacheNames.PERMIT_STATUS).get(request);
+        let submissionContext = await request.server.app.userCache.cache(cacheNames.SUBMISSION_CONTEXT).get(request);
 
-        if (!permitStatus) {
-            permitStatus = {};
-            permitStatus.confirmation = {};
-            permitStatus.challengeStatus = {};
-            permitStatus.valid = {};
-            permitStatus.completed = {};
+        if (!submissionContext) {
+            submissionContext = {};
+            submissionContext.confirmation = {};
+            submissionContext.challengeStatus = {};
+            submissionContext.valid = {};
+            submissionContext.completed = {};
         }
 
         const methods = await MasterDataService.getMethods();
@@ -300,11 +300,11 @@ const internals = {
             const tasks = {};
             tasks.releases = {};
 
-            permitStatus.currentTask = releaseType;
-            permitStatus.confirmation[releaseType] = true;
-            permitStatus.challengeStatus[releaseType] = true;
-            permitStatus.valid[releaseType] = true;
-            setCompletedStatus(permitStatus, releaseType);
+            submissionContext.currentTask = releaseType;
+            submissionContext.confirmation[releaseType] = true;
+            submissionContext.challengeStatus[releaseType] = true;
+            submissionContext.valid[releaseType] = true;
+            setCompletedStatus(submissionContext, releaseType);
 
             for (const release of releases) {
                 if (release.below_reporting_threshold) {
@@ -322,15 +322,15 @@ const internals = {
             }
 
             // Set the caches
-            await request.server.app.userCache.cache(cacheNames.PERMIT_STATUS).set(request, permitStatus);
-            await request.server.app.userCache.cache(cacheNames.TASK_STATUS).set(request, tasks);
+            await request.server.app.userCache.cache(cacheNames.SUBMISSION_CONTEXT).set(request, submissionContext);
+            await request.server.app.userCache.cache(cacheNames.TASK_CONTEXT).set(request, tasks);
         } else {
-            permitStatus.currentTask = releaseType;
-            permitStatus.confirmation[releaseType] = true;
-            permitStatus.challengeStatus[releaseType] = false;
-            setCompletedStatus(permitStatus, releaseType);
+            submissionContext.currentTask = releaseType;
+            submissionContext.confirmation[releaseType] = true;
+            submissionContext.challengeStatus[releaseType] = false;
+            setCompletedStatus(submissionContext, releaseType);
 
-            await request.server.app.userCache.cache(cacheNames.PERMIT_STATUS).set(request, permitStatus);
+            await request.server.app.userCache.cache(cacheNames.SUBMISSION_CONTEXT).set(request, submissionContext);
         }
     },
 
@@ -343,25 +343,25 @@ const internals = {
      */
     setTransfersCache: async (request, transfers, transferType) => {
         // Initialize a new permit status
-        let permitStatus = await request.server.app.userCache.cache(cacheNames.PERMIT_STATUS).get(request);
+        let submissionContext = await request.server.app.userCache.cache(cacheNames.SUBMISSION_CONTEXT).get(request);
 
-        if (!permitStatus) {
-            permitStatus = {};
-            permitStatus.confirmation = {};
-            permitStatus.challengeStatus = {};
-            permitStatus.valid = {};
-            permitStatus.completed = {};
+        if (!submissionContext) {
+            submissionContext = {};
+            submissionContext.confirmation = {};
+            submissionContext.challengeStatus = {};
+            submissionContext.valid = {};
+            submissionContext.completed = {};
         }
 
         if (transfers.length) {
             const tasks = {};
             tasks.transfers = [];
 
-            permitStatus.currentTask = transferType;
-            permitStatus.confirmation[transferType] = true;
-            permitStatus.challengeStatus[transferType] = true;
-            permitStatus.valid[transferType] = true;
-            setCompletedStatus(permitStatus, transferType);
+            submissionContext.currentTask = transferType;
+            submissionContext.confirmation[transferType] = true;
+            submissionContext.challengeStatus[transferType] = true;
+            submissionContext.valid[transferType] = true;
+            setCompletedStatus(submissionContext, transferType);
 
             for (const transfer of transfers) {
                 const activity = await MasterDataService.getEwcActivityById(transfer.ewc_activity_id);
@@ -383,14 +383,14 @@ const internals = {
             }
 
             // Set the caches
-            await request.server.app.userCache.cache(cacheNames.PERMIT_STATUS).set(request, permitStatus);
-            await request.server.app.userCache.cache(cacheNames.TASK_STATUS).set(request, tasks);
+            await request.server.app.userCache.cache(cacheNames.SUBMISSION_CONTEXT).set(request, submissionContext);
+            await request.server.app.userCache.cache(cacheNames.TASK_CONTEXT).set(request, tasks);
         } else {
-            permitStatus.currentTask = transferType;
-            permitStatus.confirmation[transferType] = true;
-            permitStatus.challengeStatus[transferType] = false;
-            setCompletedStatus(permitStatus, transferType);
-            await request.server.app.userCache.cache(cacheNames.PERMIT_STATUS).set(request, permitStatus);
+            submissionContext.currentTask = transferType;
+            submissionContext.confirmation[transferType] = true;
+            submissionContext.challengeStatus[transferType] = false;
+            setCompletedStatus(submissionContext, transferType);
+            await request.server.app.userCache.cache(cacheNames.SUBMISSION_CONTEXT).set(request, submissionContext);
         }
     },
 
@@ -421,21 +421,21 @@ const internals = {
             await internals.setTransfersCache(request, offsiteWasteTransfers, 'OFFSITE_WASTE_TRANSFERS');
 
             // When restoring the submitted and checked tasks are also always complete
-            const permitStatus = await request.server.app.userCache.cache(cacheNames.PERMIT_STATUS).get(request);
+            const submissionContext = await request.server.app.userCache.cache(cacheNames.SUBMISSION_CONTEXT).get(request);
 
             ['REVIEW', 'SUBMIT'].forEach(e => {
-                permitStatus.confirmation[e] = true;
-                permitStatus.challengeStatus[e] = true;
-                setCompletedStatus(permitStatus, e);
+                submissionContext.confirmation[e] = true;
+                submissionContext.challengeStatus[e] = true;
+                setCompletedStatus(submissionContext, e);
             });
 
-            permitStatus.submission = {
+            submissionContext.submission = {
                 id: submission.id,
                 status: submission.status,
                 statusDate: (new Date(submission._last_modified)).toISOString()
             };
 
-            await request.server.app.userCache.cache(cacheNames.PERMIT_STATUS).set(request, permitStatus);
+            await request.server.app.userCache.cache(cacheNames.SUBMISSION_CONTEXT).set(request, submissionContext);
         } catch (err) {
             logger.error(err);
             throw err;
@@ -509,7 +509,7 @@ module.exports = {
 
             Hoek.assert(['Submitted', 'Approved'].includes(status), `Unknown status: ${status}`);
 
-            const eaId = await request.server.app.userCache.cache(cacheNames.SUBMISSION_STATUS).get(request);
+            const eaId = await request.server.app.userCache.cache(cacheNames.USER_CONTEXT).get(request);
             const submission = await internals.getSubmissionForEaIdAndYear(eaId.id, 2017);
             submission.status = status;
             await Api.request('SUB', 'PUT', `submissions/${submission.id}`, null, submission);
@@ -540,7 +540,7 @@ module.exports = {
             if (request.app.info.submission.status === submissionStatusCodes.UNSUBMITTED) {
                 await Api.request('SUB', 'POST', 'submissions', null, message);
             } else if (request.app.info.submission.status === submissionStatusCodes.SUBMITTED) {
-                const eaId = await request.server.app.userCache.cache(cacheNames.SUBMISSION_STATUS).get(request);
+                const eaId = await request.server.app.userCache.cache(cacheNames.USER_CONTEXT).get(request);
                 const submission = await internals.getSubmissionForEaIdAndYear(eaId.id, 2017);
                 await Api.request('SUB', 'PUT', `submissions/${submission.id}`, null, message);
             } else {

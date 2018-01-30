@@ -22,27 +22,27 @@ module.exports = {
     taskList: async (request, reply) => {
         try {
             // Get the submission status object or create a new one
-            const eaId = await request.server.app.userCache.cache(cacheNames.SUBMISSION_STATUS).get(request);
+            const { eaId } = await request.server.app.userCache.cache(cacheNames.USER_CONTEXT).get(request);
 
             // If no permit is selected redirect back to the start page
             if (!eaId) {
                 throw new CacheKeyError('Expected permit');
             }
 
-            const permitStatus = await request.server.app.userCache.cache(cacheNames.PERMIT_STATUS).get(request);
+            const submissionContext = await request.server.app.userCache.cache(cacheNames.SUBMISSION_CONTEXT).get(request);
 
             // Always re-calculate the completed status
-            permitStatus.completed = {};
+            submissionContext.completed = {};
             for (const name of taskListNames) {
-                setCompletedStatus(permitStatus, name);
+                setCompletedStatus(submissionContext, name);
             }
 
             // Write the calculated status back to the cache
-            await request.server.app.userCache.cache(cacheNames.PERMIT_STATUS).set(request, permitStatus);
+            await request.server.app.userCache.cache(cacheNames.SUBMISSION_CONTEXT).set(request, submissionContext);
 
             reply.view('all-sectors/task-list', { eaId: eaId.name,
                 taskList: allSectorsTaskList,
-                permitStatus: permitStatus
+                submissionContext: submissionContext
             });
 
         } catch (err) {

@@ -71,19 +71,19 @@ module.exports = {
             if (editSubmission.concat(viewSubmission).includes(request.path)) {
                 const session = await SessionHelper.get(request, request.server.app.sid);
 
-                // Determine if the logged in user in an operator or an internal user
-                const isOperator = session.user.roles.includes('OPERATOR');
-
                 // Get the chosen permit
-                let eaId = await request.server.app.userCache.cache(cacheNames.SUBMISSION_STATUS).get(request);
+                const userContext = await request.server.app.userCache.cache(cacheNames.USER_CONTEXT).get(request);
 
-                if (!eaId) {
-                    logger.debug('Excepted: EA_ID');
+                if (!userContext) {
+                    logger.debug('Excepted: user context');
                     return reply.redirect('/');
                 }
 
+                // Determine if the logged in user in an operator or an internal user
+                const isOperator = userContext.roles.includes('OPERATOR');
+
                 // Determine the submission status
-                const submission = await Submission.getSubmissionForEaIdAndYear(eaId.id, 2017);
+                const submission = await Submission.getSubmissionForEaIdAndYear(userContext.eaId.id, userContext.year);
                 const submissionStatus = submission ? submission.status : Submission.submissionStatusCodes.UNSUBMITTED;
 
                 Hoek.assert(Object.values(Submission.submissionStatusCodes).includes(submissionStatus),

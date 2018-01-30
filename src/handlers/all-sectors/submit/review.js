@@ -2,7 +2,6 @@
 
 const MasterDataService = require('../../../service/master-data');
 const Submission = require('../../../lib/submission');
-const SessionHelper = require('../../session-helper');
 const cacheHelper = require('../common').cacheHelper;
 const cacheNames = require('../../../lib/user-cache-policies').names;
 const CacheKeyError = require('../../../lib/user-cache-policies').CacheKeyError;
@@ -64,16 +63,11 @@ module.exports = {
      */
     review: async (request, reply) => {
         try {
-            const { route, permitStatus, submissionStatus } = await cacheHelper(request, 'review');
+            const { route, submissionContext, eaId, year, isOperator } = await cacheHelper(request, 'review');
 
-            const session = await SessionHelper.get(request, request.server.app.sid);
-
-            // Determine if the logged in user in an operator or an internal user
-            const isOperator = session.user.roles.includes('OPERATOR');
-
-            const challengeStatus = Object.keys(permitStatus.challengeStatus).filter(p => permitStatus.challengeStatus[p]);
-            const valid = Object.keys(permitStatus.valid).filter(p => permitStatus.valid[p]);
-            const completed = Object.keys(permitStatus.completed).filter(p => permitStatus.completed[p]);
+            const challengeStatus = Object.keys(submissionContext.challengeStatus).filter(p => submissionContext.challengeStatus[p]);
+            const valid = Object.keys(submissionContext.valid).filter(p => submissionContext.valid[p]);
+            const completed = Object.keys(submissionContext.completed).filter(p => submissionContext.completed[p]);
 
             const routes = required.filter(r => {
                 return challengeStatus.find(c => c === r) &&
@@ -89,19 +83,19 @@ module.exports = {
             )) && required.filter(r => r !== 'REVIEW').every(r => completed.includes(r));
 
             if (request.method === 'get') {
-                await setConfirmation(request, permitStatus, route, false);
+                await setConfirmation(request, submissionContext, route, false);
 
                 // Build the display objects
                 const reviewObject = {};
-                reviewObject.applicableYear = 2017;
-                reviewObject.permitNumber = submissionStatus.name;
-                reviewObject.site = submissionStatus.site.name;
+                reviewObject.applicableYear = year;
+                reviewObject.permitNumber = eaId.name;
+                reviewObject.site = eaId.site.name;
 
                 for (const rte of routes) {
                     // We need to se the current task in the eaId
-                    permitStatus.currentTask = rte;
-                    await request.server.app.userCache.cache(cacheNames.PERMIT_STATUS).set(request, permitStatus);
-                    const task = await request.server.app.userCache.cache(cacheNames.TASK_STATUS).get(request);
+                    submissionContext.currentTask = rte;
+                    await request.server.app.userCache.cache(cacheNames.SUBMISSION_CONTEXT).set(request, submissionContext);
+                    const task = await request.server.app.userCache.cache(cacheNames.TASK_CONTEXT).get(request);
 
                     switch (rte) {
                         case 'RELEASES_TO_AIR':
@@ -189,7 +183,7 @@ module.exports = {
             } else {
 
                 if (reviewMode && isOperator) {
-                    await setConfirmation(request, permitStatus, route, true);
+                    await setConfirmation(request, submissionContext, route, true);
                     reply.redirect('/task-list');
                 } else if (!reviewMode && isOperator) {
                     reply.redirect('/task-list');

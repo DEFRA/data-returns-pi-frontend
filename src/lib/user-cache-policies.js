@@ -11,9 +11,9 @@ class CacheKeyError extends Error {
 };
 
 const names = {
-    SUBMISSION_STATUS: 'submission',
-    PERMIT_STATUS: 'ea-id',
-    TASK_STATUS: 'task',
+    USER_CONTEXT: 'user-context',
+    SUBMISSION_CONTEXT: 'submission-context',
+    TASK_CONTEXT: 'task-context',
     UNIT_TEST: 'unit-test'
 };
 
@@ -22,8 +22,8 @@ const names = {
  */
 const internals = {
 
-    submissionStatus: {
-        name: names.SUBMISSION_STATUS,
+    userContext: {
+        name: names.USER_CONTEXT,
         /**
          * Returns a key of the form userid.submission-year to handle
          * all submission level artifacts
@@ -33,17 +33,15 @@ const internals = {
         keyFunc: async (request) => {
             try {
                 const session = await SessionHelper.get(request, request.server.app.sid);
-
-                // TODO submission year
-                return session.user.id + '.' + '2017';
+                return String(session.user.id);
             } catch (err) {
                 throw new CacheKeyError(err);
             }
         }
     },
 
-    permitStatus: {
-        name: names.PERMIT_STATUS,
+    submissionContext: {
+        name: names.SUBMISSION_CONTEXT,
         /**
          * Returns a key of the form userid.submission-year.permitId to handle
          * all permit level artifacts. If we cannot calculate a key it returns '_'
@@ -54,15 +52,15 @@ const internals = {
         keyFunc: async (request) => {
             try {
                 // Get the status cache key
-                const statusKey = await internals.submissionStatus.keyFunc(request);
+                const statusKey = await internals.userContext.keyFunc(request);
 
                 // Fetch the permit key
-                const permitStatusKey = await request.server.app.userCache.cache(names.SUBMISSION_STATUS).get(request);
+                const userContext = await request.server.app.userCache.cache(names.USER_CONTEXT).get(request);
 
-                if (permitStatusKey && permitStatusKey.id) {
-                    return statusKey + '.' + permitStatusKey.id;
+                if (userContext) {
+                    return statusKey + '.' + userContext.year + '.' + userContext.eaId.id;
                 } else {
-                    return '_';
+                    throw new CacheKeyError('Cannot generate key for submission context cache');
                 }
             } catch (err) {
                 throw new CacheKeyError(err);
@@ -70,8 +68,8 @@ const internals = {
         }
     },
 
-    taskStatus: {
-        name: names.TASK_STATUS,
+    taskContext: {
+        name: names.TASK_CONTEXT,
         /**
          * Returns a key for the task object.
          * This is of the form userid.submission-year.permitId.TASK
@@ -81,13 +79,13 @@ const internals = {
         keyFunc: async (request) => {
             try {
                 // Get the permit status cache key
-                const statusKey = await internals.permitStatus.keyFunc(request);
+                const submissionKey = await internals.submissionContext.keyFunc(request);
 
                 // Fetch the current status
-                const status = await UserCache.cache(names.PERMIT_STATUS).get(request);
+                const submissionContext = await UserCache.cache(names.SUBMISSION_CONTEXT).get(request);
 
                 // Construct a key containing the permit status and the current task
-                return statusKey + '.' + status.currentTask;
+                return submissionKey + '.' + submissionContext.currentTask;
             } catch (err) {
                 throw new CacheKeyError(err);
             }
@@ -112,9 +110,9 @@ module.exports = {
     CacheKeyError: CacheKeyError,
 
     policies:
-      [internals.submissionStatus,
-          internals.permitStatus,
-          internals.taskStatus,
+      [internals.userContext,
+          internals.submissionContext,
+          internals.taskContext,
           internals.unitTest],
 
     names: names

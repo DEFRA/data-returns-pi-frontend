@@ -20,12 +20,12 @@ module.exports = {
      */
     submit: async (request, reply) => {
         try {
-            const { route, permitStatus } = await cacheHelper(request, 'submit');
+            const { route, submissionContext } = await cacheHelper(request, 'submit');
 
             if (request.method === 'get') {
-                const completed = Object.keys(permitStatus.completed).filter(p => permitStatus.completed[p]);
+                const completed = Object.keys(submissionContext.completed).filter(p => submissionContext.completed[p]);
                 const canSubmit = required.every(r => { return completed.find(c => c === r); });
-                await setConfirmation(request, permitStatus, route, false);
+                await setConfirmation(request, submissionContext, route, false);
                 reply.view('all-sectors/submit/submit', { canSubmit: canSubmit });
             } else {
                 // We have confirmed the submission so send data to the API

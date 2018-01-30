@@ -15,7 +15,7 @@ module.exports = {
      * but simplifies
      * @param request - extract the route from the request
      * @param routeParameter - supply the route identifier
-     * @returns  {Promise.<{route: *, submissionStatus: *, permitStatus: *, tasks: *}>}
+     * @returns  {Promise.<{route: *, submissionStatus: *, submissionContext: *, tasks: *}>}
      */
     cacheHelper: async (request, routeParameter) => {
 
@@ -24,24 +24,26 @@ module.exports = {
             const route = routeParameter ? TaskListService.mapByPathParameter(AllSectorsTaskList).get(routeParameter)
                 : TaskListService.getRoute(AllSectorsTaskList, request);
 
-            const submissionStatus = await request.server.app.userCache.cache(cacheNames.SUBMISSION_STATUS).get(request);
-            const permitStatus = await request.server.app.userCache.cache(cacheNames.PERMIT_STATUS).get(request);
+            const { eaId, year, roles } = await request.server.app.userCache.cache(cacheNames.USER_CONTEXT).get(request);
+            const submissionContext = await request.server.app.userCache.cache(cacheNames.SUBMISSION_CONTEXT).get(request);
 
             Hoek.assert(route, 'Invalid cache state: route');
-            Hoek.assert(submissionStatus, 'Invalid cache state: submission-status');
-            Hoek.assert(permitStatus, 'Invalid cache state: permit-status');
+            Hoek.assert(eaId, `Invalid cache state: ${cacheNames.USER_CONTEXT}`);
+            Hoek.assert(submissionContext, 'Invalid cache state: permit-status');
 
             // We can always set the current route here
-            permitStatus.currentTask = route.name;
-            await request.server.app.userCache.cache(cacheNames.PERMIT_STATUS).set(request, permitStatus);
+            submissionContext.currentTask = route.name;
+            await request.server.app.userCache.cache(cacheNames.SUBMISSION_CONTEXT).set(request, submissionContext);
 
             // Get the tasks object or create an empty new one
-            const tasks = await request.server.app.userCache.cache(cacheNames.TASK_STATUS).get(request) || {};
+            const tasks = await request.server.app.userCache.cache(cacheNames.TASK_CONTEXT).get(request) || {};
 
             return {
                 route: route,
-                submissionStatus: submissionStatus,
-                permitStatus: permitStatus,
+                eaId: eaId,
+                year: year,
+                isOperator: roles.includes('OPERATOR'),
+                submissionContext: submissionContext,
                 tasks: tasks
             };
 
@@ -55,83 +57,83 @@ module.exports = {
      * Ok's the route either by challenge no or by the continue button on the
      * main route page. If the user causes and unconfirm this will also unset the review confirmation.
      * @param request
-     * @param permitStatus
+     * @param submissionContext
      * @param route
      * @param completed
      * @return {Promise.<void>}
      */
-    setConfirmation: async (request, permitStatus, route, confirmation) => {
-        permitStatus.confirmation[route.name] = !!confirmation;
+    setConfirmation: async (request, submissionContext, route, confirmation) => {
+        submissionContext.confirmation[route.name] = !!confirmation;
 
         if (!confirmation) {
-            permitStatus.confirmation['REVIEW'] = false;
-            permitStatus.confirmation['SUBMIT'] = false;
+            submissionContext.confirmation['REVIEW'] = false;
+            submissionContext.confirmation['SUBMIT'] = false;
         }
 
-        await request.server.app.userCache.cache(cacheNames.PERMIT_STATUS).set(request, permitStatus);
+        await request.server.app.userCache.cache(cacheNames.SUBMISSION_CONTEXT).set(request, submissionContext);
     },
 
     /**
      * Sets the validation status at the permit level.
      * @param request
-     * @param permitStatus
+     * @param submissionContext
      * @param route
      * @param valid
      * @return {Promise.<void>}
      */
-    setValidationStatus: async (request, permitStatus, route, valid) => {
-        permitStatus.valid[route.name] = !!valid;
-        await request.server.app.userCache.cache(cacheNames.PERMIT_STATUS).set(request, permitStatus);
+    setValidationStatus: async (request, submissionContext, route, valid) => {
+        submissionContext.valid[route.name] = !!valid;
+        await request.server.app.userCache.cache(cacheNames.SUBMISSION_CONTEXT).set(request, submissionContext);
     },
 
     /**
      * Set the challenge status flag
      * @param request
-     * @param permitStatus
+     * @param submissionContext
      * @param route
      * @param challengeStatus
      * @return {Promise.<void>}
      */
-    setChallengeStatus: async (request, permitStatus, route, challengeStatus) => {
-        permitStatus.challengeStatus[route.name] = !!challengeStatus;
-        await request.server.app.userCache.cache(cacheNames.PERMIT_STATUS).set(request, permitStatus);
+    setChallengeStatus: async (request, submissionContext, route, challengeStatus) => {
+        submissionContext.challengeStatus[route.name] = !!challengeStatus;
+        await request.server.app.userCache.cache(cacheNames.SUBMISSION_CONTEXT).set(request, submissionContext);
     },
 
     /**
      * Calculate teh TASK completed status - the status required to make the submission for a given route
-     * @param permitStatus
+     * @param submissionContext
      * @param name
      */
-    setCompletedStatus: (permitStatus, name) => {
-        permitStatus.completed = permitStatus.completed || {};
+    setCompletedStatus: (submissionContext, name) => {
+        submissionContext.completed = submissionContext.completed || {};
 
         // Calculate the permit status completed flag for each route
-        permitStatus.completed[name] = false;
+        submissionContext.completed[name] = false;
 
         // Deemed valid if no validity status or validity status true
-        const valid = permitStatus.valid[name] === undefined || permitStatus.valid[name];
+        const valid = submissionContext.valid[name] === undefined || submissionContext.valid[name];
 
         // Completed if confirmed and challenged no - in this case there may or may not be a validation
-        if (permitStatus.confirmation[name] && !permitStatus.challengeStatus[name] && valid) {
-            permitStatus.completed[name] = true;
+        if (submissionContext.confirmation[name] && !submissionContext.challengeStatus[name] && valid) {
+            submissionContext.completed[name] = true;
         }
 
         // Completed if confirmed and challenged yes and valid
-        if (permitStatus.confirmation[name] && permitStatus.challengeStatus[name] && valid) {
-            permitStatus.completed[name] = true;
+        if (submissionContext.confirmation[name] && submissionContext.challengeStatus[name] && valid) {
+            submissionContext.completed[name] = true;
         }
     },
 
     /**
      * Helper function for status
-     * @param permitStatus
+     * @param submissionContext
      * @return {{}}
      */
-    statusHelper: (permitStatus) => {
+    statusHelper: (submissionContext) => {
         const result = {};
-        result.challengeStatus = Object.keys(permitStatus.challengeStatus).filter(p => permitStatus.challengeStatus[p]);
-        result.valid = Object.keys(permitStatus.valid).filter(p => permitStatus.valid[p]);
-        result.completed = Object.keys(permitStatus.completed).filter(p => permitStatus.completed[p]);
+        result.challengeStatus = Object.keys(submissionContext.challengeStatus).filter(p => submissionContext.challengeStatus[p]);
+        result.valid = Object.keys(submissionContext.valid).filter(p => submissionContext.valid[p]);
+        result.completed = Object.keys(submissionContext.completed).filter(p => submissionContext.completed[p]);
         return result;
     }
 

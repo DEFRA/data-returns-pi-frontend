@@ -125,7 +125,7 @@ module.exports = {
      */
     confirm: async (request, reply) => {
         try {
-            const { permitStatus, route, tasks } = await cacheHelper(request);
+            const { submissionContext, route, tasks } = await cacheHelper(request);
 
             if (request.method === 'get') {
 
@@ -145,14 +145,14 @@ module.exports = {
             } else {
                 // Process the confirmation - the releases page
                 if (request.payload && request.payload.confirmation === 'true') {
-                    await setChallengeStatus(request, permitStatus, route, true);
+                    await setChallengeStatus(request, submissionContext, route, true);
                     reply.redirect(route.page);
                 } else {
                     // If the challenge page results in false then this is a confirmed route
-                    await setConfirmation(request, permitStatus, route, true);
+                    await setConfirmation(request, submissionContext, route, true);
 
                     // Unset the confirmation status when viewing the page
-                    await setChallengeStatus(request, permitStatus, route);
+                    await setChallengeStatus(request, submissionContext, route);
                     reply.redirect('/task-list');
                 }
             }
@@ -175,7 +175,7 @@ module.exports = {
      */
     releases: async (request, reply) => {
         try {
-            const { permitStatus, route, submissionStatus, tasks } = await cacheHelper(request);
+            const { submissionContext, route, eaId, tasks } = await cacheHelper(request);
 
             if (tasks.releases && Object.keys(tasks.releases).filter(r => isNumeric(r)).length > 0) {
                 // Enrich the stored object for page presentation - add descriptions
@@ -197,11 +197,11 @@ module.exports = {
                 }
 
                 // Unset the confirmation status when viewing the page
-                await setConfirmation(request, permitStatus, route);
+                await setConfirmation(request, submissionContext, route);
 
                 reply.view('all-sectors/report/releases', {
                     route: route,
-                    eaId: submissionStatus.name,
+                    eaId: eaId.name,
                     releases: releases,
                     units: await MasterDataService.getUnits()
                 });
@@ -227,7 +227,7 @@ module.exports = {
      */
     action: async (request, reply) => {
         try {
-            const { route, tasks, permitStatus } = await cacheHelper(request);
+            const { route, tasks, submissionContext } = await cacheHelper(request);
 
             // Save the submission
             await internals.save(request, tasks);
@@ -238,23 +238,23 @@ module.exports = {
                 // Test if the releases are valid
                 if (await internals.validate(request, tasks)) {
                     // Set the confirmation flag to confirmed
-                    await setConfirmation(request, permitStatus, route, true);
+                    await setConfirmation(request, submissionContext, route, true);
 
                     // Set the overall route validation status to valid
-                    await setValidationStatus(request, permitStatus, route, true);
+                    await setValidationStatus(request, submissionContext, route, true);
 
                     // Rewrite the tasks with no error and go back to the task-list
-                    await request.server.app.userCache.cache(cacheNames.TASK_STATUS).set(request, tasks);
+                    await request.server.app.userCache.cache(cacheNames.TASK_CONTEXT).set(request, tasks);
                     reply.redirect('/task-list');
                 } else {
                     // Unset the confirmation flag
-                    await setConfirmation(request, permitStatus, route);
+                    await setConfirmation(request, submissionContext, route);
 
                     // Set the overall route validation status to invalid
-                    await setValidationStatus(request, permitStatus, route);
+                    await setValidationStatus(request, submissionContext, route);
 
                     // Rewrite the tasks and go back to the route page
-                    await request.server.app.userCache.cache(cacheNames.TASK_STATUS).set(request, tasks);
+                    await request.server.app.userCache.cache(cacheNames.TASK_CONTEXT).set(request, tasks);
                     reply.redirect(route.page);
                 }
 
@@ -264,7 +264,7 @@ module.exports = {
                 tasks.currentSubstanceId = Object.keys(request.payload)
                     .find(s => s.startsWith('detail')).substr(7);
 
-                await request.server.app.userCache.cache(cacheNames.TASK_STATUS).set(request, tasks);
+                await request.server.app.userCache.cache(cacheNames.TASK_CONTEXT).set(request, tasks);
                 reply.redirect(route.page + '/detail');
 
             } else if (Object.keys(request.payload).find(s => s.startsWith('delete'))) {
@@ -274,12 +274,12 @@ module.exports = {
 
                 // Send to the delete confirmation dialog
                 tasks.currentSubstanceId = substanceId;
-                await request.server.app.userCache.cache(cacheNames.TASK_STATUS).set(request, tasks);
+                await request.server.app.userCache.cache(cacheNames.TASK_CONTEXT).set(request, tasks);
                 reply.redirect(route.page + '/remove');
 
             } else if (request.payload.add) {
                 // Save the release information to the cache and redirect to the add-substances page
-                await request.server.app.userCache.cache(cacheNames.TASK_STATUS).set(request, tasks);
+                await request.server.app.userCache.cache(cacheNames.TASK_CONTEXT).set(request, tasks);
                 reply.redirect(route.page + '/add-substance');
             }
 
@@ -299,7 +299,7 @@ module.exports = {
     detail: async (request, reply) => {
         try {
             // Check the permit status has been set
-            const { permitStatus, route, tasks } = await cacheHelper(request);
+            const { submissionContext, route, tasks } = await cacheHelper(request);
 
             if (!tasks.releases || !tasks.currentSubstanceId) {
                 throw new CacheKeyError('Cache read error');
@@ -307,7 +307,7 @@ module.exports = {
 
             if (request.method === 'get') {
                 // Unset the confirmation status when viewing the page
-                await setConfirmation(request, permitStatus, route);
+                await setConfirmation(request, submissionContext, route);
 
                 // Get the current release and enrich with the substance details
                 const release = tasks.releases[tasks.currentSubstanceId];
@@ -341,18 +341,18 @@ module.exports = {
 
                 if (validation) {
                     // Unset the overall validation status
-                    await setValidationStatus(request, permitStatus, route);
+                    await setValidationStatus(request, submissionContext, route);
 
                     // Update the cache with the validation objects and redirect back to the releases page
                     currentRelease.errors = validation;
-                    await request.server.app.userCache.cache(cacheNames.TASK_STATUS).set(request, tasks);
+                    await request.server.app.userCache.cache(cacheNames.TASK_CONTEXT).set(request, tasks);
                     reply.redirect(route.page + '/detail');
                 } else {
                     // Calculate the overall validation status
-                    await setValidationStatus(request, permitStatus, route, internals.validate(request, tasks));
+                    await setValidationStatus(request, submissionContext, route, internals.validate(request, tasks));
 
                     // Valid to go back to the main releases page
-                    await request.server.app.userCache.cache(cacheNames.TASK_STATUS).set(request, tasks);
+                    await request.server.app.userCache.cache(cacheNames.TASK_CONTEXT).set(request, tasks);
                     reply.redirect(route.page);
                 }
             }
@@ -375,7 +375,7 @@ module.exports = {
      */
     remove: async (request, reply) => {
         try {
-            const { route, tasks, permitStatus } = await cacheHelper(request);
+            const { route, tasks, submissionContext } = await cacheHelper(request);
             const release = tasks.releases[tasks.currentSubstanceId];
             const substance = await MasterDataService.getSubstanceById(Number.parseInt(tasks.currentSubstanceId));
 
@@ -384,17 +384,17 @@ module.exports = {
                 reply.view('all-sectors/report/confirm-delete', { route: route, release: release });
             } else {
                 delete tasks.releases[tasks.currentSubstanceId];
-                await request.server.app.userCache.cache(cacheNames.TASK_STATUS).set(request, tasks);
+                await request.server.app.userCache.cache(cacheNames.TASK_CONTEXT).set(request, tasks);
 
                 // Recalculate the overall route validation status
-                await setValidationStatus(request, permitStatus, route, internals.validate(request, tasks));
+                await setValidationStatus(request, submissionContext, route, internals.validate(request, tasks));
 
                 // If this is the last release redirect back to the task list
                 if (Object.keys(tasks.releases).filter(r => isNumeric(r)).length > 0) {
                     reply.redirect(route.page);
                 } else {
                     // Here we unset the challenge flag - the user must explicitly say no to the route
-                    await setChallengeStatus(request, permitStatus, route);
+                    await setChallengeStatus(request, submissionContext, route);
                     reply.redirect('/task-list');
                 }
             }
@@ -417,11 +417,11 @@ module.exports = {
     add: async (request, reply) => {
         try {
             // Get cache objects
-            const { route, tasks, permitStatus } = await cacheHelper(request);
+            const { route, tasks, submissionContext } = await cacheHelper(request);
 
             if (request.method === 'get') {
                 // Unset the confirmation status when viewing the page
-                await setConfirmation(request, permitStatus, route);
+                await setConfirmation(request, submissionContext, route);
 
                 // Get a list of all of the substances from the master data service
                 let substances = await MasterDataService.getSubstances(route.name);
@@ -467,7 +467,7 @@ module.exports = {
                         }
 
                         // Immediately set the overall validation status to false
-                        await setValidationStatus(request, permitStatus, route);
+                        await setValidationStatus(request, submissionContext, route);
 
                         // Set the current task to allow us to get directly to the detail page
                         tasks.currentSubstanceId = substance.id;
@@ -475,7 +475,7 @@ module.exports = {
                         success = true;
 
                         // If there is no substance then redirect back with an error Write the task object back to the cache
-                        await request.server.app.userCache.cache(cacheNames.TASK_STATUS).set(request, tasks);
+                        await request.server.app.userCache.cache(cacheNames.TASK_CONTEXT).set(request, tasks);
 
                         reply.redirect(route.page + '/detail');
                     }
@@ -483,7 +483,7 @@ module.exports = {
 
                 if (!success) {
                     tasks.releases.substanceErrors = [ { key: 'substance', errno: 'PI-1004' } ];
-                    await request.server.app.userCache.cache(cacheNames.TASK_STATUS).set(request, tasks);
+                    await request.server.app.userCache.cache(cacheNames.TASK_CONTEXT).set(request, tasks);
                     reply.redirect(route.page + '/add-substance');
                 }
 
