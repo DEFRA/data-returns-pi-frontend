@@ -16,7 +16,7 @@
                 <th class="th-transfer-substance">Substance</th>
                 <th class="th-total">2017 total</th>
                 <th class="th-method">Method</th>
-                <th class="th-operation">Operation</th>
+                <th class="th-operation">Purpose</th>
                 <th class="th-more-detail"><span class="visually-hidden">More detail</span></th>
                 <th class="th-delete"><span class="visually-hidden">Delete</span></th>
             </tr>
@@ -30,7 +30,7 @@
                 <td class="td-method">{{ transfer.method.name }}</td>
                 <td class="td-operation">{{ transfer.operation.name }}</td>
                 <td>
-                    <input class="link" type="submit" id="detail" name="check-{{ loop.index0 }}" value="View transfer"/>
+                    <input class="link" type="submit" id="detail" name="check-{{ loop.index0 }}" value="More detail"/>
                 </td>
 
                 <td>
@@ -42,7 +42,7 @@
         </table>
 
         <div class="form-group">
-            <input class="link" type="submit" id="add" name="add" value="Add a new overseas waste transfer"/>
+            <input class="link" type="submit" id="add" name="add" value="Add another overseas hazardous waste transfer"/>
         </div>
 
         <div class="form-group">
@@ -52,4 +52,3 @@
 </main>
 
 {% endblock %}
-

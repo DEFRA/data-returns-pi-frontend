@@ -15,10 +15,9 @@
         <h2 class="heading-medium error-summary-heading" id="check-your-report">
             Check what you’re reporting
         </h2>
-        <p>There are issues with the data</p>
         <ul class="error-summary-list">
             {% if value_error %}
-            <li><a href="#value-check">Correct your {{ release.substance.name }} total</a>
+            <li><a href="#value-check">Enter a total in digits</a>
             {% endif %}
 
             {% if unit_error and unit_error.errno === 'PI-1001' %}

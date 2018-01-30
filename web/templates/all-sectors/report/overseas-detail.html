@@ -18,14 +18,13 @@
             <h2 class="heading-medium error-summary-heading" id="check-your-report">
                 Check what you’re reporting
             </h2>
-            <p>There are issues with the data</p>
             <ul class="error-summary-list">
                 {% if value_error %}
-                <li><a href="#value-check"><span class="error-message">Correct your {{ transfer.substance.name }} total</a>
+                <li><a href="#value-check"><span class="error-message">Enter a total in digits</a>
                 {% endif %}
 
                 {% if operation_error %}
-                <li><a href="#operation-check"><span class="error-message">Tell us your purpose of transfer</span></a>
+                <li><a href="#operation-check"><span class="error-message">Select the purpose of this transfer</span></a>
                 {% endif %}
 
                 {% if method_error %}
@@ -59,11 +58,11 @@
                         </tr>
 
                         <tr>
-                            <th class="unit">Purpose of transfer</th>
+                            <th class="unit">Purpose</th>
                             {% if operation_error %}
                             <td class="operation">
                                 <div class="form-group-error">
-									<span class="error-message">Tell us your purpose of transfer</span>
+									<span class="error-message">Select the purpose of this transfer</span>
                                     <label class="form-label visually-hidden" for="select-box-operation">Operation</label>
                                     <select class="form-control form-control-error operation" id="select-box-operation-err" name="operationId">
                                         <option selected="">--</option>
@@ -100,7 +99,7 @@
                             {% if method_error %}
                             <td class="method">
 	                            <div class="form-group-error">
-									<span class="error-message">Tell us your measurement method</span>
+									<span class="error-message">Select your measurement method</span>
                                     <label class="form-label visually-hidden" for="select-box-method-err">Method</label>
                                     <select class="form-control form-control-error method" id="select-box-method-err" name="methodId">
                                         <option>--</option>
