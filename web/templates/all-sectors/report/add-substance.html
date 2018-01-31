@@ -24,29 +24,29 @@
             {% elif route.name === 'RELEASES_TO_CONTROLLED_WATERS' %}
                 {{ error('Do you need to report any releases to controlled waters?', 'Select the type of waste you released') }}
             {% elif route.name === 'OFFSITE_TRANSFERS_IN_WASTE_WATER' %}
-                {{ error('Do you need to report any offsite transfers in wastewater?', 'Select the type of waste you transferred') }}
+                {{ error('Do you need to report any substances transferred off site in wastewater? ', 'Select the type of substance you transferred off site') }}
             {% elif route.name === 'OVERSEAS_WASTE_TRANSFERS' %}
-                {{ error('Do you need to report any waste you transferred?', 'Select the type of waste you transferred') }}
+                {{ error('Do you need to report any overseas hazardous waste transfers?', 'Select the type of waste you transferred overseas') }}
             {% endif %}
         {% endif %}
 
         {% if route.name === 'RELEASES_TO_LAND'%}
-        <h1 class="heading-large">Add new release to land</h1>
+        <h1 class="heading-large">Add a release to land</h1>
         <p>Select a substance you need to report</p>
         {% elif route.name === 'RELEASES_TO_AIR' %}
-        <h1 class="heading-large">Add new release to air</h1>
+        <h1 class="heading-large">Add a release to air</h1>
         <p>Select a substance you need to report</p>
         {% elif route.name === 'RELEASES_TO_CONTROLLED_WATERS' %}
-        <h1 class="heading-large">Add new release to controlled waters</h1>
+        <h1 class="heading-large">Add a release to controlled waters</h1>
         <p>Select a substance you need to report</p>
         {% elif route.name === 'OFFSITE_TRANSFERS_IN_WASTE_WATER' %}
-        <h1 class="heading-large">Add new offsite transfers in waste water</h1>
+        <h1 class="heading-large">Add a substance transferred off site in wastewater</h1>
         <p>Select a substance you need to report</p>
         {% elif route.name === 'OVERSEAS_WASTE_TRANSFERS' %}
 
         <h1 class="heading-large">
             <span class="heading-secondary">Your overseas hazardous waste transfers</span>
-            What waste did you transfer?
+            What type of waste did you transfer?
         </h1>
 
         {% endif %}

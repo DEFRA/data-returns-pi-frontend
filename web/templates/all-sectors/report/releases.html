@@ -116,7 +116,7 @@
     </table>
 
     <div class="form-group">
-		<input class="link" type="submit" id="add" name="add" value="Add substance"/>
+		<input class="link" type="submit" id="add" name="add" value="Add a substance"/>
 	</div>
     <div class="form-group">
 		<input class="button" type="submit" id="continueBtn" name="continue" value="Continue"/>
@@ -137,7 +137,7 @@
     {% elif route.name === 'RELEASES_TO_CONTROLLED_WATERS' %}
     {{ form('Your releases to controlled waters', 'Check what you’re reporting', '/releases/water') }}
     {% elif route.name === 'OFFSITE_TRANSFERS_IN_WASTE_WATER' %}
-    {{ form('Your transfers of substances off-site in waste water', 'Check what you’re reporting', '/releases/waste-water') }}
+    {{ form('Your substances transferred off site in wastewater', 'Check what you’re reporting', '/releases/waste-water') }}
     {% endif %}
 </main>
 {% endblock %}

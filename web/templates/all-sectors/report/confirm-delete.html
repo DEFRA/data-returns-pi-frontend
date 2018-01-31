@@ -16,25 +16,24 @@
 <main id="content">
     <label id="page-name" hidden>confirm-delete-{{ route.pathParam }}</label>
     {% if route.name === 'RELEASES_TO_LAND' %}
-        {% set hdr = 'Confirm you want to remove the release to land of ' +  release.substance.name %}
+        {% set hdr = 'Are you sure you don’t need to report any ' +  release.substance.name + ' releases to land?' %}
         {{ form(hdr, '/releases/land') }}
     {% elif route.name === 'RELEASES_TO_AIR' %}
-        {% set hdr = 'Confirm you want to remove the release to air of ' +  release.substance.name %}
+        {% set hdr = 'Are you sure you don’t need to report any ' +  release.substance.name + ' releases to air?' %}
         {{ form(hdr, '/releases/air') }}
     {% elif route.name === 'RELEASES_TO_CONTROLLED_WATERS' %}
-        {% set hdr = 'Confirm you want to remove controlled waters of ' +  release.substance.name %}
+        {% set hdr = 'Are you sure you don’t need to report any ' +  release.substance.name + ' releases to controlled waters?' %}
         {{ form(hdr, '/releases/water') }}
     {% elif route.name === 'OFFSITE_TRANSFERS_IN_WASTE_WATER' %}
-        {% set hdr = 'Confirm you want to remove the release in waste water of ' +  release.substance.name %}
+        {% set hdr = 'Are you sure you don’t need to report any ' +  release.substance.name + ' transferred off site in wastewater?' %}
         {{ form(hdr, '/releases/waste-water') }}
     {% elif route.name === 'OFFSITE_WASTE_TRANSFERS' %}
-        {% set hdr = 'Confirm you want to remove the off-site waste transfer ' +  transfer | transferShortDesc %}
+        {% set hdr = 'Are you sure you don’t need to report this off-site waste transfer of ' +  transfer | transferShortDesc + '?' %}
         {{ form(hdr, '/transfers/off-site') }}
     {% elif route.name === 'OVERSEAS_WASTE_TRANSFERS' %}
-        {% set hdr = 'Confirm you want to remove transfer of ' +  transfer.substance.name + ' to '
+        {% set hdr = 'Are you sure you don’t need to report an overseas hazardous waste transfer for ' +  transfer.substance.name + ' to '
     + transfer.destinationAddress.businessName %}
         {{ form(hdr, '/transfers/overseas') }}
     {% endif %}
 </main>
 {% endblock %}
-
