@@ -78,7 +78,7 @@ module.exports = [
          */
         filterFunction: (transfer) => {
             const dr = transfer.wfd.disposal ? transfer.wfd.disposal.code : transfer.wfd.recovery.code;
-            return `${transfer.ewc.activity.activity} ${transfer.ewc.chapter.chapter} ${transfer.ewc.subChapter.subChapter} / ${dr}`;
+            return `${transfer.ewc.activity.name} / ${dr}`;
         }
     }
 ];

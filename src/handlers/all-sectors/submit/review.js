@@ -75,11 +75,13 @@ module.exports = {
               completed.find(d => d === r);
             });
 
-            // Determine the mode
+            /*
+             * Determine the mode - To review It must be Unsubmitted and operator OR submitted and internal
+             * user in all cases it must be complete. Otherwise the mode is view only
+             */
             const reviewMode = !!((
-                request.app.info.submission.status === Submission.submissionStatusCodes.UNSUBMITTED ||
-            (request.app.info.submission.status === Submission.submissionStatusCodes.SUBMITTED &&
-              request.app.info.user.roles.includes('SITE_OFFICER'))
+                submissionContext.submission.status === Submission.submissionStatusCodes.UNSUBMITTED ||
+                (submissionContext.submission.status === Submission.submissionStatusCodes.SUBMITTED && !isOperator)
             )) && required.filter(r => r !== 'REVIEW').every(r => completed.includes(r));
 
             if (request.method === 'get') {
@@ -177,7 +179,7 @@ module.exports = {
                     review: reviewObject,
                     review_mode: reviewMode,
                     is_operator: isOperator,
-                    submission_status: request.app.info.submission.status
+                    submission_status: submissionContext.submission.status
                 });
 
             } else {

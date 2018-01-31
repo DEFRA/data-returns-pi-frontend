@@ -8,6 +8,9 @@ const SessionHelper = require('./session-helper');
 const cacheNames = require('../lib/user-cache-policies').names;
 const Hoek = require('hoek');
 
+// Hard code year in single place
+const year = 2017;
+
 /**
  * The handler for the start page
  * @type {{start: (function(internals.Request, Function))}}
@@ -29,7 +32,7 @@ module.exports = {
             let eaIds = await MasterDataService.getEaIdsForUser(session.user.id);
 
             // We need to get the submission status for each permit and map it to the permit
-            eaIds = await Submission.addStatusToEaIds(eaIds, 2017);
+            eaIds = await Submission.addStatusToEaIds(eaIds, year);
 
             // Return the start page
             reply.view('start', { user: session.user, eaIds: eaIds, is_operator: isOperator });
@@ -59,9 +62,6 @@ module.exports = {
             // Determine if the logged in user in an operator or an internal user
             const isOperator = session.user.roles.includes('OPERATOR');
 
-            // Hard code year in single place
-            const year = 2017;
-
             const eaIdId = Number.parseInt(Object.keys(request.payload)[0]);
             const action = Object.values(request.payload)[0];
 
@@ -76,12 +76,16 @@ module.exports = {
             });
 
             // Determine the submission status
-            const submission = await Submission.getSubmissionForEaIdAndYear(eaIdId, 2017);
-            const submissionStatus = submission ? submission.status : Submission.submissionStatusCodes.UNSUBMITTED;
+            let submission = await Submission.getSubmissionForEaIdAndYear(eaIdId, year);
+
+            // Create a new submission if necessary
+            if (!submission) {
+                submission = await Submission.createSubmissionForEaIdAndYear(eaIdId, year);
+            }
 
             if (isOperator && action === 'View' && (
-                submissionStatus === Submission.submissionStatusCodes.SUBMITTED ||
-                submissionStatus === Submission.submissionStatusCodes.APPROVED)) {
+                submission.status === Submission.submissionStatusCodes.SUBMITTED ||
+                submission.status === Submission.submissionStatusCodes.APPROVED)) {
 
                 // Operator View summary
 
@@ -95,7 +99,7 @@ module.exports = {
 
                 reply.redirect('/review/confirm');
 
-            } else if (isOperator && submissionStatus === Submission.submissionStatusCodes.UNSUBMITTED && action === 'Open') {
+            } else if (isOperator && submission.status === Submission.submissionStatusCodes.UNSUBMITTED && action === 'Open') {
 
                 // Operator edit
 
@@ -106,12 +110,9 @@ module.exports = {
                 let submissionContext = await request.server.app.userCache.cache(cacheNames.SUBMISSION_CONTEXT).get(request);
 
                 if (!submissionContext) {
-                    // Initialize a permit status if not exists
+                    // Initialize the submission context on first open and assign the submission
                     submissionContext = {};
-                    submissionContext.submission = {
-                        status: Submission.submissionStatusCodes.UNSUBMITTED,
-                        statusDate: (new Date()).toISOString()
-                    };
+                    submissionContext.submission = submission;
                     submissionContext.confirmation = {};
                     submissionContext.challengeStatus = {};
                     submissionContext.valid = {};
@@ -126,25 +127,16 @@ module.exports = {
 
                 reply.redirect('/task-list');
 
-            } else if (!isOperator && submissionStatus === Submission.submissionStatusCodes.SUBMITTED && action === 'Open') {
+            } else if (!isOperator && submission.status === Submission.submissionStatusCodes.SUBMITTED && action === 'Open') {
 
                 // Internal user open - this is not yet implemented
-
-                // If there is no permit cache then read from the database layer
-                const submissionContext = await request.server.app.userCache.cache(cacheNames.SUBMISSION_CONTEXT).get(request);
-
-                if (!submissionContext) {
-                    // Rewrite the redis cache from the database
-                    await Submission.restore(request, submission.id);
-                }
-
-                reply.redirect('/task-list');
+                reply.redirect('/');
             } else if (!isOperator && eaId.status === Submission.submissionStatusCodes.UNSUBMITTED) {
 
                 // Not allowed
                 reply.redirect('/');
 
-            } else if (!isOperator && submissionStatus === Submission.submissionStatusCodes.SUBMITTED && action === 'Review') {
+            } else if (!isOperator && submission.status === Submission.submissionStatusCodes.SUBMITTED && action === 'Review') {
 
                 // Internal user review
 
@@ -157,7 +149,7 @@ module.exports = {
                 }
 
                 reply.redirect('/review/confirm');
-            } else if (!isOperator && submissionStatus === Submission.submissionStatusCodes.APPROVED && action === 'View') {
+            } else if (!isOperator && submission.status === Submission.submissionStatusCodes.APPROVED && action === 'View') {
 
                 // Internal user view
 

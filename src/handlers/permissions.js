@@ -46,7 +46,7 @@ const viewSubmission = ['/review/confirm'];
 module.exports = {
 
     /**
-     * Handler the access to any edit/view pages.
+     * Handler to regulate access to any edit/view pages.
      *
      * (1) If the submission status is un-submitted then only the permit originator may perform edit functions or
      * view the permit
@@ -108,14 +108,6 @@ module.exports = {
                         }
                     }
                 }
-
-                // These can be used anywhere in the permit specific paths listed above
-                request.app.info = {
-                    user: session.user,
-                    submission: {
-                        status: submissionStatus
-                    }
-                };
             }
 
             reply.continue();

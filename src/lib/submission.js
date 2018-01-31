@@ -66,6 +66,53 @@ const transmissionSchema = Joi.object({
 const internals = {
 
     /**
+     * Get a submission by id from the API
+     * @param id
+     * @return {Promise.<*>}
+     */
+    getSubmission: async (id) => {
+        const result = await Api.request('SUB', 'GET', `submissions/${id}`);
+        return result;
+    },
+
+    /**
+     * Append the submission status to each eaId object - used in the start page handler
+     * @param eaIds
+     * @return {Promise.<*>}
+     */
+    addStatusToEaIds: async (eaIds, year) => {
+        const submissionResponse = await internals.getSubmissionStatusForEaIdsAndYear(eaIds.map(e => e.id), year);
+
+        if (submissionResponse) {
+
+            Hoek.assert(Array.isArray(submissionResponse._embedded.submissions),
+                `Invalid submission response: ${submissionResponse}`);
+
+            const submissionStatus = submissionResponse._embedded.submissions
+                .map(s => { return { eaIdId: s.reporting_reference, status: s.status, changed: s._last_modified }; });
+
+            return eaIds.map(e => {
+                // We don't want to write the status into the map so clone
+                const newObject = Object.assign({}, e);
+                const status = submissionStatus.find(s => s.eaIdId === e.id);
+                newObject.status = status ? status.status : null;
+                newObject.changed = status ? Intl.DateTimeFormat('en-GB', {
+                    year: 'numeric',
+                    month: 'numeric',
+                    day: 'numeric',
+                    hour: 'numeric',
+                    minute: 'numeric',
+                    second: 'numeric' }).format(new Date(status.changed)) : null;
+
+                return newObject;
+            });
+
+        }
+
+        return eaIds;
+    },
+
+    /**
      * Retrieve the submission states for a given set of permit identifiers
      * @param eaIdIds - an array of the permit id's
      * @return {Promise.<void>}
@@ -96,6 +143,22 @@ const internals = {
                 return submissionResponse._embedded.submissions[0];
             }
         }
+    },
+
+    /**
+     * Create a new submission with a given reporting reference (eaIdId) and year
+     * return the submission
+     *
+     * @param eaIdId
+     * @param year
+     * @return {Promise.<void>}
+     */
+    createSubmissionForEaIdAndYear: async (eaIdId, year) => {
+        return Api.request('SUB', 'POST', 'submissions', null, {
+            applicable_year: year,
+            reporting_reference: eaIdId,
+            status: 'Unsubmitted'
+        });
     },
 
     // Create release element of message
@@ -247,11 +310,6 @@ const internals = {
         await request.server.app.userCache.cache(cacheNames.SUBMISSION_CONTEXT).drop(request);
     },
 
-    getSubmission: async (id) => {
-        const result = await Api.request('SUB', 'GET', `submissions/${id}`);
-        return result;
-    },
-
     getReleasesToControlledWater: async (id) => {
         const result = await Api.request('SUB', 'GET', `submissions/${id}/releasesToControlledWater`);
         return result._embedded.releasesToControlledWater;
@@ -395,6 +453,52 @@ const internals = {
     },
 
     /**
+     * Fetch the current submission expanding out all of the children
+     * @param request
+     * @return {Promise.<void>}
+     */
+    fetchSubmission: async (request) => {
+        const { submission } = await request.server.app.userCache.cache(cacheNames.SUBMISSION_CONTEXT).get(request);
+
+        const result = Object.assign({}, submission);
+        delete result._links;
+
+        const fetches = [ 'releasesToAir', 'releasesToLand', 'releasesToWasteWater',
+            'releasesToControlledWater', 'offsiteWasteTransfers' ];
+
+        await Promise.all(fetches.map(async fetch => {
+            const response = await Api.request('SUB', 'GET', `submissions/${submission.id}/${fetch}`);
+            result[fetch] = response._embedded[fetch];
+        }));
+
+        return result;
+    },
+
+    /**
+     * Applies an object of asynchronous functions to apply to each route
+     * @param request
+     * @param routes
+     * @param func
+     * @return {Promise.<void>}
+     */
+    applyToRoutes: async (request, routes, submission, func) => {
+        const submissionContext = await request.server.app.userCache.cache(cacheNames.SUBMISSION_CONTEXT).get(request);
+        const results = {};
+        for (const route of routes) {
+            if (func[route]) {
+                // We need to se the current task in the eaId
+                submissionContext.currentTask = route;
+                await request.server.app.userCache.cache(cacheNames.SUBMISSION_CONTEXT).set(request, submissionContext);
+                const task = await request.server.app.userCache.cache(cacheNames.TASK_CONTEXT).get(request);
+                results[route] = await func[route](task, submission);
+            } else {
+                results[route] = null;
+            }
+        }
+        return results;
+    },
+
+    /**
      * Restore the redis cache from the submissions database
      * @param request
      * @param eaId
@@ -440,49 +544,19 @@ const internals = {
             logger.error(err);
             throw err;
         }
-    },
-
-    /**
-     * Append the submission status to each permit object
-     * @param eaIds
-     * @return {Promise.<*>}
-     */
-    addStatusToEaIds: async (eaIds, year) => {
-        // We need to get the submission status and date for each permit and map it to the permit
-        const submissionResponse = await internals.getSubmissionStatusForEaIdsAndYear(eaIds.map(e => e.id), year);
-
-        if (submissionResponse) {
-
-            Hoek.assert(Array.isArray(submissionResponse._embedded.submissions),
-                `Invalid submission response: ${submissionResponse}`);
-
-            const submissionStatus = submissionResponse._embedded.submissions
-                .map(s => { return { eaIdId: s.reporting_reference, status: s.status, changed: s._last_modified }; });
-
-            return eaIds.map(e => {
-                // We don't want to write the status into the map so clone
-                const newObject = Object.assign({}, e);
-                const status = submissionStatus.find(s => s.eaIdId === e.id);
-                newObject.status = status ? status.status : submissionStatusCodes.UNSUBMITTED;
-                newObject.changed = status ? Intl.DateTimeFormat('en-GB', {
-                    year: 'numeric',
-                    month: 'numeric',
-                    day: 'numeric',
-                    hour: 'numeric',
-                    minute: 'numeric',
-                    second: 'numeric' }).format(new Date(status.changed)) : null;
-
-                return newObject;
-            });
-
-        }
-
-        return eaIds;
     }
 
 };
 
 module.exports = {
+    // Submission status by eaId/year
+    addStatusToEaIds: internals.addStatusToEaIds,
+
+    // Fetch a submission
+    getSubmissionForEaIdAndYear: internals.getSubmissionForEaIdAndYear,
+
+    // Create a new submission
+    createSubmissionForEaIdAndYear: internals.createSubmissionForEaIdAndYear,
 
     // Expose redis cache restore
     restore: internals.restore,
@@ -492,12 +566,6 @@ module.exports = {
 
     // The submission status codes
     submissionStatusCodes: submissionStatusCodes,
-
-    // Needed to get the submission
-    getSubmissionForEaIdAndYear: internals.getSubmissionForEaIdAndYear,
-
-    // Need for permit summery
-    addStatusToEaIds: internals.addStatusToEaIds,
 
     /**
      * Set the status on a given submission
@@ -525,31 +593,51 @@ module.exports = {
      * @return {Promise.<void>}
      */
     submit: async (request) => {
-        // Create the transmission message
-        const message = await internals.createSubmissionMessage(request);
+        // Fetch submission with childern from the PI submissions API
+        const submission = await internals.fetchSubmission(request);
 
-        // Log message in debug mode
-        logger.debug('Submission message: ' + JSON.stringify(message, null, 2));
+        // Submission context
+        const submissionContext = await request.server.app.userCache.cache(cacheNames.SUBMISSION_CONTEXT).get(request);
+        const { challengeStatus, valid, completed } = statusHelper(submissionContext);
 
-        // Validate that we have a properly formed submission message
-        Joi.assert(message, transmissionSchema);
+        // Get the required routes
+        const routes = required.filter(r => {
+            return challengeStatus.find(c => c === r) &&
+          valid.find(v => v === r) &&
+          completed.find(d => d === r);
+        });
 
-        if (process.env.NODE_ENV !== 'localtest') {
+        const result = await internals.applyToRoutes(request, routes, submission, {
+            RELEASES_TO_LAND: async (task, submission) => {
 
-            // Submit the validated message to the API
-            if (request.app.info.submission.status === submissionStatusCodes.UNSUBMITTED) {
-                await Api.request('SUB', 'POST', 'submissions', null, message);
-            } else if (request.app.info.submission.status === submissionStatusCodes.SUBMITTED) {
-                const eaId = await request.server.app.userCache.cache(cacheNames.USER_CONTEXT).get(request);
-                const submission = await internals.getSubmissionForEaIdAndYear(eaId.id, 2017);
-                await Api.request('SUB', 'PUT', `submissions/${submission.id}`, null, message);
-            } else {
-                throw new Error('Illegal submission status: ' + request.app.info.submission.status);
-            }
+                let releasesToAir = [];
 
-            // Remove the current cache entries for this submission
-            await internals.remove(request);
-        }
+                if (task.releases) {
+                    releasesToAir = releasesToAir || [];
+                    for (const release of Object.keys(task.releases)) {
+                        releasesToAir.push({
+                            submission: `submissions/${submission.id}`,
+                            releasesToAir: await internals.releasesObj(task, release)
+                        });
+                    }
+                }
+
+                await Promise.all(releasesToAir.map(async release => {
+                    await Api.request('SUB', 'POST', `submissions/${submission.id}/releasesToAir`, release);
+                }));
+            },
+
+            RELEASES_TO_AIR: async (task, submission) => {
+                console.log(task);
+                return 'bacons chrisp';
+            },
+
+            RELEASES_TO_CONTROLLED_WATERS: async (task, submission) => {},
+            OFFSITE_TRANSFERS_IN_WASTE_WATER: async (task, submission) => {},
+            OFFSITE_WASTE_TRANSFERS: async (task, submission) => {}
+        });
+
+        console.log(JSON.stringify(result, null, 4));
     }
 
 };

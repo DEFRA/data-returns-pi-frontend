@@ -24,17 +24,22 @@
 	                {% for eaId in eaIds %}
 					<tr>
                         <td>{{ eaId.name }}</td>
-
                         <td>{{ eaId.site.name }}</td>
 
-                        {% if not eaId.status or eaId.status === 'Unsubmitted' %}
-                            <td>Open</td>
+                        {% if eaId.status %}
+
+                            {% if eaId.status === 'Unsubmitted' %}
+                                <td>Open</td>
+                            {% else %}
+                                <td class="numeric" id="task-status">
+                                    <div class="task-status-banner">
+                                        <strong class="task-finished">{{ eaId.status }}</strong>
+                                    </div>
+                                </td>
+                            {% endif %}
+
                         {% else %}
-                            <td class="numeric" id="task-status">
-                                <div class="task-status-banner">
-                                    <strong class="task-finished">{{ eaId.status }}</strong>
-                                </div>
-                            </td>
+                            <td></td>
                         {% endif %}
 
                         <td class="nobreak">{{ eaId.changed }}</td>
