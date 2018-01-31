@@ -76,11 +76,15 @@ module.exports = {
             });
 
             // Determine the submission status
-            let submission = await Submission.getSubmissionForEaIdAndYear(eaIdId, year);
-
-            // Create a new submission if necessary
-            if (!submission) {
-                submission = await Submission.createSubmissionForEaIdAndYear(eaIdId, year);
+            let submission;
+            if (process.env.NODE_ENV === 'localtest') {
+                submission = {};
+                submission.id = 1;
+                submission.status = Submission.submissionStatusCodes.UNSUBMITTED;
+            } else {
+                // Get a submission or create a new one
+                submission = await Submission.getSubmissionForEaIdAndYear(eaIdId, year) ||
+                  await Submission.createSubmissionForEaIdAndYear(eaIdId, year);
             }
 
             if (isOperator && action === 'View' && (
@@ -131,7 +135,7 @@ module.exports = {
 
                 // Internal user open - this is not yet implemented
                 reply.redirect('/');
-            } else if (!isOperator && eaId.status === Submission.submissionStatusCodes.UNSUBMITTED) {
+            } else if (!isOperator && submission.status === Submission.submissionStatusCodes.UNSUBMITTED) {
 
                 // Not allowed
                 reply.redirect('/');
@@ -144,7 +148,7 @@ module.exports = {
                 const submissionContext = await request.server.app.userCache.cache(cacheNames.SUBMISSION_CONTEXT).get(request);
 
                 if (!submissionContext) {
-                // Rewrite the redis cache from the database
+                    // Rewrite the redis cache from the database
                     await Submission.restore(request, submission.id);
                 }
 

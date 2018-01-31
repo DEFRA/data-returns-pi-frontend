@@ -22,7 +22,8 @@ module.exports = {
                     pathParam: 'air',
                     title: 'Releases to air',
                     page: '/releases/air',
-                    required: true
+                    required: true,
+                    message: { fetch: 'releasesToAir' }
                 },
 
                 {
@@ -30,7 +31,8 @@ module.exports = {
                     pathParam: 'land',
                     title: 'Releases to land',
                     page: '/releases/land',
-                    required: true
+                    required: true,
+                    message: { fetch: 'releasesToLand' }
                 },
 
                 {
@@ -38,7 +40,8 @@ module.exports = {
                     pathParam: 'water',
                     title: 'Releases to controlled waters',
                     page: '/releases/water',
-                    required: true
+                    required: true,
+                    message: { fetch: 'releasesToControlledWater' }
                 },
 
                 {
@@ -46,7 +49,8 @@ module.exports = {
                     pathParam: 'waste-water',
                     title: 'Off-site transfers in waste water',
                     page: '/releases/waste-water',
-                    required: true
+                    required: true,
+                    message: { fetch: 'releasesToWasteWater' }
                 },
 
                 {
@@ -54,7 +58,8 @@ module.exports = {
                     pathParam: 'off-site',
                     title: 'Off-site waste transfers',
                     page: '/transfers/off-site',
-                    required: true
+                    required: true,
+                    message: { fetch: 'offsiteWasteTransfers' }
                 }
 
                 /*

@@ -6,7 +6,7 @@ const cacheHelper = require('../common').cacheHelper;
 const cacheNames = require('../../../lib/user-cache-policies').names;
 const CacheKeyError = require('../../../lib/user-cache-policies').CacheKeyError;
 const allSectorsTaskList = require('../../../model/all-sectors/task-list');
-const required = require('../../../service/task-list').required(allSectorsTaskList);
+const required = require('../../../service/task-list').required(allSectorsTaskList).map(n => n.name);
 const isNumeric = require('../../../lib/utils').isNumeric;
 const isBrt = require('../../../lib/validator').isBrt;
 const setConfirmation = require('../common').setConfirmation;

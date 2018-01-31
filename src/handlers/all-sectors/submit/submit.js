@@ -7,7 +7,7 @@ const logger = require('../../../lib/logging').logger;
 const Submission = require('../../../lib/submission');
 const CacheKeyError = require('../../../lib/user-cache-policies').CacheKeyError;
 const allSectorsTaskList = require('../../../model/all-sectors/task-list');
-const required = require('../../../service/task-list').required(allSectorsTaskList);
+const required = require('../../../service/task-list').required(allSectorsTaskList).map(n => n.name);
 const cacheHelper = require('../common').cacheHelper;
 const setConfirmation = require('../common').setConfirmation;
 
@@ -20,12 +20,11 @@ module.exports = {
      */
     submit: async (request, reply) => {
         try {
-            const { route, submissionContext } = await cacheHelper(request, 'submit');
+            const { submissionContext } = await cacheHelper(request, 'submit');
 
             if (request.method === 'get') {
                 const completed = Object.keys(submissionContext.completed).filter(p => submissionContext.completed[p]);
                 const canSubmit = required.every(r => { return completed.find(c => c === r); });
-                await setConfirmation(request, submissionContext, route, false);
                 reply.view('all-sectors/submit/submit', { canSubmit: canSubmit });
             } else {
                 // We have confirmed the submission so send data to the API

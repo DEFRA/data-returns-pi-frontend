@@ -61,7 +61,11 @@
                                 {% endif %}
                             {% endif %}
                         {% else %}
-                            <td><input class="link" type="submit" id="t-open" name="{{ eaId.id }}" value="Open"></td>
+                            {% if is_operator %}
+                                <td><input class="link" type="submit" id="t-open" name="{{ eaId.id }}" value="Open"></td>
+                            {% else %}
+                                <td></td>
+                            {% endif %}
                         {% endif %}
                     </tr>
 	                {% endfor %}

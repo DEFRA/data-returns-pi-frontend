@@ -1,7 +1,7 @@
 'use strict';
 
 const allSectorsTaskList = require('../../src/model/all-sectors/task-list');
-const required = require('../../src/service/task-list').required(allSectorsTaskList);
+const required = require('../../src/service/task-list').required(allSectorsTaskList).map(n => n.name);
 
 const Common = require('./common');
 
