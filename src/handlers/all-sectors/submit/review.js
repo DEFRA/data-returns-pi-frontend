@@ -190,7 +190,13 @@ module.exports = {
                 } else if (!reviewMode && isOperator) {
                     reply.redirect('/task-list');
                 } else if (reviewMode && !isOperator) {
-                    await Submission.setStatusForSubmission(request, 'Approved');
+
+                    if (Object.keys(request.payload).includes('notApprove')) {
+                        await Submission.setStatusForSubmission(request, 'Unsubmitted');
+                    } else {
+                        await Submission.setStatusForSubmission(request, 'Approved');
+                    }
+
                     reply.redirect('/');
                 } else {
                     reply.redirect('/');

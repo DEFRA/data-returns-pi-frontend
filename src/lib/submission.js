@@ -645,7 +645,7 @@ const internals = {
     restore: async (request, id) => {
         try {
             const submission = await internals.getSubmission(id);
-            Hoek.assert(['Submitted', 'Approved'].includes(submission.status), `Cannot restore submission: ${id}`);
+            Hoek.assert(['Unsubmitted', 'Submitted', 'Approved'].includes(submission.status), `Cannot restore submission: ${id}`);
 
             // Releases
             const releasesToAir = await internals.getReleasesToAir(id);
@@ -713,7 +713,7 @@ module.exports = {
     setStatusForSubmission: async (request, status) => {
         try {
 
-            Hoek.assert(['Submitted', 'Approved'].includes(status), `Unknown status: ${status}`);
+            Hoek.assert(['Unsubmitted', 'Submitted', 'Approved'].includes(status), `Unknown status: ${status}`);
 
             const { eaId, year } = await request.server.app.userCache.cache(cacheNames.USER_CONTEXT).get(request);
             const submission = await internals.getSubmissionForEaIdAndYear(eaId.id, year);

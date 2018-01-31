@@ -107,10 +107,7 @@ module.exports = {
 
                 // Operator edit
 
-                /*
-                 * The permit status is object with containing the statuses and other meta-data
-                 * for each stage within the user journey for a given (current) permit
-                 */
+                await Submission.restore(request, submission.id);
                 let submissionContext = await request.server.app.userCache.cache(cacheNames.SUBMISSION_CONTEXT).get(request);
 
                 if (!submissionContext) {
