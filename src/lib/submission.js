@@ -60,13 +60,7 @@ const internals = {
                 const newObject = Object.assign({}, e);
                 const status = submissionStatus.find(s => s.eaIdId === e.id);
                 newObject.status = status ? status.status : null;
-                newObject.changed = status ? Intl.DateTimeFormat('en-GB', {
-                    year: 'numeric',
-                    month: 'numeric',
-                    day: 'numeric',
-                    hour: 'numeric',
-                    minute: 'numeric',
-                    second: 'numeric' }).format(new Date(status.changed)) : null;
+                newObject.changed = status ? new Date().toLocaleString('en-GB') : null;
 
                 return newObject;
             });
@@ -553,22 +547,6 @@ const internals = {
     },
 
     /**
-     * Locate a transfer in an array
-     * @param transfers
-     * @param transfer
-     * @return {number}
-     */
-    transferHelper: (transfers, transfer) => {
-        return transfers.findIndex(t =>
-            t.ewc.activityId === transfer.ewc.activityId &&
-        t.ewc.chapterId === transfer.ewc.chapterId &&
-        t.ewc.subChapterId === transfer.ewc.subChapterId &&
-        t.wfd.disposalId === transfer.wfd.disposalId &&
-        t.wfd.recoveryId === transfer.wfd.recoveryId
-        );
-    },
-
-    /**
      * Release route function as in the func argument of applyToRoutes. It determines the set of API operations
      * required for a given route / task and applies them.
      * @param task - the cache task object
@@ -585,6 +563,7 @@ const internals = {
             wfd_recovery_id: Joi.forbidden(),
             tonnage: Joi.number()
         }), Joi.object({
+            submission: Joi.string().uri({ allowRelative: false }),
             ewc_activity_id: Joi.number().integer(),
             wfd_disposal_id: Joi.forbidden(),
             wfd_recovery_id: Joi.number().integer().required(),
@@ -596,11 +575,15 @@ const internals = {
         const posts = [];
         const puts = [];
 
+        const transferEquals = (a, b) => {
+            return a.ewc_activity_id === b.ewc_activity_id && (a.wfd_recovery_id === b.wfd_recovery_id ||
+                a.wfd_disposal_id === b.wfd_disposal_id);
+        };
+
         if (task.transfers) {
             for (const transfer of task.transfers) {
                 const apiObj = await internals.transferObj(transfer);
-                const transferObj = apiArr.find(a => (a.ewc_activity_id === apiObj.ewc_activity_id) &&
-                    (a.wfd_disposal_id === apiObj.wfd_disposal_id || a.wfd_recovery_id === apiObj.wfd_recovery_id));
+                const transferObj = apiArr.find(a => transferEquals(a, apiObj));
 
                 if (transferObj) {
                     // Updating PUT
@@ -620,8 +603,8 @@ const internals = {
         });
 
         const tasks = task.transfers.map(t => internals.transferObj(t));
-        const deletes = apiArr.filter(a => tasks.find(t => (a.ewc_activity_id === t.ewc_activity_id) &&
-          (a.wfd_disposal_id === t.wfd_disposal_id || a.wfd_recovery_id === t.wfd_recovery_id)));
+
+        const deletes = apiArr.filter(a => !tasks.find(t => transferEquals(a, t)));
 
         await Promise.all(deletes.map(async del => {
             await Api.request('SUB', 'DELETE', `${name}/${del.id}`, null);
@@ -666,16 +649,12 @@ const internals = {
             const submissionContext = await request.server.app.userCache.cache(cacheNames.SUBMISSION_CONTEXT).get(request);
 
             ['REVIEW', 'SUBMIT'].forEach(e => {
-                submissionContext.confirmation[e] = true;
-                submissionContext.challengeStatus[e] = true;
+                submissionContext.confirmation[e] = false;
+                submissionContext.challengeStatus[e] = false;
                 setCompletedStatus(submissionContext, e);
             });
 
-            submissionContext.submission = {
-                id: submission.id,
-                status: submission.status,
-                statusDate: (new Date(submission._last_modified)).toISOString()
-            };
+            submissionContext.submission = submission;
 
             await request.server.app.userCache.cache(cacheNames.SUBMISSION_CONTEXT).set(request, submissionContext);
         } catch (err) {

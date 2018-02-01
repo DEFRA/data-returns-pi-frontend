@@ -69,7 +69,6 @@ module.exports = {
              */
 
             if (editSubmission.concat(viewSubmission).includes(request.path)) {
-                const session = await SessionHelper.get(request, request.server.app.sid);
 
                 // Get the chosen permit
                 const userContext = await request.server.app.userCache.cache(cacheNames.USER_CONTEXT).get(request);
@@ -102,11 +101,13 @@ module.exports = {
                         reply.redirect('/');
                     }
                 } else {
-                    if (submissionStatus === Submission.submissionStatusCodes.UNSUBMITTED) {
-                        if (!isOperator) {
-                            return reply.redirect('/');
-                        }
-                    }
+                    /*
+                     *if (submissionStatus === Submission.submissionStatusCodes.UNSUBMITTED) {
+                     *    if (!isOperator) {
+                     *        return reply.redirect('/');
+                     *    }
+                     *}
+                     */
                 }
             }
 

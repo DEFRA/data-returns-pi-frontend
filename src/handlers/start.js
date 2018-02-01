@@ -16,6 +16,49 @@ const year = 2017;
  * @type {{start: (function(internals.Request, Function))}}
  *
  */
+
+const internals = {
+
+    cacheSynchronize: async (request, eaIdId, year) => {
+        let submissionContext = await request.server.app.userCache.cache(cacheNames.SUBMISSION_CONTEXT).get(request);
+        let submission = await Submission.getSubmissionForEaIdAndYear(eaIdId, year);
+
+        // if there is no submission then create one and create the cache with the same timestamp
+        if (!submission) {
+            submission = await Submission.createSubmissionForEaIdAndYear(eaIdId, year);
+            submissionContext = {};
+            submissionContext.submission = submission;
+            submissionContext.confirmation = {};
+            submissionContext.challengeStatus = {};
+            submissionContext.valid = {};
+            submissionContext.completed = {};
+            await request.server.app.userCache.cache(cacheNames.SUBMISSION_CONTEXT).set(request, submissionContext);
+            return submission;
+        }
+
+        // If there is no submission context then restore from the database
+        if (!submissionContext) {
+            await Submission.restore(request, submission.id);
+            return submission;
+        }
+
+        const cacheDate = new Date(submissionContext._last_modified);
+        const submissionDate = new Date(submission._last_modified);
+
+        // If the submission is newer than the cache then restore the cache
+        if (submissionDate > cacheDate) {
+            await Submission.restore(request, submission.id);
+            return submission;
+        }
+
+        // If the cache is newer then the submission then do nothing - we may be editing. We always reset current task
+        delete submissionContext.currentTask;
+        await request.server.app.userCache.cache(cacheNames.SUBMISSION_CONTEXT).set(request, submissionContext);
+
+        return submission;
+    }
+};
+
 module.exports = {
     /**
      * Start page handler
@@ -78,91 +121,61 @@ module.exports = {
             // Determine the submission status
             let submission;
             if (process.env.NODE_ENV === 'localtest') {
-                submission = {};
-                submission.id = 1;
-                submission.status = Submission.submissionStatusCodes.UNSUBMITTED;
+                submission = {
+                    id: 1, status: Submission.submissionStatusCodes.UNSUBMITTED
+                };
+                const submissionContext = {};
+                submissionContext.submission = submission;
+                submissionContext.confirmation = {};
+                submissionContext.challengeStatus = {};
+                submissionContext.valid = {};
+                submissionContext.completed = {};
+                await request.server.app.userCache.cache(cacheNames.SUBMISSION_CONTEXT).set(request, submissionContext);
             } else {
-                // Get a submission or create a new one
-                submission = await Submission.getSubmissionForEaIdAndYear(eaIdId, year) ||
-                  await Submission.createSubmissionForEaIdAndYear(eaIdId, year);
+                submission = await internals.cacheSynchronize(request, eaIdId, year);
             }
 
-            if (isOperator && action === 'View' && (
-                submission.status === Submission.submissionStatusCodes.SUBMITTED ||
-                submission.status === Submission.submissionStatusCodes.APPROVED)) {
+            if (isOperator) {
 
-                // Operator View summary
+                // Operator actions
+                if (action === 'View') {
+                    if (submission.status === Submission.submissionStatusCodes.SUBMITTED ||
+                        submission.status === Submission.submissionStatusCodes.APPROVED) {
 
-                // If there is no permit cache then read from the database layer
-                const submissionContext = await request.server.app.userCache.cache(cacheNames.SUBMISSION_CONTEXT).get(request);
+                        reply.redirect('/review/confirm');
+                    } else {
+                        reply.redirect('/');
+                    }
 
-                if (!submissionContext) {
-                    // Rewrite the redis cache from the database
-                    await Submission.restore(request, submission.id);
+                } else if (action === 'Review') {
+                    if (submission.status === Submission.submissionStatusCodes.SUBMITTED ||
+                        submission.status === Submission.submissionStatusCodes.APPROVED) {
+
+                        reply.redirect('/review/confirm');
+                    } else {
+                        reply.redirect('/');
+                    }
+
+                } else if (action === 'Open') {
+                    if (submission.status === Submission.submissionStatusCodes.UNSUBMITTED) {
+
+                        reply.redirect('/task-list');
+                    } else {
+                        reply.redirect('/');
+                    }
                 }
 
-                reply.redirect('/review/confirm');
+            } else {
 
-            } else if (isOperator && submission.status === Submission.submissionStatusCodes.UNSUBMITTED && action === 'Open') {
-
-                // Operator edit
-
-                await Submission.restore(request, submission.id);
-                let submissionContext = await request.server.app.userCache.cache(cacheNames.SUBMISSION_CONTEXT).get(request);
-
-                if (!submissionContext) {
-                    // Initialize the submission context on first open and assign the submission
-                    submissionContext = {};
-                    submissionContext.submission = submission;
-                    submissionContext.confirmation = {};
-                    submissionContext.challengeStatus = {};
-                    submissionContext.valid = {};
-                    submissionContext.completed = {};
-                } else {
-                    // Always unset the current task
-                    delete submissionContext.currentTask;
+                // Internal user actions
+                if (action === 'View') {
+                    reply.redirect('/review/confirm');
+                } else if (action === 'Review') {
+                    reply.redirect('/review/confirm');
+                } else if (action === 'Open') {
+                    // Not yet allowed
+                    reply.redirect('/');
                 }
-
-                // Save the permit status cache
-                await request.server.app.userCache.cache(cacheNames.SUBMISSION_CONTEXT).set(request, submissionContext);
-
-                reply.redirect('/task-list');
-
-            } else if (!isOperator && submission.status === Submission.submissionStatusCodes.SUBMITTED && action === 'Open') {
-
-                // Internal user open - this is not yet implemented
-                reply.redirect('/');
-            } else if (!isOperator && submission.status === Submission.submissionStatusCodes.UNSUBMITTED) {
-
-                // Not allowed
-                reply.redirect('/');
-
-            } else if (!isOperator && submission.status === Submission.submissionStatusCodes.SUBMITTED && action === 'Review') {
-
-                // Internal user review
-
-                // If there is no permit cache then read from the database layer
-                const submissionContext = await request.server.app.userCache.cache(cacheNames.SUBMISSION_CONTEXT).get(request);
-
-                if (!submissionContext) {
-                    // Rewrite the redis cache from the database
-                    await Submission.restore(request, submission.id);
-                }
-
-                reply.redirect('/review/confirm');
-            } else if (!isOperator && submission.status === Submission.submissionStatusCodes.APPROVED && action === 'View') {
-
-                // Internal user view
-
-                // If there is no permit cache then read from the database layer
-                const submissionContext = await request.server.app.userCache.cache(cacheNames.SUBMISSION_CONTEXT).get(request);
-
-                if (!submissionContext) {
-                    // Rewrite the redis cache from the database
-                    await Submission.restore(request, submission.id);
-                }
-
-                reply.redirect('/review/confirm');
             }
 
         } catch (err) {

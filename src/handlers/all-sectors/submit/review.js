@@ -75,14 +75,33 @@ module.exports = {
               completed.find(d => d === r);
             });
 
-            /*
-             * Determine the mode - To review It must be Unsubmitted and operator OR submitted and internal
-             * user in all cases it must be complete. Otherwise the mode is view only
-             */
-            const reviewMode = !!((
-                submissionContext.submission.status === Submission.submissionStatusCodes.UNSUBMITTED ||
-                (submissionContext.submission.status === Submission.submissionStatusCodes.SUBMITTED && !isOperator)
-            )) && required.filter(r => r !== 'REVIEW').every(r => completed.includes(r));
+            // Determine teh mode View / Review
+            const reviewMode = ((submissionContext, required) => {
+                if (isOperator) {
+                    if (!required.filter(r => r !== 'REVIEW').every(r => completed.includes(r))) {
+                        return false;
+                    }
+
+                    if (submissionContext.submission.status === Submission.submissionStatusCodes.SUBMITTED ||
+                        submissionContext.submission.status === Submission.submissionStatusCodes.APPROVED
+                    ) {
+                        return false;
+                    }
+
+                    return true;
+                } else {
+                    if (!required.filter(r => r !== 'REVIEW').every(r => completed.includes(r))) {
+                        return false;
+                    }
+
+                    if (submissionContext.submission.status === Submission.submissionStatusCodes.UNSUBMITTED ||
+                    submissionContext.submission.status === Submission.submissionStatusCodes.APPROVED) {
+                        return false;
+                    }
+
+                    return true;
+                }
+            })(submissionContext, required);
 
             if (request.method === 'get') {
                 await setConfirmation(request, submissionContext, route, false);

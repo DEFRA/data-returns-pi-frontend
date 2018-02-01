@@ -59,7 +59,7 @@ internals.startCache = function (provider, policies) {
         internals.client.start((err) => {
 
             if (err) {
-                reject('Failed to connect to user-cache instance' + err);
+                reject(new Error('Failed to connect to user-cache instance' + err));
             }
 
             logger.info('Started user-cache instance');
@@ -90,6 +90,7 @@ const getter = async (policy, key) => {
  */
 const setter = async (policy, key, value) => {
     return new Promise((resolve, reject) => {
+        value._last_modified = new Date();
         policy.set(key, value, 0, (err) => {
             if (err) {
                 reject(err);
