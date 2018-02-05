@@ -1,22 +1,32 @@
 @Library('defra-shared') _
 
+def buildProperties
+node {
+    buildProperties = loadProperties.fromGit('git@gitlab-dev.aws-int.defra.cloud:data-returns/ci.git', 'properties/build/pi_frontend.properties', '*/master')
+}
+
 pipeline {
-    agent { label 'POI-JENKINS-SLAVE' }
+    agent { label buildProperties.jenkins_slave }
     stages {
         stage('Create docker image') {
             steps {
                 script {
-                    dockerImage = docker.build('defra/data_returns_pi_frontend')
+                    dockerImage = docker.build(buildProperties.ecr_repository_name)
                 }
             }
         }
         stage('Push docker image') {
             steps {
                 script {
-                    docker.withRegistry('https://989140231452.dkr.ecr.eu-west-1.amazonaws.com', 'ecr:eu-west-1:sandpit-admin') {
+                    docker.withRegistry(buildProperties.ecr_registry_url, buildProperties.ecr_credentials_id) {
                         dockerImage.push(generateBuildTag())
                     }
                 }
+            }
+        }
+        stage("Cleanup") {
+            steps {
+                cleanWs cleanWhenFailure: false
             }
         }
     }
