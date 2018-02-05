@@ -1,24 +1,25 @@
 @Library('defra-shared') _
+@Library('data-returns-ci')
 
 def buildProperties
 node {
-    buildProperties = loadProperties.fromGit('git@gitlab-dev.aws-int.defra.cloud:data-returns/ci.git', 'properties/build/pi_frontend.properties', '*/master')
+    buildProperties = buildConfiguration('pi_frontend.groovy')
 }
 
 pipeline {
-    agent { label buildProperties.jenkins_slave }
+    agent { label buildProperties['jenkins.slave'] }
     stages {
         stage('Create docker image') {
             steps {
                 script {
-                    dockerImage = docker.build(buildProperties.ecr_repository_name)
+                    dockerImage = docker.build(buildProperties['ecr.repository.name'])
                 }
             }
         }
         stage('Push docker image') {
             steps {
                 script {
-                    docker.withRegistry(buildProperties.ecr_registry_url, buildProperties.ecr_credentials_id) {
+                    docker.withRegistry(buildProperties['ecr.registry.url'], buildProperties['ecr.registry.credentials']) {
                         dockerImage.push(generateBuildTag())
                     }
                 }
