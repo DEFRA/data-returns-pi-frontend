@@ -56,7 +56,7 @@
                 {% else %}
                 <td class="td-total">
                     <label class="form-label visually-hidden" for="value">Total</label>
-                    <input class="form-control" id="value" name="value-{{ loop.index0 }}" type="number" step="0.001" value="{{ transfer.value }}"> tonnes
+                    <input class="form-control" id="value" name="value-{{ loop.index0 }}" novalidate value="{{ transfer.value }}"> tonnes
                 </td>
                 {% endif %}
 

@@ -528,7 +528,7 @@ const internals = {
             Joi.assert(r, releaseSchema, 'Badly formed releases message: ' + JSON.stringify(r));
         });
 
-        // Objects exists in the api but not in the task cache are removed
+        // Objects existing in the api but not in the task cache are removed
         const deletes = apiArr.filter(a => !Object.keys(task.releases)
             .map(r => Number.parseInt(r)).includes(a.substance_id));
 
