@@ -25,13 +25,13 @@ experiment('User cache', () => {
     test('Test basic cache usage', async () => {
         try {
 
-            const value = '150 runs';
+            const value = { foo: 'bar' };
 
             await UserCache.cache(TEST_CACHE).set('9045', value);
 
             const value2 = await UserCache.cache(TEST_CACHE).get('9045');
 
-            expect(value).to.equal(value2);
+            expect(value.foo).to.equal(value2.foo);
 
             await UserCache.cache(TEST_CACHE).drop('9045');
 
