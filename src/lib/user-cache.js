@@ -24,8 +24,11 @@ internals.policies = {};
  * to generate a key prefix.
  * @return {Promise} - a promise fulfilled when the cache is connected
  */
-internals.startCache = function (provider, policies) {
-    return new Promise((resolve, reject) => {
+internals.startCache = async (provider, policies) => {
+
+    try {
+
+        logger.info('Starting user-cache instance');
 
         // Specify a segment of the redis cache
         const options = {
@@ -39,7 +42,7 @@ internals.startCache = function (provider, policies) {
             expiresIn: 1000 * 60 * 60 * 24 * 90
         };
 
-        if (internals.client) {
+        if (internals.client && internals.client.isReady()) {
             throw new Error('The user cache provider is already initialized');
         }
 
@@ -51,22 +54,18 @@ internals.startCache = function (provider, policies) {
         }
 
         for (const policy of policies) {
+            logger.info('Creating policy: ' + policy.name);
             internals.policies[policy.name] = {};
             internals.policies[policy.name].policy = new Catbox.Policy(config, internals.client, policy.name);
             internals.policies[policy.name].keyFunc = policy.keyFunc;
         }
 
-        internals.client.start((err) => {
+        await internals.client.start();
+        logger.info('Started user-cache instance');
 
-            if (err) {
-                reject(new Error('Failed to connect to user-cache instance' + err));
-            }
-
-            logger.info('Started user-cache instance');
-            resolve();
-
-        });
-    });
+    } catch (err) {
+        throw new Error('Failed to connect to user-cache instance' + err);
+    }
 };
 
 /**
@@ -75,60 +74,42 @@ internals.startCache = function (provider, policies) {
  * @returns {Promise}
  */
 const getter = async (policy, key) => {
-    return new Promise((resolve, reject) => {
-        policy.get(key, (err, cached) => {
-            if (err) {
-                reject(err);
-            }
-            resolve(cached);
-        });
-    });
+    return policy.get(key);
 };
 
 /**
  * Promisfy the method to set session information
  */
 const setter = async (policy, key, value) => {
-    return new Promise((resolve, reject) => {
-        value._last_modified = new Date();
-        policy.set(key, value, 0, (err) => {
-            if (err) {
-                reject(err);
-            }
-            resolve();
-        });
-    });
+    value._last_modified = new Date();
+    await policy.set(key, value, 0);
 };
 
 /**
  * Promisfy the method to drop session information
  */
 const dropper = async (policy, key) => {
-    return new Promise((resolve, reject) => {
-        policy.drop(key, (err) => {
-            if (err) {
-                reject(err);
-            }
-            resolve();
-        });
-    });
+    await policy.drop(key);
 };
 
 module.exports = {
     /**
      * Start the user cache engin
      */
-    start: async (provider, policies) => { return internals.startCache(provider, policies); },
+    start: async (provider, policies) => {
+        return internals.startCache(provider, policies);
+    },
 
     /**
      * Stop the user cache engine
      */
-    stop: () => {
+    stop: async () => {
         internals.policies = {};
-        internals.client.stop();
-        delete internals.client;
+        await internals.client.stop();
         logger.info('Stopped user-cache instance');
     },
+
+    isReady: () => { return internals.client.isReady(); },
 
     /**
      * Return a given cache policy object which contains the getter and setter methods

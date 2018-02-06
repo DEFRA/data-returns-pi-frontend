@@ -6,7 +6,6 @@
 const Lab = require('lab');
 const lab = exports.lab = Lab.script();
 const Code = require('code');
-const _ = require('lodash');
 
 const describe = lab.describe;
 const it = lab.it;

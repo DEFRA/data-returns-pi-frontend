@@ -22,7 +22,7 @@ const check = (id) => {
 };
 
 const START_PAGE = { id: 'OVERSEAS_START_PAGE', method: 'GET', url: '/', expected: '/' };
-const CHOOSE_PERMIT = { id: 'OVERSEAS_CHOOSE_PERMIT', method: 'POST', url: '/select-permit', payload:  { '1': 'Open' }, expected: '/task-list' };
+const CHOOSE_PERMIT = { id: 'OVERSEAS_CHOOSE_PERMIT', method: 'POST', url: '/select-permit', payload: { '1': 'Open' }, expected: '/task-list' };
 const TASK_LIST = { id: 'OVERSEAS_TASK_LIST', method: 'GET', url: '/task-list', expected: '/task-list' };
 const CONFIRM_PAGE = { id: 'OVERSEAS_CONFIRM_PAGE', method: 'GET', url: '/transfers/overseas/confirm', expected: '/transfers/overseas/confirm' };
 const CONFIRM_NO = { id: 'OVERSEAS_CONFIRM_NO', method: 'POST', url: '/transfers/overseas/confirm', payload: { confirmation: 'false' }, expected: '/task-list' };
@@ -60,7 +60,7 @@ experiment('Overseas transfers', () => {
 
     if (required.includes('OVERSEAS_WASTE_TRANSFERS')) {
 
-        before(() => {
+        before(async () => {
             return Common.start();
         });
 
@@ -113,7 +113,7 @@ experiment('Overseas transfers', () => {
             return Common.logout();
         });
 
-        after(() => {
+        after(async () => {
             return Common.stop();
         });
 

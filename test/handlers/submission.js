@@ -32,7 +32,6 @@ const START_PAGE = { id: 'SUBMISSION_START_PAGE', method: 'GET', url: '/', expec
 const CHOOSE_PERMIT = { id: 'SUBMISSION_CHOOSE_PERMIT', method: 'POST', url: '/select-permit', payload: { '4': 'Open' }, expected: '/task-list' };
 const CONFIRM_PAGE = (type, route) => { return { id: 'SUBMISSION_CONFIRM_PAGE', method: 'GET', url: `/${type}/${route}/confirm`, expected: `/${type}/${route}/confirm` }; };
 const CONFIRM_YES = (type, route, dest) => { return { id: 'SUBMISSION_CONFIRM_YES', method: 'POST', url: `/${type}/${route}/confirm`, payload: { confirmation: 'true' }, expected: `/${type}/${route}/${dest}` }; };
-const CONFIRM_NO = (type, route) => { return { id: 'SUBMISSION_CONFIRM_YES', method: 'POST', url: `/${type}/${route}/confirm`, payload: { confirmation: 'false' }, expected: '/task-list' }; };
 const CHOOSE_SUBSTANCE = (route, substanceId) => { return { id: 'SUBMISSION_CHOOSE_SUBSTANCE', method: 'POST', url: `/releases/${route}/add-substance`, payload: { substanceId: substanceId }, expected: `/releases/${route}/detail` }; };
 const CHOOSE_DETAIL = (route, value, unitId, methodId) => { return { id: 'SUBMISSION_CHOOSE_DETAIL', method: 'POST', url: `/releases/${route}/detail`, payload: { value: value, unitId: unitId, methodId: methodId }, expected: `/releases/${route}` }; };
 const ANOTHER_SUBSTANCE = (route, payload) => { return { id: 'SUBMISSION_ANOTHER_SUBSTANCE', method: 'POST', url: `/releases/${route}/action`, payload: payload, expected: `/releases/${route}/add-substance` }; };
@@ -47,7 +46,7 @@ const CONFIRM = { id: 'SUBMISSION_CONFIRM', method: 'POST', url: '/submit/confir
 
 experiment('Submit data test', () => {
 
-    before(() => {
+    before(async () => {
         return Common.start();
     });
 
@@ -157,7 +156,7 @@ experiment('Submit data test', () => {
         await steps([SUBMIT, CONFIRM]);
     });
 
-    after(() => {
+    after(async () => {
         return Common.stop();
     });
 

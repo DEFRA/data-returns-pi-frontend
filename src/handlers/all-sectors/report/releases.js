@@ -123,7 +123,7 @@ module.exports = {
      * @param stageStatus - the
      * @return {Promise.<boolean>}
      */
-    confirm: async (request, reply) => {
+    confirm: async (request, h) => {
         try {
             const { submissionContext, route, tasks } = await cacheHelper(request);
 
@@ -132,11 +132,11 @@ module.exports = {
                 if (tasks && tasks.releases && Object.keys(tasks.releases).filter(r => isNumeric(r)).length > 0) {
 
                     // Redirect to main route page
-                    reply.redirect(route.page);
+                    return h.redirect(route.page);
 
                 } else {
                     // Display the appropriate confirmation page
-                    reply.view('all-sectors/report/confirm', {
+                    return h.view('all-sectors/report/confirm', {
                         route: route,
                         selected: false
                     });
@@ -146,22 +146,22 @@ module.exports = {
                 // Process the confirmation - the releases page
                 if (request.payload && request.payload.confirmation === 'true') {
                     await setChallengeStatus(request, submissionContext, route, true);
-                    reply.redirect(route.page);
+                    return h.redirect(route.page);
                 } else {
                     // If the challenge page results in false then this is a confirmed route
                     await setConfirmation(request, submissionContext, route, true);
 
                     // Unset the confirmation status when viewing the page
                     await setChallengeStatus(request, submissionContext, route);
-                    reply.redirect('/task-list');
+                    return h.redirect('/task-list');
                 }
             }
         } catch (err) {
             if (err instanceof CacheKeyError) {
-                reply.redirect('/');
+                return h.redirect('/');
             } else {
                 logger.log('error', err);
-                reply.redirect('/logout');
+                return h.redirect('/logout');
             }
         }
     },
@@ -169,11 +169,11 @@ module.exports = {
     /**
      * Handler for the main releases submission pages to air, land, waste-water and controlled water
      * @param request
-     * @param reply
+     * @param h
      * @param task
      * @return {Promise.<void>}
      */
-    releases: async (request, reply) => {
+    releases: async (request, h) => {
         try {
             const { submissionContext, route, eaId, tasks } = await cacheHelper(request);
 
@@ -199,7 +199,7 @@ module.exports = {
                 // Unset the confirmation status when viewing the page
                 await setConfirmation(request, submissionContext, route);
 
-                reply.view('all-sectors/report/releases', {
+                return h.view('all-sectors/report/releases', {
                     route: route,
                     eaId: eaId.name,
                     releases: releases,
@@ -209,15 +209,15 @@ module.exports = {
             } else {
 
                 // Add a release immediately
-                reply.redirect(route.page + '/add-substance');
+                return h.redirect(route.page + '/add-substance');
             }
 
         } catch (err) {
             if (err instanceof CacheKeyError) {
-                reply.redirect('/');
+                return h.redirect('/');
             } else {
                 logger.log('error', err);
-                reply.redirect('/logout');
+                return h.redirect('/logout');
             }
         }
     },
@@ -225,7 +225,7 @@ module.exports = {
     /**
      * Save action - responds to the post request on the main releases summary page
      */
-    action: async (request, reply) => {
+    action: async (request, h) => {
         try {
             const { route, tasks, submissionContext } = await cacheHelper(request);
 
@@ -245,7 +245,7 @@ module.exports = {
 
                     // Rewrite the tasks with no error and go back to the task-list
                     await request.server.app.userCache.cache(cacheNames.TASK_CONTEXT).set(request, tasks);
-                    reply.redirect('/task-list');
+                    return h.redirect('/task-list');
                 } else {
                     // Unset the confirmation flag
                     await setConfirmation(request, submissionContext, route);
@@ -255,7 +255,7 @@ module.exports = {
 
                     // Rewrite the tasks and go back to the route page
                     await request.server.app.userCache.cache(cacheNames.TASK_CONTEXT).set(request, tasks);
-                    reply.redirect(route.page);
+                    return h.redirect(route.page);
                 }
 
             } else if (Object.keys(request.payload).find(s => s.startsWith('detail'))) {
@@ -265,7 +265,7 @@ module.exports = {
                     .find(s => s.startsWith('detail')).substr(7);
 
                 await request.server.app.userCache.cache(cacheNames.TASK_CONTEXT).set(request, tasks);
-                reply.redirect(route.page + '/detail');
+                return h.redirect(route.page + '/detail');
 
             } else if (Object.keys(request.payload).find(s => s.startsWith('delete'))) {
                 // Save the substance id and redirect to the delete confirmation page
@@ -275,20 +275,20 @@ module.exports = {
                 // Send to the delete confirmation dialog
                 tasks.currentSubstanceId = substanceId;
                 await request.server.app.userCache.cache(cacheNames.TASK_CONTEXT).set(request, tasks);
-                reply.redirect(route.page + '/remove');
+                return h.redirect(route.page + '/remove');
 
             } else if (request.payload.add) {
                 // Save the release information to the cache and redirect to the add-substances page
                 await request.server.app.userCache.cache(cacheNames.TASK_CONTEXT).set(request, tasks);
-                reply.redirect(route.page + '/add-substance');
+                return h.redirect(route.page + '/add-substance');
             }
 
         } catch (err) {
             if (err instanceof CacheKeyError) {
-                reply.redirect('/');
+                return h.redirect('/');
             } else {
                 logger.log('error', err);
-                reply.redirect('/logout');
+                return h.redirect('/logout');
             }
         }
     },
@@ -296,7 +296,7 @@ module.exports = {
     /**
      * Detail action
      */
-    detail: async (request, reply) => {
+    detail: async (request, h) => {
         try {
             // Check the permit status has been set
             const { submissionContext, route, tasks } = await cacheHelper(request);
@@ -322,7 +322,7 @@ module.exports = {
                 const units = await MasterDataService.getUnits();
 
                 // Display the detail page
-                reply.view('all-sectors/report/release-detail', { route: route, release: release, methods: methods, units: units });
+                return h.view('all-sectors/report/release-detail', { route: route, release: release, methods: methods, units: units });
             } else {
 
                 // Set the task detail elements
@@ -346,23 +346,23 @@ module.exports = {
                     // Update the cache with the validation objects and redirect back to the releases page
                     currentRelease.errors = validation;
                     await request.server.app.userCache.cache(cacheNames.TASK_CONTEXT).set(request, tasks);
-                    reply.redirect(route.page + '/detail');
+                    return h.redirect(route.page + '/detail');
                 } else {
                     // Calculate the overall validation status
                     await setValidationStatus(request, submissionContext, route, internals.validate(request, tasks));
 
                     // Valid to go back to the main releases page
                     await request.server.app.userCache.cache(cacheNames.TASK_CONTEXT).set(request, tasks);
-                    reply.redirect(route.page);
+                    return h.redirect(route.page);
                 }
             }
         } catch (err) {
             if (err instanceof CacheKeyError) {
                 logger.debug(err);
-                reply.redirect('/');
+                return h.redirect('/');
             } else {
                 logger.log('error', err);
-                reply.redirect('/logout');
+                return h.redirect('/logout');
             }
         }
     },
@@ -370,10 +370,10 @@ module.exports = {
     /**
      * Remove a release
      * @param request
-     * @param reply
+     * @param h
      * @return {Promise.<void>}
      */
-    remove: async (request, reply) => {
+    remove: async (request, h) => {
         try {
             const { route, tasks, submissionContext } = await cacheHelper(request);
             const release = tasks.releases[tasks.currentSubstanceId];
@@ -381,7 +381,7 @@ module.exports = {
 
             if (request.method === 'get') {
                 release.substance = substance;
-                reply.view('all-sectors/report/confirm-delete', { route: route, release: release });
+                return h.view('all-sectors/report/confirm-delete', { route: route, release: release });
             } else {
                 delete tasks.releases[tasks.currentSubstanceId];
                 await request.server.app.userCache.cache(cacheNames.TASK_CONTEXT).set(request, tasks);
@@ -391,19 +391,19 @@ module.exports = {
 
                 // If this is the last release redirect back to the task list
                 if (Object.keys(tasks.releases).filter(r => isNumeric(r)).length > 0) {
-                    reply.redirect(route.page);
+                    return h.redirect(route.page);
                 } else {
                     // Here we unset the challenge flag - the user must explicitly say no to the route
                     await setChallengeStatus(request, submissionContext, route);
-                    reply.redirect('/task-list');
+                    return h.redirect('/task-list');
                 }
             }
         } catch (err) {
             if (err instanceof CacheKeyError) {
-                reply.redirect('/');
+                return h.redirect('/');
             } else {
                 logger.log('error', err);
-                reply.redirect('/logout');
+                return h.redirect('/logout');
             }
         }
     },
@@ -411,10 +411,10 @@ module.exports = {
     /**
      * Add (single) substance
      * @param request
-     * @param reply
+     * @param h
      * @return {Promise.<void>}
      */
-    add: async (request, reply) => {
+    add: async (request, h) => {
         try {
             // Get cache objects
             const { route, tasks, submissionContext } = await cacheHelper(request);
@@ -435,13 +435,13 @@ module.exports = {
                 substances = substances.sort(internals.sortSubstances);
 
                 if (tasks.releases && tasks.releases.substanceErrors) {
-                    reply.view('all-sectors/report/add-substance', {
+                    return h.view('all-sectors/report/add-substance', {
                         route: route,
                         substances: substances,
                         errors: tasks.releases.substanceErrors
                     });
                 } else {
-                    reply.view('all-sectors/report/add-substance', {
+                    return h.view('all-sectors/report/add-substance', {
                         route: route,
                         substances: substances
                     });
@@ -477,23 +477,23 @@ module.exports = {
                         // If there is no substance then redirect back with an error Write the task object back to the cache
                         await request.server.app.userCache.cache(cacheNames.TASK_CONTEXT).set(request, tasks);
 
-                        reply.redirect(route.page + '/detail');
+                        return h.redirect(route.page + '/detail');
                     }
                 }
 
                 if (!success) {
                     tasks.releases.substanceErrors = [ { key: 'substance', errno: 'PI-1004' } ];
                     await request.server.app.userCache.cache(cacheNames.TASK_CONTEXT).set(request, tasks);
-                    reply.redirect(route.page + '/add-substance');
+                    return h.redirect(route.page + '/add-substance');
                 }
 
             }
         } catch (err) {
             if (err instanceof CacheKeyError) {
-                reply.redirect('/');
+                return h.redirect('/');
             } else {
                 logger.log('error', err);
-                reply.redirect('/logout');
+                return h.redirect('/logout');
             }
         }
     }

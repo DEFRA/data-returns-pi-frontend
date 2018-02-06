@@ -58,10 +58,9 @@ module.exports = {
      * Internal |                       Review      View
      *
      * @param {internals.Request} request - The server request object
-     * @param {function} reply - The server reply function
      * @return {undefined}
      */
-    review: async (request, reply) => {
+    review: async (request, h) => {
         try {
             const { route, submissionContext, eaId, year, isOperator } = await cacheHelper(request, 'review');
 
@@ -194,7 +193,7 @@ module.exports = {
                     }
                 }
 
-                reply.view('all-sectors/submit/review', {
+                return h.view('all-sectors/submit/review', {
                     review: reviewObject,
                     review_mode: reviewMode,
                     is_operator: isOperator,
@@ -205,9 +204,9 @@ module.exports = {
 
                 if (reviewMode && isOperator) {
                     await setConfirmation(request, submissionContext, route, true);
-                    reply.redirect('/task-list');
+                    return h.redirect('/task-list');
                 } else if (!reviewMode && isOperator) {
-                    reply.redirect('/task-list');
+                    return h.redirect('/task-list');
                 } else if (reviewMode && !isOperator) {
 
                     if (Object.keys(request.payload).includes('notApprove')) {
@@ -216,14 +215,14 @@ module.exports = {
                         await Submission.setStatusForSubmission(request, 'Approved');
                     }
 
-                    reply.redirect('/');
+                    return h.redirect('/');
                 } else {
-                    reply.redirect('/');
+                    return h.redirect('/');
                 }
             }
         } catch (err) {
             logger.log('error', err);
-            reply.redirect('/');
+            return h.redirect('/');
         }
     }
 };

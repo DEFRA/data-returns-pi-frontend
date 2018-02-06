@@ -38,7 +38,7 @@ const postHandlerRoutes = [].concat(...routes.dynamicHandlers
 
 experiment('Unexpected navigations', () => {
 
-    before(() => {
+    before(async () => {
         return Common.start();
     });
 
@@ -67,7 +67,7 @@ experiment('Unexpected navigations', () => {
         return Common.logout();
     });
 
-    after(() => {
+    after(async () => {
         return Common.stop();
     });
 });

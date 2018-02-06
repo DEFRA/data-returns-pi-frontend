@@ -9,37 +9,35 @@ const CacheKeyError = require('../../../lib/user-cache-policies').CacheKeyError;
 const allSectorsTaskList = require('../../../model/all-sectors/task-list');
 const required = require('../../../service/task-list').required(allSectorsTaskList).map(n => n.name);
 const cacheHelper = require('../common').cacheHelper;
-const setConfirmation = require('../common').setConfirmation;
 
 module.exports = {
     /**
      * Declaration and submission handler
      * @param {internals.Request} request - The server request object
-     * @param {function} reply - The server reply function
      * @return {undefined}
      */
-    submit: async (request, reply) => {
+    submit: async (request, h) => {
         try {
             const { submissionContext } = await cacheHelper(request, 'submit');
 
             if (request.method === 'get') {
                 const completed = Object.keys(submissionContext.completed).filter(p => submissionContext.completed[p]);
                 const canSubmit = required.every(r => { return completed.find(c => c === r); });
-                reply.view('all-sectors/submit/submit', { canSubmit: canSubmit });
+                return h.view('all-sectors/submit/submit', { canSubmit: canSubmit });
             } else {
                 // We have confirmed the submission so send data to the API
                 await Submission.submit(request);
 
                 // Back to the start page
-                reply.redirect('/');
+                return h.redirect('/');
             }
         } catch (err) {
             if (err instanceof CacheKeyError) {
                 logger.debug(err);
-                reply.redirect('/');
+                return h.redirect('/');
             } else {
                 logger.error(err);
-                reply.redirect('/logout');
+                return h.redirect('/logout');
             }
         }
     }

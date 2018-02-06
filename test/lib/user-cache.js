@@ -14,7 +14,7 @@ const after = lab.after;
 
 const UserCache = require('../../src/lib/user-cache');
 
-const TEST_CACHE = require('../../src/lib/user-cache-policies').names.UNIT_TEST
+const TEST_CACHE = require('../../src/lib/user-cache-policies').names.UNIT_TEST;
 
 experiment('User cache', () => {
     before(() => {

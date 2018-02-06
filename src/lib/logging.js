@@ -5,7 +5,8 @@
  * @type {*|yaml}
  */
 const Winston = require('winston');
-const GoodWinston = require('good-winston');
+const goodWinston = require('hapi-good-winston').goodWinston;
+
 const System = require('./system');
 const _ = require('lodash');
 
@@ -34,6 +35,13 @@ const winlogger = new Winston.Logger({
     ]
 });
 
+const goodWinstonOptions = {
+    levels: {
+        response: 'debug',
+        error: 'info'
+    }
+};
+
 module.exports = {
     /**
      * Return the system logger
@@ -44,6 +52,6 @@ module.exports = {
      * Return the winston-good interface for Hapi
      */
     goodWinstonStream: () => {
-        return [ new GoodWinston({ winston: winlogger }) ];
+        return [ goodWinston(winlogger, goodWinstonOptions) ];
     }
 };

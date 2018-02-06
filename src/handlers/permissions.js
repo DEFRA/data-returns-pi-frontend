@@ -5,11 +5,10 @@
  * such as changing an already submitted permit
  */
 const Hoek = require('hoek');
+
 const Submission = require('../lib/submission');
-const SessionHelper = require('./session-helper');
 const cacheNames = require('../lib/user-cache-policies').names;
 const logger = require('../lib/logging').logger;
-
 const expand = (p) => {
     if (p.includes('{route}')) {
         const paths = [];
@@ -61,7 +60,7 @@ module.exports = {
      *
      * Any attempt to access any of the submission edit pages illegally will cause a redirect back to the start page
      */
-    checkPermissions: async (request, reply) => {
+    checkPermissions: async (request, h) => {
         try {
             /*
              * If we are trying to access an edit path check we are ok to do so. We should always have a permit set
@@ -75,7 +74,7 @@ module.exports = {
 
                 if (!userContext) {
                     logger.debug('Excepted: user context');
-                    return reply.redirect('/');
+                    return h.redirect('/');
                 }
 
                 // Determine if the logged in user in an operator or an internal user
@@ -91,31 +90,31 @@ module.exports = {
                 if (editSubmission.includes(request.path)) {
                     if (submissionStatus === Submission.submissionStatusCodes.UNSUBMITTED) {
                         if (!isOperator) {
-                            return reply.redirect('/');
+                            return h.redirect('/');
                         }
                     } else if (submissionStatus === Submission.submissionStatusCodes.SUBMITTED) {
                         if (isOperator) {
-                            return reply.redirect('/');
+                            return h.redirect('/');
                         }
                     } else if (submissionStatus === Submission.submissionStatusCodes.APPROVED) {
-                        reply.redirect('/');
+                        return h.redirect('/');
                     }
                 } else {
                     /*
                      *if (submissionStatus === Submission.submissionStatusCodes.UNSUBMITTED) {
                      *    if (!isOperator) {
-                     *        return reply.redirect('/');
+                     *        return h.redirect('/');
                      *    }
                      *}
                      */
                 }
             }
 
-            reply.continue();
+            return h.continue;
 
         } catch (err) {
             logger.log('error', err);
-            reply.redirect('/logout');
+            return h.redirect('/logout');
         }
     }
 };

@@ -1,6 +1,5 @@
 'use strict';
 
-const SessionHelper = require('../handlers/session-helper');
 const UserCache = require('./user-cache');
 
 class CacheKeyError extends Error {
@@ -32,7 +31,7 @@ const internals = {
          */
         keyFunc: async (request) => {
             try {
-                const session = await SessionHelper.get(request, request.server.app.sid);
+                const session = await request.server.app.cache.get(request.auth.artifacts.sid);
                 return String(session.user.id);
             } catch (err) {
                 throw new CacheKeyError(err);

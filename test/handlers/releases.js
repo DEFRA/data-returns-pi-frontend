@@ -66,14 +66,14 @@ const CHANGE_DETAIL = (substanceId) => { return { id: 'RELEASES_CHANGE_DETAIL', 
 const CONTINUE_INVALID = (substanceId) => { return { id: 'RELEASES_CONTINUE_INVALID', method: 'POST', url: '/releases/air/action', payload: continueInvalid(substanceId), expected: '/releases/air' }; };
 const CONTINUE_VALID = (substanceId) => { return { id: 'RELEASES_CONTINUE_VALID', method: 'POST', url: '/releases/air/action', payload: continueValid(substanceId), expected: '/task-list' }; };
 
-experiment('Proto test', () => {
+experiment('Releases', async () => {
 
-    before(() => {
-        return Common.start();
+    before(async () => {
+        await Common.start();
     });
 
     test('Test login', async () => {
-        return Common.login('1@email.com', 'a');
+        await Common.login('1@email.com', 'a');
     });
 
     test('Select a permit and go to permit list', async () => {
@@ -131,7 +131,7 @@ experiment('Proto test', () => {
         return Common.logout();
     });
 
-    after(() => {
+    after(async () => {
         return Common.stop();
     });
 });

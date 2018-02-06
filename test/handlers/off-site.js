@@ -33,9 +33,9 @@ const DELETE = { id: 'OFF-SITE_DELETE', method: 'POST', url: '/transfers/off-sit
 const DELETE_CONFIRM_1 = { id: 'OFF-SITE_DELETE_CONFIRM_1', method: 'POST', url: '/transfers/off-site/remove', expected: '/transfers/off-site' };
 const DELETE_CONFIRM_2 = { id: 'OFF-SITE_DELETE_CONFIRM_2', method: 'POST', url: '/transfers/off-site/remove', expected: '/task-list' };
 
-experiment('Off-site transfers', () => {
+experiment('Off-site transfers', async () => {
 
-    before(() => {
+    before(async () => {
         return Common.start();
     });
 
@@ -83,7 +83,7 @@ experiment('Off-site transfers', () => {
         return Common.logout();
     });
 
-    after(() => {
+    after(async () => {
         return Common.stop();
     });
 });
