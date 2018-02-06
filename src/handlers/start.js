@@ -63,12 +63,11 @@ module.exports = {
     /**
      * Start page handler
      * @param {internals.Request} request - The server request object
-     * @param {function} reply - The server reply function
      * @return {undefined}
      */
-    start: async (request, reply) => {
+    start: async (request, h) => {
         try {
-            const session = await SessionHelper.get(request, request.server.app.sid);
+            const session = await SessionHelper.get(request, request.auth.artifacts.sid);
             const isOperator = session.user.roles.includes('OPERATOR');
 
             // Get the permits for the user
@@ -78,11 +77,11 @@ module.exports = {
             eaIds = await Submission.addStatusToEaIds(eaIds, year);
 
             // Return the start page
-            reply.view('start', { user: session.user, eaIds: eaIds, is_operator: isOperator });
+            return h.view('start', { user: session.user, eaIds: eaIds, is_operator: isOperator });
 
         } catch (err) {
             logger.log('error', err);
-            reply.redirect('/logout');
+            return h.redirect('/logout');
         }
     },
 
@@ -95,12 +94,11 @@ module.exports = {
      * the submission object within the cache
      *
      * @param {internals.Request} request - The server request object
-     * @param {function} reply - The server reply function
      * @return {undefined}
      */
-    select: async (request, reply) => {
+    select: async (request, h) => {
         try {
-            const session = await SessionHelper.get(request, request.server.app.sid);
+            const session = await SessionHelper.get(request, request.auth.artifacts.sid);
 
             // Determine if the logged in user in an operator or an internal user
             const isOperator = session.user.roles.includes('OPERATOR');
@@ -142,26 +140,26 @@ module.exports = {
                     if (submission.status === Submission.submissionStatusCodes.SUBMITTED ||
                         submission.status === Submission.submissionStatusCodes.APPROVED) {
 
-                        reply.redirect('/review/confirm');
+                        return h.redirect('/review/confirm');
                     } else {
-                        reply.redirect('/');
+                        return h.redirect('/');
                     }
 
                 } else if (action === 'Review') {
                     if (submission.status === Submission.submissionStatusCodes.SUBMITTED ||
                         submission.status === Submission.submissionStatusCodes.APPROVED) {
 
-                        reply.redirect('/review/confirm');
+                        return h.redirect('/review/confirm');
                     } else {
-                        reply.redirect('/');
+                        return h.redirect('/');
                     }
 
                 } else if (action === 'Open') {
                     if (submission.status === Submission.submissionStatusCodes.UNSUBMITTED) {
 
-                        reply.redirect('/task-list');
+                        return h.redirect('/task-list');
                     } else {
-                        reply.redirect('/');
+                        return h.redirect('/');
                     }
                 }
 
@@ -169,18 +167,18 @@ module.exports = {
 
                 // Internal user actions
                 if (action === 'View') {
-                    reply.redirect('/review/confirm');
+                    return h.redirect('/review/confirm');
                 } else if (action === 'Review') {
-                    reply.redirect('/review/confirm');
+                    return h.redirect('/review/confirm');
                 } else if (action === 'Open') {
                     // Not yet allowed
-                    reply.redirect('/');
+                    return h.redirect('/');
                 }
             }
 
         } catch (err) {
             logger.log('error', err);
-            reply.redirect('/logout');
+            return h.redirect('/logout');
         }
     }
 };

@@ -47,7 +47,7 @@ internals.step = async (id, method, url, payload, expected) => {
     }
 
     if (response.statusCode !== 200 || currentUrl !== expected) {
-        logging.logger.error(`Failure in step: ${id}: method; ${method} url; ${url} payload; ${JSON.stringify(payload)} expected; ${expected}`);
+        logging.logger.error(`Failure in step: ${id}: method; ${method} url; ${url} expected; ${expected} payload; ${JSON.stringify(payload || {})} status: ${response.statusCode}`);
     }
 
     expect(response.statusCode).to.equal(200);
@@ -62,7 +62,6 @@ module.exports = {
         try {
             await server.initialize();
             await server.start();
-            logging.logger.info(`Server started at ${server.server().info.uri}`);
         } catch (err) {
             logging.logger.log('error', err);
             process.exit(1);
@@ -71,7 +70,6 @@ module.exports = {
 
     stop: async () => {
         await server.stop();
-        logging.logger.info('Server stopped');
     },
 
     login: async (username, password) => {

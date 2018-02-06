@@ -13,43 +13,22 @@ module.exports = {
      * @param request
      * @returns {Promise}
      */
-    get: (request, key) => {
-        return new Promise((resolve, reject) => {
-            request.server.app.cache.get(key, (err, cached) => {
-                if (err) {
-                    reject(err);
-                }
-                resolve(cached);
-            });
-        });
+    get: async (request, key) => {
+        return request.server.app.cache.get(key);
     },
 
     /**
      * Promisfy the method to set session information
      */
-    set: (request, key, session) => {
-        return new Promise((resolve, reject) => {
-            request.server.app.cache.set(key, session, 0, (err) => {
-                if (err) {
-                    reject(err);
-                }
-                resolve();
-            });
-        });
+    set: async (request, key, session) => {
+        await request.server.app.cache.set(key, session, 0);
     },
 
     /**
      * Promisfy the method to drop session information
      */
-    drop: (request, key) => {
-        return new Promise((resolve, reject) => {
-            request.server.app.cache.drop(key, (err) => {
-                if (err) {
-                    reject(err);
-                }
-                resolve();
-            });
-        });
+    drop: async (request, key) => {
+        await request.server.app.cache.drop(key);
     }
 
 };

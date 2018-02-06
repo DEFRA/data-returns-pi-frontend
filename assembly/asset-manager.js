@@ -65,7 +65,7 @@ class AssetManager {
 
     /**
      * Empty the specified directory (recursively delete all contents)
-     * 
+     *
      * @param targetDir the directory to empty
      * @param onComplete optional completion callback
      */
@@ -82,7 +82,7 @@ class AssetManager {
 
     /**
      * Copy a resource from sourcePath to targetPath
-     * 
+     *
      * @param sourcePath the source file/directory for the copy operation
      * @param targetPath the target file/directory for the copy operation
      * @param onComplete optional completion callback
@@ -99,7 +99,7 @@ class AssetManager {
 
     /**
      * Minify the sourcePath resource and output the minified content to targetPath
-     * 
+     *
      * @param sourcePath the source file/directory for the minify operation
      * @param targetPath the target file/directory for the minify operation
      * @param onComplete optional completion callback
@@ -129,7 +129,7 @@ class AssetManager {
 
     /**
      * Delete the file/directory specified by targetPath
-     * 
+     *
      * @param targetPath the file/directory to be deleted
      * @param onComplete optional completion callback
      */
@@ -146,7 +146,7 @@ class AssetManager {
     /**
      * The onChange method is an override point.  This method is called whenever the AssetManager detects a change
      * in one of the watched asset directories.
-     * 
+     *
      * @param event the type of change (added, changed, deleted)
      * @param absolutePath the absolute path to the file that was changed
      * @param relPath the relative path from the asset directory being watched
@@ -248,7 +248,7 @@ class PassthroughHandler extends AssetManager {
 
     /**
      * Synchronise a file between the source and target folders
-     * 
+     *
      * Determines whether to use a minify or copy operation.
      */
     synchroniseFile (source, target) {

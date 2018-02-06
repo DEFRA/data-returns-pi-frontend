@@ -189,10 +189,10 @@ module.exports = {
     /**
      * The challenge page handler
      * @param request
-     * @param reply
+     * @param h
      * @return {Promise.<void>}
      */
-    confirm: async (request, reply) => {
+    confirm: async (request, h) => {
         try {
             const { route, tasks, submissionContext } = await cacheHelper(request, 'off-site');
 
@@ -200,9 +200,9 @@ module.exports = {
 
                 // If we have off-site transfers then redirect directly to the summary page
                 if (tasks && tasks.transfers && tasks.transfers.length > 0) {
-                    reply.redirect('/transfers/off-site');
+                    return h.redirect('/transfers/off-site');
                 } else {
-                    reply.view('all-sectors/report/confirm', {
+                    return h.view('all-sectors/report/confirm', {
                         route: route,
                         selected: false
                     });
@@ -212,7 +212,7 @@ module.exports = {
                 // Process the confirmation - set the current route and redirect to the releases page
                 if (request.payload.confirmation === 'true') {
                     await setChallengeStatus(request, submissionContext, route, true);
-                    reply.redirect(route.page);
+                    return h.redirect(route.page);
                 } else {
                     // If the challenge page results in false then this is a confirmed route
                     await setConfirmation(request, submissionContext, route, true);
@@ -221,16 +221,16 @@ module.exports = {
                     await setChallengeStatus(request, submissionContext, route);
 
                     await request.server.app.userCache.cache(cacheNames.SUBMISSION_CONTEXT).set(request, submissionContext);
-                    reply.redirect('/task-list');
+                    return h.redirect('/task-list');
                 }
             }
 
         } catch (err) {
             if (err instanceof CacheKeyError) {
-                reply.redirect('/');
+                return h.redirect('/');
             } else {
                 logger.log('error', err);
-                reply.redirect('/logout');
+                return h.redirect('/logout');
             }
         }
     },
@@ -238,10 +238,10 @@ module.exports = {
     /**
      * Handler for off-site waste transfers
      * @param {internals.Request} request - The server request object
-     * @param {function} reply - The server reply function
+     * @param {function} h - The server h function
      * @return {undefined}
      */
-    offSite: async (request, reply) => {
+    offSite: async (request, h) => {
         try {
             const { submissionContext, route, tasks } = await cacheHelper(request, 'off-site');
 
@@ -251,7 +251,7 @@ module.exports = {
                         delete tasks.currentPageOffSiteTransfer;
                         await request.server.app.userCache.cache(cacheNames.TASK_CONTEXT).set(request, tasks);
                     }
-                    reply.redirect('/transfers/off-site/add');
+                    return h.redirect('/transfers/off-site/add');
                 } else {
                     // Enrich the offSiteTransfers object from the master data
                     const transfers = await Promise.all(tasks.transfers.map(async t => {
@@ -260,16 +260,16 @@ module.exports = {
 
                     // Unset the confirmation status when viewing the page
                     await setConfirmation(request, submissionContext, route);
-                    reply.view('all-sectors/report/off-site', { transfers: transfers });
+                    return h.view('all-sectors/report/off-site', { transfers: transfers });
                 }
             }
 
         } catch (err) {
             if (err instanceof CacheKeyError) {
-                reply.redirect('/');
+                return h.redirect('/');
             } else {
                 logger.log('error', err);
-                reply.redirect('/logout');
+                return h.redirect('/logout');
             }
         }
     },
@@ -277,10 +277,10 @@ module.exports = {
     /**
      * The off-site add page
      * @param request
-     * @param reply
+     * @param h
      * @return {Promise.<void>}
      */
-    add: async (request, reply) => {
+    add: async (request, h) => {
         try {
             const { submissionContext, route, tasks } = await cacheHelper(request, 'off-site');
 
@@ -292,12 +292,12 @@ module.exports = {
                 if (tasks && tasks.currentPageOffSiteTransfer) {
 
                     // Display the off site add page (add/change off-site waste transfer)
-                    reply.view('all-sectors/report/off-site-add', {
+                    return h.view('all-sectors/report/off-site-add', {
                         transfer: tasks.currentPageOffSiteTransfer
                     });
                 } else {
                     // Display the off site add page (add/change off-site waste transfer)
-                    reply.view('all-sectors/report/off-site-add');
+                    return h.view('all-sectors/report/off-site-add');
                 }
 
             } else {
@@ -325,29 +325,29 @@ module.exports = {
 
                     delete tasks.currentPageOffSiteTransfer;
                     await request.server.app.userCache.cache(cacheNames.TASK_CONTEXT).set(request, tasks);
-                    reply.redirect('/transfers/off-site');
+                    return h.redirect('/transfers/off-site');
                 } else {
 
                     // If there are validation errors
                     await setValidationStatus(request, submissionContext, route, true);
                     tasks.currentPageOffSiteTransfer = { offSiteTransfer: currentPageOffSiteTransfer, errors: validationErrors };
                     await request.server.app.userCache.cache(cacheNames.TASK_CONTEXT).set(request, tasks);
-                    reply.redirect('/transfers/off-site/add');
+                    return h.redirect('/transfers/off-site/add');
                 }
             }
 
         } catch (err) {
             if (err instanceof CacheKeyError) {
-                reply.redirect('/');
+                return h.redirect('/');
             } else {
                 logger.log('error', err);
-                reply.redirect('/logout');
+                return h.redirect('/logout');
             }
         }
     },
 
     // The submit actions on the form
-    action: async (request, reply) => {
+    action: async (request, h) => {
         try {
             const { tasks, submissionContext, route } = await cacheHelper(request, 'off-site');
 
@@ -372,7 +372,7 @@ module.exports = {
                     await request.server.app.userCache.cache(cacheNames.TASK_CONTEXT).set(request, tasks);
 
                     // Back to the task list
-                    reply.redirect('/task-list');
+                    return h.redirect('/task-list');
                 } else {
                     // Unset the confirmation flag
                     await setConfirmation(request, submissionContext, route);
@@ -382,7 +382,7 @@ module.exports = {
 
                     // Update the cache with the validation objects and redirect back to the page
                     await request.server.app.userCache.cache(cacheNames.TASK_CONTEXT).set(request, tasks);
-                    reply.redirect('/transfers/off-site');
+                    return h.redirect('/transfers/off-site');
                 }
 
             } else if (Object.keys(request.payload).find(s => s.startsWith('detail'))) {
@@ -394,7 +394,7 @@ module.exports = {
                 // Save the changes to the transfers and redirect to the detail page
                 await request.server.app.userCache.cache(cacheNames.TASK_CONTEXT).set(request, tasks);
 
-                reply.redirect('/transfers/off-site/detail');
+                return h.redirect('/transfers/off-site/detail');
 
             } else if (Object.keys(request.payload).find(s => s.startsWith('delete'))) {
                 const transferIndex = Number.parseInt(Object.keys(request.payload)
@@ -403,19 +403,19 @@ module.exports = {
                 // Send to delete confirmation dialog
                 tasks.currentoffSiteTransferIndex = transferIndex;
                 await request.server.app.userCache.cache(cacheNames.TASK_CONTEXT).set(request, tasks);
-                reply.redirect('/transfers/off-site/remove');
+                return h.redirect('/transfers/off-site/remove');
 
             } else if (request.payload.add) {
                 await request.server.app.userCache.cache(cacheNames.TASK_CONTEXT).set(request, tasks);
-                reply.redirect('/transfers/off-site/add');
+                return h.redirect('/transfers/off-site/add');
             }
 
         } catch (err) {
             if (err instanceof CacheKeyError) {
-                reply.redirect('/');
+                return h.redirect('/');
             } else {
                 logger.log('error', err);
-                reply.redirect('/logout');
+                return h.redirect('/logout');
             }
         }
     },
@@ -423,15 +423,15 @@ module.exports = {
     /**
      * Remove an off-site transfer
      * @param request
-     * @param reply
+     * @param h
      * @returns {Promise.<void>}
      */
-    remove: async (request, reply) => {
+    remove: async (request, h) => {
         try {
             const { submissionContext, route, tasks } = await cacheHelper(request, 'off-site');
 
             if (request.method === 'get') {
-                reply.view('all-sectors/report/confirm-delete', {
+                return h.view('all-sectors/report/confirm-delete', {
                     route: route,
                     transfer: await internals.enrichOffSiteTransferObject(tasks.transfers[tasks.currentoffSiteTransferIndex])
                 });
@@ -443,19 +443,19 @@ module.exports = {
                 await setValidationStatus(request, submissionContext, route, internals.validate(request, tasks));
 
                 if (tasks.transfers.length > 0) {
-                    reply.redirect('/transfers/off-site');
+                    return h.redirect('/transfers/off-site');
                 } else {
                     // Here we unset the challenge flag - the user must explicitly say no to the route
                     await setChallengeStatus(request, submissionContext, route);
-                    reply.redirect('/task-list');
+                    return h.redirect('/task-list');
                 }
             }
         } catch (err) {
             if (err instanceof CacheKeyError) {
-                reply.redirect('/');
+                return h.redirect('/');
             } else {
                 logger.log('error', err);
-                reply.redirect('/logout');
+                return h.redirect('/logout');
             }
         }
     },
@@ -463,16 +463,16 @@ module.exports = {
     /**
      * Show the detail page of off-site transfer
      * @param request
-     * @param reply
+     * @param h
      * @returns {Promise.<void>}
      */
-    detail: async (request, reply) => {
+    detail: async (request, h) => {
         try {
             const { submissionContext, route, tasks } = await cacheHelper(request, 'off-site');
             const transfer = await internals.enrichOffSiteTransferObject(tasks.transfers[tasks.currentoffSiteTransferIndex]);
 
             if (request.method === 'get') {
-                reply.view('all-sectors/report/off-site-detail', { transfer: transfer });
+                return h.view('all-sectors/report/off-site-detail', { transfer: transfer });
             } else {
                 tasks.transfers[tasks.currentoffSiteTransferIndex].value = request.payload.value;
                 const validation = Validator.offSite(tasks.transfers[tasks.currentoffSiteTransferIndex]);
@@ -483,7 +483,7 @@ module.exports = {
                     // Set the errors on the task cache and redirect back to the detail page
                     tasks.transfers[tasks.currentoffSiteTransferIndex].errors = validation;
                     await request.server.app.userCache.cache(cacheNames.TASK_CONTEXT).set(request, tasks);
-                    reply.redirect('/transfers/off-site/detail');
+                    return h.redirect('/transfers/off-site/detail');
                 } else {
                     // Calculate the overall validation status
                     await setValidationStatus(request, submissionContext, route, internals.validate(request, tasks));
@@ -491,15 +491,15 @@ module.exports = {
                     // Delete the errors and redirect back to off-site main page
                     delete tasks.transfers[tasks.currentoffSiteTransferIndex].errors;
                     await request.server.app.userCache.cache(cacheNames.TASK_CONTEXT).set(request, tasks);
-                    reply.redirect('/transfers/off-site');
+                    return h.redirect('/transfers/off-site');
                 }
             }
         } catch (err) {
             if (err instanceof CacheKeyError) {
-                reply.redirect('/');
+                return h.redirect('/');
             } else {
                 logger.log('error', err);
-                reply.redirect('/logout');
+                return h.redirect('/logout');
             }
         }
     }

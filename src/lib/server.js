@@ -9,7 +9,7 @@ const Hapi = require('hapi');
 const Nunjucks = require('nunjucks');
 
 const System = require('./system');
-const Logging = require('./logging');
+const logger = require('./logging').logger;
 const Authorization = require('./authorization');
 const UserCache = require('./user-cache');
 const AdditionalFilters = require('../service/additional-filters');
@@ -24,10 +24,14 @@ internals.initialize = async () => {
      * Create a Hapi server with a redis cache
      * as the default client cache
      */
-    Logging.logger.info('Create hapi server initialization...');
-    Logging.logger.info('Node environment: ' + process.env.NODE_ENV);
-
+    logger.info('Hapi server initialization: ' + process.env.NODE_ENV);
     internals.server = new Hapi.Server({
+        host: process.env.HOSTNAME,
+        port: process.env.PORT,
+        routes: {
+            cors: false,
+            timeout: { server: srvcfg.timeout }
+        },
         cache: [
             {
                 engine: require('catbox-redis'),
@@ -36,49 +40,43 @@ internals.initialize = async () => {
                 partition: 'session-cache'
             }
         ],
-        app: {
-            foo: 'bar'
-        },
         load: {
             sampleInterval: srvcfg.sampleInterval
         }
     });
 
-    // Set the server connection details
-    internals.server.connection({
-        host: process.env.HOSTNAME,
-        port: process.env.PORT,
-        routes: {
-            cors: false,
-            timeout: { server: srvcfg.timeout }
-        }
-    });
-
-    Logging.logger.info('Starting server initialization...');
-
-    // Register the logging plugin to allow Hapi to log using Winston
-    await internals.server.register({
-        register: require('good'),
-        options: {
-            reporters: {
-                winston: Logging.goodWinstonStream()
+    /*
+     * Register the logging plugin to allow Hapi to log using Winston - this is not reusable so don't use for
+     * integration testing
+     */
+    if (process.env.NODE_ENV !== 'localtest') {
+        logger.info('Server plugin registration: good');
+        await internals.server.register({
+            plugin: require('good'),
+            options: {
+                reporters: {
+                    winston: require('./logging').goodWinstonStream()
+                }
             }
-        }
-    });
+        });
+    }
 
     // Register the static data server
+    logger.info('Server plugin registration: inert');
     await internals.server.register({
-        register: require('inert')
+        plugin: require('inert')
     });
 
     // Register template rendering plugin support
+    logger.info('Server plugin registration: vision');
     await internals.server.register({
-        register: require('vision')
+        plugin: require('vision')
     });
 
     // Register Hapi Authorization cookies
+    logger.info('Server plugin registration: hapi-auth-cookie');
     await internals.server.register({
-        register: require('hapi-auth-cookie')
+        plugin: require('hapi-auth-cookie')
     });
 
     /*
@@ -134,6 +132,7 @@ internals.initialize = async () => {
      * To hold the authenticated user data. This will
      * live in the plug-in cache
      */
+    logger.info('Set authentication cache');
     const cache = internals.server.cache({
         segment: 'authenticated-sessions',
         expiresIn: srvcfg.cache.authorization.timeToLive
@@ -142,7 +141,8 @@ internals.initialize = async () => {
     internals.server.app.cache = cache;
 
     // Set up the authorization strategy
-    internals.server.auth.strategy('session', 'cookie', true, {
+    logger.info('Set authorization strategy: cookie');
+    internals.server.auth.strategy('session', 'cookie', {
         password: srvcfg.authorization.cookie.ironCookiePassword,
         cookie: 'sid',
         redirectTo: '/login',
@@ -150,6 +150,9 @@ internals.initialize = async () => {
         clearInvalid: true,
         validateFunc: Authorization.validate
     });
+
+    // use a strategy name to set it as a "required" default
+    internals.server.auth.default('session');
 
     /*
      * Connect to the user cache and
@@ -163,7 +166,7 @@ internals.initialize = async () => {
     internals.server.app.userCache = UserCache;
 
     // Set up the onPreHandler methods
-    internals.server.ext('onPreHandler', require('../routes').preHandlerMethods);
+    internals.server.ext('onPostHandler', require('../routes').postHandlerMethods);
 
     // Set up the static routing
     internals.server.route(require('../routes').staticHandlers);
@@ -171,7 +174,7 @@ internals.initialize = async () => {
     // Set up the dynamic routing
     internals.server.route(require('../routes').dynamicHandlers);
 
-    Logging.logger.info('Completed server initialization');
+    logger.info('Completed server initialization');
 
 };
 
@@ -179,11 +182,18 @@ internals.initialize = async () => {
 module.exports = {
     server: () => { return internals.server; },
 
-    start: async () => { await internals.server.start(); },
+    start: async () => {
+        logger.info('Server startup...');
+        await internals.server.start();
+        logger.info(`Server started at ${internals.server.info.uri}`);
+        logger.info('User cache state: ' + UserCache.isReady());
+    },
 
     stop: async () => {
+        logger.info('Server shutdown');
         await internals.server.stop();
         await UserCache.stop();
+        logger.info('User cache state: ' + UserCache.isReady());
     },
 
     initialize: async () => { await internals.initialize(); }

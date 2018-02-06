@@ -17,7 +17,7 @@ const test = lab.test;
 
 // const server = require('../../src/lib/server');
 
-experiment('Off-site transfers', async () => {
+experiment('Off-site transfers - unit tests', async () => {
     test('Valid ewc strings', async () => {
         const expObj = await MasterDataService.getEwc('01', '04', '07');
         let to = await createOffSiteTransferCacheObject({ ewc: '01 04 07', wfd: null, value: null });

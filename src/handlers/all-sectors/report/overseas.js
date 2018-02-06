@@ -90,22 +90,22 @@ const internals = {
     /**
      * Request the transportation company address
      * @param request
-     * @param reply
+     * @param rehply
      * @return {Promise.<void>}
      */
-    overseasStageHandler: async (request, reply, getHandler, postHandler) => {
+    overseasStageHandler: async (request, h, getHandler, postHandler) => {
         try {
             const { submissionContext, route, tasks } = await cacheHelper(request, 'overseas');
             const transfer = tasks.overseasTransfers[tasks.currentOverseasWasteTransferIdx];
 
             // We expect a current transfer object in each stage
             if (!tasks.overseasTransfers || tasks.overseasTransfers.length === 0 || !transfer) {
-                reply.redirect('/task-list');
+                return h.redirect('/task-list');
             } else {
 
                 if (request.method === 'get') {
                     // Call the page specific functions of the post handler
-                    await getHandler(submissionContext, route, tasks, transfer);
+                    return getHandler(submissionContext, route, tasks, transfer);
                 } else {
 
                     // Call the page specific functions of the post handler
@@ -122,13 +122,13 @@ const internals = {
                         transfer.errors = validation;
                         await request.server.app.userCache.cache(cacheNames.TASK_CONTEXT).set(request, tasks);
 
-                        reply.redirect(internals.validationLocationMapper(validation));
+                        return h.redirect(internals.validationLocationMapper(validation));
                     } else {
                         delete transfer.errors;
                         await request.server.app.userCache.cache(cacheNames.TASK_CONTEXT).set(request, tasks);
 
                         // If the object is valid redirect to the transfer check page
-                        reply.redirect('/transfers/overseas/check');
+                        return h.redirect('/transfers/overseas/check');
                     }
 
                 }
@@ -136,10 +136,10 @@ const internals = {
         } catch (err) {
             if (err instanceof CacheKeyError) {
                 logger.debug(err);
-                reply.redirect('/');
+                return h.redirect('/');
             } else {
                 logger.log('error', err);
-                reply.redirect('/logout');
+                return h.redirect('/logout');
             }
         }
     },
@@ -162,10 +162,10 @@ module.exports = {
     /**
      * The challenge page handler
      * @param request
-     * @param reply
+     * @param h
      * @return {Promise.<void>}
      */
-    confirm: async (request, reply) => {
+    confirm: async (request, h) => {
         try {
             const { route, tasks, submissionContext } = await cacheHelper(request, 'overseas');
 
@@ -176,9 +176,9 @@ module.exports = {
 
                 // If we have overseas transfers then redirect directly to the summary page
                 if (tasks && tasks.overseasTransfers && tasks.overseasTransfers.length > 0) {
-                    reply.redirect('/transfers/overseas');
+                    return h.redirect('/transfers/overseas');
                 } else {
-                    reply.view('all-sectors/report/confirm', {
+                    return h.view('all-sectors/report/confirm', {
                         route: route,
                         selected: false
                     });
@@ -188,24 +188,24 @@ module.exports = {
                 // Process the confirmation - set the current route and redirect to the releases page
                 if (request.payload.confirmation === 'true') {
                     await setChallengeStatus(request, submissionContext, route, true);
-                    reply.redirect(route.page);
+                    return h.redirect(route.page);
                 } else {
                     // If the challenge page results in false then this is a confirmed route
                     await setConfirmation(request, submissionContext, route, true);
 
                     // Unset the confirmation status when viewing the page
                     await setChallengeStatus(request, submissionContext, route);
-                    reply.redirect('/task-list');
+                    return h.redirect('/task-list');
                 }
             }
 
         } catch (err) {
             if (err instanceof CacheKeyError) {
                 logger.debug(err);
-                reply.redirect('/');
+                return h.redirect('/');
             } else {
                 logger.log('error', err);
-                reply.redirect('/logout');
+                return h.redirect('/logout');
             }
         }
     },
@@ -214,7 +214,7 @@ module.exports = {
      * The handler for the overseas waste transfer summary page - it will redirect to the add sequence if there
      * is no existing transfers
      */
-    overseas: async (request, reply) => {
+    overseas: async (request, h) => {
         try {
             const { submissionContext, route, tasks } = await cacheHelper(request, 'overseas');
 
@@ -223,23 +223,23 @@ module.exports = {
 
             if (request.method === 'get') {
                 if (!tasks.overseasTransfers || tasks.overseasTransfers.length === 0) {
-                    reply.redirect('/transfers/overseas/add');
+                    return h.redirect('/transfers/overseas/add');
                 } else {
                     // Unset the confirmation status when viewing the page
                     await setConfirmation(request, submissionContext, route);
 
                     const enrichedTransfers = await Promise.all(tasks.overseasTransfers.map(async t => internals.enrich(t)));
-                    reply.view('all-sectors/report/overseas', { transfers: enrichedTransfers });
+                    return h.view('all-sectors/report/overseas', { transfers: enrichedTransfers });
                 }
             } else {
-                reply.redirect('/transfers/overseas');
+              return h.redirect('/transfers/overseas');
             }
         } catch (err) {
             if (err instanceof CacheKeyError) {
-                reply.redirect('/');
+                return h.redirect('/');
             } else {
                 logger.log('error', err);
-                reply.redirect('/logout');
+                return h.redirect('/logout');
             }
         }
     },
@@ -248,21 +248,21 @@ module.exports = {
      * The add sequence. Redundant redirection is a deliberate decision to seperate
      * the action of adding a new transfer and selecting the substance
      * @param request
-     * @param reply
+     * @param h
      * @return {Promise.<void>}
      */
-    add: async (request, reply) => {
+    add: async (request, h) => {
         try {
             const { tasks } = await cacheHelper(request, 'overseas');
             await internals.addNewOverseasWasteTransfer(request, tasks);
-            reply.redirect('/transfers/overseas/add-substance');
+            return h.redirect('/transfers/overseas/add-substance');
         } catch (err) {
             if (err instanceof CacheKeyError) {
                 logger.debug(err);
-                reply.redirect('/');
+                return h.redirect('/');
             } else {
                 logger.log('error', err);
-                reply.redirect('/logout');
+                return h.redirect('/logout');
             }
         }
     },
@@ -270,11 +270,10 @@ module.exports = {
     /**
      * The substance handler
      * @param request
-     * @p internals internals  internals internals aram reply
      * @return {Promise.<void>}
      */
-    substance: async (request, reply) => {
-        await internals.overseasStageHandler(request, reply, async (submissionContext, route, tasks, transfer) => {
+    substance: async (request, h) => {
+        return internals.overseasStageHandler(request, h, async (submissionContext, route, tasks, transfer) => {
 
             // Get a list of all of the substances from the master data service
             let substances = await MasterDataService.getSubstances();
@@ -291,7 +290,7 @@ module.exports = {
             // Immediately set the overall validation status to false
             await setValidationStatus(request, submissionContext, route);
 
-            reply.view('all-sectors/report/add-substance', { route: route, substances: substances, errors: substanceErrors });
+            return h.view('all-sectors/report/add-substance', { route: route, substances: substances, errors: substanceErrors });
         }, async (submissionContext, route, tasks, transfer) => {
             transfer.substanceId = null;
             delete transfer.uninitialized.substance;
@@ -311,11 +310,11 @@ module.exports = {
     /**
      * The handler for the detail (quanity/method/purpose) dialog
      * @param request
-     * @param reply
+     * @param h
      * @return {Promise.<void>}
      */
-    detail: async (request, reply) => {
-        await internals.overseasStageHandler(request, reply, async (submissionContext, route, tasks, transfer) => {
+    detail: async (request, h) => {
+        return internals.overseasStageHandler(request, h, async (submissionContext, route, tasks, transfer) => {
 
             let detailErrors = null;
             if (!transfer.uninitialized.detail) {
@@ -324,7 +323,7 @@ module.exports = {
                 }
             }
 
-            reply.view('all-sectors/report/overseas-detail', {
+            return h.view('all-sectors/report/overseas-detail', {
                 methods: await MasterDataService.getMethods(),
                 operations: await MasterDataService.getTransferOperations(),
                 transfer: await internals.enrich(transfer),
@@ -345,11 +344,11 @@ module.exports = {
     /**
      * Handler for the transportation company address
      * @param request
-     * @param reply
+     * @param h
      * @return {Promise.<void>}
      */
-    transportationCompanyAddress: async (request, reply) => {
-        await internals.overseasStageHandler(request, reply, async (submissionContext, route, tasks, transfer) => {
+    transportationCompanyAddress: async (request, h) => {
+        return internals.overseasStageHandler(request, h, async (submissionContext, route, tasks, transfer) => {
 
             let transportationAddressErrors = null;
             if (!transfer.uninitialized.transportationAddress) {
@@ -360,7 +359,7 @@ module.exports = {
                 }
             }
 
-            reply.view('all-sectors/business-address', {
+            return h.view('all-sectors/business-address', {
                 action: '/transfers/overseas/transportation-co-address',
                 id: 'TRANSPORTATION_COMPANY_ADDRESS',
                 errors: transportationAddressErrors,
@@ -380,11 +379,11 @@ module.exports = {
     /**
      * Handler for the destination (site) address
      * @param request
-     * @param reply
+     * @param h
      * @return {Promise.<void>}
      */
-    destinationAddress: async (request, reply) => {
-        await internals.overseasStageHandler(request, reply, async (submissionContext, route, tasks, transfer) => {
+    destinationAddress: async (request, h) => {
+        return internals.overseasStageHandler(request, h, async (submissionContext, route, tasks, transfer) => {
 
             let destinationAddressErrors = null;
             if (!transfer.uninitialized.destinationAddress) {
@@ -395,7 +394,7 @@ module.exports = {
                 }
             }
 
-            reply.view('all-sectors/business-address', {
+            return h.view('all-sectors/business-address', {
                 action: '/transfers/overseas/destination-address',
                 id: 'DESTINATION_ADDRESS',
                 errors: destinationAddressErrors,
@@ -415,10 +414,10 @@ module.exports = {
     /**
      * Check (and allow modification) of overseas waster transfer
      * @param request
-     * @param reply
+     * @param h
      * @return {Promise.<void>}
      */
-    review: async (request, reply) => {
+    review: async (request, h) => {
         try {
             const { submissionContext, route, tasks } = await cacheHelper(request, 'overseas');
 
@@ -435,21 +434,21 @@ module.exports = {
                 if (transfer) {
                     await request.server.app.userCache.cache(cacheNames.TASK_CONTEXT).set(request, tasks);
                     const enrichedTransfer = await internals.enrich(transfer);
-                    reply.view('all-sectors/report/overseas-check', { transfer: enrichedTransfer });
+                    return h.view('all-sectors/report/overseas-check', { transfer: enrichedTransfer });
                 } else {
-                    reply.redirect('/task-list');
+                    return h.redirect('/task-list');
                 }
             } else {
-                reply.redirect('/transfers/overseas');
+                return h.redirect('/transfers/overseas');
             }
 
         } catch (err) {
             if (err instanceof CacheKeyError) {
                 logger.debug(err);
-                reply.redirect('/');
+                return h.redirect('/');
             } else {
                 logger.log('error', err);
-                reply.redirect('/logout');
+                return h.redirect('/logout');
             }
         }
     },
@@ -457,10 +456,10 @@ module.exports = {
     /**
      * Form action
      * @param request
-     * @param reply
+     * @param h
      * @return {Promise.<void>}
      */
-    action: async (request, reply) => {
+    action: async (request, h) => {
         try {
             const { tasks, submissionContext, route } = await cacheHelper(request, 'overseas');
 
@@ -468,7 +467,7 @@ module.exports = {
             if (request.payload.continue) {
 
                 setConfirmation(request, submissionContext, route, true);
-                reply.redirect('/task-list');
+                return h.redirect('/task-list');
 
             } else if (Object.keys(request.payload).find(s => s.startsWith('check'))) {
 
@@ -477,7 +476,7 @@ module.exports = {
 
                 tasks.currentOverseasWasteTransferIdx = transferIndex;
                 await request.server.app.userCache.cache(cacheNames.TASK_CONTEXT).set(request, tasks);
-                reply.redirect('/transfers/overseas/check');
+                return h.redirect('/transfers/overseas/check');
 
             } else if (Object.keys(request.payload).find(s => s.startsWith('delete'))) {
 
@@ -487,19 +486,19 @@ module.exports = {
                 // Send to delete confirmation dialog
                 tasks.currentOverseasWasteTransferIdx = transferIndex;
                 await request.server.app.userCache.cache(cacheNames.TASK_CONTEXT).set(request, tasks);
-                reply.redirect('/transfers/overseas/remove');
+                return h.redirect('/transfers/overseas/remove');
             } else if (request.payload.add) {
                 // Save the release information to the cache and redirect to the add-substances page
                 await request.server.app.userCache.cache(cacheNames.TASK_CONTEXT).set(request, tasks);
-                reply.redirect('/transfers/overseas/add');
+                return h.redirect('/transfers/overseas/add');
             }
 
         } catch (err) {
             if (err instanceof CacheKeyError) {
-                reply.redirect('/');
+                return h.redirect('/');
             } else {
                 logger.log('error', err);
-                reply.redirect('/logout');
+                return h.redirect('/logout');
             }
         }
     },
@@ -507,10 +506,10 @@ module.exports = {
     /**
      * Remove action
      * @param request
-     * @param reply
+     * @param h
      * @return {Promise.<void>}
      */
-    remove: async (request, reply) => {
+    remove: async (request, h) => {
         try {
             const { submissionContext, tasks, route } = await cacheHelper(request, 'overseas');
 
@@ -519,7 +518,7 @@ module.exports = {
             }
 
             if (request.method === 'get') {
-                reply.view('all-sectors/report/confirm-delete', {
+                return h.view('all-sectors/report/confirm-delete', {
                     route: route,
                     transfer: await internals.enrich(tasks.overseasTransfers[tasks.currentOverseasWasteTransferIdx])
                 });
@@ -527,21 +526,21 @@ module.exports = {
                 tasks.overseasTransfers.splice(tasks.currentOverseasWasteTransferIdx, 1);
                 await request.server.app.userCache.cache(cacheNames.TASK_CONTEXT).set(request, tasks);
                 if (tasks.overseasTransfers.length > 0) {
-                    reply.redirect('/transfers/overseas');
+                    return h.redirect('/transfers/overseas');
                 } else {
                     // Here we unset the challenge flag - the user must explicitly say no to the route
                     await setChallengeStatus(request, submissionContext, route);
-                    reply.redirect('/task-list');
+                    return h.redirect('/task-list');
                 }
             }
 
         } catch (err) {
             if (err instanceof CacheKeyError) {
                 logger.debug(err);
-                reply.redirect('/');
+                return h.redirect('/');
             } else {
                 logger.log('error', err);
-                reply.redirect('/logout');
+                return h.redirect('/logout');
             }
         }
     }

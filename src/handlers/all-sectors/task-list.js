@@ -16,16 +16,15 @@ module.exports = {
     /**
      * All sectors task-list handler
      * @param {internals.Request} request - The server request object
-     * @param {function} reply - The server reply function
      * @return {undefined}
      */
-    taskList: async (request, reply) => {
+    taskList: async (request, h) => {
         try {
             // Get the submission status object or create a new one
-            const { eaId } = await request.server.app.userCache.cache(cacheNames.USER_CONTEXT).get(request);
+            const userContext = await request.server.app.userCache.cache(cacheNames.USER_CONTEXT).get(request);
 
             // If no permit is selected redirect back to the start page
-            if (!eaId) {
+            if (!userContext) {
                 throw new CacheKeyError('Expected permit');
             }
 
@@ -40,7 +39,7 @@ module.exports = {
             // Write the calculated status back to the cache
             await request.server.app.userCache.cache(cacheNames.SUBMISSION_CONTEXT).set(request, submissionContext);
 
-            reply.view('all-sectors/task-list', { eaId: eaId.name,
+            return h.view('all-sectors/task-list', { eaId: userContext.eaId.name,
                 taskList: allSectorsTaskList,
                 submissionContext: submissionContext
             });
@@ -49,10 +48,10 @@ module.exports = {
             if (err instanceof CacheKeyError) {
                 // Probably due to unexpected navigation
                 logger.debug('error', err);
-                reply.redirect('/');
+                return h.redirect('/');
             } else {
                 logger.log('error', err);
-                reply.redirect('/logout');
+                return h.redirect('/logout');
             }
         }
     }

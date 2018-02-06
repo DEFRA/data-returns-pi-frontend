@@ -9,27 +9,19 @@ module.exports = {
      * validation function called on every request
      * @param request - Hapi request object of the request which is being authenticated
      * @param session - The get object set via request.cookieAuth.set()
-     * @param callback - a callback function with the signature function(err, isValid, credentials)
      */
-    validate: (request, session, callback) => {
+    validate: async (request, session) => {
         const server = request.server;
-        server.app.cache.get(session.sid, (err, cached) => {
+        const cached = await server.app.cache.get(session.sid);
 
-            if (err) {
-                return callback(err, false);
-            }
+        const out = {
+            valid: !!cached
+        };
 
-            if (!cached) {
-                return callback(null, false);
-            }
+        if (out.valid) {
+            out.credentials = cached.user;
+        }
 
-            // If we are validated add the sid to the request object
-            server.app.sid = session.sid;
-
-            // Return a validated callback function
-            return callback(null, true, cached.user);
-        });
-
+        return out;
     }
-
 };

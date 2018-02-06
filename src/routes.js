@@ -69,48 +69,48 @@ const staticHandlers = [
 const dynamicHandlers = [
 
     // Catch all handler
-    { method: '*', path: '/{p*}', handler: function (request, reply) { reply.redirect('/'); } },
+    { method: '*', path: '/{p*}', handler: function (request, h) { return h.redirect('/'); } },
 
     // Authentication and start pages
-    { method: ['GET', 'POST'], path: '/login', config: { handler: Authentication.login, auth: { mode: 'try' }, plugins: { 'hapi-auth-cookie': { redirectTo: false }, crumb: {} } } },
-    { method: 'GET', path: '/logout', config: {handler: Authentication.logout} },
-    { method: 'GET', path: '/', config: { handler: Start.start } },
+    { method: ['GET', 'POST'], path: '/login', options: { handler: Authentication.login, auth: { mode: 'try' }, plugins: { 'hapi-auth-cookie': { redirectTo: false }, crumb: {} } } },
+    { method: 'GET', path: '/logout', options: { handler: Authentication.logout } },
+    { method: 'GET', path: '/', options: { handler: Start.start } },
 
     // Handlers for the all sectors journey - select permit and tasks list
-    { method: 'POST', path: '/select-permit', config: { handler: Start.select } },
-    { method: 'GET', path: '/task-list', config: { handler: AllSectors.taskList } },
+    { method: 'POST', path: '/select-permit', options: { handler: Start.select } },
+    { method: 'GET', path: '/task-list', options: { handler: AllSectors.taskList } },
 
     // Releases to air, land, controlled waters and in waste-water
-    { method: ['GET', 'POST'], path: '/releases/{route}/confirm', handler: Releases.confirm },
-    { method: 'GET', path: '/releases/{route}', handler: Releases.releases },
-    { method: 'POST', path: '/releases/{route}/action', handler: Releases.action },
-    { method: ['GET', 'POST'], path: '/releases/{route}/add-substance', config: { handler: Releases.add } },
-    { method: ['GET', 'POST'], path: '/releases/{route}/detail', handler: Releases.detail },
-    { method: ['GET', 'POST'], path: '/releases/{route}/remove', handler: Releases.remove },
+    { method: ['GET', 'POST'], path: '/releases/{route}/confirm', options: { handler: Releases.confirm } },
+    { method: 'GET', path: '/releases/{route}', options: { handler: Releases.releases } },
+    { method: 'POST', path: '/releases/{route}/action', options: { handler: Releases.action } },
+    { method: ['GET', 'POST'], path: '/releases/{route}/add-substance', options: { handler: Releases.add } },
+    { method: ['GET', 'POST'], path: '/releases/{route}/detail', options: { handler: Releases.detail } },
+    { method: ['GET', 'POST'], path: '/releases/{route}/remove', options: { handler: Releases.remove } },
 
     // Transfers off-site
-    { method: ['GET', 'POST'], path: '/transfers/off-site', config: { handler: OffSite.offSite } },
-    { method: ['GET', 'POST'], path: '/transfers/off-site/confirm', handler: OffSite.confirm },
-    { method: ['GET', 'POST'], path: '/transfers/off-site/add', config: { handler: OffSite.add } },
-    { method: ['GET', 'POST'], path: '/transfers/off-site/remove', handler: OffSite.remove },
-    { method: ['GET', 'POST'], path: '/transfers/off-site/detail', handler: OffSite.detail },
-    { method: 'POST', path: '/transfers/off-site/action', config: { handler: OffSite.action } },
+    { method: ['GET', 'POST'], path: '/transfers/off-site', options: { handler: OffSite.offSite } },
+    { method: ['GET', 'POST'], path: '/transfers/off-site/confirm', options: { handler: OffSite.confirm } },
+    { method: ['GET', 'POST'], path: '/transfers/off-site/add', options: { handler: OffSite.add } },
+    { method: ['GET', 'POST'], path: '/transfers/off-site/remove', options: { handler: OffSite.remove } },
+    { method: ['GET', 'POST'], path: '/transfers/off-site/detail', options: { handler: OffSite.detail } },
+    { method: 'POST', path: '/transfers/off-site/action', options: { handler: OffSite.action } },
 
     // Transfers overseas
-    { method: ['GET', 'POST'], path: '/transfers/overseas/confirm', config: { handler: Overseas.confirm } },
-    { method: 'GET', path: '/transfers/overseas/add', config: { handler: Overseas.add } },
-    { method: ['GET', 'POST'], path: '/transfers/overseas/add-substance', config: { handler: Overseas.substance } },
-    { method: ['GET', 'POST'], path: '/transfers/overseas/detail', config: { handler: Overseas.detail } },
-    { method: ['GET', 'POST'], path: '/transfers/overseas/transportation-co-address', config: { handler: Overseas.transportationCompanyAddress } },
-    { method: ['GET', 'POST'], path: '/transfers/overseas/destination-address', config: { handler: Overseas.destinationAddress } },
-    { method: ['GET', 'POST'], path: '/transfers/overseas/check', config: {handler: Overseas.review } },
-    { method: ['GET', 'POST'], path: '/transfers/overseas', config: { handler: Overseas.overseas } },
-    { method: 'POST', path: '/transfers/overseas/action', config: { handler: Overseas.action } },
-    { method: ['GET', 'POST'], path: '/transfers/overseas/remove', handler: Overseas.remove },
+    { method: ['GET', 'POST'], path: '/transfers/overseas/confirm', options: { handler: Overseas.confirm } },
+    { method: 'GET', path: '/transfers/overseas/add', options: { handler: Overseas.add } },
+    { method: ['GET', 'POST'], path: '/transfers/overseas/add-substance', options: { handler: Overseas.substance } },
+    { method: ['GET', 'POST'], path: '/transfers/overseas/detail', options: { handler: Overseas.detail } },
+    { method: ['GET', 'POST'], path: '/transfers/overseas/transportation-co-address', options: { handler: Overseas.transportationCompanyAddress } },
+    { method: ['GET', 'POST'], path: '/transfers/overseas/destination-address', options: { handler: Overseas.destinationAddress } },
+    { method: ['GET', 'POST'], path: '/transfers/overseas/check', options: {handler: Overseas.review } },
+    { method: ['GET', 'POST'], path: '/transfers/overseas', options: { handler: Overseas.overseas } },
+    { method: 'POST', path: '/transfers/overseas/action', options: { handler: Overseas.action } },
+    { method: ['GET', 'POST'], path: '/transfers/overseas/remove', options: { handler: Overseas.remove } },
 
     // Completion
-    { method: ['GET', 'POST'], path: '/review/confirm', config: { handler: Review.review } },
-    { method: ['GET', 'POST'], path: '/submit/confirm', config: { handler: Submit.submit } }
+    { method: ['GET', 'POST'], path: '/review/confirm', options: { handler: Review.review } },
+    { method: ['GET', 'POST'], path: '/submit/confirm', options: { handler: Submit.submit } }
 
 ];
 
@@ -122,12 +122,13 @@ module.exports = {
      * No caching for get requests and no public caching
      */
     dynamicHandlers: dynamicHandlers.map((h) => {
-        h.config = h.config || {};
-        h.config.cache = h.config.cache || {};
-        h.config.cache.privacy = 'private';
-        h.config.cache.otherwise = 'no-cache, no-store, must-revalidate';
+        h.options = h.options || {};
+        h.options.cache = h.options.cache || {};
+        h.options.cache.privacy = 'private';
+        h.options.cache.otherwise = 'no-cache, no-store, must-revalidate';
         return h;
     }),
 
-    preHandlerMethods: [ Permissions.checkPermissions ]
+    postHandlerMethods: [ Permissions.checkPermissions ]
+
 };

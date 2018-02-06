@@ -9,15 +9,14 @@ module.exports = {
     /**
      * Confirm share handler
      * @param {internals.Request} request - The server request object
-     * @param {function} reply - The server reply function
      * @return {undefined}
      */
-    share: async (request, reply) => {
+    share: async (request, h) => {
         try {
-            reply.view('all-sectors/submit/share');
+            return h.view('all-sectors/submit/share');
         } catch (err) {
             logger.log('error', err);
-            reply.redirect('/');
+            return h.redirect('/');
         }
     }
 };
