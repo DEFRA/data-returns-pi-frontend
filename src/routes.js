@@ -10,7 +10,6 @@ const Releases = require('./handlers/all-sectors/report/releases');
 const OffSite = require('./handlers/all-sectors/report/off-site');
 const Overseas = require('./handlers/all-sectors/report/overseas');
 const Review = require('./handlers/all-sectors/submit/review');
-const Share = require('./handlers/all-sectors/submit/share');
 const Submit = require('./handlers/all-sectors/submit/submit');
 const Permissions = require('./handlers/permissions');
 
@@ -103,7 +102,7 @@ const dynamicHandlers = [
     { method: ['GET', 'POST'], path: '/transfers/overseas/detail', options: { handler: Overseas.detail } },
     { method: ['GET', 'POST'], path: '/transfers/overseas/transportation-co-address', options: { handler: Overseas.transportationCompanyAddress } },
     { method: ['GET', 'POST'], path: '/transfers/overseas/destination-address', options: { handler: Overseas.destinationAddress } },
-    { method: ['GET', 'POST'], path: '/transfers/overseas/check', options: {handler: Overseas.review } },
+    { method: ['GET', 'POST'], path: '/transfers/overseas/check', options: { handler: Overseas.review } },
     { method: ['GET', 'POST'], path: '/transfers/overseas', options: { handler: Overseas.overseas } },
     { method: 'POST', path: '/transfers/overseas/action', options: { handler: Overseas.action } },
     { method: ['GET', 'POST'], path: '/transfers/overseas/remove', options: { handler: Overseas.remove } },
