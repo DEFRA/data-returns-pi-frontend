@@ -5,6 +5,8 @@ const Submission = require('../../../lib/submission');
 const cacheHelper = require('../common').cacheHelper;
 const cacheNames = require('../../../lib/user-cache-policies').names;
 const CacheKeyError = require('../../../lib/user-cache-policies').CacheKeyError;
+const errHdlr = require('../../../lib/utils').generalErrorHandler;
+
 const allSectorsTaskList = require('../../../model/all-sectors/task-list');
 const required = require('../../../service/task-list').required(allSectorsTaskList).map(n => n.name);
 const isNumeric = require('../../../lib/utils').isNumeric;
@@ -221,8 +223,7 @@ module.exports = {
                 }
             }
         } catch (err) {
-            logger.log('error', err);
-            return h.redirect('/');
+            return errHdlr(err, h);
         }
     }
 };

@@ -17,6 +17,11 @@ server:
     cookie:                 # The cookie associated with the authorization cache
       timeToLive:
       ironCookiePassword: 'vghu87VkhjgvTG796kjhbOHsqa&^(*&gsVJ'
+##############################################
+# API options
+##############################################
+api:
+  requestTimeout: 20000
 
 ##############################################
 # Logging options

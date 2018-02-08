@@ -1,8 +1,8 @@
 'use strict';
 
-const logger = require('../lib/logging').logger;
 const MasterDataService = require('../service/master-data');
 const Submission = require('../lib/submission');
+const errHdlr = require('../lib/utils').generalErrorHandler;
 
 const SessionHelper = require('./session-helper');
 const cacheNames = require('../lib/user-cache-policies').names;
@@ -80,8 +80,7 @@ module.exports = {
             return h.view('start', { user: session.user, eaIds: eaIds, is_operator: isOperator });
 
         } catch (err) {
-            logger.log('error', err);
-            return h.redirect('/logout');
+            return errHdlr(err, h);
         }
     },
 
@@ -177,8 +176,7 @@ module.exports = {
             }
 
         } catch (err) {
-            logger.log('error', err);
-            return h.redirect('/logout');
+            return errHdlr(err, h);
         }
     }
 };

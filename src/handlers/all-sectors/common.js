@@ -100,7 +100,7 @@ module.exports = {
     },
 
     /**
-     * Calculate teh TASK completed status - the status required to make the submission for a given route
+     * Calculate the TASK completed status - the status required to make the submission for a given route
      * @param submissionContext
      * @param name
      */

@@ -4,10 +4,11 @@
  * Common functions for route handlers for substance releases to
  * air, water, waste water and land
  */
-const logger = require('../../../lib/logging').logger;
 const MasterDataService = require('../../../service/master-data');
 const Validator = require('../../../lib/validator');
 const CacheKeyError = require('../../../lib/user-cache-policies').CacheKeyError;
+const errHdlr = require('../../../lib/utils').generalErrorHandler;
+
 const cacheHelper = require('../common').cacheHelper;
 const isNumeric = require('../../../lib/utils').isNumeric;
 const cacheNames = require('../../../lib/user-cache-policies').names;
@@ -157,12 +158,7 @@ module.exports = {
                 }
             }
         } catch (err) {
-            if (err instanceof CacheKeyError) {
-                return h.redirect('/');
-            } else {
-                logger.log('error', err);
-                return h.redirect('/logout');
-            }
+            return errHdlr(err, h);
         }
     },
 
@@ -213,12 +209,7 @@ module.exports = {
             }
 
         } catch (err) {
-            if (err instanceof CacheKeyError) {
-                return h.redirect('/');
-            } else {
-                logger.log('error', err);
-                return h.redirect('/logout');
-            }
+            return errHdlr(err, h);
         }
     },
 
@@ -284,12 +275,7 @@ module.exports = {
             }
 
         } catch (err) {
-            if (err instanceof CacheKeyError) {
-                return h.redirect('/');
-            } else {
-                logger.log('error', err);
-                return h.redirect('/logout');
-            }
+            return errHdlr(err, h);
         }
     },
 
@@ -357,13 +343,7 @@ module.exports = {
                 }
             }
         } catch (err) {
-            if (err instanceof CacheKeyError) {
-                logger.debug(err);
-                return h.redirect('/');
-            } else {
-                logger.log('error', err);
-                return h.redirect('/logout');
-            }
+            return errHdlr(err, h);
         }
     },
 
@@ -399,12 +379,7 @@ module.exports = {
                 }
             }
         } catch (err) {
-            if (err instanceof CacheKeyError) {
-                return h.redirect('/');
-            } else {
-                logger.log('error', err);
-                return h.redirect('/logout');
-            }
+            return errHdlr(err, h);
         }
     },
 
@@ -489,12 +464,7 @@ module.exports = {
 
             }
         } catch (err) {
-            if (err instanceof CacheKeyError) {
-                return h.redirect('/');
-            } else {
-                logger.log('error', err);
-                return h.redirect('/logout');
-            }
+            return errHdlr(err, h);
         }
     }
 };

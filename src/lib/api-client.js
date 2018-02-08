@@ -8,6 +8,14 @@ const uriJs = require('uri-js');
 const Hoek = require('hoek');
 const request = require('request-promise');
 const Logging = require('./logging');
+const apicfg = require('./system').configuration.api;
+
+class ServiceError extends Error {
+    constructor (message) {
+        super(`Service error: ${message}`);
+        this.name = 'ServiceError';
+    }
+};
 
 const internals = {
 
@@ -65,6 +73,7 @@ const internals = {
                 uri: uri,
                 method: method,
                 json: true,
+                timeout: apicfg.requestTimeout,
                 headers: {
                     'Accept': 'application/json'
                 },
@@ -77,9 +86,7 @@ const internals = {
 
             return result;
         } catch (err) {
-
-            Logging.logger.error(err);
-            throw err;
+            throw new ServiceError(err.message);
         }
     }
 };
@@ -91,5 +98,7 @@ module.exports = {
         }
 
         return null;
-    }
+    },
+
+    ServiceError: ServiceError
 };

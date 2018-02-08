@@ -68,7 +68,7 @@ const staticHandlers = [
 const dynamicHandlers = [
 
     // Catch all handler
-    { method: '*', path: '/{p*}', handler: function (request, h) { return h.redirect('/'); } },
+    { method: '*', path: '/{p*}', options: { handler: function (request, h) { return h.redirect('/'); } } },
 
     // Authentication and start pages
     { method: ['GET', 'POST'], path: '/login', options: { handler: Authentication.login, auth: { mode: 'try' }, plugins: { 'hapi-auth-cookie': { redirectTo: false }, crumb: {} } } },
@@ -109,8 +109,10 @@ const dynamicHandlers = [
 
     // Completion
     { method: ['GET', 'POST'], path: '/review/confirm', options: { handler: Review.review } },
-    { method: ['GET', 'POST'], path: '/submit/confirm', options: { handler: Submit.submit } }
+    { method: ['GET', 'POST'], path: '/submit/confirm', options: { handler: Submit.submit } },
 
+    // Service Error
+    { method: 'GET', path: '/service-error', options: { handler: function (request, h) { return h.view('service-error'); } } }
 ];
 
 module.exports = {
