@@ -47,22 +47,22 @@
                         {% if eaId.status %}
                             {% if is_operator %}
                                 {% if eaId.status === 'Unsubmitted' %}
-                                    <td><input class="link" type="submit" id="{{ eaId.id }}-o-open" name="{{ eaId.id }}" value="Open"></td>
+                                    <td><input class="link" type="submit" id="o-open-{{ eaId.id }}" name="{{ eaId.id }}" value="Open"></td>
                                 {% elif eaId.status === 'Submitted' or eaId.status === 'Approved' %}
-                                    <td><input class="link" type="submit" id="{{ eaId.id }}-o-view" name="{{ eaId.id }}" value="View"></td>
+                                    <td><input class="link" type="submit" id="o-view-{{ eaId.id }}" name="{{ eaId.id }}" value="View"></td>
                                 {% endif %}
                             {% else %}
                                 {% if eaId.status === 'Unsubmitted' %}
-                                    <td><input class="link" type="submit" id="{{ eaId.id }}-i-view" name="{{ eaId.id }}" value="View"></td>
+                                    <td><input class="link" type="submit" id="i-view{{ eaId.id }}" name="{{ eaId.id }}" value="View"></td>
                                 {% elif eaId.status === 'Submitted' %}
-                                    <td><input class="link" type="submit" id="{{ eaId.id }}-i-review" name="{{ eaId.id }}" value="Review"></td>
+                                    <td><input class="link" type="submit" id="i-review-{{ eaId.id }}" name="{{ eaId.id }}" value="Review"></td>
                                 {% elif eaId.status === 'Approved' %}
-                                    <td><input class="link" type="submit" id="{{ eaId.id }}-i-view-a" name="{{ eaId.id }}" value="View"></td>
+                                    <td><input class="link" type="submit" id="i-view-a-{{ eaId.id }}" name="{{ eaId.id }}" value="View"></td>
                                 {% endif %}
                             {% endif %}
                         {% else %}
                             {% if is_operator %}
-                                <td><input class="link" type="submit" id="{{ eaId.id }}-t-open" name="{{ eaId.id }}" value="Open"></td>
+                                <td><input class="link" type="submit" id="t-open-{{ eaId.id }}" name="{{ eaId.id }}" value="Open"></td>
                             {% else %}
                                 <td></td>
                             {% endif %}
