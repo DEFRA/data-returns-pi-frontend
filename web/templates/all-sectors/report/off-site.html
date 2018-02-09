@@ -9,6 +9,7 @@
     {% if transfers | map("errors") | length === 0 %}
     <h1 class="heading-large">Your waste transferred off site</h1>
     {% else %}
+    <h1 class="heading-large">Your waste transferred off site</h1>
     <div class="error-summary" role="alert" aria-labelledby="check-your-report" tabindex="-1">
         <h2 class="heading-medium error-summary-heading" id="check-your-report">Check what you’re reporting</h2>
         <ul class="error-summary-list">
