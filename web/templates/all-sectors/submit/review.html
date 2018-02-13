@@ -57,6 +57,7 @@
 {% block content %}
 
 <main id="content">
+    <label hidden id="page-name">review</label>
 
     {% if is_operator and submission_status === 'Unsubmitted' %}
         <a href="/task-list" class="link-back">Back to sections you must complete</a>
@@ -96,19 +97,19 @@
         {% if review_mode %}
             {% if is_operator %}
                 <div class="form-group">
-                    <input type="submit" class="button" value="Accept">
+                    <input type="submit" class="button" id="accept" value="Accept">
                 </div>
 
                 <div class="form-group">
-                    <p><a href="/task-list">Do not accept</a></p>
+                    <p><a id="not-accept" href="/task-list">Do not accept</a></p>
                 </div>
             {% else %}
                 <div class="form-group">
-                    <input type="submit" class="button" value="Approve">
+                    <input type="submit" class="button" id="approve" value="Approve">
                 </div>
 
                 <div class="form-group">
-                    <input class="link" type="submit" id="notApprove" name="notApprove" value="Do not approve"/>
+                    <input class="link" type="submit" id="not-approve" name="notApprove" value="Do not approve"/>
                 </div>
             {% endif %}
         {% endif %}
