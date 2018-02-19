@@ -79,14 +79,6 @@ internals.initialize = async () => {
         plugin: require('hapi-auth-cookie')
     });
 
-    /*
-     * Register Crumb - looks like this is broken with the current
-     * version of hapi
-     * await server.register({
-     *    register: require('crumb')
-     * });
-     * Configure nunjucks
-     */
     internals.server.views({
         engines: {
             html: {
@@ -143,7 +135,7 @@ internals.initialize = async () => {
     // Set up the authorization strategy
     logger.info('Set authorization strategy: cookie');
     internals.server.auth.strategy('session', 'cookie', {
-        password: srvcfg.authorization.cookie.ironCookiePassword,
+        password: process.env.COOKIE_PW,
         cookie: 'sid',
         redirectTo: '/login',
         isSecure: false,
