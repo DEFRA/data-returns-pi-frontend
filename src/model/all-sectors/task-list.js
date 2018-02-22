@@ -14,6 +14,22 @@ module.exports = {
     stages: [
 
         {
+            heading: 'Check your details',
+            items: [
+
+                {
+                    name: 'SITE_CODES',
+                    pathParam: 'site-codes',
+                    title: 'Check your site codes',
+                    page: '/check/site-codes',
+                    required: true,
+                    message: { fetch: 'siteCodes' }
+                }
+
+            ]
+        },
+
+        {
             heading: 'Report your data',
             items: [
 

@@ -219,6 +219,39 @@ module.exports = internals = {
      */
     getRecoveryById: async (id) => {
         return internals.getEntityById(internals._entities.recoveryCodes, id);
+    },
+
+    /**
+     * Get the first level nose-p codes
+     * @return {Promise.<void>}
+     */
+    getNoseActivityClasses: async () => {
+        return internals.listEntity(internals._entities.noseActivityClasses);
+    },
+
+    /**
+     * Get the first level nose-p codes by id
+     * @param id
+     * @return {Promise.<*>}
+     */
+    getNoseActivityClassById: async (id) => {
+        return internals.getEntityById(internals._entities.noseActivityClasses, id);
+    },
+
+    getNoseActivities: async () => {
+        return internals.listEntity(internals._entities.noseActivities);
+    },
+
+    getNoseActivityById: async (id) => {
+        return internals.getEntityById(internals._entities.noseActivities, id);
+    },
+
+    getNoseProcesses: async () => {
+        return internals.listEntity(internals._entities.noseProcesses);
+    },
+
+    getNoseProcessById: async (id) => {
+        return internals.getEntityById(internals._entities.noseProcesses, id);
     }
 
 };
@@ -505,6 +538,48 @@ internals._entities = {
             { name: 'byCode', keyFunc: (i) => i.code }
         ],
         sorter: (a, b) => internals.sortByProperty(a, b, 'code')
+    },
+
+    noseActivityClasses: {
+        name: 'noseActivityClasses',
+        map: new Map(),
+        arr: [],
+        request: {api: 'MD', uri: 'noseActivityClasses', method: 'GET'},
+        idMapper: (i) => {
+            return {
+                id: i.id,
+                name: i.nomenclature
+            };
+        },
+        sorter: (a, b) => internals.sortByProperty(a, b, 'name')
+    },
+
+    noseActivities: {
+        name: 'noseActivities',
+        map: new Map(),
+        arr: [],
+        request: {api: 'MD', uri: 'noseActivities', method: 'GET'},
+        idMapper: (i) => {
+            return {
+                id: i.id,
+                name: i.nomenclature
+            };
+        },
+        sorter: (a, b) => internals.sortByProperty(a, b, 'name')
+    },
+
+    noseProcesses: {
+        name: 'noseProcesses',
+        map: new Map(),
+        arr: [],
+        request: {api: 'MD', uri: 'noseProcesses', method: 'GET'},
+        idMapper: (i) => {
+            return {
+                id: i.id,
+                name: i.nomenclature
+            };
+        },
+        sorter: (a, b) => internals.sortByProperty(a, b, 'name')
     }
 
 };

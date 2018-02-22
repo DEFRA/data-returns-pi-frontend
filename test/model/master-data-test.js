@@ -183,5 +183,39 @@ experiment('Master data service (Test data)', function () {
             expect(recovery).to.be.an.object();
             expect(recovery.id).to.equal(1);
         });
+
+        test('getNoseActivityClasses()', async () => {
+            const noseActivityClasses = await MasterDataService.getNoseActivityClasses();
+            expect(noseActivityClasses).to.be.an.array();
+        });
+
+        test('getNoseActivityClassById()', async () => {
+            const noseActivityClasses = await MasterDataService.getNoseActivityClasses();
+            const noseActivityClass = await MasterDataService.getNoseActivityClassById(noseActivityClasses[1].id);
+            expect(noseActivityClass).to.equal(noseActivityClasses[1]);
+        });
+
+        test('getNoseActivities()', async () => {
+            const noseActivities = await MasterDataService.getNoseActivities();
+            expect(noseActivities).to.be.an.array();
+        });
+
+        test('getNoseActivityById()', async () => {
+            const noseActivities = await MasterDataService.getNoseActivities();
+            const noseActivitiy = await MasterDataService.getNoseActivityById(noseActivities[1].id);
+            expect(noseActivitiy).to.equal(noseActivities[1]);
+        });
+
+        test('getNoseProcesses()', async () => {
+            const noseProcesses = await MasterDataService.getNoseProcesses();
+            expect(noseProcesses).to.be.an.array();
+        });
+
+        test('getNoseProcessesById()', async () => {
+            const noseProcesses = await MasterDataService.getNoseProcesses();
+            const noseProcess = await MasterDataService.getNoseProcessById(noseProcesses[1].id);
+            expect(noseProcess).to.equal(noseProcesses[1]);
+        });
+
     }
 });

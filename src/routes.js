@@ -12,6 +12,7 @@ const Overseas = require('./handlers/all-sectors/report/overseas');
 const Review = require('./handlers/all-sectors/submit/review');
 const Submit = require('./handlers/all-sectors/submit/submit');
 const Permissions = require('./handlers/permissions');
+const SiteCodes = require('./handlers/all-sectors/check/site-codes');
 
 /**
  * Returns routes for the static assets
@@ -78,6 +79,9 @@ const dynamicHandlers = [
     // Handlers for the all sectors journey - select permit and tasks list
     { method: 'POST', path: '/select-permit', options: { handler: Start.select } },
     { method: 'GET', path: '/task-list', options: { handler: AllSectors.taskList } },
+
+    // Handlers for the check phase
+    { method: ['GET', 'POST'], path: '/check/site-codes/confirm', options: { handler: SiteCodes.confirm } },
 
     // Releases to air, land, controlled waters and in waste-water
     { method: ['GET', 'POST'], path: '/releases/{route}/confirm', options: { handler: Releases.confirm } },

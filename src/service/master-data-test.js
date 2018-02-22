@@ -238,7 +238,32 @@ module.exports = internals = {
 
     getRecoveryById: async (id) => {
         return Data.recoveryCodes.find((e) => { return e.id === id; }) || null;
+    },
+
+    getNoseActivityClasses: async () => {
+        return Data.noseActivityClasses;
+    },
+
+    getNoseActivityClassById: async (id) => {
+        return Data.noseActivityClasses.find((e) => { return e.id === id; }) || null;
+    },
+
+    getNoseActivities: async () => {
+        return Data.noseActivities;
+    },
+
+    getNoseActivityById: async (id) => {
+        return Data.noseActivities.find((e) => { return e.id === id; }) || null;
+    },
+
+    getNoseProcesses: async () => {
+        return Data.noseProcesses;
+    },
+
+    getNoseProcessById: async (id) => {
+        return Data.noseProcesses.find((e) => { return e.id === id; }) || null;
     }
+
 };
 
 internals._substancesMap = new Map();
