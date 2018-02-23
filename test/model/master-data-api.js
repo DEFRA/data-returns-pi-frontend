@@ -64,8 +64,9 @@ experiment('Master data service (API)', async () => {
         });
 
         test('getSubstanceById(id)', async () => {
-            const substance = await MasterDataService.getSubstanceById(504);
-            expect(substance).to.be.an.object();
+            const substances = await MasterDataService.getSubstances();
+            const substance = await MasterDataService.getSubstanceById(substances[0].id);
+            expect(substance).to.equal(substances[0]);
         });
 
         test('getUnits ()', async () => {
@@ -191,6 +192,73 @@ experiment('Master data service (API)', async () => {
             const noseProcesses = await MasterDataService.getNoseProcesses();
             const noseProcess = await MasterDataService.getNoseProcessById(noseProcesses[1].id);
             expect(noseProcess).to.equal(noseProcesses[1]);
+        });
+
+        test('getEprtrActivities()', async () => {
+            const eprtrActivities = await MasterDataService.getEprtrActivities();
+            expect(eprtrActivities).to.be.an.array();
+        });
+
+        test('geEprtrActivitiyById()', async () => {
+            const eprtrActivities = await MasterDataService.getEprtrActivities();
+            const noseActivitiy = await MasterDataService.getEprtrActivityById(eprtrActivities[1].id);
+            expect(noseActivitiy).to.equal(eprtrActivities[1]);
+        });
+
+        test('getEprtrSectors()', async () => {
+            const eprtrSectors = await MasterDataService.getEprtrSectors();
+            expect(eprtrSectors).to.be.an.array();
+        });
+
+        test('getEprtrSectorById()', async () => {
+            const eprtrSectors = await MasterDataService.getEprtrSectors();
+            const eprtrSector = await MasterDataService.getEprtrSectorById(eprtrSectors[1].id);
+            expect(eprtrSector).to.equal(eprtrSectors[1]);
+        });
+
+        test('getNaceSections:', async () => {
+            const naceSectors = await MasterDataService.getNaceSections();
+            expect(naceSectors).to.be.an.array();
+        });
+
+        test('getNaceSectionById:', async (id) => {
+            const naceSectors = await MasterDataService.getNaceSections();
+            const naceSector = await MasterDataService.getNaceSectionById(naceSectors[2].id);
+            expect(naceSector).to.equal(naceSectors[2]);
+        });
+
+        test('getNaceDivisions:', async () => {
+            const naceDivisions = await MasterDataService.getNaceDivisions();
+            expect(naceDivisions).to.be.an.array();
+         });
+
+        test('getNaceDivisionById:', async () => {
+            const naceDivisions = await MasterDataService.getNaceDivisions();
+            const naceDivision = await MasterDataService.getNaceDivisionById(naceDivisions[2].id);
+            expect(naceDivision).to.equal(naceDivisions[2]);
+        });
+
+        test('getNaceGroups:', async () => {
+            const naceGroups = await MasterDataService.getNaceGroups();
+            expect(naceGroups).to.be.an.array();
+        });
+
+        test('getNaceGroupById:', async () => {
+            const naceGroups = await MasterDataService.getNaceGroups();
+            const naceGroup = await MasterDataService.getNaceGroupById(naceGroups[2].id);
+            expect(naceGroup).to.equal(naceGroups[2]);
+        });
+
+        test('getNaceClasses:', async () => {
+            const naceClasses = await MasterDataService.getNaceClasses();
+            expect(naceClasses).to.be.an.array();
+          console.log(JSON.stringify(naceClasses, null, 4));
+        });
+
+        test('getNaceClassById:', async () => {
+            const naceClasses = await MasterDataService.getNaceClasses();
+            const naceClass = await MasterDataService.getNaceClassById(naceClasses[2].id);
+            expect(naceClass).to.equal(naceClasses[2]);
         });
 
     }

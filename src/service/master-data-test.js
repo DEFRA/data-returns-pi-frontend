@@ -262,6 +262,54 @@ module.exports = internals = {
 
     getNoseProcessById: async (id) => {
         return Data.noseProcesses.find((e) => { return e.id === id; }) || null;
+    },
+
+    getEprtrActivities: async () => {
+        return Data.eprtrActivities;
+    },
+
+    getEprtrActivityById: async (id) => {
+        return Data.eprtrActivities.find((e) => { return e.id === id; }) || null;
+    },
+
+    getEprtrSectors: async () => {
+        return Data.eprtrSectors;
+    },
+
+    getEprtrSectorById: async (id) => {
+        return Data.eprtrSectors.find((e) => { return e.id === id; }) || null;
+    },
+
+    getNaceSections: async () => {
+        return Data.naceSections;
+    },
+
+    getNaceSectionById: async (id) => {
+        return Data.naceSections.find((e) => { return e.id === id; }) || null; ;
+    },
+
+    getNaceDivisions: async () => {
+        return Data.naceDivisions;
+    },
+
+    getNaceDivisionById: async (id) => {
+        return Data.naceDivisions.find((e) => { return e.id === id; }) || null; ;
+    },
+
+    getNaceGroups: async () => {
+        return Data.naceGroups;
+    },
+
+    getNaceGroupById: async (id) => {
+        return Data.naceGroups.find((e) => { return e.id === id; }) || null; ;
+    },
+
+    getNaceClasses: async () => {
+        return Data.naceClasses;
+    },
+
+    getNaceClassById: async (id) => {
+        return Data.naceClasses.find((e) => { return e.id === id; }) || null; ;
     }
 
 };

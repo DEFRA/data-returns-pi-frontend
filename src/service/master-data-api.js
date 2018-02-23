@@ -252,8 +252,63 @@ module.exports = internals = {
 
     getNoseProcessById: async (id) => {
         return internals.getEntityById(internals._entities.noseProcesses, id);
-    }
+    },
 
+    /**
+     * Get the EPRTR codes
+     * @returns {Promise.<void>}
+     */
+    getEprtrActivities: async () => {
+        return internals.listEntity(internals._entities.eprtrActivities);
+    },
+
+    getEprtrActivityById: async (id) => {
+        return internals.getEntityById(internals._entities.eprtrActivities, id);
+    },
+
+    getEprtrSectors: async () => {
+        return internals.listEntity(internals._entities.eprtrSectors);
+    },
+
+    getEprtrSectorById: async (id) => {
+        return internals.getEntityById(internals._entities.eprtrSectors, id);
+    },
+
+    /**
+     * Nace code hierarchy - section, division, group, class
+     * @returns {Promise.<*>}
+     */
+    getNaceSections: async () => {
+        return internals.listEntity(internals._entities.naceSections);
+    },
+
+    getNaceSectionById: async (id) => {
+        return internals.getEntityById(internals._entities.naceSections, id);
+    },
+
+    getNaceDivisions: async () => {
+        return internals.listEntity(internals._entities.naceDivisions);
+    },
+
+    getNaceDivisionById: async (id) => {
+        return internals.getEntityById(internals._entities.naceDivisions, id);
+    },
+
+    getNaceGroups: async () => {
+        return internals.listEntity(internals._entities.naceGroups);
+    },
+
+    getNaceGroupById: async (id) => {
+        return internals.getEntityById(internals._entities.naceGroups, id);
+    },
+
+    getNaceClasses: async () => {
+        return internals.listEntity(internals._entities.naceClasses);
+    },
+
+    getNaceClassById: async (id) => {
+        return internals.getEntityById(internals._entities.naceClasses, id);
+    }
 };
 
 /**
@@ -540,6 +595,70 @@ internals._entities = {
         sorter: (a, b) => internals.sortByProperty(a, b, 'code')
     },
 
+    naceSections: {
+        name: 'naceSections',
+        map: new Map(),
+        arr: [],
+        request: {api: 'MD', uri: 'naceSections', method: 'GET'},
+        idMapper: (i) => {
+            return {
+                id: i.id,
+                code: i.nomenclature,
+                description: i.description,
+                details: i.details
+            };
+        },
+        sorter: (a, b) => internals.sortByProperty(a, b, 'code')
+    },
+
+    naceDivisions: {
+        name: 'naceDivisions',
+        map: new Map(),
+        arr: [],
+        request: {api: 'MD', uri: 'naceDivisions', method: 'GET'},
+        idMapper: (i) => {
+            return {
+                id: i.id,
+                code: i.nomenclature,
+                description: i.description,
+                details: i.details
+            };
+        },
+        sorter: (a, b) => internals.sortByProperty(a, b, 'code')
+    },
+
+    naceGroups: {
+        name: 'naceGroups',
+        map: new Map(),
+        arr: [],
+        request: {api: 'MD', uri: 'naceGroups', method: 'GET'},
+        idMapper: (i) => {
+            return {
+                id: i.id,
+                code: i.nomenclature,
+                description: i.description,
+                details: i.details
+            };
+        },
+        sorter: (a, b) => internals.sortByProperty(a, b, 'code')
+    },
+
+    naceClasses: {
+        name: 'naceClasses',
+        map: new Map(),
+        arr: [],
+        request: {api: 'MD', uri: 'naceClasses', method: 'GET'},
+        idMapper: (i) => {
+            return {
+                id: i.id,
+                code: i.nomenclature,
+                description: i.description,
+                details: i.details
+            };
+        },
+        sorter: (a, b) => internals.sortByProperty(a, b, 'code')
+    },
+
     noseActivityClasses: {
         name: 'noseActivityClasses',
         map: new Map(),
@@ -580,6 +699,37 @@ internals._entities = {
             };
         },
         sorter: (a, b) => internals.sortByProperty(a, b, 'name')
+    },
+
+    eprtrSectors: {
+        name: 'eprtrSectors',
+        map: new Map(),
+        arr: [],
+        request: {api: 'MD', uri: 'eprtrSectors', method: 'GET'},
+        idMapper: (i) => {
+            return {
+                id: i.id,
+                code: i.nomenclature,
+                description: i.description
+            };
+        },
+        sorter: (a, b) => internals.sortByProperty(a, b, 'code')
+    },
+
+    eprtrActivities: {
+        name: 'eprtrActivities',
+        map: new Map(),
+        arr: [],
+        request: {api: 'MD', uri: 'eprtrActivities', method: 'GET'},
+        idMapper: (i) => {
+            return {
+                id: i.id,
+                code: i.nomenclature,
+                description: i.description,
+                threshold: i.threshold
+            };
+        },
+        sorter: (a, b) => internals.sortByProperty(a, b, 'code')
     }
 
 };
