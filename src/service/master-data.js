@@ -61,6 +61,6 @@ module.exports = {
     getNaceGroupById: process.env.NODE_ENV === 'localtest' ? testService.getNaceGroupById : apiService.getNaceGroupById,
     getNaceClasses: process.env.NODE_ENV === 'localtest' ? testService.getNaceClasses : apiService.getNaceClasses,
     getNaceClassById: process.env.NODE_ENV === 'localtest' ? testService.getNaceClassById : apiService.getNaceClassById,
-    getNaceHierarchy: process.env.NODE_ENV === 'localtest' ? testService.getNaceHierarchy : apiService.getNaceHierarchy
-
+    getNaceHierarchy: process.env.NODE_ENV === 'localtest' ? testService.getNaceHierarchy : apiService.getNaceHierarchy,
+    getNaceHierarchyByKey: process.env.NODE_ENV === 'localtest' ? testService.getNaceHierarchyByKey : apiService.getNaceHierarchyByKey
 };

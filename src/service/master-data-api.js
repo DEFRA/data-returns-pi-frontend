@@ -309,10 +309,10 @@ module.exports = internals = {
         return internals.getEntityById(internals._entities.eprtrActivities, id);
     },
 
-  /**
-   * Get the E-PRTR hierarchy
-   * @return {Promise.<*>}
-   */
+    /**
+     * Get the E-PRTR hierarchy
+     * @return {Promise.<*>}
+     */
     getEprtrHierarchy: async () => {
         return internals.listRelation(internals._relations.eprtrHierarchy);
     },
@@ -387,6 +387,10 @@ module.exports = internals = {
      */
     getNaceHierarchy: async () => {
         return internals.listRelation(internals._relations.naceHierarchy);
+    },
+
+    getNaceHierarchyByKey: async (sectionId, divisionId, groupId, classId) => {
+        return internals.getRelationByKey(internals._relations.naceHierarchy, { sectionId, divisionId, groupId, classId });
     }
 };
 
@@ -424,6 +428,13 @@ internals.getEntityById = async (entity, id) => {
         await internals.entityFetch(entity);
     }
     return entity.map.get(id);
+};
+
+internals.getRelationByKey = async (relation, key) => {
+    if (!relation.arr.length) {
+        await internals.relationFetch(relation);
+    }
+    return relation.map.get(relation.keyMap(key));
 };
 
 /**
@@ -532,6 +543,10 @@ internals.relationFetch = async (relation) => {
             relation.request.method, relation.request.uri, relation.request.query);
 
         relation.arr = relation.processor(result._embedded[relation.name]);
+
+        relation.arr.forEach((r) => {
+            relation.map.set(relation.keyMap(r), r);
+        });
 
     } catch (err) {
         Logging.logger.error(err);
@@ -870,6 +885,10 @@ internals._relations = {
                 }
             }
             return hierarchy;
+        },
+
+        keyMap: (r) => {
+            return `${r.sectionId}-${r.divisionId}-${r.groupId}-${r.classId}`;
         }
     },
 
@@ -893,6 +912,10 @@ internals._relations = {
                 }
             }
             return hierarchy;
+        },
+
+        keyMap: (r) => {
+            return `${r.activityClassId}-${r.activityId}-${r.processId}`;
         }
     },
 
@@ -913,6 +936,10 @@ internals._relations = {
                 }
             }
             return hierarchy;
+        },
+
+        keyMap: (r) => {
+            return `${r.sectorId}-${r.activityId}`;
         }
     }
 };

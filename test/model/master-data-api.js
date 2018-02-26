@@ -277,7 +277,13 @@ experiment('Master data service (API)', async () => {
         test('getNaceHierarchies()', async () => {
             const naceHierarchy = await MasterDataService.getNaceHierarchy();
             expect(naceHierarchy).to.be.an.array();
-          // console.log(JSON.stringify(naceHierarchy, null, 4));
+            // console.log(JSON.stringify(naceHierarchy, null, 4));
+        });
+
+        test('getNaceHierarchyByKey()', async () => {
+            const naceHierarchy = await MasterDataService.getNaceHierarchyByKey(20, 86, 269, 612);
+            expect(naceHierarchy).to.be.an.object();
+            console.log(JSON.stringify(naceHierarchy, null, 4));
         });
 
     }

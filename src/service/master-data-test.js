@@ -284,6 +284,10 @@ module.exports = internals = {
         return Data.eprtrSectors.find((e) => { return e.id === id; }) || null;
     },
 
+    getEprtrHierarchy: async () => {
+        return Data.eprtrHierarchys;
+    },
+
     getNaceSections: async () => {
         return Data.naceSections;
     },
@@ -320,9 +324,10 @@ module.exports = internals = {
         return Data.naceHierarchy;
     },
 
-    getEprtrHierarchy: async () => {
-        return [];
+    getNaceHierarchyByKey: async (sectionId, divisionId, groupId, classId) => {
+        return {};
     }
+
 };
 
 internals._substancesMap = new Map();
