@@ -1372,6 +1372,9 @@ module.exports = {
         { id: 15, code: 'D15', description: 'Storage pending any of the operations numbered D1 to D14 (excluding temporary storage pending collection on the site where it is produced)' }
     ],
 
+    /*
+     * From here on in the data is set-sets
+     */
     noseActivityClasses: [
         {
             'id': 4,
@@ -1653,308 +1656,191 @@ module.exports = {
         }
     ],
 
-    eprtrSectors: [
+    noseHierarchy: [
         {
-            'id': 1,
-            'code': '1',
-            'description': 'Energy sector'
+            'activityClassId': 1,
+            'activityId': 10,
+            'processId': 32
         },
         {
-            'id': 2,
-            'code': '2',
-            'description': 'Production and processing of metals'
+            'activityClassId': 1,
+            'activityId': 14,
+            'processId': 24
         },
         {
-            'id': 3,
-            'code': '3',
-            'description': 'Mineral industry'
+            'activityClassId': 1,
+            'activityId': 17,
+            'processId': 12
         },
         {
-            'id': 4,
-            'code': '4',
-            'description': 'Chemical industry'
+            'activityClassId': 1,
+            'activityId': 17,
+            'processId': 33
         },
         {
-            'id': 5,
-            'code': '5',
-            'description': 'Waste and wastewater management'
+            'activityClassId': 2,
+            'activityId': 1,
+            'processId': 22
         },
         {
-            'id': 6,
-            'code': '6',
-            'description': 'Paper and wood production and processing'
+            'activityClassId': 2,
+            'activityId': 3,
+            'processId': 7
         },
         {
-            'id': 7,
-            'code': '7',
-            'description': 'Intensive livestock production and aquaculture'
+            'activityClassId': 2,
+            'activityId': 3,
+            'processId': 9
         },
         {
-            'id': 8,
-            'code': '8',
-            'description': 'Animal and vegetable products from the food and beverage sector'
+            'activityClassId': 2,
+            'activityId': 3,
+            'processId': 16
         },
         {
-            'id': 9,
-            'code': '9',
-            'description': 'Other activities'
-        }
-    ],
-
-    eprtrActivities: [
-        {
-            'id': 12,
-            'code': '1. (a)',
-            'description': 'Mineral oil and gas refineries'
+            'activityClassId': 2,
+            'activityId': 11,
+            'processId': 29
         },
         {
-            'id': 44,
-            'code': '1. (b)',
-            'description': 'Installations for gasification and liquefaction'
+            'activityClassId': 2,
+            'activityId': 4,
+            'processId': 4
         },
         {
-            'id': 20,
-            'code': '1. (c)',
-            'description': 'Thermal power stations and other combustion installations',
-            'threshold': 'With a heat input of 50 megawatts (MW)'
+            'activityClassId': 2,
+            'activityId': 4,
+            'processId': 2
         },
         {
-            'id': 43,
-            'code': '1. (d)',
-            'description': 'Coke ovens'
+            'activityClassId': 2,
+            'activityId': 25,
+            'processId': 30
         },
         {
-            'id': 19,
-            'code': '1. (e)',
-            'description': 'Coal rolling mills',
-            'threshold': 'With a capacity of 1 tonne per hour'
+            'activityClassId': 2,
+            'activityId': 12,
+            'processId': 14
         },
         {
-            'id': 30,
-            'code': '1. (f)',
-            'description': 'Installations for the manufacture of coal products and solid smokeless fuel'
+            'activityClassId': 2,
+            'activityId': 26,
+            'processId': 23
         },
         {
-            'id': 23,
-            'code': '2. (a)',
-            'description': 'Metal ore (including sulphide ore) roasting or sintering installations'
+            'activityClassId': 2,
+            'activityId': 13,
+            'processId': 17
         },
         {
-            'id': 3,
-            'code': '2. (b)',
-            'description': 'Installations for the production of pig iron or steel (primary or secondary melting) including continuous casting',
-            'threshold': 'With a capacity of 2,5 tonnes per hour'
+            'activityClassId': 2,
+            'activityId': 27,
+            'processId': 28
         },
         {
-            'id': 21,
-            'code': '2. (c)',
-            'description': 'Installations for the processing of ferrous metals: (i) Hot-rolling mills, (ii) Smitheries with hammers, (iii) Application of protective fused metal coats',
-            'threshold': '(i) With a capacity of 20 tonnes of crude steel per hour, (ii) With an energy of 50 kilojoules per hammer, where the calorific power used exceeds 20 MW, (iii) With an input of 2 tonnes of crude steel per hour'
+            'activityClassId': 2,
+            'activityId': 6,
+            'processId': 23
         },
         {
-            'id': 1,
-            'code': '2. (d)',
-            'description': 'Ferrous metal foundries With a production capacity of 20 tonnes per day',
-            'threshold': 'With a production capacity of 20 tonnes per day'
+            'activityClassId': 2,
+            'activityId': 6,
+            'processId': 16
         },
         {
-            'id': 28,
-            'code': '2. (e)',
-            'description': 'Installations: (i) For the production of non-ferrous crude metals from ore, concentrates or secondary raw materials by metallurgical, chemical or electrolytic processes; (ii) For the smelting, including the alloying, of non-ferrous metals, including recovered products (refining, foundry casting, etc.) (i) n/a, (ii) With a melting capacity of 4 tonnes per day for lead and cadmium or 20 tonnes per day for all other metals'
+            'activityClassId': 2,
+            'activityId': 7,
+            'processId': 6
         },
         {
-            'id': 6,
-            'code': '2. (f)',
-            'description': 'Installations for surface treatment of metals and plastic materials using an electrolytic or chemical process',
-            'threshold': 'Where the volume of the treatment vats equals 30 m3'
+            'activityClassId': 2,
+            'activityId': 24,
+            'processId': 1
         },
         {
-            'id': 31,
-            'code': '3. (a)',
-            'description': 'Underground mining and related operations'
+            'activityClassId': 3,
+            'activityId': 16,
+            'processId': 15
         },
         {
-            'id': 10,
-            'code': '3. (b)',
-            'description': 'Opencast mining and quarrying',
-            'threshold': 'Where the surface of the area effectively under extractive operation equals 25 hectares'
+            'activityClassId': 3,
+            'activityId': 18,
+            'processId': 19
         },
         {
-            'id': 34,
-            'code': '3. (c)',
-            'description': 'Installations for the production of: (i) Cement clinker in rotary kilns, (ii) Lime in rotary kilns, (iii) Cement clinker or lime in other furnaces',
-            'threshold': '(i) With a production capacity of 500 tonnes per day, (ii) With a production capacity of 50 tonnes per day, (iii) With a production capacity of 50 tonnes per day'
+            'activityClassId': 3,
+            'activityId': 18,
+            'processId': 5
         },
         {
-            'id': 14,
-            'code': '3. (d)',
-            'description': 'Installations for the production of asbestos and the manufacture of asbestos-based products'
+            'activityClassId': 4,
+            'activityId': 19,
+            'processId': 27
         },
         {
-            'id': 36,
-            'code': '3. (e)',
-            'description': 'Installations for the manufacture of glass, including glass fibre',
-            'threshold': 'With a melting capacity of 20 tonnes per day'
+            'activityClassId': 4,
+            'activityId': 21,
+            'processId': 10
         },
         {
-            'id': 17,
-            'code': '3. (f)',
-            'description': 'Installations for melting mineral substances, including the production of mineral fibres',
-            'threshold': 'With a melting capacity of 20 tonnes per day'
+            'activityClassId': 4,
+            'activityId': 5,
+            'processId': 26
         },
         {
-            'id': 39,
-            'code': '3. (g)',
-            'description': 'Installations for the manufacture of ceramic products by firing, in particular roofing tiles, bricks, refractory bricks, tiles, stoneware or porcelain',
-            'threshold': 'With a production capacity of 75 tonnes per day, or with a kiln capacity of 4 m3 and with a setting density per kiln of 300 kg/m3'
+            'activityClassId': 4,
+            'activityId': 5,
+            'processId': 11
         },
         {
-            'id': 15,
-            'code': '4. (a)',
-            'description': 'Chemical installations for the production on an industrial scale of basic organic chemicals, such as: (i) Simple hydrocarbons, (ii) Oxygen-containing hydrocarbons, (iii) Sulphurous hydrocarbons, (iv) Nitrogenous hydrocarbons, (v) Phosphorus-containing hydrocarbons, (vi) Halogenic hydrocarbons, (vii) Organometallic compounds, (viii) Basic plastic materials, (ix) Synthetic rubbers, (x) Dyes and pigments, (xi) Surface-active agents and surfactants'
+            'activityClassId': 4,
+            'activityId': 5,
+            'processId': 18
         },
         {
-            'id': 41,
-            'code': '4. (b)',
-            'description': 'Chemical installations for the production on an industrial scale of basic inorganic chemicals, such as: (i) Gases, (ii) Acids, (iii) Bases, (iv) salts, (v) Non-metals, metal oxides or other inorganic compounds'
+            'activityClassId': 4,
+            'activityId': 5,
+            'processId': 31
         },
         {
-            'id': 8,
-            'code': '4. (c)',
-            'description': 'Chemical installations for the production on an industrial scale of phosphorous-, nitrogen- or potassium-based fertilisers'
+            'activityClassId': 4,
+            'activityId': 15,
+            'processId': 34
         },
         {
-            'id': 33,
-            'code': '4. (d)',
-            'description': 'Chemical installations for the production on an industrial scale of basic plant health products and of biocides'
+            'activityClassId': 4,
+            'activityId': 23,
+            'processId': 3
         },
         {
-            'id': 9,
-            'code': '4. (e)',
-            'description': 'Installations using a chemical or biological process for the production on an industrial scale of basic pharmaceutical products'
+            'activityClassId': 5,
+            'activityId': 2,
+            'processId': 25
         },
         {
-            'id': 35,
-            'code': '4. (f)',
-            'description': 'Installations for the production on an industrial scale of explosives and pyrotechnic products'
+            'activityClassId': 5,
+            'activityId': 22,
+            'processId': 20
         },
         {
-            'id': 22,
-            'code': '5. (a)',
-            'description': 'Installations for the recovery or disposal of hazardous waste',
-            'threshold': 'Receiving 10 tonnes per day'
+            'activityClassId': 6,
+            'activityId': 20,
+            'processId': 13
         },
         {
-            'id': 7,
-            'code': '5. (b)',
-            'description': 'Installations for the incineration of non-hazardous waste',
-            'threshold': 'With capacity of 3 tonnes per hour'
+            'activityClassId': 6,
+            'activityId': 8,
+            'processId': 7
         },
         {
-            'id': 29,
-            'code': '5. (c)',
-            'description': 'Installations for the disposal of non-hazardous waste',
-            'threshold': 'With a capacity of 50 tonnes per day'
+            'activityClassId': 6,
+            'activityId': 28,
+            'processId': 8
         },
         {
-            'id': 5,
-            'code': '5. (d)',
-            'description': 'Landfills',
-            'threshold': 'Receiving 10 tonnes per day or with a total capacity of 25 000 tonnes'
-        },
-        {
-            'id': 27,
-            'code': '5. (e)',
-            'description': 'Installations for the disposal or recycling of animal carcasses and animal waste',
-            'threshold': 'With a treatment capacity of 10 tonnes per day'
-        },
-        {
-            'id': 4,
-            'code': '5. (f)',
-            'description': 'Urban waste-water treatment plants',
-            'threshold': 'With a capacity of 100 000 population equivalents'
-        },
-        {
-            'id': 26,
-            'code': '5. (g)',
-            'description': 'Independently operated industrial waste-water treatment plants which serve one or more activities of this annex',
-            'threshold': 'With a capacity of 10 000 m3 per day (4)'
-        },
-        {
-            'id': 40,
-            'code': '6. (a)',
-            'description': 'Industrial plants for the production of pulp from timber or similar fibrous materials'
-        },
-        {
-            'id': 18,
-            'code': '6. (b)',
-            'description': 'Industrial plants for the production of paper and board and other primary wood products (such as chipboard, fibreboard and plywood)',
-            'threshold': 'With a production capacity of 20 tonnes per day'
-        },
-        {
-            'id': 37,
-            'code': '6. (c)',
-            'description': 'Industrial plants for the preservation of wood and wood products with chemicals',
-            'threshold': 'With a production capacity of 50 m3 per day'
-        },
-        {
-            'id': 11,
-            'code': '7. (a)',
-            'description': 'Installations for the intensive rearing of poultry or pigs',
-            'threshold': '(i) With 40 000 places for poultry, (ii) With 2 000 places for production pigs (over 30 kg), (iii) With 750 places for sows'
-        },
-        {
-            'id': 32,
-            'code': '7. (b)',
-            'description': 'Intensive aquaculture',
-            'threshold': 'With a production capacity of 1000 tonnes of fish or shellfish per year'
-        },
-        {
-            'id': 24,
-            'code': '8. (a)',
-            'description': 'Slaughterhouses',
-            'threshold': 'With a carcass production capacity of 50 tonnes per day'
-        },
-        {
-            'id': 2,
-            'code': '8. (b)',
-            'description': 'Treatment and processing intended for the production of food and beverage products from: (i) Animal raw materials (other than milk), (ii) Vegetable raw materials',
-            'threshold': '(i) With a finished product production capacity of 75 tonnes per day, (ii) With a finished product production capacity of 300 tonnes per day (average value on a quarterly basis)'
-        },
-        {
-            'id': 25,
-            'code': '8. (c)',
-            'description': 'Treatment and processing of milk',
-            'threshold': 'With a capacity to receive 200 tonnes of milk per day (average value on an annual basis)'
-        },
-        {
-            'id': 45,
-            'code': '9. (a)',
-            'description': 'Plants for the pre-treatment (operations such as washing, bleaching, mercerisation) or dyeing of fibres or textiles',
-            'threshold': 'With a treatment capacity of 10 tonnes per day'
-        },
-        {
-            'id': 13,
-            'code': '9. (b)',
-            'description': 'Plants for the tanning of hides and skins',
-            'threshold': 'With a treatment capacity of 12 tonnes of finished product per day'
-        },
-        {
-            'id': 38,
-            'code': '9. (c)',
-            'description': 'Installations for the surface treatment of substances, objects or products using organic solvents, in particular for dressing, printing, coating, degreasing, waterproofing, sizing, painting, cleaning or impregnating',
-            'threshold': 'With a consumption capacity of 150 kg per hour or 200 tonnes per year'
-        },
-        {
-            'id': 16,
-            'code': '9. (d)',
-            'description': 'Installations for the production of carbon (hard-burnt coal) or electrographite by means of incineration or graphitisation'
-        },
-        {
-            'id': 42,
-            'code': '9. (e)',
-            'description': 'Installations for the building of, and painting or removal of paint from ships',
-            'threshold': 'With a capacity for ships 100 m long'
+            'activityClassId': 6,
+            'activityId': 9,
+            'processId': 21
         }
     ],
 
@@ -2638,1438 +2524,6 @@ module.exports = {
             'id': 5,
             'code': '01.5',
             'description': 'Mixed farming'
-        },
-        {
-            'id': 6,
-            'code': '01.6',
-            'description': 'Support activities to agriculture and post-harvest crop activities',
-            'details': 'This group includes activities incidental to agricultural production and activities similar to agriculture not undertaken for production purposes (in the sense of harvesting agricultural products), done on a fee or contract basis.'
-        },
-        {
-            'id': 7,
-            'code': '01.7',
-            'description': 'Hunting, trapping and related service activities'
-        },
-        {
-            'id': 8,
-            'code': '02.1',
-            'description': 'Silviculture and other forestry activities'
-        },
-        {
-            'id': 9,
-            'code': '02.2',
-            'description': 'Logging'
-        },
-        {
-            'id': 10,
-            'code': '02.3',
-            'description': 'Gathering of wild growing non-wood products'
-        },
-        {
-            'id': 11,
-            'code': '02.4',
-            'description': 'Support services to forestry'
-        },
-        {
-            'id': 12,
-            'code': '03.1',
-            'description': 'Fishing',
-            'details': 'This group includes "capture fishery", i.e. the hunting, collecting and gathering activities directed at removing or collecting live wild aquatic organisms (predominantly fish, molluscs and crustaceans) including plants from the oceanic, coastal or inland waters for human consumption and other purposes by hand or more usually by various types of fishing gear such as nets, lines and stationary traps. Such activities can be conducted on the intertidal shoreline (e.g. collection of molluscs such as mussels and oysters) or shore based netting, or from home-made dugouts or more commonly using commercially made boats in inshore, coastal waters or offshore waters. Such activities also include fishing in restocked water bodies.'
-        },
-        {
-            'id': 13,
-            'code': '03.2',
-            'description': 'Aquaculture',
-            'details': 'This group includes "aquaculture" (or aquafarming), i.e. the production process involving the culturing or farming (including harvesting) of aquatic organisms (fish, molluscs, crustaceans, plants, crocodiles, alligators and amphibians) using techniques designed to increase the production of the organisms in question beyond the natural capacity of the environment (for example regular stocking, feeding and protection from predators). \n\nCulturing/farming refers to the rearing up to their juvenile and/or adult phase under captive conditions of the above organisms.'
-        },
-        {
-            'id': 14,
-            'code': '05.1',
-            'description': 'Mining of hard coal'
-        },
-        {
-            'id': 15,
-            'code': '05.2',
-            'description': 'Mining of lignite'
-        },
-        {
-            'id': 16,
-            'code': '06.1',
-            'description': 'Extraction of crude petroleum'
-        },
-        {
-            'id': 17,
-            'code': '06.2',
-            'description': 'Extraction of natural gas'
-        },
-        {
-            'id': 18,
-            'code': '07.1',
-            'description': 'Mining of iron ores'
-        },
-        {
-            'id': 19,
-            'code': '07.2',
-            'description': 'Mining of non-ferrous metal ores',
-            'details': 'This group includes the mining of non-ferrous metal ores.'
-        },
-        {
-            'id': 20,
-            'code': '08.1',
-            'description': 'Quarrying of stone, sand and clay'
-        },
-        {
-            'id': 21,
-            'code': '08.9',
-            'description': 'Mining and quarrying n.e.c.'
-        },
-        {
-            'id': 22,
-            'code': '09.1',
-            'description': 'Support activities for petroleum and natural gas extraction'
-        },
-        {
-            'id': 23,
-            'code': '09.9',
-            'description': 'Support activities for other mining and quarrying'
-        },
-        {
-            'id': 24,
-            'code': '10.1',
-            'description': 'Processing and preserving of meat and production of meat products'
-        },
-        {
-            'id': 25,
-            'code': '10.2',
-            'description': 'Processing and preserving of fish, crustaceans and molluscs'
-        },
-        {
-            'id': 26,
-            'code': '10.3',
-            'description': 'Processing and preserving of fruit and vegetables'
-        },
-        {
-            'id': 27,
-            'code': '10.4',
-            'description': 'Manufacture of vegetable and animal oils and fats',
-            'details': 'This group includes the manufacture of crude and refined oils and fats from vegetable or animal materials, except rendering or refining of lard and other edible animal fats.'
-        },
-        {
-            'id': 28,
-            'code': '10.5',
-            'description': 'Manufacture of dairy products'
-        },
-        {
-            'id': 29,
-            'code': '10.6',
-            'description': 'Manufacture of grain mill products, starches and starch products',
-            'details': 'This group includes the milling of flour or meal from grains or vegetables, the milling, cleaning and polishing of rice, as well as the manufacture of flour mixes or doughs from these products.'
-        },
-        {
-            'id': 30,
-            'code': '10.7',
-            'description': 'Manufacture of bakery and farinaceous products',
-            'details': 'This group includes the production of bakery products, macaroni, noodles and similar products.'
-        },
-        {
-            'id': 31,
-            'code': '10.8',
-            'description': 'Manufacture of other food products',
-            'details': 'This group includes the production of sugar and confectionery, prepared meals and dishes, coffee, tea and spices, as well as perishable and specialty food products.'
-        },
-        {
-            'id': 32,
-            'code': '10.9',
-            'description': 'Manufacture of prepared animal feeds'
-        },
-        {
-            'id': 33,
-            'code': '11.0',
-            'description': 'Manufacture of beverages'
-        },
-        {
-            'id': 34,
-            'code': '12.0',
-            'description': 'Manufacture of tobacco products'
-        },
-        {
-            'id': 35,
-            'code': '13.1',
-            'description': 'Preparation and spinning of textile fibres'
-        },
-        {
-            'id': 36,
-            'code': '13.2',
-            'description': 'Weaving of textiles'
-        },
-        {
-            'id': 37,
-            'code': '13.3',
-            'description': 'Finishing of textiles'
-        },
-        {
-            'id': 38,
-            'code': '13.9',
-            'description': 'Manufacture of other textiles',
-            'details': 'This group includes the manufacture of products produced from textiles, except wearing apparel, such as made-up textile articles, carpets and rugs, rope, narrow woven fabrics, trimmings etc.'
-        },
-        {
-            'id': 39,
-            'code': '14.1',
-            'description': 'Manufacture of wearing apparel, except fur apparel',
-            'details': 'This group includes manufacture of wearing apparel. The material used may be of any kind and may be coated, impregnated or rubberised.'
-        },
-        {
-            'id': 40,
-            'code': '14.2',
-            'description': 'Manufacture of articles of fur'
-        },
-        {
-            'id': 41,
-            'code': '14.3',
-            'description': 'Manufacture of knitted and crocheted apparel'
-        },
-        {
-            'id': 42,
-            'code': '15.1',
-            'description': 'Tanning and dressing of leather; manufacture of luggage, handbags, saddlery and harness; dressing and dyeing of fur',
-            'details': 'This group includes the manufacture of leather and fur and products thereof.'
-        },
-        {
-            'id': 43,
-            'code': '15.2',
-            'description': 'Manufacture of footwear'
-        },
-        {
-            'id': 44,
-            'code': '16.1',
-            'description': 'Sawmilling and planing of wood'
-        },
-        {
-            'id': 45,
-            'code': '16.2',
-            'description': 'Manufacture of products of wood, cork, straw and plaiting materials',
-            'details': 'This group includes the manufacture of products of wood, cork, straw or plaiting materials, including basic shapes as well as assembled products.'
-        },
-        {
-            'id': 46,
-            'code': '17.1',
-            'description': 'Manufacture of pulp, paper and paperboard'
-        },
-        {
-            'id': 47,
-            'code': '17.2',
-            'description': 'Manufacture of articles of paper and paperboard '
-        },
-        {
-            'id': 48,
-            'code': '18.1',
-            'description': 'Printing and service activities related to printing',
-            'details': 'This group includes printing of products, such as newspapers, books, periodicals, business forms, greeting cards, and other materials, and associated support activities, such as bookbinding, plate-making services, and data imaging. Printing can be done using various techniques and on different materials.'
-        },
-        {
-            'id': 49,
-            'code': '18.2',
-            'description': 'Reproduction of recorded media'
-        },
-        {
-            'id': 50,
-            'code': '19.1',
-            'description': 'Manufacture of coke oven products'
-        },
-        {
-            'id': 51,
-            'code': '19.2',
-            'description': 'Manufacture of refined petroleum products'
-        },
-        {
-            'id': 52,
-            'code': '20.1',
-            'description': 'Manufacture of basic chemicals, fertilisers and nitrogen compounds, plastics and synthetic rubber in primary forms',
-            'details': 'This group includes the manufacture of basic chemical products, fertilisers and associated nitrogen compounds, as well as plastics and synthetic rubber in primary forms.'
-        },
-        {
-            'id': 53,
-            'code': '20.2',
-            'description': 'Manufacture of pesticides and other agrochemical products'
-        },
-        {
-            'id': 54,
-            'code': '20.3',
-            'description': 'Manufacture of paints, varnishes and similar coatings, printing ink and mastics'
-        },
-        {
-            'id': 55,
-            'code': '20.4',
-            'description': 'Manufacture of soap and detergents, cleaning and polishing preparations, perfumes and toilet preparations'
-        },
-        {
-            'id': 56,
-            'code': '20.5',
-            'description': 'Manufacture of other chemical products',
-            'details': 'This group includes the manufacture of explosives and pyrotechnic products, glues, essential oils and chemical products n.e.c., e.g. photographic chemical material (including film and sensitised paper), composite diagnostic preparations etc.'
-        },
-        {
-            'id': 57,
-            'code': '20.6',
-            'description': 'Manufacture of man-made fibres'
-        },
-        {
-            'id': 58,
-            'code': '21.1',
-            'description': 'Manufacture of basic pharmaceutical products'
-        },
-        {
-            'id': 59,
-            'code': '21.2',
-            'description': 'Manufacture of pharmaceutical preparations'
-        },
-        {
-            'id': 60,
-            'code': '22.1',
-            'description': 'Manufacture of rubber products',
-            'details': 'This group includes the manufacture of rubber products.'
-        },
-        {
-            'id': 61,
-            'code': '22.2',
-            'description': 'Manufacture of plastic products',
-            'details': 'This group comprises processing new or spent (i.e., recycled) plastics resins into intermediate or final products, using such processes as compression moulding; extrusion moulding; injection moulding; blow moulding; and casting. For most of these, the production process is such that a wide variety of products can be made.'
-        },
-        {
-            'id': 62,
-            'code': '23.1',
-            'description': 'Manufacture of glass and glass products',
-            'details': 'This group includes glass in all its forms, made by any process, and articles of glass.'
-        },
-        {
-            'id': 63,
-            'code': '23.2',
-            'description': 'Manufacture of refractory products'
-        },
-        {
-            'id': 64,
-            'code': '23.3',
-            'description': 'Manufacture of clay building materials'
-        },
-        {
-            'id': 65,
-            'code': '23.4',
-            'description': 'Manufacture of other porcelain and ceramic products',
-            'details': 'This group includes the manufacture of final products from mined or quarried non-metallic minerals, such as sand, gravel, stone or clay.'
-        },
-        {
-            'id': 66,
-            'code': '23.5',
-            'description': 'Manufacture of cement, lime and plaster'
-        },
-        {
-            'id': 67,
-            'code': '23.6',
-            'description': 'Manufacture of articles of concrete, cement and plaster'
-        },
-        {
-            'id': 68,
-            'code': '23.7',
-            'description': 'Cutting, shaping and finishing of stone'
-        },
-        {
-            'id': 69,
-            'code': '23.9',
-            'description': 'Manufacture of abrasive products and non-metallic mineral products n.e.c.',
-            'details': 'This group includes the manufacture of other non-metallic mineral products.'
-        },
-        {
-            'id': 70,
-            'code': '24.1',
-            'description': 'Manufacture of basic iron and steel and of ferro-alloys',
-            'details': 'This group includes activities such as direct reduction of iron ore, production of pig iron in molten or solid form, conversion of pig iron into steel, manufacture of ferroalloys and manufacture of steel products.'
-        },
-        {
-            'id': 71,
-            'code': '24.2',
-            'description': 'Manufacture of tubes, pipes, hollow profiles and related fittings, of steel'
-        },
-        {
-            'id': 72,
-            'code': '24.3',
-            'description': 'Manufacture of other products of first processing of steel',
-            'details': 'This group includes manufacturing other products by cold processing of steel.'
-        },
-        {
-            'id': 73,
-            'code': '24.4',
-            'description': 'Manufacture of basic precious and other non-ferrous metals'
-        },
-        {
-            'id': 74,
-            'code': '24.5',
-            'description': 'Casting of metals',
-            'details': 'This group includes the manufacture of semi-finished products and various castings by a casting process.'
-        },
-        {
-            'id': 75,
-            'code': '25.1',
-            'description': 'Manufacture of structural metal products',
-            'details': 'This group includes the manufacture of structural metal products (such as metal frameworks or parts for construction).'
-        },
-        {
-            'id': 76,
-            'code': '25.2',
-            'description': 'Manufacture of tanks, reservoirs and containers of metal',
-            'details': 'This group includes the manufacture of tanks, central heating radiators and boilers.'
-        },
-        {
-            'id': 77,
-            'code': '25.3',
-            'description': 'Manufacture of steam generators, except central heating hot water boilers',
-            'details': 'This group includes the manufacture of steam generators.'
-        },
-        {
-            'id': 78,
-            'code': '25.4',
-            'description': 'Manufacture of weapons and ammunition'
-        },
-        {
-            'id': 79,
-            'code': '25.5',
-            'description': 'Forging, pressing, stamping and roll-forming of metal; powder metallurgy',
-            'details': 'This group includes general activities for the treatment of metal, such as forging or pressing, which are typically carried out on a fee or contract basis.'
-        },
-        {
-            'id': 80,
-            'code': '25.6',
-            'description': 'Treatment and coating of metals; machining',
-            'details': 'This group includes general activities for the treatment of metal, such as plating, coating, engraving, boring, polishing, welding etc., which are typically carried out on a fee or contract basis.'
-        },
-        {
-            'id': 81,
-            'code': '25.7',
-            'description': 'Manufacture of cutlery, tools and general hardware',
-            'details': 'This group includes the manufacture of cutlery; metal hand tools and general hardware.'
-        },
-        {
-            'id': 82,
-            'code': '25.9',
-            'description': 'Manufacture of other fabricated metal products',
-            'details': 'This group includes the manufacture of a variety of metal products, such as cans and buckets; nails, bolts and nuts; metal household articles; metal fixtures; ships propellers and anchors; assembled railway track fixtures etc. for a variety of household and industrial uses.'
-        },
-        {
-            'id': 83,
-            'code': '26.1',
-            'description': 'Manufacture of electronic components and boards'
-        },
-        {
-            'id': 84,
-            'code': '26.2',
-            'description': 'Manufacture of computers and peripheral equipment'
-        },
-        {
-            'id': 85,
-            'code': '26.3',
-            'description': 'Manufacture of communication equipment'
-        },
-        {
-            'id': 86,
-            'code': '26.4',
-            'description': 'Manufacture of consumer electronics'
-        },
-        {
-            'id': 87,
-            'code': '26.5',
-            'description': 'Manufacture of instruments and appliances for measuring, testing and navigation; watches and clocks',
-            'details': 'This group includes the manufacture of measuring, testing and navigating equipment for various industrial and non-industrial purposes, including time-based measuring devices such as watches and clocks and related devices.'
-        },
-        {
-            'id': 88,
-            'code': '26.6',
-            'description': 'Manufacture of irradiation, electromedical and electrotherapeutic equipment'
-        },
-        {
-            'id': 89,
-            'code': '26.7',
-            'description': 'Manufacture of optical instruments and photographic equipment'
-        },
-        {
-            'id': 90,
-            'code': '26.8',
-            'description': 'Manufacture of magnetic and optical media'
-        },
-        {
-            'id': 91,
-            'code': '27.1',
-            'description': 'Manufacture of electric motors, generators, transformers and electricity distribution and control apparatus',
-            'details': 'This group comprises the manufacture of power, distribution and specialty transformers; electric motors, generators, and motor generator sets.'
-        },
-        {
-            'id': 92,
-            'code': '27.2',
-            'description': 'Manufacture of batteries and accumulators'
-        },
-        {
-            'id': 93,
-            'code': '27.3',
-            'description': 'Manufacture of wiring and wiring devices',
-            'details': 'This group includes the manufacture of current-carrying wiring devices and non current-carrying wiring devices for wiring electrical circuits regardless of material.'
-        },
-        {
-            'id': 94,
-            'code': '27.4',
-            'description': 'Manufacture of electric lighting equipment'
-        },
-        {
-            'id': 95,
-            'code': '27.5',
-            'description': 'Manufacture of domestic appliances',
-            'details': 'This group includes the manufacture of small electric appliances and electric housewares, household-type fans, household-type vacuum cleaners, electric household-type floor care machines, household-type cooking appliances, household-type laundry equipment, household-type refrigerators, upright and chest freezers, and other electrical and non-electrical household appliances, such as dishwashers, water heaters, and garbage disposal units. This group includes the manufacture of appliances with electric, gas or other fuel sources.'
-        },
-        {
-            'id': 96,
-            'code': '27.9',
-            'description': 'Manufacture of other electrical equipment'
-        },
-        {
-            'id': 97,
-            'code': '28.1',
-            'description': 'Manufacture of general-purpose machinery'
-        },
-        {
-            'id': 98,
-            'code': '28.2',
-            'description': 'Manufacture of other general-purpose machinery'
-        },
-        {
-            'id': 99,
-            'code': '28.3',
-            'description': 'Manufacture of agricultural and forestry machinery'
-        },
-        {
-            'id': 100,
-            'code': '28.4',
-            'description': 'Manufacture of metal forming machinery and machine tools',
-            'details': 'This group includes the manufacture of metal forming machinery and machine tools, e.g. manufacture of machine tools for working metals and other materials (wood, bone, stone, hard rubber, hard plastics, cold glass etc.), including those using a laser beam, ultrasonic waves, plasma arc, magnetic pulse etc.'
-        },
-        {
-            'id': 101,
-            'code': '28.9',
-            'description': 'Manufacture of other special-purpose machinery',
-            'details': 'This group includes the manufacture of special-purpose machinery, i.e. machinery for exclusive use in an NACE industry or a small cluster of NACE industries.'
-        },
-        {
-            'id': 102,
-            'code': '29.1',
-            'description': 'Manufacture of motor vehicles'
-        },
-        {
-            'id': 103,
-            'code': '29.2',
-            'description': 'Manufacture of bodies (coachwork) for motor vehicles; manufacture of trailers and semi-trailers'
-        },
-        {
-            'id': 104,
-            'code': '29.3',
-            'description': 'Manufacture of parts and accessories for motor vehicles'
-        },
-        {
-            'id': 105,
-            'code': '30.1',
-            'description': 'Building of ships and boats',
-            'details': 'This group includes the building of ships, boats and other floating structures for transportation and other commercial purposes, as well as for sports and recreational purposes.'
-        },
-        {
-            'id': 106,
-            'code': '30.2',
-            'description': 'Manufacture of railway locomotives and rolling stock'
-        },
-        {
-            'id': 107,
-            'code': '30.3',
-            'description': 'Manufacture of air and spacecraft and related machinery'
-        },
-        {
-            'id': 108,
-            'code': '30.4',
-            'description': 'Manufacture of military fighting vehicles'
-        },
-        {
-            'id': 109,
-            'code': '30.9',
-            'description': 'Manufacture of transport equipment n.e.c.',
-            'details': 'This group includes the manufacture of transport equipment other than motor vehicles and rail, water, air or space transport equipment and military vehicles.'
-        },
-        {
-            'id': 110,
-            'code': '31.0',
-            'description': 'Manufacture of furniture'
-        },
-        {
-            'id': 111,
-            'code': '32.1',
-            'description': 'Manufacture of jewellery, bijouterie and related articles',
-            'details': 'This group includes the manufacture of jewellery and imitation jewellery articles.'
-        },
-        {
-            'id': 112,
-            'code': '32.2',
-            'description': 'Manufacture of musical instruments'
-        },
-        {
-            'id': 113,
-            'code': '32.3',
-            'description': 'Manufacture of sports goods'
-        },
-        {
-            'id': 114,
-            'code': '32.4',
-            'description': 'Manufacture of games and toys'
-        },
-        {
-            'id': 115,
-            'code': '32.5',
-            'description': 'Manufacture of medical and dental instruments and supplies'
-        },
-        {
-            'id': 116,
-            'code': '32.9',
-            'description': 'Manufacturing n.e.c.'
-        },
-        {
-            'id': 117,
-            'code': '33.1',
-            'description': 'Repair of fabricated metal products, machinery and equipment',
-            'details': 'This group includes the specialised repair of goods produced in the manufacturing sector with the aim to restore these metal products, machinery, equipment and other products to working order. The provision of general or routine maintenance (i.e. servicing) on such products to ensure they work efficiently and to prevent breakdown and unnecessary repairs is included.'
-        },
-        {
-            'id': 118,
-            'code': '33.2',
-            'description': 'Installation of industrial machinery and equipment'
-        },
-        {
-            'id': 119,
-            'code': '35.1',
-            'description': 'Electric power generation, transmission and distribution',
-            'details': 'This group includes the generation of bulk electric power, transmission from generating facilities to distribution centres and distribution to end users.'
-        },
-        {
-            'id': 120,
-            'code': '35.2',
-            'description': 'Manufacture of gas; distribution of gaseous fuels through mains',
-            'details': 'This group includes the manufacture of gas and the distribution of natural or synthetic gas to the consumer through a system of mains. Gas marketers or brokers, which arrange the sale of natural gas over distribution systems operated by others, are included.\n \nThe separate operation of gas pipelines, typically done over long distances, connecting producers with distributors of gas, or between urban centres, is excluded from this group and classified with other pipeline transport activities.'
-        },
-        {
-            'id': 121,
-            'code': '35.3',
-            'description': 'Steam and air conditioning supply'
-        },
-        {
-            'id': 122,
-            'code': '36.0',
-            'description': 'Water collection, treatment and supply'
-        },
-        {
-            'id': 123,
-            'code': '37.0',
-            'description': 'Sewerage'
-        },
-        {
-            'id': 124,
-            'code': '38.1',
-            'description': 'Waste collection',
-            'details': 'This group includes the collection of waste from households and businesses by means of refuse bins, wheeled bins, containers, etc. It includes collection of non-hazardous and hazardous waste e.g. waste from households, used batteries, used cooking oils and fats, waste oil from ships and used oil from garages, as well as construction and demolition waste.'
-        },
-        {
-            'id': 125,
-            'code': '38.2',
-            'description': 'Waste treatment and disposal',
-            'details': 'This group includes the disposal and treatment prior to disposal of various forms of waste by different means, such as treatment of organic waste with the aim of disposal; treatment and disposal of toxic live or dead animals and other contaminated waste; treatment and disposal of transition radioactive waste from hospitals, etc.; dumping of refuse on land or in water; burial or ploughing-under of refuse; disposal of used goods such as refrigerators to eliminate harmful waste; disposal of waste by incineration or combustion. Included is also energy recovery resulting from waste incineration process.'
-        },
-        {
-            'id': 126,
-            'code': '38.3',
-            'description': 'Materials recovery'
-        },
-        {
-            'id': 127,
-            'code': '39.0',
-            'description': 'Remediation activities and other waste management services'
-        },
-        {
-            'id': 128,
-            'code': '41.1',
-            'description': 'Development of building projects'
-        },
-        {
-            'id': 129,
-            'code': '41.2',
-            'description': 'Construction of residential and non-residential buildings',
-            'details': 'This group includes the construction of complete residential or non-residential buildings, on own account for sale or on a fee or contract basis. Outsourcing parts or even the whole construction process is possible. If only specialised parts of the construction process are carried out, the activity is classified in division 43.'
-        },
-        {
-            'id': 130,
-            'code': '42.1',
-            'description': 'Construction of roads and railways'
-        },
-        {
-            'id': 131,
-            'code': '42.2',
-            'description': 'Construction of utility projects'
-        },
-        {
-            'id': 132,
-            'code': '42.9',
-            'description': 'Construction of other civil engineering projects'
-        },
-        {
-            'id': 133,
-            'code': '43.1',
-            'description': 'Demolition and site preparation',
-            'details': 'This group includes activities of preparing a site for subsequent construction activities, including the removal of previously existing structures.'
-        },
-        {
-            'id': 134,
-            'code': '43.2',
-            'description': 'Electrical, plumbing and other construction installation activities',
-            'details': 'This group includes installation activities that support the functioning of a building as such, including installation of electrical systems, plumbing (water, gas and sewage systems), heat and air-conditioning systems, elevators etc.'
-        },
-        {
-            'id': 135,
-            'code': '43.3',
-            'description': 'Building completion and finishing'
-        },
-        {
-            'id': 136,
-            'code': '43.9',
-            'description': 'Other specialised construction activities'
-        },
-        {
-            'id': 137,
-            'code': '45.1',
-            'description': 'Sale of motor vehicles'
-        },
-        {
-            'id': 138,
-            'code': '45.2',
-            'description': 'Maintenance and repair of motor vehicles'
-        },
-        {
-            'id': 139,
-            'code': '45.3',
-            'description': 'Sale of motor vehicle parts and accessories',
-            'details': 'This group includes wholesale and retail trade of all kinds of parts, components, supplies, tools and accessories for motor vehicles, such as:\n  . rubber tyres and inner tubes for tyres\n  . spark plugs, batteries, lighting equipment and electrical parts'
-        },
-        {
-            'id': 140,
-            'code': '45.4',
-            'description': 'Sale, maintenance and repair of motorcycles and related parts and accessories'
-        },
-        {
-            'id': 141,
-            'code': '46.1',
-            'description': 'Wholesale on a fee or contract basis',
-            'details': 'This group includes:\n- activities of commission agents, commodity brokers and all other wholesalers who trade on behalf and on the account of others\n- activities of those involved in bringing sellers and buyers together or undertaking commercial transactions on behalf of a principal, including on the Internet.'
-        },
-        {
-            'id': 142,
-            'code': '46.2',
-            'description': 'Wholesale of agricultural raw materials and live animals'
-        },
-        {
-            'id': 143,
-            'code': '46.3',
-            'description': 'Wholesale of food, beverages and tobacco'
-        },
-        {
-            'id': 144,
-            'code': '46.4',
-            'description': 'Wholesale of household goods',
-            'details': 'This group includes the wholesale of household goods, including textiles.'
-        },
-        {
-            'id': 145,
-            'code': '46.5',
-            'description': 'Wholesale of information and communication equipment',
-            'details': 'This group includes the wholesale of information and communications technology (ICT) equipment, i.e. computers, telecommunications equipment and parts.'
-        },
-        {
-            'id': 146,
-            'code': '46.6',
-            'description': 'Wholesale of other machinery, equipment and supplies',
-            'details': 'This group includes the wholesale of specialised machinery, equipment and supplies for all kinds of industries and general purpose machinery.'
-        },
-        {
-            'id': 147,
-            'code': '46.7',
-            'description': 'Other specialised wholesale',
-            'details': 'This group includes other specialised wholesale activities not classified in other groups of this division. This includes the wholesale of intermediate products, except agricultural, typically not for household use.'
-        },
-        {
-            'id': 148,
-            'code': '46.9',
-            'description': 'Non-specialised wholesale trade'
-        },
-        {
-            'id': 149,
-            'code': '47.1',
-            'description': 'Retail sale in non-specialised stores',
-            'details': 'This group includes the retail sale of a variety of product lines in the same unit (non-specialised stores), such as supermarkets or department stores.'
-        },
-        {
-            'id': 150,
-            'code': '47.2',
-            'description': 'Retail sale of food, beverages and tobacco in specialised stores'
-        },
-        {
-            'id': 151,
-            'code': '47.3',
-            'description': 'Retail sale of automotive fuel in specialised stores'
-        },
-        {
-            'id': 152,
-            'code': '47.4',
-            'description': 'Retail sale of information and communication equipment in specialised stores',
-            'details': 'This group includes the retail sale of information and communications technology (ICT) equipment, such as computers and peripheral equipment, telecommunications equipment and consumer electronics, by specialised stores.'
-        },
-        {
-            'id': 153,
-            'code': '47.5',
-            'description': 'Retail sale of other household equipment in specialised stores',
-            'details': 'This group includes the retail sale of household equipment, such as textiles, hardware, carpets, electrical appliances or furniture, in specialised stores.'
-        },
-        {
-            'id': 154,
-            'code': '47.6',
-            'description': 'Retail sale of cultural and recreation goods in specialised stores',
-            'details': 'This group includes the retail sale in specialised stores of cultural and recreation goods, such as books, newspapers, music and video recordings, sporting equipment, games and toys.'
-        },
-        {
-            'id': 155,
-            'code': '47.7',
-            'description': 'Retail sale of other goods in specialised stores',
-            'details': 'This group includes the sale in specialised stores carrying a particular line of products not included in other parts of the classification, such as clothing, footwear and leather articles, pharmaceutical and medical goods, watches, souvenirs, cleaning materials, weapons, flowers and pets and others.'
-        },
-        {
-            'id': 156,
-            'code': '47.8',
-            'description': 'Retail sale via stalls and markets',
-            'details': 'This group includes the retail sale of any kind of new or second-hand product in a usually movable stall either along a public road or at a fixed marketplace.'
-        },
-        {
-            'id': 157,
-            'code': '47.9',
-            'description': 'Retail trade not in stores, stalls or markets',
-            'details': 'This group includes retail sale activities by mail order houses, over the Internet, through door-to-door sales, vending machines etc.'
-        },
-        {
-            'id': 158,
-            'code': '49.1',
-            'description': 'Passenger rail transport, interurban'
-        },
-        {
-            'id': 159,
-            'code': '49.2',
-            'description': 'Freight rail transport'
-        },
-        {
-            'id': 160,
-            'code': '49.3',
-            'description': 'Other passenger land transport ',
-            'details': 'This group includes all land-based passenger transport activities other than rail transport. However, rail transport as part of urban or suburban transport systems is included there.'
-        },
-        {
-            'id': 161,
-            'code': '49.4',
-            'description': 'Freight transport by road and removal services',
-            'details': 'This group includes all land-based freight transport activities other than rail transport.'
-        },
-        {
-            'id': 162,
-            'code': '49.5',
-            'description': 'Transport via pipeline'
-        },
-        {
-            'id': 163,
-            'code': '50.1',
-            'description': 'Sea and coastal passenger water transport',
-            'details': 'This group includes the transport of passengers on vessels designed for operating on sea or coastal waters.'
-        },
-        {
-            'id': 164,
-            'code': '50.2',
-            'description': 'Sea and coastal freight water transport',
-            'details': 'This group includes the transport of freight on vessels designed for operating on sea or coastal waters.'
-        },
-        {
-            'id': 165,
-            'code': '50.3',
-            'description': 'Inland passenger water transport',
-            'details': 'This group includes the transport of passengers on inland waters, involving vessels that are not suitable for sea transport.'
-        },
-        {
-            'id': 166,
-            'code': '50.4',
-            'description': 'Inland freight water transport',
-            'details': 'This group includes the transport of freight on inland waters, involving vessels that are not suitable for sea transport.'
-        },
-        {
-            'id': 167,
-            'code': '51.1',
-            'description': 'Passenger air transport'
-        },
-        {
-            'id': 168,
-            'code': '51.2',
-            'description': 'Freight air transport and space transport'
-        },
-        {
-            'id': 169,
-            'code': '52.1',
-            'description': 'Warehousing and storage'
-        },
-        {
-            'id': 170,
-            'code': '52.2',
-            'description': 'Support activities for transportation',
-            'details': 'This group includes activities supporting the transport of passengers or freight, such as operation of parts of the transport infrastructure or activities related to handling freight immediately before or after transport or between transport segments. The operation and maintenance of all transport facilities is included.'
-        },
-        {
-            'id': 171,
-            'code': '53.1',
-            'description': 'Postal activities under universal service obligation'
-        },
-        {
-            'id': 172,
-            'code': '53.2',
-            'description': 'Other postal and courier activities'
-        },
-        {
-            'id': 173,
-            'code': '55.1',
-            'description': 'Hotels and similar accommodation'
-        },
-        {
-            'id': 174,
-            'code': '55.2',
-            'description': 'Holiday and other short-stay accommodation'
-        },
-        {
-            'id': 175,
-            'code': '55.3',
-            'description': 'Camping grounds, recreational vehicle parks and trailer parks'
-        },
-        {
-            'id': 176,
-            'code': '55.9',
-            'description': 'Other accommodation'
-        },
-        {
-            'id': 177,
-            'code': '56.1',
-            'description': 'Restaurants and mobile food service activities'
-        },
-        {
-            'id': 178,
-            'code': '56.2',
-            'description': 'Event catering and other food service activities',
-            'details': 'This group includes catering activities for individual events or for a specified period of time and the operation of food concessions, such as at sports or similar facilities.'
-        },
-        {
-            'id': 179,
-            'code': '56.3',
-            'description': 'Beverage serving activities'
-        },
-        {
-            'id': 180,
-            'code': '58.1',
-            'description': 'Publishing of books, periodicals and other publishing activities',
-            'details': 'This group includes activities of publishing books, newspapers, magazines and other periodicals, directories and mailing lists, and other works such as photos, engravings, postcards, timetables, forms, posters and reproductions of works of art. These works are characterised by the intellectual creativity required in their development and are usually protected by copyright.'
-        },
-        {
-            'id': 181,
-            'code': '58.2',
-            'description': 'Software publishing'
-        },
-        {
-            'id': 182,
-            'code': '59.1',
-            'description': 'Motion picture, video and television programme activities',
-            'details': 'This group includes production of theatrical and non-theatrical motion pictures whether on film, video tape, DVD or other media, including digital distribution, for direct projection in theatres or for broadcasting on television; supporting activities such as film editing, cutting, dubbing etc.; distribution of motion pictures or other film productions (video tapes, DVDs, etc) to other industries; as well as their projection.'
-        },
-        {
-            'id': 183,
-            'code': '59.2',
-            'description': 'Sound recording and music publishing activities'
-        },
-        {
-            'id': 184,
-            'code': '60.1',
-            'description': 'Radio broadcasting'
-        },
-        {
-            'id': 185,
-            'code': '60.2',
-            'description': 'Television programming and broadcasting activities'
-        },
-        {
-            'id': 186,
-            'code': '61.1',
-            'description': 'Wired telecommunications activities'
-        },
-        {
-            'id': 187,
-            'code': '61.2',
-            'description': 'Wireless telecommunications activities'
-        },
-        {
-            'id': 188,
-            'code': '61.3',
-            'description': 'Satellite telecommunications activities'
-        },
-        {
-            'id': 189,
-            'code': '61.9',
-            'description': 'Other telecommunications activities'
-        },
-        {
-            'id': 190,
-            'code': '62.0',
-            'description': 'Computer programming, consultancy and related activities'
-        },
-        {
-            'id': 191,
-            'code': '63.1',
-            'description': 'Data processing, hosting and related activities; web portals',
-            'details': 'This group includes the provision of infrastructure for hosting, data processing services and related activities, as well as the provision of search facilities and other portals for the Internet.'
-        },
-        {
-            'id': 192,
-            'code': '63.9',
-            'description': 'Other information service activities',
-            'details': 'This group includes the activities of news agencies and all other remaining information service activities.'
-        },
-        {
-            'id': 193,
-            'code': '64.1',
-            'description': 'Monetary intermediation',
-            'details': 'This group includes the obtaining of funds in the form of transferable deposits, i.e. funds that are fixed in money terms, obtained on a day-to-day basis and, apart from central banking, obtained from non-financial sources.'
-        },
-        {
-            'id': 194,
-            'code': '64.2',
-            'description': 'Activities of holding companies'
-        },
-        {
-            'id': 195,
-            'code': '64.3',
-            'description': 'Trusts, funds and similar financial entities'
-        },
-        {
-            'id': 196,
-            'code': '64.9',
-            'description': 'Other financial service activities, except insurance and pension funding',
-            'details': 'This group includes financial service activities other than those conducted by monetary institutions.'
-        },
-        {
-            'id': 197,
-            'code': '65.1',
-            'description': 'Insurance',
-            'details': 'This group includes life insurance with or without a substantial savings element and non-life insurance.'
-        },
-        {
-            'id': 198,
-            'code': '65.2',
-            'description': 'Reinsurance'
-        },
-        {
-            'id': 199,
-            'code': '65.3',
-            'description': 'Pension funding'
-        },
-        {
-            'id': 200,
-            'code': '66.1',
-            'description': 'Activities auxiliary to financial services, except insurance and pension funding',
-            'details': 'This group includes the furnishing of physical or electronic marketplaces for the purpose of facilitating the buying and selling of stocks, stock options, bonds or commodity contracts.'
-        },
-        {
-            'id': 201,
-            'code': '66.2',
-            'description': 'Activities auxiliary to insurance and pension funding',
-            'details': 'This group includes acting as agents (i.e. brokers) in selling annuities and insurance policies or provide other employee benefits and insurance and pension related services such as claims adjustment and third party administration.'
-        },
-        {
-            'id': 202,
-            'code': '66.3',
-            'description': 'Fund management activities'
-        },
-        {
-            'id': 203,
-            'code': '68.1',
-            'description': 'Buying and selling of own real estate'
-        },
-        {
-            'id': 204,
-            'code': '68.2',
-            'description': 'Rental and operating of own or leased real estate'
-        },
-        {
-            'id': 205,
-            'code': '68.3',
-            'description': 'Real estate activities on a fee or contract basis'
-        },
-        {
-            'id': 206,
-            'code': '69.1',
-            'description': 'Legal activities'
-        },
-        {
-            'id': 207,
-            'code': '69.2',
-            'description': 'Accounting, bookkeeping and auditing activities; tax consultancy'
-        },
-        {
-            'id': 208,
-            'code': '70.1',
-            'description': 'Activities of head offices'
-        },
-        {
-            'id': 209,
-            'code': '70.2',
-            'description': 'Management consultancy activities'
-        },
-        {
-            'id': 210,
-            'code': '71.1',
-            'description': 'Architectural and engineering activities and related technical consultancy',
-            'details': 'This group includes the provision of architectural services, engineering services, drafting services, building inspection services and surveying and mapping services and the like.'
-        },
-        {
-            'id': 211,
-            'code': '71.2',
-            'description': 'Technical testing and analysis'
-        },
-        {
-            'id': 212,
-            'code': '72.1',
-            'description': 'Research and experimental development on natural sciences and engineering',
-            'details': 'This group comprises basic research, applied research, experimental development in natural sciences and engineering.'
-        },
-        {
-            'id': 213,
-            'code': '72.2',
-            'description': 'Research and experimental development on social sciences and humanities'
-        },
-        {
-            'id': 214,
-            'code': '73.1',
-            'description': 'Advertising'
-        },
-        {
-            'id': 215,
-            'code': '73.2',
-            'description': 'Market research and public opinion polling'
-        },
-        {
-            'id': 216,
-            'code': '74.1',
-            'description': 'Specialised design activities'
-        },
-        {
-            'id': 217,
-            'code': '74.2',
-            'description': 'Photographic activities'
-        },
-        {
-            'id': 218,
-            'code': '74.3',
-            'description': 'Translation and interpretation activities'
-        },
-        {
-            'id': 219,
-            'code': '74.9',
-            'description': 'Other professional, scientific and technical activities n.e.c.'
-        },
-        {
-            'id': 220,
-            'code': '75.0',
-            'description': 'Veterinary activities'
-        },
-        {
-            'id': 221,
-            'code': '77.1',
-            'description': 'Rental and leasing of motor vehicles'
-        },
-        {
-            'id': 222,
-            'code': '77.2',
-            'description': 'Rental and leasing of personal and household goods',
-            'details': 'This group includes the rental of personal and household goods as well as rental of recreational and sports equipment and video tapes. Activities generally include short-term rental of goods although in some instances, the goods may be leased for longer periods of time.'
-        },
-        {
-            'id': 223,
-            'code': '77.3',
-            'description': 'Rental and leasing of other machinery, equipment and tangible goods'
-        },
-        {
-            'id': 224,
-            'code': '77.4',
-            'description': 'Leasing of intellectual property and similar products, except copyrighted works'
-        },
-        {
-            'id': 225,
-            'code': '78.1',
-            'description': 'Activities of employment placement agencies'
-        },
-        {
-            'id': 226,
-            'code': '78.2',
-            'description': 'Temporary employment agency activities'
-        },
-        {
-            'id': 227,
-            'code': '78.3',
-            'description': 'Other human resources provision'
-        },
-        {
-            'id': 228,
-            'code': '79.1',
-            'description': 'Travel agency and tour operator activities',
-            'details': 'This group includes the activities of agencies, primarily engaged in selling travel, tour, transportation and accommodation services to the general public and commercial clients and the activity of arranging and assembling tours that are sold through travel agencies or directly by agents such as tour operators.'
-        },
-        {
-            'id': 229,
-            'code': '79.9',
-            'description': 'Other reservation service and related activities'
-        },
-        {
-            'id': 230,
-            'code': '80.1',
-            'description': 'Private security activities'
-        },
-        {
-            'id': 231,
-            'code': '80.2',
-            'description': 'Security systems service activities'
-        },
-        {
-            'id': 232,
-            'code': '80.3',
-            'description': 'Investigation activities'
-        },
-        {
-            'id': 233,
-            'code': '81.1',
-            'description': 'Combined facilities support activities'
-        },
-        {
-            'id': 234,
-            'code': '81.2',
-            'description': 'Cleaning activities',
-            'details': 'This group includes the activities of general interior cleaning of all types of buildings, exterior cleaning of buildings, specialised cleaning activities for buildings or other specialised cleaning activities, cleaning of industrial machinery, cleaning of the inside of road and sea tankers, disinfecting and extermination activities for buildings and industrial machinery, bottle cleaning, street sweeping, snow and ice removal.'
-        },
-        {
-            'id': 235,
-            'code': '81.3',
-            'description': 'Landscape service activities'
-        },
-        {
-            'id': 236,
-            'code': '82.1',
-            'description': 'Office administrative and support activities',
-            'details': 'This group includes the provision of a range of day-to-day office administrative services, such as financial planning, billing and record keeping, personnel and physical distribution and logistics for others on a contract or fee basis.'
-        },
-        {
-            'id': 237,
-            'code': '82.2',
-            'description': 'Activities of call centres'
-        },
-        {
-            'id': 238,
-            'code': '82.3',
-            'description': 'Organisation of conventions and trade shows'
-        },
-        {
-            'id': 239,
-            'code': '82.9',
-            'description': 'Business support service activities n.e.c.',
-            'details': 'This group includes the activities of collection agencies, credit bureaus and all support activities typically provided to businesses not elsewhere classified.'
-        },
-        {
-            'id': 240,
-            'code': '84.1',
-            'description': 'Administration of the State and the economic and social policy of the community',
-            'details': 'This group includes general administration (e.g. executive, legislative, financial administration etc. at all levels of government) and supervision in the field of social and economic life.'
-        },
-        {
-            'id': 241,
-            'code': '84.2',
-            'description': 'Provision of services to the community as a whole',
-            'details': 'This group includes foreign affairs, defence and public order and safety activities.'
-        },
-        {
-            'id': 242,
-            'code': '84.3',
-            'description': 'Compulsory social security activities'
-        },
-        {
-            'id': 243,
-            'code': '85.1',
-            'description': 'Pre-primary education'
-        },
-        {
-            'id': 244,
-            'code': '85.2',
-            'description': 'Primary education'
-        },
-        {
-            'id': 245,
-            'code': '85.3',
-            'description': 'Secondary education',
-            'details': 'This group includes the provision of general secondary and technical and vocational secondary education.'
-        },
-        {
-            'id': 246,
-            'code': '85.4',
-            'description': 'Higher education',
-            'details': 'This group includes the furnishing of post-secondary non-tertiary and academic courses and granting of degrees at baccalaureate, graduate or post-graduate level. The requirement for admission is a diploma at least at upper secondary education level.'
-        },
-        {
-            'id': 247,
-            'code': '85.5',
-            'description': 'Other education',
-            'details': 'This group includes general continuing education and continuing vocational education and training for any profession, hobby or self-development purposes.\n\nIt includes camps and schools offering instruction in athletic activities to groups or individuals, foreign language instruction, instruction in the arts, drama or music or other instruction or specialised training, not comparable to the education in groups 85.1 - 85.4.'
-        },
-        {
-            'id': 248,
-            'code': '85.6',
-            'description': 'Educational support activities'
-        },
-        {
-            'id': 249,
-            'code': '86.1',
-            'description': 'Hospital activities'
-        },
-        {
-            'id': 250,
-            'code': '86.2',
-            'description': 'Medical and dental practice activities',
-            'details': "This group includes medical consultation and treatment done by general medical practitioners and medical specialists, including surgeons, dentists etc.\n\nThese activities can be carried out in private practice, group practices and in hospital outpatient clinics, and in clinics such as those attached to firms, schools, homes for the aged, labour organisations and fraternal organisations, as well as in patients' homes."
-        },
-        {
-            'id': 251,
-            'code': '86.9',
-            'description': 'Other human health activities'
-        },
-        {
-            'id': 252,
-            'code': '87.1',
-            'description': 'Residential nursing care activities'
-        },
-        {
-            'id': 253,
-            'code': '87.2',
-            'description': 'Residential care activities for mental retardation, mental health and substance abuse'
-        },
-        {
-            'id': 254,
-            'code': '87.3',
-            'description': 'Residential care activities for the elderly and disabled'
-        },
-        {
-            'id': 255,
-            'code': '87.9',
-            'description': 'Other residential care activities'
-        },
-        {
-            'id': 256,
-            'code': '88.1',
-            'description': 'Social work activities without accommodation for the elderly and disabled'
-        },
-        {
-            'id': 257,
-            'code': '88.9',
-            'description': 'Other social work activities without accommodation'
-        },
-        {
-            'id': 258,
-            'code': '90.0',
-            'description': 'Creative, arts and entertainment activities',
-            'details': 'This group includes activities in the creative and performing arts and related activities.'
-        },
-        {
-            'id': 259,
-            'code': '91.0',
-            'description': 'Libraries, archives, museums and other cultural activities'
-        },
-        {
-            'id': 260,
-            'code': '92.0',
-            'description': 'Gambling and betting activities'
-        },
-        {
-            'id': 261,
-            'code': '93.1',
-            'description': 'Sports activities',
-            'details': 'This group includes the operation of sports facilities; activities of sports teams or clubs primarily participating in live sports events before a paying audience; independent athletes engaged in participating in live sporting or racing events before a paying audience; owners of racing participants such as cars, dogs, horses, etc. primarily engaged in entering them in racing events or other spectator sports events; sports trainers providing specialised services to support participants in sports events or competitions; operators of arenas and stadiums; other activities of organising, promoting or managing sports events, n.e.c.'
-        },
-        {
-            'id': 262,
-            'code': '93.2',
-            'description': 'Amusement and recreation activities',
-            'details': 'This group includes a wide range of units that operate facilities or provide services to meet the varied recreational interests of their patrons. It includes the operation of a variety of attractions, such as mechanical rides, water rides, games, shows, theme exhibits and picnic grounds.'
-        },
-        {
-            'id': 263,
-            'code': '94.1',
-            'description': 'Activities of business, employers and professional membership organisations',
-            'details': 'This group includes the activities of units that promote the interests of the members of business and employers organisations.'
-        },
-        {
-            'id': 264,
-            'code': '94.2',
-            'description': 'Activities of trade unions'
-        },
-        {
-            'id': 265,
-            'code': '94.9',
-            'description': 'Activities of other membership organisations',
-            'details': 'This group includes the activities of units (except business and employers organisations, professional organisations, trade unions) that promote the interests of their members.'
-        },
-        {
-            'id': 266,
-            'code': '95.1',
-            'description': 'Repair of computers and communication equipment',
-            'details': 'This group includes the repair and maintenance of computers and peripheral equipment and communications equipment.'
-        },
-        {
-            'id': 267,
-            'code': '95.2',
-            'description': 'Repair of personal and household goods',
-            'details': 'This group includes the repair and servicing of personal and household goods.'
-        },
-        {
-            'id': 268,
-            'code': '96.0',
-            'description': 'Other personal service activities'
-        },
-        {
-            'id': 269,
-            'code': '97.0',
-            'description': 'Activities of households as employers of domestic personnel'
-        },
-        {
-            'id': 270,
-            'code': '98.1',
-            'description': 'Undifferentiated goods-producing activities of private households for own use'
-        },
-        {
-            'id': 271,
-            'code': '98.2',
-            'description': 'Undifferentiated service-producing activities of private households for own use'
-        },
-        {
-            'id': 272,
-            'code': '99.0',
-            'description': 'Activities of extraterritorial organisations and bodies'
         }
     ],
 
@@ -4120,216 +2574,599 @@ module.exports = {
             'code': '01.21',
             'description': 'Growing of grapes',
             'details': 'This class includes:\n- growing of wine grapes and table grapes in vineyards'
+        }
+    ],
+
+    naceHierarchy: [
+        {
+            'sectionId': 1,
+            'divisionId': 1,
+            'groupId': 4,
+            'classId': 20
+        },
+        {
+            'sectionId': 1,
+            'divisionId': 1,
+            'groupId': 4,
+            'classId': 19
+        },
+        {
+            'sectionId': 1,
+            'divisionId': 1,
+            'groupId': 4,
+            'classId': 18
+        },
+        {
+            'sectionId': 1,
+            'divisionId': 1,
+            'groupId': 4,
+            'classId': 24
+        },
+        {
+            'sectionId': 1,
+            'divisionId': 1,
+            'groupId': 4,
+            'classId': 23
+        },
+        {
+            'sectionId': 1,
+            'divisionId': 1,
+            'groupId': 4,
+            'classId': 22
+        },
+        {
+            'sectionId': 1,
+            'divisionId': 1,
+            'groupId': 4,
+            'classId': 21
+        },
+        {
+            'sectionId': 1,
+            'divisionId': 1,
+            'groupId': 4,
+            'classId': 25
+        },
+        {
+            'sectionId': 1,
+            'divisionId': 1,
+            'groupId': 5,
+            'classId': 26
+        },
+        {
+            'sectionId': 1,
+            'divisionId': 1,
+            'groupId': 2,
+            'classId': 8
+        },
+        {
+            'sectionId': 1,
+            'divisionId': 1,
+            'groupId': 2,
+            'classId': 12
+        },
+        {
+            'sectionId': 1,
+            'divisionId': 1,
+            'groupId': 2,
+            'classId': 11
+        },
+        {
+            'sectionId': 1,
+            'divisionId': 1,
+            'groupId': 2,
+            'classId': 10
+        },
+        {
+            'sectionId': 1,
+            'divisionId': 1,
+            'groupId': 2,
+            'classId': 9
+        },
+        {
+            'sectionId': 1,
+            'divisionId': 1,
+            'groupId': 2,
+            'classId': 16
+        },
+        {
+            'sectionId': 1,
+            'divisionId': 1,
+            'groupId': 2,
+            'classId': 15
+        },
+        {
+            'sectionId': 1,
+            'divisionId': 1,
+            'groupId': 2,
+            'classId': 14
+        }
+    ],
+
+    eprtrSectors: [
+        {
+            'id': 1,
+            'code': '1',
+            'description': 'Energy sector'
+        },
+        {
+            'id': 2,
+            'code': '2',
+            'description': 'Production and processing of metals'
+        },
+        {
+            'id': 3,
+            'code': '3',
+            'description': 'Mineral industry'
+        },
+        {
+            'id': 4,
+            'code': '4',
+            'description': 'Chemical industry'
+        },
+        {
+            'id': 5,
+            'code': '5',
+            'description': 'Waste and wastewater management'
+        },
+        {
+            'id': 6,
+            'code': '6',
+            'description': 'Paper and wood production and processing'
+        },
+        {
+            'id': 7,
+            'code': '7',
+            'description': 'Intensive livestock production and aquaculture'
+        },
+        {
+            'id': 8,
+            'code': '8',
+            'description': 'Animal and vegetable products from the food and beverage sector'
         },
         {
             'id': 9,
-            'code': '01.22',
-            'description': 'Growing of tropical and subtropical fruits',
-            'details': 'This class includes:\n- growing of tropical and subtropical fruits:\n  . avocados\n  . bananas and plantains\n  . dates\n  . figs\n  . mangoes\n  . papayas\n  . pineapples\n  . other tropical and subtropical fruits'
-        },
-        {
-            'id': 10,
-            'code': '01.23',
-            'description': 'Growing of citrus fruits',
-            'details': 'This class includes:\n- growing of citrus fruits:\n  . grapefruit and pomelo\n  . lemons and limes\n  . oranges\n  . tangerines, mandarins and clementines\n  . other citrus fruits'
-        },
-        {
-            'id': 11,
-            'code': '01.24',
-            'description': 'Growing of pome fruits and stone fruits',
-            'details': 'This class includes:\n- growing of pome fruits and stone fruits:\n  . apples\n  . apricots\n  . cherries and sour cherries\n  . peaches and nectarines\n  . pears and quinces\n  . plums and sloes\n  . other pome fruits and stone fruits'
-        },
+            'code': '9',
+            'description': 'Other activities'
+        }
+    ],
+
+    eprtrActivities: [
         {
             'id': 12,
-            'code': '01.25',
-            'description': 'Growing of other tree and bush fruits and nuts',
-            'details': 'This class includes:\n- growing of berries:\n  . blueberries\n  . currants\n  . gooseberries\n  . kiwi fruit\n  . raspberries\n  . strawberries\n  . other berries\n- growing of fruit seeds\n- growing of edible nuts:\n  . almonds\n  . cashew nuts\n  . chestnuts\n  . hazelnuts\n  . pistachios\n  . walnuts\n  . other nuts\n- growing of other tree and bush fruits:\n  . locust beans'
+            'code': '1. (a)',
+            'description': 'Mineral oil and gas refineries'
         },
         {
-            'id': 13,
-            'code': '01.26',
-            'description': 'Growing of oleaginous fruits',
-            'details': 'This class includes:\n- growing of oleaginous fruits:\n  . coconuts\n  . olives\n  . oil palms\n  . other oleaginous fruits'
-        },
-        {
-            'id': 14,
-            'code': '01.27',
-            'description': 'Growing of beverage crops',
-            'details': 'This class includes:\n- growing of beverage crops:\n  . coffee\n  . tea\n  . maté\n  . cocoa \n  . other beverage crops'
-        },
-        {
-            'id': 15,
-            'code': '01.28',
-            'description': 'Growing of spices, aromatic, drug and pharmaceutical crops',
-            'details': 'This class includes:\n- growing of perennial and non-perennial spices and aromatic crops:\n  . pepper (piper sop.)\n  . chillies and peppers (capsicum sop.)\n  . nutmeg, mace and cardamoms\n  . anise, badian and fennel\n  . cinnamon (canella)\n  . cloves\n  . ginger\n  . vanilla\n  . hops\n  . other spices and aromatic crops\n- growing of drug and narcotic crops'
-        },
-        {
-            'id': 16,
-            'code': '01.29',
-            'description': 'Growing of other perennial crops',
-            'details': 'This class includes:\n- growing of rubber trees for harvesting of latex\n- growing of Christmas trees\n- growing of trees for extraction of sap\n- growing of vegetable materials of a kind used primarily for plaiting'
-        },
-        {
-            'id': 17,
-            'code': '01.30',
-            'description': 'Plant propagation',
-            'details': 'This class includes the production of all vegetative planting materials including cuttings, suckers and seedlings for direct plant propagation or to create plant grafting stock into which selected scion is grafted for eventual planting to produce crops.\n\nThis class includes:\n- growing of plants for planting\n- growing of plants for ornamental purposes, including turf for transplanting\n- growing of live plants for bulbs, tubers and roots; cuttings and slips; mushroom spawn \n- operation of tree nurseries, except forest tree nurseries'
-        },
-        {
-            'id': 18,
-            'code': '01.41',
-            'description': 'Raising of dairy cattle',
-            'details': 'This class includes:\n- raising and breeding of dairy cattle\n- production of raw milk from cows or buffaloes'
-        },
-        {
-            'id': 19,
-            'code': '01.42',
-            'description': 'Raising of other cattle and buffaloes',
-            'details': 'This class includes:\n- raising and breeding of cattle and buffaloes for meat\n- production of bovine semen'
+            'id': 44,
+            'code': '1. (b)',
+            'description': 'Installations for gasification and liquefaction'
         },
         {
             'id': 20,
-            'code': '01.43',
-            'description': 'Raising of horses and other equines',
-            'details': 'This class includes:\n- raising and breeding of horses, asses, mules or hinnies'
-        },
-        {
-            'id': 21,
-            'code': '01.44',
-            'description': 'Raising of camels and camelids',
-            'details': 'This class includes:\n- raising and breeding of camels (dromedary) and camelids'
-        },
-        {
-            'id': 22,
-            'code': '01.45',
-            'description': 'Raising of sheep and goats',
-            'details': 'This class includes:\n- raising and breeding of sheep and goats\n- production of raw sheep or goat milk\n- production of raw wool'
-        },
-        {
-            'id': 23,
-            'code': '01.46',
-            'description': 'Raising of swine/pigs',
-            'details': 'This class includes:\n- raising and breeding of swine (pigs)'
-        },
-        {
-            'id': 24,
-            'code': '01.47',
-            'description': 'Raising of poultry',
-            'details': 'This class includes:\n- raising and breeding of poultry:\n  . chickens, turkeys, ducks, geese and guinea fowls\n- production of eggs from poultry\n- operation of poultry hatcheries'
-        },
-        {
-            'id': 25,
-            'code': '01.49',
-            'description': 'Raising of other animals',
-            'details': 'This class includes:\n- raising and breeding of semi-domesticated or other live animals:\n  . ostriches and emus\n  . other birds (except poultry)\n  . insects\n  . rabbits and other fur animals\n- production of fur skins, reptile or bird skins from ranching operation\n- operation of worm farms, land mollusc farms, snail farms etc.\n- raising of silk worms, production of silk worm cocoons\n- bee-keeping and production of honey and beeswax\n- raising and breeding of pet animals (except fish):\n  . cats and dogs\n  . birds, such as parakeets etc.\n  . hamsters etc.\n- raising of diverse animals'
-        },
-        {
-            'id': 26,
-            'code': '01.50',
-            'description': 'Mixed farming',
-            'details': 'This class includes the combined production of crops and animals without a specialised production of crops or animals. The size of the overall farming operation is not a determining factor. If either production of crops or animals in a given unit is 66% or more of standard gross margins, the combined activity should not be included here, but allocated to crop or animal farming.'
-        },
-        {
-            'id': 27,
-            'code': '01.61',
-            'description': 'Support activities for crop production',
-            'details': 'This class includes:\n- agricultural activities on a fee or contract basis:\n  . preparation of fields\n  . establishing a crop\n  . treatment of crops\n  . crop spraying, including by air\n  . trimming of fruit trees and vines\n  . transplanting of rice, thinning of beets\n  . harvesting\n  . pest control (including rabbits) in connection with agriculture\n- maintenance of agricultural land in good agricultural and environmental condition\n- operation of agricultural irrigation equipment'
-        },
-        {
-            'id': 28,
-            'code': '01.62',
-            'description': 'Support activities for animal production',
-            'details': 'This class includes:\n- agricultural activities on a fee or contract basis:\n  . activities to promote propagation, growth and output of animals\n  . herd testing services, droving services, agistment services, poultry caponising, coop cleaning etc.\n  . activities related to artificial insemination\n  . stud services\n  . sheep shearing\n  . farm animal boarding and care'
-        },
-        {
-            'id': 29,
-            'code': '01.63',
-            'description': 'Post-harvest crop activities',
-            'details': 'This class includes:\n- preparation of crops for primary markets, i.e. cleaning, trimming, grading, disinfecting\n- cotton ginning\n- preparation of tobacco leaves, e.g. drying\n- preparation of cocoa beans, e.g. peeling\n- waxing of fruit\n- sun-drying of fruit and vegetables'
-        },
-        {
-            'id': 30,
-            'code': '01.64',
-            'description': 'Seed processing for propagation',
-            'details': 'This class includes all post-harvest activities aimed at improving the propagation quality of seed through the removal of non-seed materials, undersized, mechanically or insect-damaged and immature seeds as well as removing the seed moisture to a safe level for seed storage. This activity includes the drying, cleaning, grading and treating of seeds until they are marketed. The treatment of genetically modified seeds is included here.'
-        },
-        {
-            'id': 31,
-            'code': '01.70',
-            'description': 'Hunting, trapping and related service activities',
-            'details': 'This class includes:\n- hunting and trapping on a commercial basis\n- taking of animals (dead or alive) for food, fur, skin, or for use in research, in zoos or as pets\n- production of fur skins, reptile or bird skins from hunting or trapping activities'
-        },
-        {
-            'id': 32,
-            'code': '02.10',
-            'description': 'Silviculture and other forestry activities',
-            'details': 'This class includes:\n- growing of standing timber: planting, replanting, transplanting, thinning and conserving of forests and timber tracts\n- growing of coppice, pulpwood and fire wood\n- operation of forest tree nurseries\n\nThese activities can be carried out in natural or planted forests.'
-        },
-        {
-            'id': 33,
-            'code': '02.20',
-            'description': 'Logging',
-            'details': 'This class includes:\n- production of roundwood for forest-based manufacturing industries\n- production of roundwood used in an unprocessed form such as pit-props, fence posts and utility poles\n- gathering and production of wood for energy\n- gathering and production of forest harvesting residues for energy\n- production of charcoal in the forest (using traditional methods)\n\nThe output of this activity can take the form of logs or fire wood.'
-        },
-        {
-            'id': 34,
-            'code': '02.30',
-            'description': 'Gathering of wild growing non-wood products',
-            'details': 'This class includes:\n- gathering of wild growing materials:\n  . mushrooms, truffles\n  . berries\n  . nuts\n  . balata and other rubber-like gums\n  . cork\n  . lac and resins\n  . balsams\n  . vegetable hair\n  . eelgrass\n  . acorns, horse chestnuts\n  . mosses and lichens'
-        },
-        {
-            'id': 35,
-            'code': '02.40',
-            'description': 'Support services to forestry',
-            'details': 'This class includes carrying out part of the forestry operation on a fee or contract basis.\n\nThis class includes:\n- forestry service activities:\n  . forestry inventories\n  . forest management consulting services\n  . timber evaluation\n  . forest fire fighting and protection\n  . forest pest control\n- logging service activities:\n  . transport of logs within the forest'
-        },
-        {
-            'id': 36,
-            'code': '03.11',
-            'description': 'Marine fishing',
-            'details': 'This class includes:\n- fishing on a commercial basis in ocean and coastal waters\n- taking of marine crustaceans and molluscs\n- whale catching\n- taking of marine aquatic animals: turtles, sea squirts, tunicates, sea urchins etc.'
-        },
-        {
-            'id': 37,
-            'code': '03.12',
-            'description': 'Freshwater fishing',
-            'details': 'This class includes:\n- fishing on a commercial basis in inland waters\n- taking of freshwater crustaceans and molluscs\n- taking of freshwater aquatic animals'
-        },
-        {
-            'id': 38,
-            'code': '03.21',
-            'description': 'Marine aquaculture',
-            'details': 'This class includes:\n- fish farming in sea water including farming of marine ornamental fish\n- production of bivalve spat (oyster mussel etc.), lobsterlings, shrimp post-larvae, fish fry and fingerlings\n- growing of laver and other edible seaweeds\n- culture of crustaceans, bivalves, other molluscs and other aquatic animals in sea water'
-        },
-        {
-            'id': 39,
-            'code': '03.22',
-            'description': 'Freshwater aquaculture',
-            'details': 'This class includes:\n- fish farming in freshwater including farming of freshwater ornamental fish\n- culture of freshwater crustaceans, bivalves, other molluscs and other aquatic animals\n- operation of fish hatcheries (freshwater)\n- farming of frogs'
-        },
-        {
-            'id': 40,
-            'code': '05.10',
-            'description': 'Mining of hard coal',
-            'details': 'This class includes:\n- mining of hard coal: underground or surface mining, including mining through liquefaction methods\n- cleaning, sizing, grading, pulverising, compressing etc. of coal to classify, improve quality or facilitate transport or storage'
-        },
-        {
-            'id': 41,
-            'code': '05.20',
-            'description': 'Mining of lignite',
-            'details': 'This class includes:\n- mining of lignite (brown coal): underground or surface mining, including mining through liquefaction methods\n- washing, dehydrating, pulverising, compressing of lignite to improve quality or facilitate transport or storage'
-        },
-        {
-            'id': 42,
-            'code': '06.10',
-            'description': 'Extraction of crude petroleum',
-            'details': 'This class includes:\n- extraction of crude petroleum oils'
+            'code': '1. (c)',
+            'description': 'Thermal power stations and other combustion installations',
+            'threshold': 'With a heat input of 50 megawatts (MW)'
         },
         {
             'id': 43,
-            'code': '06.20',
-            'description': 'Extraction of natural gas',
-            'details': 'This class includes:\n- production of crude gaseous hydrocarbon (natural gas)\n- extraction of condensates\n- draining and separation of liquid hydrocarbon fractions\n- gas desulphurisation'
+            'code': '1. (d)',
+            'description': 'Coke ovens'
+        },
+        {
+            'id': 19,
+            'code': '1. (e)',
+            'description': 'Coal rolling mills',
+            'threshold': 'With a capacity of 1 tonne per hour'
+        },
+        {
+            'id': 30,
+            'code': '1. (f)',
+            'description': 'Installations for the manufacture of coal products and solid smokeless fuel'
+        },
+        {
+            'id': 23,
+            'code': '2. (a)',
+            'description': 'Metal ore (including sulphide ore) roasting or sintering installations'
+        },
+        {
+            'id': 3,
+            'code': '2. (b)',
+            'description': 'Installations for the production of pig iron or steel (primary or secondary melting) including continuous casting',
+            'threshold': 'With a capacity of 2,5 tonnes per hour'
+        },
+        {
+            'id': 21,
+            'code': '2. (c)',
+            'description': 'Installations for the processing of ferrous metals: (i) Hot-rolling mills, (ii) Smitheries with hammers, (iii) Application of protective fused metal coats',
+            'threshold': '(i) With a capacity of 20 tonnes of crude steel per hour, (ii) With an energy of 50 kilojoules per hammer, where the calorific power used exceeds 20 MW, (iii) With an input of 2 tonnes of crude steel per hour'
+        },
+        {
+            'id': 1,
+            'code': '2. (d)',
+            'description': 'Ferrous metal foundries With a production capacity of 20 tonnes per day',
+            'threshold': 'With a production capacity of 20 tonnes per day'
+        },
+        {
+            'id': 28,
+            'code': '2. (e)',
+            'description': 'Installations: (i) For the production of non-ferrous crude metals from ore, concentrates or secondary raw materials by metallurgical, chemical or electrolytic processes; (ii) For the smelting, including the alloying, of non-ferrous metals, including recovered products (refining, foundry casting, etc.) (i) n/a, (ii) With a melting capacity of 4 tonnes per day for lead and cadmium or 20 tonnes per day for all other metals'
+        },
+        {
+            'id': 6,
+            'code': '2. (f)',
+            'description': 'Installations for surface treatment of metals and plastic materials using an electrolytic or chemical process',
+            'threshold': 'Where the volume of the treatment vats equals 30 m3'
+        },
+        {
+            'id': 31,
+            'code': '3. (a)',
+            'description': 'Underground mining and related operations'
+        },
+        {
+            'id': 10,
+            'code': '3. (b)',
+            'description': 'Opencast mining and quarrying',
+            'threshold': 'Where the surface of the area effectively under extractive operation equals 25 hectares'
+        },
+        {
+            'id': 34,
+            'code': '3. (c)',
+            'description': 'Installations for the production of: (i) Cement clinker in rotary kilns, (ii) Lime in rotary kilns, (iii) Cement clinker or lime in other furnaces',
+            'threshold': '(i) With a production capacity of 500 tonnes per day, (ii) With a production capacity of 50 tonnes per day, (iii) With a production capacity of 50 tonnes per day'
+        },
+        {
+            'id': 14,
+            'code': '3. (d)',
+            'description': 'Installations for the production of asbestos and the manufacture of asbestos-based products'
+        },
+        {
+            'id': 36,
+            'code': '3. (e)',
+            'description': 'Installations for the manufacture of glass, including glass fibre',
+            'threshold': 'With a melting capacity of 20 tonnes per day'
+        },
+        {
+            'id': 17,
+            'code': '3. (f)',
+            'description': 'Installations for melting mineral substances, including the production of mineral fibres',
+            'threshold': 'With a melting capacity of 20 tonnes per day'
+        },
+        {
+            'id': 39,
+            'code': '3. (g)',
+            'description': 'Installations for the manufacture of ceramic products by firing, in particular roofing tiles, bricks, refractory bricks, tiles, stoneware or porcelain',
+            'threshold': 'With a production capacity of 75 tonnes per day, or with a kiln capacity of 4 m3 and with a setting density per kiln of 300 kg/m3'
+        },
+        {
+            'id': 15,
+            'code': '4. (a)',
+            'description': 'Chemical installations for the production on an industrial scale of basic organic chemicals, such as: (i) Simple hydrocarbons, (ii) Oxygen-containing hydrocarbons, (iii) Sulphurous hydrocarbons, (iv) Nitrogenous hydrocarbons, (v) Phosphorus-containing hydrocarbons, (vi) Halogenic hydrocarbons, (vii) Organometallic compounds, (viii) Basic plastic materials, (ix) Synthetic rubbers, (x) Dyes and pigments, (xi) Surface-active agents and surfactants'
+        },
+        {
+            'id': 41,
+            'code': '4. (b)',
+            'description': 'Chemical installations for the production on an industrial scale of basic inorganic chemicals, such as: (i) Gases, (ii) Acids, (iii) Bases, (iv) salts, (v) Non-metals, metal oxides or other inorganic compounds'
+        },
+        {
+            'id': 8,
+            'code': '4. (c)',
+            'description': 'Chemical installations for the production on an industrial scale of phosphorous-, nitrogen- or potassium-based fertilisers'
+        },
+        {
+            'id': 33,
+            'code': '4. (d)',
+            'description': 'Chemical installations for the production on an industrial scale of basic plant health products and of biocides'
+        },
+        {
+            'id': 9,
+            'code': '4. (e)',
+            'description': 'Installations using a chemical or biological process for the production on an industrial scale of basic pharmaceutical products'
+        },
+        {
+            'id': 35,
+            'code': '4. (f)',
+            'description': 'Installations for the production on an industrial scale of explosives and pyrotechnic products'
+        },
+        {
+            'id': 22,
+            'code': '5. (a)',
+            'description': 'Installations for the recovery or disposal of hazardous waste',
+            'threshold': 'Receiving 10 tonnes per day'
+        },
+        {
+            'id': 7,
+            'code': '5. (b)',
+            'description': 'Installations for the incineration of non-hazardous waste',
+            'threshold': 'With capacity of 3 tonnes per hour'
+        },
+        {
+            'id': 29,
+            'code': '5. (c)',
+            'description': 'Installations for the disposal of non-hazardous waste',
+            'threshold': 'With a capacity of 50 tonnes per day'
+        },
+        {
+            'id': 5,
+            'code': '5. (d)',
+            'description': 'Landfills',
+            'threshold': 'Receiving 10 tonnes per day or with a total capacity of 25 000 tonnes'
+        },
+        {
+            'id': 27,
+            'code': '5. (e)',
+            'description': 'Installations for the disposal or recycling of animal carcasses and animal waste',
+            'threshold': 'With a treatment capacity of 10 tonnes per day'
+        },
+        {
+            'id': 4,
+            'code': '5. (f)',
+            'description': 'Urban waste-water treatment plants',
+            'threshold': 'With a capacity of 100 000 population equivalents'
+        },
+        {
+            'id': 26,
+            'code': '5. (g)',
+            'description': 'Independently operated industrial waste-water treatment plants which serve one or more activities of this annex',
+            'threshold': 'With a capacity of 10 000 m3 per day (4)'
+        },
+        {
+            'id': 40,
+            'code': '6. (a)',
+            'description': 'Industrial plants for the production of pulp from timber or similar fibrous materials'
+        },
+        {
+            'id': 18,
+            'code': '6. (b)',
+            'description': 'Industrial plants for the production of paper and board and other primary wood products (such as chipboard, fibreboard and plywood)',
+            'threshold': 'With a production capacity of 20 tonnes per day'
+        },
+        {
+            'id': 37,
+            'code': '6. (c)',
+            'description': 'Industrial plants for the preservation of wood and wood products with chemicals',
+            'threshold': 'With a production capacity of 50 m3 per day'
+        },
+        {
+            'id': 11,
+            'code': '7. (a)',
+            'description': 'Installations for the intensive rearing of poultry or pigs',
+            'threshold': '(i) With 40 000 places for poultry, (ii) With 2 000 places for production pigs (over 30 kg), (iii) With 750 places for sows'
+        },
+        {
+            'id': 32,
+            'code': '7. (b)',
+            'description': 'Intensive aquaculture',
+            'threshold': 'With a production capacity of 1000 tonnes of fish or shellfish per year'
+        },
+        {
+            'id': 24,
+            'code': '8. (a)',
+            'description': 'Slaughterhouses',
+            'threshold': 'With a carcass production capacity of 50 tonnes per day'
+        },
+        {
+            'id': 2,
+            'code': '8. (b)',
+            'description': 'Treatment and processing intended for the production of food and beverage products from: (i) Animal raw materials (other than milk), (ii) Vegetable raw materials',
+            'threshold': '(i) With a finished product production capacity of 75 tonnes per day, (ii) With a finished product production capacity of 300 tonnes per day (average value on a quarterly basis)'
+        },
+        {
+            'id': 25,
+            'code': '8. (c)',
+            'description': 'Treatment and processing of milk',
+            'threshold': 'With a capacity to receive 200 tonnes of milk per day (average value on an annual basis)'
+        },
+        {
+            'id': 45,
+            'code': '9. (a)',
+            'description': 'Plants for the pre-treatment (operations such as washing, bleaching, mercerisation) or dyeing of fibres or textiles',
+            'threshold': 'With a treatment capacity of 10 tonnes per day'
+        },
+        {
+            'id': 13,
+            'code': '9. (b)',
+            'description': 'Plants for the tanning of hides and skins',
+            'threshold': 'With a treatment capacity of 12 tonnes of finished product per day'
+        },
+        {
+            'id': 38,
+            'code': '9. (c)',
+            'description': 'Installations for the surface treatment of substances, objects or products using organic solvents, in particular for dressing, printing, coating, degreasing, waterproofing, sizing, painting, cleaning or impregnating',
+            'threshold': 'With a consumption capacity of 150 kg per hour or 200 tonnes per year'
+        },
+        {
+            'id': 16,
+            'code': '9. (d)',
+            'description': 'Installations for the production of carbon (hard-burnt coal) or electrographite by means of incineration or graphitisation'
+        },
+        {
+            'id': 42,
+            'code': '9. (e)',
+            'description': 'Installations for the building of, and painting or removal of paint from ships',
+            'threshold': 'With a capacity for ships 100 m long'
+        }
+    ],
+
+    eprtrHierarchys: [
+        {
+            'sectorId': 1,
+            'activityId': 30
+        },
+        {
+            'sectorId': 1,
+            'activityId': 12
+        },
+        {
+            'sectorId': 1,
+            'activityId': 19
+        },
+        {
+            'sectorId': 1,
+            'activityId': 43
+        },
+        {
+            'sectorId': 1,
+            'activityId': 20
+        },
+        {
+            'sectorId': 1,
+            'activityId': 44
+        },
+        {
+            'sectorId': 2,
+            'activityId': 21
+        },
+        {
+            'sectorId': 2,
+            'activityId': 1
+        },
+        {
+            'sectorId': 2,
+            'activityId': 23
+        },
+        {
+            'sectorId': 2,
+            'activityId': 3
+        },
+        {
+            'sectorId': 2,
+            'activityId': 28
+        },
+        {
+            'sectorId': 2,
+            'activityId': 6
+        },
+        {
+            'sectorId': 3,
+            'activityId': 31
+        },
+        {
+            'sectorId': 3,
+            'activityId': 34
+        },
+        {
+            'sectorId': 3,
+            'activityId': 10
+        },
+        {
+            'sectorId': 3,
+            'activityId': 36
+        },
+        {
+            'sectorId': 3,
+            'activityId': 14
+        },
+        {
+            'sectorId': 3,
+            'activityId': 39
+        },
+        {
+            'sectorId': 3,
+            'activityId': 17
+        },
+        {
+            'sectorId': 4,
+            'activityId': 8
+        },
+        {
+            'sectorId': 4,
+            'activityId': 33
+        },
+        {
+            'sectorId': 4,
+            'activityId': 9
+        },
+        {
+            'sectorId': 4,
+            'activityId': 35
+        },
+        {
+            'sectorId': 4,
+            'activityId': 15
+        },
+        {
+            'sectorId': 4,
+            'activityId': 41
+        },
+        {
+            'sectorId': 5,
+            'activityId': 22
+        },
+        {
+            'sectorId': 5,
+            'activityId': 26
+        },
+        {
+            'sectorId': 5,
+            'activityId': 4
+        },
+        {
+            'sectorId': 5,
+            'activityId': 27
+        },
+        {
+            'sectorId': 5,
+            'activityId': 5
+        },
+        {
+            'sectorId': 5,
+            'activityId': 29
+        },
+        {
+            'sectorId': 5,
+            'activityId': 7
+        },
+        {
+            'sectorId': 6,
+            'activityId': 37
+        },
+        {
+            'sectorId': 6,
+            'activityId': 40
+        },
+        {
+            'sectorId': 6,
+            'activityId': 18
+        },
+        {
+            'sectorId': 7,
+            'activityId': 32
+        },
+        {
+            'sectorId': 7,
+            'activityId': 11
+        },
+        {
+            'sectorId': 8,
+            'activityId': 2
+        },
+        {
+            'sectorId': 8,
+            'activityId': 24
+        },
+        {
+            'sectorId': 8,
+            'activityId': 25
+        },
+        {
+            'sectorId': 9,
+            'activityId': 13
+        },
+        {
+            'sectorId': 9,
+            'activityId': 38
+        },
+        {
+            'sectorId': 9,
+            'activityId': 16
+        },
+        {
+            'sectorId': 9,
+            'activityId': 42
+        },
+        {
+            'sectorId': 9,
+            'activityId': 45
         }
     ]
 };

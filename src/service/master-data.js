@@ -45,11 +45,13 @@ module.exports = {
     getNoseActivityById: process.env.NODE_ENV === 'localtest' ? testService.getNoseActivityById : apiService.getNoseActivityById,
     getNoseProcesses: process.env.NODE_ENV === 'localtest' ? testService.getNoseProcesses : apiService.getNoseProcesses,
     getNoseProcessById: process.env.NODE_ENV === 'localtest' ? testService.getNoseProcessById : apiService.getNoseProcessById,
+    getNoseHierarchies: process.env.NODE_ENV === 'localtest' ? testService.getNoseHierarchies : apiService.getNoseHierarchies,
 
     getEprtrSectors: process.env.NODE_ENV === 'localtest' ? testService.getEprtrSectors : apiService.getEprtrSectors,
     getEprtrSectorById: process.env.NODE_ENV === 'localtest' ? testService.getEprtrSectorById : apiService.getEprtrSectorById,
     getEprtrActivities: process.env.NODE_ENV === 'localtest' ? testService.getEprtrActivities : apiService.getEprtrActivities,
     getEprtrActivityById: process.env.NODE_ENV === 'localtest' ? testService.getEprtrActivityById : apiService.getEprtrActivityById,
+    getEprtrHierarchy: process.env.NODE_ENV === 'localtest' ? testService.getEprtrHierarchy : apiService.getEprtrHierarchy,
 
     getNaceSections: process.env.NODE_ENV === 'localtest' ? testService.getNaceSections : apiService.getNaceSections,
     getNaceSectionById: process.env.NODE_ENV === 'localtest' ? testService.getNaceSectionById : apiService.getNaceSectionById,
@@ -58,6 +60,7 @@ module.exports = {
     getNaceGroups: process.env.NODE_ENV === 'localtest' ? testService.getNaceGroups : apiService.getNaceGroups,
     getNaceGroupById: process.env.NODE_ENV === 'localtest' ? testService.getNaceGroupById : apiService.getNaceGroupById,
     getNaceClasses: process.env.NODE_ENV === 'localtest' ? testService.getNaceClasses : apiService.getNaceClasses,
-    getNaceClassById: process.env.NODE_ENV === 'localtest' ? testService.getNaceClassById : apiService.getNaceClassById
+    getNaceClassById: process.env.NODE_ENV === 'localtest' ? testService.getNaceClassById : apiService.getNaceClassById,
+    getNaceHierarchy: process.env.NODE_ENV === 'localtest' ? testService.getNaceHierarchy : apiService.getNaceHierarchy
 
 };

@@ -217,8 +217,15 @@ experiment('Master data service (Test data)', function () {
             expect(noseProcess).to.equal(noseProcesses[1]);
         });
 
+        test('getNoseHierarchies()', async () => {
+            const noseProcesses = await MasterDataService.getNoseProcesses();
+            const noseProcess = await MasterDataService.getNoseProcessById(noseProcesses[1].id);
+            expect(noseProcess).to.equal(noseProcesses[1]);
+        });
+
         test('getEprtrActivities()', async () => {
             const eprtrActivities = await MasterDataService.getEprtrActivities();
+            expect(eprtrActivities).to.be.an.array();
             expect(eprtrActivities).to.be.an.array();
         });
 
@@ -237,6 +244,11 @@ experiment('Master data service (Test data)', function () {
             const eprtrSectors = await MasterDataService.getEprtrSectors();
             const eprtrSector = await MasterDataService.getEprtrSectorById(eprtrSectors[1].id);
             expect(eprtrSector).to.equal(eprtrSectors[1]);
+        });
+
+        test('getEprtrHierarchy()', async () => {
+            const eprtrHierarchy = await MasterDataService.getEprtrHierarchy();
+            expect(eprtrHierarchy).to.be.an.array();
         });
 
         test('getNaceSections:', async () => {
@@ -281,6 +293,11 @@ experiment('Master data service (Test data)', function () {
             const naceClasses = await MasterDataService.getNaceClasses();
             const naceClass = await MasterDataService.getNaceClassById(naceClasses[2].id);
             expect(naceClass).to.equal(naceClasses[2]);
+        });
+
+        test('getNaceHierarchies()', async () => {
+            const naceHierarchy = await MasterDataService.getNaceHierarchy();
+            expect(naceHierarchy).to.be.an.array();
         });
 
     }

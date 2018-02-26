@@ -230,84 +230,163 @@ module.exports = internals = {
     },
 
     /**
-     * Get the first level nose-p codes by id
-     * @param id
-     * @return {Promise.<*>}
+     * Get the a first level nose-p code by its Id
+     * @return {Promise.<void>}
      */
     getNoseActivityClassById: async (id) => {
         return internals.getEntityById(internals._entities.noseActivityClasses, id);
     },
 
+    /**
+     * Get the second level nose-p codes
+     * @return {Promise.<void>}
+     */
     getNoseActivities: async () => {
         return internals.listEntity(internals._entities.noseActivities);
     },
 
+    /**
+     * Get the a second level nose-p code by its Id
+     * @return {Promise.<void>}
+     */
     getNoseActivityById: async (id) => {
         return internals.getEntityById(internals._entities.noseActivities, id);
     },
 
+    /**
+     * Get the third level nose-p codes
+     * @return {Promise.<void>}
+     */
     getNoseProcesses: async () => {
         return internals.listEntity(internals._entities.noseProcesses);
     },
 
+    /**
+     * Get the a third level nose-p code by its Id
+     * @return {Promise.<void>}
+     */
     getNoseProcessById: async (id) => {
         return internals.getEntityById(internals._entities.noseProcesses, id);
     },
 
     /**
-     * Get the EPRTR codes
-     * @returns {Promise.<void>}
+     * Get
+     * @return {Promise.<*>}
      */
-    getEprtrActivities: async () => {
-        return internals.listEntity(internals._entities.eprtrActivities);
+    getNoseHierarchies: async () => {
+        return internals.listRelation(internals._relations.noseHierarchy);
     },
 
-    getEprtrActivityById: async (id) => {
-        return internals.getEntityById(internals._entities.eprtrActivities, id);
-    },
-
+    /**
+     * Get the first level eprtr codes
+     * @return {Promise.<void>}
+     */
     getEprtrSectors: async () => {
         return internals.listEntity(internals._entities.eprtrSectors);
     },
 
+    /**
+     * Get the a first level eprtr code by its Id
+     * @return {Promise.<void>}
+     */
     getEprtrSectorById: async (id) => {
         return internals.getEntityById(internals._entities.eprtrSectors, id);
     },
 
     /**
-     * Nace code hierarchy - section, division, group, class
-     * @returns {Promise.<*>}
+     * Get the second level eprtr codes
+     * @return {Promise.<void>}
+     */
+    getEprtrActivities: async () => {
+        return internals.listEntity(internals._entities.eprtrActivities);
+    },
+
+    /**
+     * Get the a second level eprtr code by its Id
+     * @return {Promise.<void>}
+     */
+    getEprtrActivityById: async (id) => {
+        return internals.getEntityById(internals._entities.eprtrActivities, id);
+    },
+
+  /**
+   * Get the E-PRTR hierarchy
+   * @return {Promise.<*>}
+   */
+    getEprtrHierarchy: async () => {
+        return internals.listRelation(internals._relations.eprtrHierarchy);
+    },
+
+    /**
+     * Get the first level nace codes
+     * @return {Promise.<void>}
      */
     getNaceSections: async () => {
         return internals.listEntity(internals._entities.naceSections);
     },
 
+    /**
+     * Get the first level nace code by its Id
+     * @return {Promise.<void>}
+     */
     getNaceSectionById: async (id) => {
         return internals.getEntityById(internals._entities.naceSections, id);
     },
 
+    /**
+     * Get the first level nace codes
+     * @return {Promise.<void>}
+     */
     getNaceDivisions: async () => {
         return internals.listEntity(internals._entities.naceDivisions);
     },
 
+    /**
+     * Get the first level nace code by its Id
+     * @return {Promise.<void>}
+     */
     getNaceDivisionById: async (id) => {
         return internals.getEntityById(internals._entities.naceDivisions, id);
     },
 
+    /**
+     * Get the third level nace codes
+     * @return {Promise.<void>}
+     */
     getNaceGroups: async () => {
         return internals.listEntity(internals._entities.naceGroups);
     },
 
+    /**
+     * Get the first level nace code by its Id
+     * @return {Promise.<void>}
+     */
     getNaceGroupById: async (id) => {
         return internals.getEntityById(internals._entities.naceGroups, id);
     },
 
+    /**
+     * Get the fourth level nace codes
+     * @return {Promise.<void>}
+     */
     getNaceClasses: async () => {
         return internals.listEntity(internals._entities.naceClasses);
     },
 
+    /**
+     * Get the first level nace code by its Id
+     * @return {Promise.<void>}
+     */
     getNaceClassById: async (id) => {
         return internals.getEntityById(internals._entities.naceClasses, id);
+    },
+
+    /**
+     * Get the nace code hierarchies
+     * @return {Promise.<*>}
+     */
+    getNaceHierarchy: async () => {
+        return internals.listRelation(internals._relations.naceHierarchy);
     }
 };
 
@@ -321,6 +400,18 @@ internals.listEntity = async (entity) => {
         await internals.entityFetch(entity);
     }
     return entity.arr;
+};
+
+/**
+ * List wrapper for a given relation
+ * @param entity
+ * @return {Promise.<*>}
+ */
+internals.listRelation = async (relation) => {
+    if (!relation.arr.length) {
+        await internals.relationFetch(relation);
+    }
+    return relation.arr;
 };
 
 /**
@@ -424,6 +515,24 @@ internals.entityFetch = async (entity) => {
                 });
             });
         }
+    } catch (err) {
+        Logging.logger.error(err);
+        throw err;
+    }
+};
+
+/**
+ * Relations are different from entities - there is no single id
+ * @param relation
+ * @return {Promise.<void>}
+ */
+internals.relationFetch = async (relation) => {
+    try {
+        const result = await client.request(relation.request.api,
+            relation.request.method, relation.request.uri, relation.request.query);
+
+        relation.arr = relation.processor(result._embedded[relation.name]);
+
     } catch (err) {
         Logging.logger.error(err);
         throw err;
@@ -732,4 +841,78 @@ internals._entities = {
         sorter: (a, b) => internals.sortByProperty(a, b, 'code')
     }
 
+};
+
+/*
+ * Specifics for relations. These are somewhat different from entities
+ */
+internals._relations = {
+    naceHierarchy: {
+        name: 'naceSections',
+        map: new Map(),
+        arr: [],
+        request: { api: 'MD', uri: 'naceSections', method: 'GET', query: 'projection=hierarchy' },
+
+        processor: (results) => {
+            const hierarchy = [];
+            for (const section of results) {
+                for (const division of section.nace_divisions) {
+                    for (const group of division.nace_groups) {
+                        for (const naceClass of group.nace_classes) {
+                            hierarchy.push({
+                                sectionId: section.id,
+                                divisionId: division.id,
+                                groupId: group.id,
+                                classId: naceClass.id
+                            });
+                        }
+                    }
+                }
+            }
+            return hierarchy;
+        }
+    },
+
+    noseHierarchy: {
+        name: 'noseActivityClasses',
+        map: new Map(),
+        arr: [],
+        request: {api: 'MD', uri: 'noseActivityClasses', method: 'GET', query: 'projection=hierarchy'},
+
+        processor: (results) => {
+            const hierarchy = [];
+            for (const activityClass of results) {
+                for (const activity of activityClass.nose_activities) {
+                    for (const process of activity.nose_processes) {
+                        hierarchy.push({
+                            activityClassId: activityClass.id,
+                            activityId: activity.id,
+                            processId: process.id
+                        });
+                    }
+                }
+            }
+            return hierarchy;
+        }
+    },
+
+    eprtrHierarchy: {
+        name: 'eprtrSectors',
+        map: new Map(),
+        arr: [],
+        request: {api: 'MD', uri: 'eprtrSectors', method: 'GET', query: 'projection=hierarchy'},
+
+        processor: (results) => {
+            const hierarchy = [];
+            for (const eprtrSectors of results) {
+                for (const activity of eprtrSectors.eprtr_activities) {
+                    hierarchy.push({
+                        sectorId: eprtrSectors.id,
+                        activityId: activity.id
+                    });
+                }
+            }
+            return hierarchy;
+        }
+    }
 };

@@ -36,25 +36,25 @@ experiment('Master data service (API)', async () => {
             const substances2 = await MasterDataService.getSubstances('RELEASES_TO_AIR');
             expect(substances2).to.be.an.array();
             expect(substances1.length).to.equal(substances2.length);
-            console.log('Releases to air: ' + substances1.length);
+            // console.log('Releases to air: ' + substances1.length);
         });
 
         test('getSubstances(\'RELEASES_TO_LAND\')', async () => {
             const substances = await MasterDataService.getSubstances('RELEASES_TO_LAND');
             expect(substances).to.be.an.array();
-            console.log('Releases to land: ' + substances.length);
+            // console.log('Releases to land: ' + substances.length);
         });
 
         test('getSubstances(\'RELEASES_TO_CONTROLLED_WATERS\')', async () => {
             const substances = await MasterDataService.getSubstances('RELEASES_TO_CONTROLLED_WATERS');
             expect(substances).to.be.an.array();
-            console.log('Releases to controlled waters: ' + substances.length);
+            // console.log('Releases to controlled waters: ' + substances.length);
         });
 
         test('getSubstances(\'OFFSITE_TRANSFERS_IN_WASTE_WATER\')', async () => {
             const substances = await MasterDataService.getSubstances('OFFSITE_TRANSFERS_IN_WASTE_WATER');
             expect(substances).to.be.an.array();
-            console.log('Off-site transfers in waste water: ' + substances.length);
+            // console.log('Off-site transfers in waste water: ' + substances.length);
         });
 
         test('getSubstances() - routes differ', async () => {
@@ -194,9 +194,16 @@ experiment('Master data service (API)', async () => {
             expect(noseProcess).to.equal(noseProcesses[1]);
         });
 
+        test('getNoseHierarchies()', async () => {
+            const noseHierarchy = await MasterDataService.getNoseHierarchies();
+            // console.log(JSON.stringify(noseHierarchy, null, 4));
+            expect(noseHierarchy).to.be.an.array();
+        });
+
         test('getEprtrActivities()', async () => {
             const eprtrActivities = await MasterDataService.getEprtrActivities();
             expect(eprtrActivities).to.be.an.array();
+            // console.log(JSON.stringify(eprtrActivities, null, 4));
         });
 
         test('geEprtrActivitiyById()', async () => {
@@ -208,6 +215,13 @@ experiment('Master data service (API)', async () => {
         test('getEprtrSectors()', async () => {
             const eprtrSectors = await MasterDataService.getEprtrSectors();
             expect(eprtrSectors).to.be.an.array();
+            // console.log(JSON.stringify(eprtrSectors, null, 4));
+        });
+
+        test('getEprtrHierarchy()', async () => {
+            const eprtrHierarchy = await MasterDataService.getEprtrHierarchy();
+            expect(eprtrHierarchy).to.be.an.array();
+            console.log(JSON.stringify(eprtrHierarchy, null, 4));
         });
 
         test('getEprtrSectorById()', async () => {
@@ -230,7 +244,7 @@ experiment('Master data service (API)', async () => {
         test('getNaceDivisions:', async () => {
             const naceDivisions = await MasterDataService.getNaceDivisions();
             expect(naceDivisions).to.be.an.array();
-         });
+        });
 
         test('getNaceDivisionById:', async () => {
             const naceDivisions = await MasterDataService.getNaceDivisions();
@@ -252,13 +266,18 @@ experiment('Master data service (API)', async () => {
         test('getNaceClasses:', async () => {
             const naceClasses = await MasterDataService.getNaceClasses();
             expect(naceClasses).to.be.an.array();
-          console.log(JSON.stringify(naceClasses, null, 4));
         });
 
         test('getNaceClassById:', async () => {
             const naceClasses = await MasterDataService.getNaceClasses();
             const naceClass = await MasterDataService.getNaceClassById(naceClasses[2].id);
             expect(naceClass).to.equal(naceClasses[2]);
+        });
+
+        test('getNaceHierarchies()', async () => {
+            const naceHierarchy = await MasterDataService.getNaceHierarchy();
+            expect(naceHierarchy).to.be.an.array();
+          // console.log(JSON.stringify(naceHierarchy, null, 4));
         });
 
     }

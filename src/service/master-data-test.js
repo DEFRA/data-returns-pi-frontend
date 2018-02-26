@@ -264,6 +264,10 @@ module.exports = internals = {
         return Data.noseProcesses.find((e) => { return e.id === id; }) || null;
     },
 
+    getNoseHierarchies: async () => {
+        return Data.noseHierarchy;
+    },
+
     getEprtrActivities: async () => {
         return Data.eprtrActivities;
     },
@@ -310,8 +314,15 @@ module.exports = internals = {
 
     getNaceClassById: async (id) => {
         return Data.naceClasses.find((e) => { return e.id === id; }) || null; ;
-    }
+    },
 
+    getNaceHierarchy: async () => {
+        return Data.naceHierarchy;
+    },
+
+    getEprtrHierarchy: async () => {
+        return [];
+    }
 };
 
 internals._substancesMap = new Map();
