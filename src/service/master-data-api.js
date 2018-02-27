@@ -270,11 +270,22 @@ module.exports = internals = {
     },
 
     /**
-     * Get
+     * Get nose hierarchies
      * @return {Promise.<*>}
      */
     getNoseHierarchies: async () => {
         return internals.listRelation(internals._relations.noseHierarchy);
+    },
+
+    /**
+     * Search the nose hierarchy
+     * @param activityClassId
+     * @param activityId
+     * @param processId
+     * @return {Promise.<*>}
+     */
+    getNoseHierarchyByKey: async (activityClassId, activityId, processId) => {
+        return internals.getRelationByKey(internals._relations.noseHierarchy, { activityClassId, activityId, processId });
     },
 
     /**
@@ -315,6 +326,16 @@ module.exports = internals = {
      */
     getEprtrHierarchy: async () => {
         return internals.listRelation(internals._relations.eprtrHierarchy);
+    },
+
+    /**
+     * Search the eprtr hierarchy
+     * @param sectorId
+     * @param activityId
+     * @return {Promise.<*>}
+     */
+    getEprtrHierarchyByKey: async (sectorId, activityId) => {
+        return internals.getRelationByKey(internals._relations.eprtrHierarchy, { sectorId, activityId });
     },
 
     /**

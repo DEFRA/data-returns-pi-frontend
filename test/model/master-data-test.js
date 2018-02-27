@@ -223,6 +223,17 @@ experiment('Master data service (Test data)', function () {
             expect(noseProcess).to.equal(noseProcesses[1]);
         });
 
+        test('getNoseHierarchyByKey()', async () => {
+            const noseHierarchy = await MasterDataService.getNoseHierarchyByKey(2, 1, 22);
+            expect(noseHierarchy).to.be.an.object();
+            expect(noseHierarchy).to.equal({
+                'activityClassId': 2,
+                'activityId': 1,
+                'processId': 22
+            });
+        // console.log(JSON.stringify(noseHierarchy, null, 4));
+        });
+
         test('getEprtrActivities()', async () => {
             const eprtrActivities = await MasterDataService.getEprtrActivities();
             expect(eprtrActivities).to.be.an.array();
@@ -249,6 +260,16 @@ experiment('Master data service (Test data)', function () {
         test('getEprtrHierarchy()', async () => {
             const eprtrHierarchy = await MasterDataService.getEprtrHierarchy();
             expect(eprtrHierarchy).to.be.an.array();
+        });
+
+        test('getEprtrHierarchyByKey()', async () => {
+            const eprtrHierarchy = await MasterDataService.getEprtrHierarchyByKey(2, 21);
+            expect(eprtrHierarchy).to.be.an.object();
+            expect(eprtrHierarchy).to.equal({
+                'sectorId': 2,
+                'activityId': 21
+            });
+        // console.log(JSON.stringify(eprtrHierarchy, null, 4));
         });
 
         test('getNaceSections:', async () => {
@@ -300,5 +321,16 @@ experiment('Master data service (Test data)', function () {
             expect(naceHierarchy).to.be.an.array();
         });
 
+        test('getNaceHierarchyByKey()', async () => {
+            const naceHierarchy = await MasterDataService.getNaceHierarchyByKey(20, 86, 269, 612);
+            expect(naceHierarchy).to.be.an.object();
+            // console.log(JSON.stringify(naceHierarchy, null, 4));
+            expect(naceHierarchy).to.equal({
+                'sectionId': 20,
+                'divisionId': 86,
+                'groupId': 269,
+                'classId': 612
+            });
+        });
     }
 });

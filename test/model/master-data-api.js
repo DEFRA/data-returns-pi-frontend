@@ -164,6 +164,7 @@ experiment('Master data service (API)', async () => {
         test('getNoseActivityClasses()', async () => {
             const noseActivityClasses = await MasterDataService.getNoseActivityClasses();
             expect(noseActivityClasses).to.be.an.array();
+            // console.log(JSON.stringify(noseActivityClasses, null, 4));
         });
 
         test('getNoseActivityClassById()', async () => {
@@ -175,6 +176,7 @@ experiment('Master data service (API)', async () => {
         test('getNoseActivities()', async () => {
             const noseActivities = await MasterDataService.getNoseActivities();
             expect(noseActivities).to.be.an.array();
+            // console.log(JSON.stringify(noseActivities, null, 4));
         });
 
         test('getNoseActivitiyById()', async () => {
@@ -186,6 +188,7 @@ experiment('Master data service (API)', async () => {
         test('getNoseProcesses()', async () => {
             const noseProcesses = await MasterDataService.getNoseProcesses();
             expect(noseProcesses).to.be.an.array();
+            // console.log(JSON.stringify(noseProcesses, null, 4));
         });
 
         test('getNoseProcessesById()', async () => {
@@ -198,6 +201,17 @@ experiment('Master data service (API)', async () => {
             const noseHierarchy = await MasterDataService.getNoseHierarchies();
             // console.log(JSON.stringify(noseHierarchy, null, 4));
             expect(noseHierarchy).to.be.an.array();
+        });
+
+        test('getNoseHierarchyByKey()', async () => {
+            const noseHierarchy = await MasterDataService.getNoseHierarchyByKey(2, 1, 22);
+            expect(noseHierarchy).to.be.an.object();
+            expect(noseHierarchy).to.equal({
+                'activityClassId': 2,
+                'activityId': 1,
+                'processId': 22
+            });
+            // console.log(JSON.stringify(noseHierarchy, null, 4));
         });
 
         test('getEprtrActivities()', async () => {
@@ -221,7 +235,17 @@ experiment('Master data service (API)', async () => {
         test('getEprtrHierarchy()', async () => {
             const eprtrHierarchy = await MasterDataService.getEprtrHierarchy();
             expect(eprtrHierarchy).to.be.an.array();
-            console.log(JSON.stringify(eprtrHierarchy, null, 4));
+            // console.log(JSON.stringify(eprtrHierarchy, null, 4));
+        });
+
+        test('getEprtrHierarchyByKey()', async () => {
+            const eprtrHierarchy = await MasterDataService.getEprtrHierarchyByKey(2, 21);
+            expect(eprtrHierarchy).to.be.an.object();
+            expect(eprtrHierarchy).to.equal({
+                'sectorId': 2,
+                'activityId': 21
+            });
+            // console.log(JSON.stringify(eprtrHierarchy, null, 4));
         });
 
         test('getEprtrSectorById()', async () => {
@@ -233,6 +257,7 @@ experiment('Master data service (API)', async () => {
         test('getNaceSections:', async () => {
             const naceSectors = await MasterDataService.getNaceSections();
             expect(naceSectors).to.be.an.array();
+            // console.log(JSON.stringify(naceSectors, null, 4));
         });
 
         test('getNaceSectionById:', async (id) => {
@@ -244,6 +269,7 @@ experiment('Master data service (API)', async () => {
         test('getNaceDivisions:', async () => {
             const naceDivisions = await MasterDataService.getNaceDivisions();
             expect(naceDivisions).to.be.an.array();
+            // console.log(JSON.stringify(naceDivisions, null, 4));
         });
 
         test('getNaceDivisionById:', async () => {
@@ -255,6 +281,7 @@ experiment('Master data service (API)', async () => {
         test('getNaceGroups:', async () => {
             const naceGroups = await MasterDataService.getNaceGroups();
             expect(naceGroups).to.be.an.array();
+            // console.log(JSON.stringify(naceGroups, null, 4));
         });
 
         test('getNaceGroupById:', async () => {
@@ -266,6 +293,7 @@ experiment('Master data service (API)', async () => {
         test('getNaceClasses:', async () => {
             const naceClasses = await MasterDataService.getNaceClasses();
             expect(naceClasses).to.be.an.array();
+            // console.log(JSON.stringify(naceClasses, null, 4));
         });
 
         test('getNaceClassById:', async () => {
@@ -283,7 +311,13 @@ experiment('Master data service (API)', async () => {
         test('getNaceHierarchyByKey()', async () => {
             const naceHierarchy = await MasterDataService.getNaceHierarchyByKey(20, 86, 269, 612);
             expect(naceHierarchy).to.be.an.object();
-            console.log(JSON.stringify(naceHierarchy, null, 4));
+            // console.log(JSON.stringify(naceHierarchy, null, 4));
+            expect(naceHierarchy).to.equal({
+                'sectionId': 20,
+                'divisionId': 86,
+                'groupId': 269,
+                'classId': 612
+            });
         });
 
     }

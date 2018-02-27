@@ -268,6 +268,11 @@ module.exports = internals = {
         return Data.noseHierarchy;
     },
 
+    getNoseHierarchyByKey: async (activityClassId, activityId, processId) => {
+        return Data.noseHierarchy.find(h => h.activityClassId === activityClassId &&
+          h.activityId === activityId && h.processId === processId);
+    },
+
     getEprtrActivities: async () => {
         return Data.eprtrActivities;
     },
@@ -286,6 +291,10 @@ module.exports = internals = {
 
     getEprtrHierarchy: async () => {
         return Data.eprtrHierarchys;
+    },
+
+    getEprtrHierarchyByKey: async (sectorId, activityId) => {
+        return Data.eprtrHierarchys.find(e => e.sectorId === sectorId && e.activityId === activityId);
     },
 
     getNaceSections: async () => {
@@ -325,9 +334,9 @@ module.exports = internals = {
     },
 
     getNaceHierarchyByKey: async (sectionId, divisionId, groupId, classId) => {
-        return {};
+        return Data.naceHierarchy.find(n => n.sectionId === sectionId &&
+            n.divisionId === divisionId && n.groupId === groupId && n.classId === classId);
     }
-
 };
 
 internals._substancesMap = new Map();

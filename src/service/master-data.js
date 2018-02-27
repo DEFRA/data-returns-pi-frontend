@@ -46,12 +46,14 @@ module.exports = {
     getNoseProcesses: process.env.NODE_ENV === 'localtest' ? testService.getNoseProcesses : apiService.getNoseProcesses,
     getNoseProcessById: process.env.NODE_ENV === 'localtest' ? testService.getNoseProcessById : apiService.getNoseProcessById,
     getNoseHierarchies: process.env.NODE_ENV === 'localtest' ? testService.getNoseHierarchies : apiService.getNoseHierarchies,
+    getNoseHierarchyByKey: process.env.NODE_ENV === 'localtest' ? testService.getNoseHierarchyByKey : apiService.getNoseHierarchyByKey,
 
     getEprtrSectors: process.env.NODE_ENV === 'localtest' ? testService.getEprtrSectors : apiService.getEprtrSectors,
     getEprtrSectorById: process.env.NODE_ENV === 'localtest' ? testService.getEprtrSectorById : apiService.getEprtrSectorById,
     getEprtrActivities: process.env.NODE_ENV === 'localtest' ? testService.getEprtrActivities : apiService.getEprtrActivities,
     getEprtrActivityById: process.env.NODE_ENV === 'localtest' ? testService.getEprtrActivityById : apiService.getEprtrActivityById,
     getEprtrHierarchy: process.env.NODE_ENV === 'localtest' ? testService.getEprtrHierarchy : apiService.getEprtrHierarchy,
+    getEprtrHierarchyByKey: process.env.NODE_ENV === 'localtest' ? testService.getEprtrHierarchyByKey : apiService.getEprtrHierarchyByKey,
 
     getNaceSections: process.env.NODE_ENV === 'localtest' ? testService.getNaceSections : apiService.getNaceSections,
     getNaceSectionById: process.env.NODE_ENV === 'localtest' ? testService.getNaceSectionById : apiService.getNaceSectionById,
