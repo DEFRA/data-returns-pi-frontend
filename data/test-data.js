@@ -360,982 +360,10857 @@ module.exports = {
     ],
 
     ewcChapter: [
-        { 'id': 1, 'code': '01', 'description': 'WASTES RESULTING FROM EXPLORATION, MINING, QUARRYING, PHYSICAL AND CHEMICAL TREATMENT OF MINERALS' },
-        { 'id': 2, 'code': '02', 'description': 'WASTES FROM AGRICULTURE, HORTICULTURE, AQUACULTURE, FORESTRY, HUNTING AND FISHING, FOOD PREPARATION AND PROCESSING' },
-        { 'id': 3, 'code': '03', 'description': 'WASTES FROM WOOD PROCESSING AND THE PRODUCTION OF PANELS AND FURNITURE, PULP, PAPER AND CARDBOARD' },
-        { 'id': 4, 'code': '04', 'description': 'WASTES FROM THE LEATHER, FUR AND TEXTILE INDUSTRIES' },
-        { 'id': 5, 'code': '05', 'description': 'WASTES FROM PETROLEUM REFINING, NATURAL GAS PURIFICATION AND PYROLYTIC TREATMENT OF COAL' },
-        { 'id': 6, 'code': '06', 'description': 'WASTES FROM INORGANIC CHEMICAL PROCESSES' },
-        { 'id': 7, 'code': '07', 'description': 'WASTES FROM ORGANIC CHEMICAL PROCESSES' },
-        { 'id': 8, 'code': '08', 'description': 'WASTES FROM THE MANUFACTURE, FORMULATION, SUPPLYAND USE (MFSU) OF COATINGS (PAINTS, VARNISHES AND VITREOUS ENAMELS), ADHESIVES, SEALANTS AND PRINTING INKS' },
-        { 'id': 9, 'code': '09', 'description': 'WASTES FROM THE PHOTOGRAPHIC INDUSTRY' },
-        { 'id': 10, 'code': '10', 'description': 'WASTES FROM THERMAL PROCESSES' },
-        { 'id': 11, 'code': '11', 'description': 'WASTES FROM CHEMICAL SURFACE TREATMENT AND COATING OF METALS AND OTHER MATERIALS; NON-FERROUS HYDRO-METALLURGY' },
-        { 'id': 12, 'code': '12', 'description': 'WASTES FROM SHAPING AND PHYSICAL AND MECHANICAL SURFACE TREATMENT OF METALS AND PLASTICS' },
-        { 'id': 13, 'code': '13', 'description': 'OIL WASTES AND WASTES OF LIQUID FUELS (except edible oils, and those in chapters 05, 12 and 19)' },
-        { 'id': 14, 'code': '14', 'description': 'WASTE ORGANIC SOLVENTS, REFRIGERANTS AND PROPELLANTS (except 07 and 08)' },
-        { 'id': 15, 'code': '15', 'description': 'WASTE PACKAGING; ABSORBENTS, WIPING CLOTHS, FILTER MATERIALS AND PROTECTIVE CLOTHING NOT OTHERWISE SPECIFIED' },
-        { 'id': 16, 'code': '16', 'description': 'WASTES NOT OTHERWISE SPECIFIED IN THE LIST' },
-        { 'id': 17, 'code': '17', 'description': 'CONSTRUCTION AND DEMOLITION WASTES (INCLUDING EXCAVATED SOIL FROM CONTAMINATED SITES)' },
-        { 'id': 18, 'code': '18', 'description': 'WASTES FROM HUMAN OR ANIMAL HEALTH CARE AND/OR RELATED RESEARCH (except kitchen and restaurant wastes not arising from immediate health care)' },
-        { 'id': 19, 'code': '19', 'description': 'WASTES FROM WASTE MANAGEMENT FACILITIES, OFF-SITE WASTE WATER TREATMENT PLANTS AND THE PREPARATION OF WATER INTENDED FOR HUMAN CONSUMPTION AND WATER FOR INDUSTRIAL USE' },
-        { 'id': 20, 'code': '20', 'description': 'MUNICIPAL WASTES (HOUSEHOLD WASTE AND SIMILAR COMMERCIAL, INDUSTRIAL AND INSTITUTIONAL WASTES) INCLUDING SEPARATELY COLLECTED FRACTIONS' }
+        {
+            'id': 1,
+            'name': '01',
+            'code': '01',
+            'description': 'WASTES RESULTING FROM EXPLORATION, MINING, QUARRYING, AND PHYSICAL AND CHEMICAL TREATMENT OF MINERALS'
+        },
+        {
+            'id': 2,
+            'name': '02',
+            'code': '02',
+            'description': 'WASTES FROM AGRICULTURE, HORTICULTURE, AQUACULTURE, FORESTRY, HUNTING AND FISHING, FOOD PREPARATION AND PROCESSING'
+        },
+        {
+            'id': 3,
+            'name': '03',
+            'code': '03',
+            'description': 'WASTES FROM WOOD PROCESSING AND THE PRODUCTION OF PANELS AND FURNITURE, PULP, PAPER AND CARDBOARD'
+        },
+        {
+            'id': 4,
+            'name': '04',
+            'code': '04',
+            'description': 'WASTES FROM THE LEATHER, FUR AND TEXTILE INDUSTRIES'
+        },
+        {
+            'id': 5,
+            'name': '05',
+            'code': '05',
+            'description': 'WASTES FROM PETROLEUM REFINING, NATURAL GAS PURIFICATION AND PYROLYTIC TREATMENT OF COAL'
+        },
+        {
+            'id': 6,
+            'name': '06',
+            'code': '06',
+            'description': 'WASTES FROM INORGANIC CHEMICAL PROCESSES'
+        },
+        {
+            'id': 7,
+            'name': '07',
+            'code': '07',
+            'description': 'WASTES FROM ORGANIC CHEMICAL PROCESSES'
+        },
+        {
+            'id': 8,
+            'name': '08',
+            'code': '08',
+            'description': 'WASTES FROM THE MANUFACTURE, FORMULATION, SUPPLY AND USE (MFSU) OF COATINGS (PAINTS, VARNISHES AND VITREOUS ENAMELS), ADHESIVES, SEALANTS AND PRINTING INKS'
+        },
+        {
+            'id': 9,
+            'name': '09',
+            'code': '09',
+            'description': 'WASTES FROM THE PHOTOGRAPHIC INDUSTRY'
+        },
+        {
+            'id': 10,
+            'name': '10',
+            'code': '10',
+            'description': 'WASTES FROM THERMAL PROCESSES'
+        },
+        {
+            'id': 11,
+            'name': '11',
+            'code': '11',
+            'description': 'WASTES FROM CHEMICAL SURFACE TREATMENT AND COATING OF METALS AND OTHER MATERIALS; NON-FERROUS HYDRO-METALLURGY'
+        },
+        {
+            'id': 12,
+            'name': '12',
+            'code': '12',
+            'description': 'WASTES FROM SHAPING AND PHYSICAL AND MECHANICAL SURFACE TREATMENT OF METALS AND PLASTICS'
+        },
+        {
+            'id': 13,
+            'name': '13',
+            'code': '13',
+            'description': 'OIL WASTES AND WASTES OF LIQUID FUELS (except edible oils, and those in chapters 05, 12 and 19)'
+        },
+        {
+            'id': 14,
+            'name': '14',
+            'code': '14',
+            'description': 'WASTE ORGANIC SOLVENTS, REFRIGERANTS AND PROPELLANTS (except 07 and 08)'
+        },
+        {
+            'id': 15,
+            'name': '15',
+            'code': '15',
+            'description': 'WASTE PACKAGING; ABSORBENTS, WIPING CLOTHS, FILTER MATERIALS AND PROTECTIVE CLOTHING NOT OTHERWISE SPECIFIED'
+        },
+        {
+            'id': 16,
+            'name': '16',
+            'code': '16',
+            'description': 'WASTES NOT OTHERWISE SPECIFIED IN THE LIST'
+        },
+        {
+            'id': 17,
+            'name': '17',
+            'code': '17',
+            'description': 'CONSTRUCTION AND DEMOLITION WASTES (INCLUDING EXCAVATED SOIL FROM CONTAMINATED SITES)'
+        },
+        {
+            'id': 18,
+            'name': '18',
+            'code': '18',
+            'description': 'WASTES FROM HUMAN OR ANIMAL HEALTH CARE AND/OR RELATED RESEARCH (except kitchen and restaurant wastes not arising from immediate health care)'
+        },
+        {
+            'id': 19,
+            'name': '19',
+            'code': '19',
+            'description': 'WASTES FROM WASTE MANAGEMENT FACILITIES, OFF-SITE WASTE WATER TREATMENT PLANTS AND THE PREPARATION OF WATER INTENDED FOR HUMAN CONSUMPTION AND WATER FOR INDUSTRIAL USE'
+        },
+        {
+            'id': 20,
+            'name': '20',
+            'code': '20',
+            'description': 'MUNICIPAL WASTES (HOUSEHOLD WASTE AND SIMILAR COMMERCIAL, INDUSTRIAL AND INSTITUTIONAL WASTES) INCLUDING SEPARATELY COLLECTED FRACTIONS'
+        }
     ],
 
     ewcSubChapter: [
-        { 'id': 1, 'code': '01', 'chapter': '01', 'description': 'wastes from mineral excavation' },
-        { 'id': 2, 'code': '03', 'chapter': '01', 'description': 'wastes from physical and chemical processing of metalliferous minerals' },
-        { 'id': 3, 'code': '04', 'chapter': '01', 'description': 'wastes from physical and chemical processing of non-metalliferous minerals' },
-        { 'id': 4, 'code': '05', 'chapter': '01', 'description': 'drilling muds and other drilling wastes' },
-        { 'id': 5, 'code': '01', 'chapter': '02', 'description': 'wastes from agriculture, horticulture, aquaculture, forestry, hunting and fishing' },
-        { 'id': 6, 'code': '02', 'chapter': '02', 'description': 'wastes from the preparation and processing of meat, fish and other foods of animal origin' },
-        { 'id': 7, 'code': '03', 'chapter': '02', 'description': 'wastes from fruit, vegetables, cereals, edible oils, cocoa, coffee, tea and tobacco preparation and processing; conserve production; yeast and yeast extract production, molasses preparation and fermentation' },
-        { 'id': 8, 'code': '04', 'chapter': '02', 'description': 'wastes from sugar processing' },
-        { 'id': 9, 'code': '05', 'chapter': '02', 'description': 'wastes from the dairy products industry' },
-        { 'id': 10, 'code': '06', 'chapter': '02', 'description': 'wastes from the baking and confectionery industry' },
-        { 'id': 11, 'code': '07', 'chapter': '02', 'description': 'wastes from the production of alcoholic and non-alcoholic beverages (except coffee, tea and cocoa)' },
-        { 'id': 12, 'code': '01', 'chapter': '03', 'description': 'wastes from wood processing and the production of panels and furniture' },
-        { 'id': 13, 'code': '02', 'chapter': '03', 'description': 'wastes from wood preservation' },
-        { 'id': 14, 'code': '03', 'chapter': '03', 'description': 'wastes from pulp, paper and cardboard production and processing' },
-        { 'id': 15, 'code': '01', 'chapter': '04', 'description': 'wastes from the leather and fur industry' },
-        { 'id': 16, 'code': '02', 'chapter': '04', 'description': 'wastes from the textile industry' },
-        { 'id': 17, 'code': '01', 'chapter': '05', 'description': 'wastes from petroleum refining' },
-        { 'id': 18, 'code': '06', 'chapter': '05', 'description': 'wastes from the pyrolytic treatment of coal' },
-        { 'id': 19, 'code': '07', 'chapter': '05', 'description': 'wastes from natural gas purification and transportation' },
-        { 'id': 20, 'code': '01', 'chapter': '06', 'description': 'wastes from the manufacture, formulation, supply and use (MFSU) of acids' },
-        { 'id': 21, 'code': '02', 'chapter': '06', 'description': 'wastes from the MFSU of bases' },
-        { 'id': 22, 'code': '03', 'chapter': '06', 'description': 'wastes from the MFSU of salts and their solutions and metallic oxides' },
-        { 'id': 23, 'code': '04', 'chapter': '06', 'description': 'metal-containing wastes other than those mentioned in 06 03' },
-        { 'id': 24, 'code': '05', 'chapter': '06', 'description': 'sludges from on-site effluent treatment' },
-        { 'id': 25, 'code': '06', 'chapter': '06', 'description': 'wastes from the MFSU of sulphur chemicals, sulphur chemical processes and desulphurisation processes' },
-        { 'id': 26, 'code': '07', 'chapter': '06', 'description': 'wastes from the MFSU of halogens and halogen chemical processes' },
-        { 'id': 27, 'code': '08', 'chapter': '06', 'description': 'wastes from the MFSU of silicon and silicon derivatives' },
-        { 'id': 28, 'code': '09', 'chapter': '06', 'description': 'wastes from the MSFU of phosphorous chemicals and phosphorous chemical processes' },
-        { 'id': 29, 'code': '10', 'chapter': '06', 'description': 'wastes from the MFSU of nitrogen chemicals, nitrogen chemical processes and fertiliser manufacture' },
-        { 'id': 30, 'code': '11', 'chapter': '06', 'description': 'wastes from the manufacture of inorganic pigments and opacificiers' },
-        { 'id': 31, 'code': '13', 'chapter': '06', 'description': 'wastes from inorganic chemical processes not otherwise specified' },
-        { 'id': 32, 'code': '01', 'chapter': '07', 'description': 'wastes from the manufacture, formulation, supply and use (MFSU) of basic organic chemicals' },
-        { 'id': 33, 'code': '02', 'chapter': '07', 'description': 'wastes from the MFSU of plastics, synthetic rubber and man-made fibres' },
-        { 'id': 34, 'code': '03', 'chapter': '07', 'description': 'wastes from the MFSU of organic dyes and pigments (except 06 11)' },
-        { 'id': 35, 'code': '04', 'chapter': '07', 'description': 'wastes from the MFSU of organic plant protection products (except 02 01 08 and 02 01 09), wood preserving agents (except 03 02) and other biocides' },
-        { 'id': 36, 'code': '05', 'chapter': '07', 'description': 'wastes from the MFSU of pharmaceuticals' },
-        { 'id': 37, 'code': '06', 'chapter': '07', 'description': 'wastes from the MFSU of fats, grease, soaps, detergents, disinfectants and cosmetics' },
-        { 'id': 38, 'code': '07', 'chapter': '07', 'description': 'wastes from the MFSU of fine chemicals and chemical products not otherwise specified' },
-        { 'id': 39, 'code': '01', 'chapter': '08', 'description': 'wastes from MFSU and removal of paint and varnish' },
-        { 'id': 40, 'code': '02', 'chapter': '08', 'description': 'wastes from MFSU of other coatings (including ceramic materials)' },
-        { 'id': 41, 'code': '03', 'chapter': '08', 'description': 'wastes from MFSU of printing inks' },
-        { 'id': 42, 'code': '04', 'chapter': '08', 'description': 'wastes from MFSU of adhesives and sealants (including waterproofing products)' },
-        { 'id': 43, 'code': '05', 'chapter': '08', 'description': 'wastes not otherwise specified in 08' },
-        { 'id': 44, 'code': '01', 'chapter': '09', 'description': 'wastes from the photographic industry' },
-        { 'id': 45, 'code': '01', 'chapter': '10', 'description': 'wastes from power stations and other combustion plants (except 19)' },
-        { 'id': 46, 'code': '02', 'chapter': '10', 'description': 'wastes from the iron and steel industry' },
-        { 'id': 47, 'code': '03', 'chapter': '10', 'description': 'wastes from aluminium thermal metallurgy' },
-        { 'id': 48, 'code': '04', 'chapter': '10', 'description': 'wastes from lead thermal metallurgy' },
-        { 'id': 49, 'code': '05', 'chapter': '10', 'description': 'wastes from zinc thermal metallurgy' },
-        { 'id': 50, 'code': '06', 'chapter': '10', 'description': 'wastes from copper thermal metallurgy' },
-        { 'id': 51, 'code': '07', 'chapter': '10', 'description': 'wastes from silver, gold and platinum thermal metallurgy' },
-        { 'id': 52, 'code': '08', 'chapter': '10', 'description': 'wastes from other non-ferrous thermal metallurgy' },
-        { 'id': 53, 'code': '09', 'chapter': '10', 'description': 'wastes from casting of ferrous pieces' },
-        { 'id': 54, 'code': '10', 'chapter': '10', 'description': 'wastes from casting of non-ferrous pieces' },
-        { 'id': 55, 'code': '11', 'chapter': '10', 'description': 'wastes from manufacture of glass and glass products' },
-        { 'id': 56, 'code': '12', 'chapter': '10', 'description': 'wastes from manufacture of ceramic goods, bricks, tiles and construction products' },
-        { 'id': 57, 'code': '13', 'chapter': '10', 'description': 'wastes from manufacture of cement, lime and plaster and articles and products made from them' },
-        { 'id': 58, 'code': '14', 'chapter': '10', 'description': 'waste from crematoria' },
-        { 'id': 59, 'code': '01', 'chapter': '11', 'description': 'wastes from chemical surface treatment and coating of metals and other materials (for example galvanic processes, zinc coating processes, pickling processes, etching, phosphating, alkaline degreasing, anodising)' },
-        { 'id': 60, 'code': '02', 'chapter': '11', 'description': 'wastes from non-ferrous hydrometallurgical processes' },
-        { 'id': 61, 'code': '03', 'chapter': '11', 'description': 'sludges and solids from tempering processes' },
-        { 'id': 62, 'code': '05', 'chapter': '11', 'description': 'wastes from hot galvanising processes' },
-        { 'id': 63, 'code': '01', 'chapter': '12', 'description': 'wastes from shaping and physical and mechanical surface treatment of metals and plastics' },
-        { 'id': 64, 'code': '03', 'chapter': '12', 'description': 'wastes from water and steam degreasing processes (except 11)' },
-        { 'id': 65, 'code': '01', 'chapter': '13', 'description': 'waste hydraulic oils' },
-        { 'id': 66, 'code': '02', 'chapter': '13', 'description': 'waste engine, gear and lubricating oils' },
-        { 'id': 67, 'code': '03', 'chapter': '13', 'description': 'waste insulating and heat transmission oils' },
-        { 'id': 68, 'code': '04', 'chapter': '13', 'description': 'bilge oils' },
-        { 'id': 69, 'code': '05', 'chapter': '13', 'description': 'oil/water separator contents' },
-        { 'id': 70, 'code': '07', 'chapter': '13', 'description': 'wastes of liquid fuels' },
-        { 'id': 71, 'code': '08', 'chapter': '13', 'description': 'oil wastes not otherwise specified' },
-        { 'id': 72, 'code': '06', 'chapter': '14', 'description': 'waste organic solvents, refrigerants and foam/aerosol propellants' },
-        { 'id': 73, 'code': '01', 'chapter': '15', 'description': 'packaging (including separately collected municipal packaging waste)' },
-        { 'id': 74, 'code': '02', 'chapter': '15', 'description': 'absorbents, filter materials, wiping cloths and protective clothing' },
-        { 'id': 75, 'code': '01', 'chapter': '16', 'description': 'end-of-life vehicles from different means of transport (including offroad machinery) and wastes from dismantling of end-of-life vehicles and vehicle maintenance (except 13, 14, 16 06 and 16 08)' },
-        { 'id': 76, 'code': '02', 'chapter': '16', 'description': 'wastes from electrical and electronic equipment' },
-        { 'id': 77, 'code': '03', 'chapter': '16', 'description': 'off-specification batches and unused products' },
-        { 'id': 78, 'code': '04', 'chapter': '16', 'description': 'waste explosives' },
-        { 'id': 79, 'code': '05', 'chapter': '16', 'description': 'gases in pressure containers and discarded chemicals' },
-        { 'id': 80, 'code': '06', 'chapter': '16', 'description': 'batteries and accumulators' },
-        { 'id': 81, 'code': '07', 'chapter': '16', 'description': 'wastes from transport tank, storage tank and barrel cleaning (except 05 and 13)' },
-        { 'id': 82, 'code': '08', 'chapter': '16', 'description': 'spent catalysts' },
-        { 'id': 83, 'code': '09', 'chapter': '16', 'description': 'oxidising substances' },
-        { 'id': 84, 'code': '10', 'chapter': '16', 'description': 'aqueous liquid wastes destined for off-site treatment' },
-        { 'id': 85, 'code': '11', 'chapter': '16', 'description': 'waste linings and refractories' },
-        { 'id': 86, 'code': '01', 'chapter': '17', 'description': 'concrete, bricks, tiles and ceramics' },
-        { 'id': 87, 'code': '02', 'chapter': '17', 'description': 'wood, glass and plastic' },
-        { 'id': 88, 'code': '03', 'chapter': '17', 'description': 'bituminous mixtures, coal tar and tarred products' },
-        { 'id': 89, 'code': '04', 'chapter': '17', 'description': 'metals (including their alloys)' },
-        { 'id': 90, 'code': '05', 'chapter': '17', 'description': 'soil (including excavated soil from contaminated sites), stones and dredging spoil' },
-        { 'id': 91, 'code': '06', 'chapter': '17', 'description': 'insulation materials and asbestos-containing construction materials' },
-        { 'id': 92, 'code': '08', 'chapter': '17', 'description': 'gypsum-based construction material' },
-        { 'id': 93, 'code': '09', 'chapter': '17', 'description': 'other construction and demolition wastes' },
-        { 'id': 94, 'code': '01', 'chapter': '18', 'description': 'wastes from natal care, diagnosis, treatment or prevention of disease in humans' },
-        { 'id': 95, 'code': '02', 'chapter': '18', 'description': 'wastes from research, diagnosis, treatment or prevention of disease involving animals' },
-        { 'id': 96, 'code': '01', 'chapter': '19', 'description': 'wastes from incineration or pyrolysis of waste' },
-        { 'id': 97, 'code': '02', 'chapter': '19', 'description': 'wastes from physico/chemical treatments of waste (including dechromatation, decyanidation, neutralisation)' },
-        { 'id': 98, 'code': '03', 'chapter': '19', 'description': 'stabilised/solidified wastes (4)' },
-        { 'id': 99, 'code': '04', 'chapter': '19', 'description': 'vitrified waste and wastes from vitrification' },
-        { 'id': 100, 'code': '05', 'chapter': '19', 'description': 'wastes from aerobic treatment of solid wastes' },
-        { 'id': 101, 'code': '06', 'chapter': '19', 'description': 'wastes from anaerobic treatment of waste' },
-        { 'id': 102, 'code': '07', 'chapter': '19', 'description': 'landfill leachate' },
-        { 'id': 103, 'code': '08', 'chapter': '19', 'description': 'wastes from waste water treatment plants not otherwise specified' },
-        { 'id': 104, 'code': '09', 'chapter': '19', 'description': 'wastes from the preparation of water intended for human consumption or water for industrial use' },
-        { 'id': 105, 'code': '10', 'chapter': '19', 'description': 'wastes from shredding of metal-containing wastes' },
-        { 'id': 106, 'code': '11', 'chapter': '19', 'description': 'wastes from oil regeneration' },
-        { 'id': 107, 'code': '12', 'chapter': '19', 'description': 'wastes from the mechanical treatment of waste (for example sorting, crushing, compacting, pelletising) not otherwise specified' },
-        { 'id': 108, 'code': '13', 'chapter': '19', 'description': 'wastes from soil and groundwater remediation' },
-        { 'id': 109, 'code': '01', 'chapter': '20', 'description': 'separately collected fractions (except 15 01)' },
-        { 'id': 110, 'code': '02', 'chapter': '20', 'description': 'garden and park wastes (including cemetery waste)' },
-        { 'id': 111, 'code': '03', 'chapter': '20', 'description': 'other municipal wastes' }
+        {
+            'id': 86,
+            'name': '17 01',
+            'code': '01',
+            'description': 'concrete, bricks, tiles and ceramics'
+        },
+        {
+            'id': 1,
+            'name': '01 01',
+            'code': '01',
+            'description': 'wastes from mineral excavation'
+        },
+        {
+            'id': 109,
+            'name': '20 01',
+            'code': '01',
+            'description': 'separately collected fractions (except 15 01)'
+        },
+        {
+            'id': 5,
+            'name': '02 01',
+            'code': '01',
+            'description': 'wastes from agriculture, horticulture, aquaculture, forestry, hunting and fishing'
+        },
+        {
+            'id': 45,
+            'name': '10 01',
+            'code': '01',
+            'description': 'wastes from power stations and other combustion plants (except 19)'
+        },
+        {
+            'id': 44,
+            'name': '09 01',
+            'code': '01',
+            'description': 'wastes from the photographic industry'
+        },
+        {
+            'id': 96,
+            'name': '19 01',
+            'code': '01',
+            'description': 'wastes from incineration or pyrolysis of waste'
+        },
+        {
+            'id': 59,
+            'name': '11 01',
+            'code': '01',
+            'description': 'wastes from chemical surface treatment and coating of metals and other materials (for example galvanic processes, zinc coating processes, pickling processes, etching, phosphating, alkaline degreasing, anodising)'
+        },
+        {
+            'id': 12,
+            'name': '03 01',
+            'code': '01',
+            'description': 'wastes from wood processing and the production of panels and furniture'
+        },
+        {
+            'id': 39,
+            'name': '08 01',
+            'code': '01',
+            'description': 'wastes from MFSU and removal of paint and varnish'
+        },
+        {
+            'id': 15,
+            'name': '04 01',
+            'code': '01',
+            'description': 'wastes from the leather and fur industry'
+        },
+        {
+            'id': 63,
+            'name': '12 01',
+            'code': '01',
+            'description': 'wastes from shaping and physical and mechanical surface treatment of metals and plastics'
+        },
+        {
+            'id': 17,
+            'name': '05 01',
+            'code': '01',
+            'description': 'wastes from petroleum refining'
+        },
+        {
+            'id': 94,
+            'name': '18 01',
+            'code': '01',
+            'description': 'wastes from natal care, diagnosis, treatment or prevention of disease in humans'
+        },
+        {
+            'id': 20,
+            'name': '06 01',
+            'code': '01',
+            'description': 'wastes from the manufacture, formulation, supply and use (MFSU) of acids'
+        },
+        {
+            'id': 65,
+            'name': '13 01',
+            'code': '01',
+            'description': 'waste hydraulic oils'
+        },
+        {
+            'id': 32,
+            'name': '07 01',
+            'code': '01',
+            'description': 'wastes from the manufacture, formulation, supply and use (MFSU) of basic organic chemicals'
+        },
+        {
+            'id': 73,
+            'name': '15 01',
+            'code': '01',
+            'description': 'packaging (including separately collected municipal packaging waste)'
+        },
+        {
+            'id': 75,
+            'name': '16 01',
+            'code': '01',
+            'description': 'end-of-life vehicles from different means of transport (including off-road machinery) and wastes from dismantling of end-of-life vehicles and vehicle maintenance (except 13, 14, 16 06 and 16 08)'
+        },
+        {
+            'id': 16,
+            'name': '04 02',
+            'code': '02',
+            'description': 'wastes from the textile industry'
+        },
+        {
+            'id': 76,
+            'name': '16 02',
+            'code': '02',
+            'description': 'wastes from electrical and electronic equipment'
+        },
+        {
+            'id': 110,
+            'name': '20 02',
+            'code': '02',
+            'description': 'garden and park wastes (including cemetery waste)'
+        },
+        {
+            'id': 66,
+            'name': '13 02',
+            'code': '02',
+            'description': 'waste engine, gear and lubricating oils'
+        },
+        {
+            'id': 87,
+            'name': '17 02',
+            'code': '02',
+            'description': 'wood, glass and plastic'
+        },
+        {
+            'id': 33,
+            'name': '07 02',
+            'code': '02',
+            'description': 'wastes from the MFSU of plastics, synthetic rubber and man-made fibres'
+        },
+        {
+            'id': 21,
+            'name': '06 02',
+            'code': '02',
+            'description': 'wastes from the MFSU of bases'
+        },
+        {
+            'id': 74,
+            'name': '15 02',
+            'code': '02',
+            'description': 'absorbents, filter materials, wiping cloths and protective clothing'
+        },
+        {
+            'id': 13,
+            'name': '03 02',
+            'code': '02',
+            'description': 'wastes from wood preservation'
+        },
+        {
+            'id': 40,
+            'name': '08 02',
+            'code': '02',
+            'description': 'wastes from MFSU of other coatings (including ceramic materials)'
+        },
+        {
+            'id': 60,
+            'name': '11 02',
+            'code': '02',
+            'description': 'wastes from non-ferrous hydrometallurgical processes'
+        },
+        {
+            'id': 95,
+            'name': '18 02',
+            'code': '02',
+            'description': 'wastes from research, diagnosis, treatment or prevention of disease involving animals'
+        },
+        {
+            'id': 97,
+            'name': '19 02',
+            'code': '02',
+            'description': 'wastes from physico/chemical treatments of waste (including dechromatation, decyanidation, neutralisation)'
+        },
+        {
+            'id': 6,
+            'name': '02 02',
+            'code': '02',
+            'description': 'wastes from the preparation and processing of meat, fish and other foods of animal origin'
+        },
+        {
+            'id': 46,
+            'name': '10 02',
+            'code': '02',
+            'description': 'wastes from the iron and steel industry'
+        },
+        {
+            'id': 88,
+            'name': '17 03',
+            'code': '03',
+            'description': 'bituminous mixtures, coal tar and tarred products'
+        },
+        {
+            'id': 64,
+            'name': '12 03',
+            'code': '03',
+            'description': 'wastes from water and steam degreasing processes (except 11)'
+        },
+        {
+            'id': 98,
+            'name': '19 03',
+            'code': '03',
+            'description': 'stabilised/solidified wastes (4)'
+        },
+        {
+            'id': 61,
+            'name': '11 03',
+            'code': '03',
+            'description': 'sludges and solids from tempering processes'
+        },
+        {
+            'id': 111,
+            'name': '20 03',
+            'code': '03',
+            'description': 'other municipal wastes'
+        },
+        {
+            'id': 22,
+            'name': '06 03',
+            'code': '03',
+            'description': 'wastes from the MFSU of salts and their solutions and metallic oxides'
+        },
+        {
+            'id': 41,
+            'name': '08 03',
+            'code': '03',
+            'description': 'wastes from MFSU of printing inks'
+        },
+        {
+            'id': 67,
+            'name': '13 03',
+            'code': '03',
+            'description': 'waste insulating and heat transmission oils'
+        },
+        {
+            'id': 7,
+            'name': '02 03',
+            'code': '03',
+            'description': 'wastes from fruit, vegetables, cereals, edible oils, cocoa, coffee, tea and tobacco preparation and processing; conserve production; yeast and yeast extract production, molasses preparation and fermentation'
+        },
+        {
+            'id': 14,
+            'name': '03 03',
+            'code': '03',
+            'description': 'wastes from pulp, paper and cardboard production and processing'
+        },
+        {
+            'id': 77,
+            'name': '16 03',
+            'code': '03',
+            'description': 'off-specification batches and unused products'
+        },
+        {
+            'id': 34,
+            'name': '07 03',
+            'code': '03',
+            'description': 'wastes from the MFSU of organic dyes and pigments (except 06 11)'
+        },
+        {
+            'id': 47,
+            'name': '10 03',
+            'code': '03',
+            'description': 'wastes from aluminium thermal metallurgy'
+        },
+        {
+            'id': 2,
+            'name': '01 03',
+            'code': '03',
+            'description': 'wastes from physical and chemical processing of metalliferous minerals'
+        },
+        {
+            'id': 78,
+            'name': '16 04',
+            'code': '04',
+            'description': 'waste explosives'
+        },
+        {
+            'id': 99,
+            'name': '19 04',
+            'code': '04',
+            'description': 'vitrified waste and wastes from vitrification'
+        },
+        {
+            'id': 48,
+            'name': '10 04',
+            'code': '04',
+            'description': 'wastes from lead thermal metallurgy'
+        },
+        {
+            'id': 8,
+            'name': '02 04',
+            'code': '04',
+            'description': 'wastes from sugar processing'
+        },
+        {
+            'id': 42,
+            'name': '08 04',
+            'code': '04',
+            'description': 'wastes from MFSU of adhesives and sealants (including waterproofing products)'
+        },
+        {
+            'id': 3,
+            'name': '01 04',
+            'code': '04',
+            'description': 'wastes from physical and chemical processing of non-metalliferous minerals'
+        },
+        {
+            'id': 35,
+            'name': '07 04',
+            'code': '04',
+            'description': 'wastes from the MFSU of organic plant protection products (except 02 01 08 and 02 01 09), wood preserving agents (except 03 02) and other biocides'
+        },
+        {
+            'id': 68,
+            'name': '13 04',
+            'code': '04',
+            'description': 'bilge oils'
+        },
+        {
+            'id': 89,
+            'name': '17 04',
+            'code': '04',
+            'description': 'metals (including their alloys)'
+        },
+        {
+            'id': 23,
+            'name': '06 04',
+            'code': '04',
+            'description': 'metal-containing wastes other than those mentioned in 06 03'
+        },
+        {
+            'id': 4,
+            'name': '01 05',
+            'code': '05',
+            'description': 'drilling muds and other drilling wastes'
+        },
+        {
+            'id': 36,
+            'name': '07 05',
+            'code': '05',
+            'description': 'wastes from the MFSU of pharmaceuticals'
+        },
+        {
+            'id': 100,
+            'name': '19 05',
+            'code': '05',
+            'description': 'wastes from aerobic treatment of solid wastes'
+        },
+        {
+            'id': 9,
+            'name': '02 05',
+            'code': '05',
+            'description': 'wastes from the dairy products industry'
+        },
+        {
+            'id': 69,
+            'name': '13 05',
+            'code': '05',
+            'description': 'oil/water separator contents'
+        },
+        {
+            'id': 90,
+            'name': '17 05',
+            'code': '05',
+            'description': 'soil (including excavated soil from contaminated sites), stones and dredging spoil'
+        },
+        {
+            'id': 43,
+            'name': '08 05',
+            'code': '05',
+            'description': 'wastes not otherwise specified in 08'
+        },
+        {
+            'id': 49,
+            'name': '10 05',
+            'code': '05',
+            'description': 'wastes from zinc thermal metallurgy'
+        },
+        {
+            'id': 24,
+            'name': '06 05',
+            'code': '05',
+            'description': 'Sludges from on-site effluent treatment'
+        },
+        {
+            'id': 79,
+            'name': '16 05',
+            'code': '05',
+            'description': 'gases in pressure containers and discarded chemicals'
+        },
+        {
+            'id': 62,
+            'name': '11 05',
+            'code': '05',
+            'description': 'wastes from hot galvanising processes'
+        },
+        {
+            'id': 80,
+            'name': '16 06',
+            'code': '06',
+            'description': 'batteries and accumulators'
+        },
+        {
+            'id': 10,
+            'name': '02 06',
+            'code': '06',
+            'description': 'wastes from the baking and confectionery industry'
+        },
+        {
+            'id': 72,
+            'name': '14 06',
+            'code': '06',
+            'description': 'waste organic solvents, refrigerants and foam/aerosol propellants'
+        },
+        {
+            'id': 18,
+            'name': '05 06',
+            'code': '06',
+            'description': 'wastes from the pyrolytic treatment of coal'
+        },
+        {
+            'id': 91,
+            'name': '17 06',
+            'code': '06',
+            'description': 'insulation materials and asbestos-containing construction materials'
+        },
+        {
+            'id': 50,
+            'name': '10 06',
+            'code': '06',
+            'description': 'wastes from copper thermal metallurgy'
+        },
+        {
+            'id': 101,
+            'name': '19 06',
+            'code': '06',
+            'description': 'wastes from anaerobic treatment of waste'
+        },
+        {
+            'id': 25,
+            'name': '06 06',
+            'code': '06',
+            'description': 'wastes from the MFSU of sulphur chemicals, sulphur chemical processes and desulphurisation processes'
+        },
+        {
+            'id': 37,
+            'name': '07 06',
+            'code': '06',
+            'description': 'wastes from the MFSU of fats, grease, soaps, detergents, disinfectants and cosmetics'
+        },
+        {
+            'id': 11,
+            'name': '02 07',
+            'code': '07',
+            'description': 'wastes from the production of alcoholic and non-alcoholic beverages (except coffee, tea and cocoa)'
+        },
+        {
+            'id': 26,
+            'name': '06 07',
+            'code': '07',
+            'description': 'wastes from the MFSU of halogens and halogen chemical processes'
+        },
+        {
+            'id': 81,
+            'name': '16 07',
+            'code': '07',
+            'description': 'wastes from transport tank, storage tank and barrel cleaning (except 05 and 13)'
+        },
+        {
+            'id': 51,
+            'name': '10 07',
+            'code': '07',
+            'description': 'wastes from silver, gold and platinum thermal metallurgy'
+        },
+        {
+            'id': 102,
+            'name': '19 07',
+            'code': '07',
+            'description': 'landfill leachate'
+        },
+        {
+            'id': 38,
+            'name': '07 07',
+            'code': '07',
+            'description': 'wastes from the MFSU of fine chemicals and chemical products not otherwise specified'
+        },
+        {
+            'id': 70,
+            'name': '13 07',
+            'code': '07',
+            'description': 'wastes of liquid fuels'
+        },
+        {
+            'id': 19,
+            'name': '05 07',
+            'code': '07',
+            'description': 'wastes from natural gas purification and transportation'
+        },
+        {
+            'id': 71,
+            'name': '13 08',
+            'code': '08',
+            'description': 'oil wastes not otherwise specified'
+        },
+        {
+            'id': 52,
+            'name': '10 08',
+            'code': '08',
+            'description': 'wastes from other non-ferrous thermal metallurgy'
+        },
+        {
+            'id': 103,
+            'name': '19 08',
+            'code': '08',
+            'description': 'wastes from waste water treatment plants not otherwise specified'
+        },
+        {
+            'id': 82,
+            'name': '16 08',
+            'code': '08',
+            'description': 'spent catalysts'
+        },
+        {
+            'id': 27,
+            'name': '06 08',
+            'code': '08',
+            'description': 'wastes from the MFSU of silicon and silicon derivatives'
+        },
+        {
+            'id': 92,
+            'name': '17 08',
+            'code': '08',
+            'description': 'gypsum-based construction material'
+        },
+        {
+            'id': 28,
+            'name': '06 09',
+            'code': '09',
+            'description': 'wastes from the MSFU of phosphorous chemicals and phosphorous chemical processes'
+        },
+        {
+            'id': 53,
+            'name': '10 09',
+            'code': '09',
+            'description': 'wastes from casting of ferrous pieces'
+        },
+        {
+            'id': 83,
+            'name': '16 09',
+            'code': '09',
+            'description': 'oxidising substances'
+        },
+        {
+            'id': 93,
+            'name': '17 09',
+            'code': '09',
+            'description': 'other construction and demolition wastes'
+        },
+        {
+            'id': 104,
+            'name': '19 09',
+            'code': '09',
+            'description': 'wastes from the preparation of water intended for human consumption or water for industrial use'
+        },
+        {
+            'id': 84,
+            'name': '16 10',
+            'code': '10',
+            'description': 'aqueous liquid wastes destined for off-site treatment'
+        },
+        {
+            'id': 54,
+            'name': '10 10',
+            'code': '10',
+            'description': 'wastes from casting of non-ferrous pieces'
+        },
+        {
+            'id': 29,
+            'name': '06 10',
+            'code': '10',
+            'description': 'wastes from the MFSU of nitrogen chemicals, nitrogen chemical processes and fertiliser manufacture'
+        },
+        {
+            'id': 105,
+            'name': '19 10',
+            'code': '10',
+            'description': 'wastes from shredding of metal-containing wastes'
+        },
+        {
+            'id': 106,
+            'name': '19 11',
+            'code': '11',
+            'description': 'wastes from oil regeneration'
+        },
+        {
+            'id': 55,
+            'name': '10 11',
+            'code': '11',
+            'description': 'wastes from manufacture of glass and glass products'
+        },
+        {
+            'id': 85,
+            'name': '16 11',
+            'code': '11',
+            'description': 'waste linings and refractories'
+        },
+        {
+            'id': 30,
+            'name': '06 11',
+            'code': '11',
+            'description': 'wastes from the manufacture of inorganic pigments and opacificiers'
+        },
+        {
+            'id': 107,
+            'name': '19 12',
+            'code': '12',
+            'description': 'wastes from the mechanical treatment of waste (for example sorting, crushing, compacting, pelletising) not otherwise specified'
+        },
+        {
+            'id': 56,
+            'name': '10 12',
+            'code': '12',
+            'description': 'wastes from manufacture of ceramic goods, bricks, tiles and construction products'
+        },
+        {
+            'id': 57,
+            'name': '10 13',
+            'code': '13',
+            'description': 'wastes from manufacture of cement, lime and plaster and articles and products made from them'
+        },
+        {
+            'id': 108,
+            'name': '19 13',
+            'code': '13',
+            'description': 'wastes from soil and groundwater remediation'
+        },
+        {
+            'id': 31,
+            'name': '06 13',
+            'code': '13',
+            'description': 'wastes from inorganic chemical processes not otherwise specified'
+        },
+        {
+            'id': 58,
+            'name': '10 14',
+            'code': '14',
+            'description': 'waste from crematoria'
+        }
+    ],
+
+    ewcHierarchies: [
+        {
+            'chapterId': 1,
+            'subchapterId': 1,
+            'activityId': 1
+        },
+        {
+            'chapterId': 1,
+            'subchapterId': 1,
+            'activityId': 2
+        },
+        {
+            'chapterId': 1,
+            'subchapterId': 4,
+            'activityId': 20
+        },
+        {
+            'chapterId': 1,
+            'subchapterId': 4,
+            'activityId': 19
+        },
+        {
+            'chapterId': 1,
+            'subchapterId': 4,
+            'activityId': 22
+        },
+        {
+            'chapterId': 1,
+            'subchapterId': 4,
+            'activityId': 21
+        },
+        {
+            'chapterId': 1,
+            'subchapterId': 4,
+            'activityId': 23
+        },
+        {
+            'chapterId': 1,
+            'subchapterId': 4,
+            'activityId': 18
+        },
+        {
+            'chapterId': 1,
+            'subchapterId': 3,
+            'activityId': 10
+        },
+        {
+            'chapterId': 1,
+            'subchapterId': 3,
+            'activityId': 12
+        },
+        {
+            'chapterId': 1,
+            'subchapterId': 3,
+            'activityId': 11
+        },
+        {
+            'chapterId': 1,
+            'subchapterId': 3,
+            'activityId': 13
+        },
+        {
+            'chapterId': 1,
+            'subchapterId': 3,
+            'activityId': 15
+        },
+        {
+            'chapterId': 1,
+            'subchapterId': 3,
+            'activityId': 14
+        },
+        {
+            'chapterId': 1,
+            'subchapterId': 3,
+            'activityId': 17
+        },
+        {
+            'chapterId': 1,
+            'subchapterId': 3,
+            'activityId': 16
+        },
+        {
+            'chapterId': 1,
+            'subchapterId': 2,
+            'activityId': 3
+        },
+        {
+            'chapterId': 1,
+            'subchapterId': 2,
+            'activityId': 4
+        },
+        {
+            'chapterId': 1,
+            'subchapterId': 2,
+            'activityId': 5
+        },
+        {
+            'chapterId': 1,
+            'subchapterId': 2,
+            'activityId': 6
+        },
+        {
+            'chapterId': 1,
+            'subchapterId': 2,
+            'activityId': 7
+        },
+        {
+            'chapterId': 1,
+            'subchapterId': 2,
+            'activityId': 8
+        },
+        {
+            'chapterId': 1,
+            'subchapterId': 2,
+            'activityId': 9
+        },
+        {
+            'chapterId': 2,
+            'subchapterId': 6,
+            'activityId': 36
+        },
+        {
+            'chapterId': 2,
+            'subchapterId': 6,
+            'activityId': 37
+        },
+        {
+            'chapterId': 2,
+            'subchapterId': 6,
+            'activityId': 34
+        },
+        {
+            'chapterId': 2,
+            'subchapterId': 6,
+            'activityId': 35
+        },
+        {
+            'chapterId': 2,
+            'subchapterId': 6,
+            'activityId': 38
+        },
+        {
+            'chapterId': 2,
+            'subchapterId': 5,
+            'activityId': 28
+        },
+        {
+            'chapterId': 2,
+            'subchapterId': 5,
+            'activityId': 29
+        },
+        {
+            'chapterId': 2,
+            'subchapterId': 5,
+            'activityId': 27
+        },
+        {
+            'chapterId': 2,
+            'subchapterId': 5,
+            'activityId': 25
+        },
+        {
+            'chapterId': 2,
+            'subchapterId': 5,
+            'activityId': 26
+        },
+        {
+            'chapterId': 2,
+            'subchapterId': 5,
+            'activityId': 33
+        },
+        {
+            'chapterId': 2,
+            'subchapterId': 5,
+            'activityId': 24
+        },
+        {
+            'chapterId': 2,
+            'subchapterId': 5,
+            'activityId': 32
+        },
+        {
+            'chapterId': 2,
+            'subchapterId': 5,
+            'activityId': 30
+        },
+        {
+            'chapterId': 2,
+            'subchapterId': 5,
+            'activityId': 31
+        },
+        {
+            'chapterId': 2,
+            'subchapterId': 10,
+            'activityId': 55
+        },
+        {
+            'chapterId': 2,
+            'subchapterId': 10,
+            'activityId': 52
+        },
+        {
+            'chapterId': 2,
+            'subchapterId': 10,
+            'activityId': 53
+        },
+        {
+            'chapterId': 2,
+            'subchapterId': 10,
+            'activityId': 54
+        },
+        {
+            'chapterId': 2,
+            'subchapterId': 9,
+            'activityId': 51
+        },
+        {
+            'chapterId': 2,
+            'subchapterId': 9,
+            'activityId': 49
+        },
+        {
+            'chapterId': 2,
+            'subchapterId': 9,
+            'activityId': 50
+        },
+        {
+            'chapterId': 2,
+            'subchapterId': 8,
+            'activityId': 47
+        },
+        {
+            'chapterId': 2,
+            'subchapterId': 8,
+            'activityId': 46
+        },
+        {
+            'chapterId': 2,
+            'subchapterId': 8,
+            'activityId': 45
+        },
+        {
+            'chapterId': 2,
+            'subchapterId': 8,
+            'activityId': 48
+        },
+        {
+            'chapterId': 2,
+            'subchapterId': 7,
+            'activityId': 43
+        },
+        {
+            'chapterId': 2,
+            'subchapterId': 7,
+            'activityId': 42
+        },
+        {
+            'chapterId': 2,
+            'subchapterId': 7,
+            'activityId': 41
+        },
+        {
+            'chapterId': 2,
+            'subchapterId': 7,
+            'activityId': 40
+        },
+        {
+            'chapterId': 2,
+            'subchapterId': 7,
+            'activityId': 39
+        },
+        {
+            'chapterId': 2,
+            'subchapterId': 7,
+            'activityId': 44
+        },
+        {
+            'chapterId': 2,
+            'subchapterId': 11,
+            'activityId': 61
+        },
+        {
+            'chapterId': 2,
+            'subchapterId': 11,
+            'activityId': 56
+        },
+        {
+            'chapterId': 2,
+            'subchapterId': 11,
+            'activityId': 57
+        },
+        {
+            'chapterId': 2,
+            'subchapterId': 11,
+            'activityId': 58
+        },
+        {
+            'chapterId': 2,
+            'subchapterId': 11,
+            'activityId': 59
+        },
+        {
+            'chapterId': 2,
+            'subchapterId': 11,
+            'activityId': 60
+        },
+        {
+            'chapterId': 3,
+            'subchapterId': 12,
+            'activityId': 63
+        },
+        {
+            'chapterId': 3,
+            'subchapterId': 12,
+            'activityId': 64
+        },
+        {
+            'chapterId': 3,
+            'subchapterId': 12,
+            'activityId': 65
+        },
+        {
+            'chapterId': 3,
+            'subchapterId': 12,
+            'activityId': 62
+        },
+        {
+            'chapterId': 3,
+            'subchapterId': 13,
+            'activityId': 69
+        },
+        {
+            'chapterId': 3,
+            'subchapterId': 13,
+            'activityId': 70
+        },
+        {
+            'chapterId': 3,
+            'subchapterId': 13,
+            'activityId': 71
+        },
+        {
+            'chapterId': 3,
+            'subchapterId': 13,
+            'activityId': 66
+        },
+        {
+            'chapterId': 3,
+            'subchapterId': 13,
+            'activityId': 67
+        },
+        {
+            'chapterId': 3,
+            'subchapterId': 13,
+            'activityId': 68
+        },
+        {
+            'chapterId': 3,
+            'subchapterId': 14,
+            'activityId': 79
+        },
+        {
+            'chapterId': 3,
+            'subchapterId': 14,
+            'activityId': 80
+        },
+        {
+            'chapterId': 3,
+            'subchapterId': 14,
+            'activityId': 78
+        },
+        {
+            'chapterId': 3,
+            'subchapterId': 14,
+            'activityId': 77
+        },
+        {
+            'chapterId': 3,
+            'subchapterId': 14,
+            'activityId': 74
+        },
+        {
+            'chapterId': 3,
+            'subchapterId': 14,
+            'activityId': 76
+        },
+        {
+            'chapterId': 3,
+            'subchapterId': 14,
+            'activityId': 75
+        },
+        {
+            'chapterId': 3,
+            'subchapterId': 14,
+            'activityId': 73
+        },
+        {
+            'chapterId': 3,
+            'subchapterId': 14,
+            'activityId': 72
+        },
+        {
+            'chapterId': 4,
+            'subchapterId': 15,
+            'activityId': 90
+        },
+        {
+            'chapterId': 4,
+            'subchapterId': 15,
+            'activityId': 81
+        },
+        {
+            'chapterId': 4,
+            'subchapterId': 15,
+            'activityId': 84
+        },
+        {
+            'chapterId': 4,
+            'subchapterId': 15,
+            'activityId': 85
+        },
+        {
+            'chapterId': 4,
+            'subchapterId': 15,
+            'activityId': 82
+        },
+        {
+            'chapterId': 4,
+            'subchapterId': 15,
+            'activityId': 83
+        },
+        {
+            'chapterId': 4,
+            'subchapterId': 15,
+            'activityId': 88
+        },
+        {
+            'chapterId': 4,
+            'subchapterId': 15,
+            'activityId': 89
+        },
+        {
+            'chapterId': 4,
+            'subchapterId': 15,
+            'activityId': 86
+        },
+        {
+            'chapterId': 4,
+            'subchapterId': 15,
+            'activityId': 87
+        },
+        {
+            'chapterId': 4,
+            'subchapterId': 16,
+            'activityId': 100
+        },
+        {
+            'chapterId': 4,
+            'subchapterId': 16,
+            'activityId': 101
+        },
+        {
+            'chapterId': 4,
+            'subchapterId': 16,
+            'activityId': 92
+        },
+        {
+            'chapterId': 4,
+            'subchapterId': 16,
+            'activityId': 99
+        },
+        {
+            'chapterId': 4,
+            'subchapterId': 16,
+            'activityId': 96
+        },
+        {
+            'chapterId': 4,
+            'subchapterId': 16,
+            'activityId': 95
+        },
+        {
+            'chapterId': 4,
+            'subchapterId': 16,
+            'activityId': 94
+        },
+        {
+            'chapterId': 4,
+            'subchapterId': 16,
+            'activityId': 93
+        },
+        {
+            'chapterId': 4,
+            'subchapterId': 16,
+            'activityId': 91
+        },
+        {
+            'chapterId': 4,
+            'subchapterId': 16,
+            'activityId': 97
+        },
+        {
+            'chapterId': 4,
+            'subchapterId': 16,
+            'activityId': 98
+        },
+        {
+            'chapterId': 5,
+            'subchapterId': 17,
+            'activityId': 105
+        },
+        {
+            'chapterId': 5,
+            'subchapterId': 17,
+            'activityId': 116
+        },
+        {
+            'chapterId': 5,
+            'subchapterId': 17,
+            'activityId': 106
+        },
+        {
+            'chapterId': 5,
+            'subchapterId': 17,
+            'activityId': 117
+        },
+        {
+            'chapterId': 5,
+            'subchapterId': 17,
+            'activityId': 107
+        },
+        {
+            'chapterId': 5,
+            'subchapterId': 17,
+            'activityId': 108
+        },
+        {
+            'chapterId': 5,
+            'subchapterId': 17,
+            'activityId': 109
+        },
+        {
+            'chapterId': 5,
+            'subchapterId': 17,
+            'activityId': 110
+        },
+        {
+            'chapterId': 5,
+            'subchapterId': 17,
+            'activityId': 111
+        },
+        {
+            'chapterId': 5,
+            'subchapterId': 17,
+            'activityId': 118
+        },
+        {
+            'chapterId': 5,
+            'subchapterId': 17,
+            'activityId': 112
+        },
+        {
+            'chapterId': 5,
+            'subchapterId': 17,
+            'activityId': 102
+        },
+        {
+            'chapterId': 5,
+            'subchapterId': 17,
+            'activityId': 113
+        },
+        {
+            'chapterId': 5,
+            'subchapterId': 17,
+            'activityId': 103
+        },
+        {
+            'chapterId': 5,
+            'subchapterId': 17,
+            'activityId': 114
+        },
+        {
+            'chapterId': 5,
+            'subchapterId': 17,
+            'activityId': 104
+        },
+        {
+            'chapterId': 5,
+            'subchapterId': 17,
+            'activityId': 115
+        },
+        {
+            'chapterId': 5,
+            'subchapterId': 18,
+            'activityId': 119
+        },
+        {
+            'chapterId': 5,
+            'subchapterId': 18,
+            'activityId': 122
+        },
+        {
+            'chapterId': 5,
+            'subchapterId': 18,
+            'activityId': 121
+        },
+        {
+            'chapterId': 5,
+            'subchapterId': 18,
+            'activityId': 120
+        },
+        {
+            'chapterId': 5,
+            'subchapterId': 19,
+            'activityId': 124
+        },
+        {
+            'chapterId': 5,
+            'subchapterId': 19,
+            'activityId': 123
+        },
+        {
+            'chapterId': 5,
+            'subchapterId': 19,
+            'activityId': 125
+        },
+        {
+            'chapterId': 6,
+            'subchapterId': 23,
+            'activityId': 147
+        },
+        {
+            'chapterId': 6,
+            'subchapterId': 23,
+            'activityId': 144
+        },
+        {
+            'chapterId': 6,
+            'subchapterId': 23,
+            'activityId': 145
+        },
+        {
+            'chapterId': 6,
+            'subchapterId': 23,
+            'activityId': 146
+        },
+        {
+            'chapterId': 6,
+            'subchapterId': 22,
+            'activityId': 138
+        },
+        {
+            'chapterId': 6,
+            'subchapterId': 22,
+            'activityId': 143
+        },
+        {
+            'chapterId': 6,
+            'subchapterId': 22,
+            'activityId': 139
+        },
+        {
+            'chapterId': 6,
+            'subchapterId': 22,
+            'activityId': 140
+        },
+        {
+            'chapterId': 6,
+            'subchapterId': 22,
+            'activityId': 141
+        },
+        {
+            'chapterId': 6,
+            'subchapterId': 22,
+            'activityId': 142
+        },
+        {
+            'chapterId': 6,
+            'subchapterId': 25,
+            'activityId': 150
+        },
+        {
+            'chapterId': 6,
+            'subchapterId': 25,
+            'activityId': 151
+        },
+        {
+            'chapterId': 6,
+            'subchapterId': 25,
+            'activityId': 152
+        },
+        {
+            'chapterId': 6,
+            'subchapterId': 24,
+            'activityId': 148
+        },
+        {
+            'chapterId': 6,
+            'subchapterId': 24,
+            'activityId': 149
+        },
+        {
+            'chapterId': 6,
+            'subchapterId': 30,
+            'activityId': 167
+        },
+        {
+            'chapterId': 6,
+            'subchapterId': 30,
+            'activityId': 166
+        },
+        {
+            'chapterId': 6,
+            'subchapterId': 29,
+            'activityId': 164
+        },
+        {
+            'chapterId': 6,
+            'subchapterId': 29,
+            'activityId': 165
+        },
+        {
+            'chapterId': 6,
+            'subchapterId': 21,
+            'activityId': 136
+        },
+        {
+            'chapterId': 6,
+            'subchapterId': 21,
+            'activityId': 135
+        },
+        {
+            'chapterId': 6,
+            'subchapterId': 21,
+            'activityId': 134
+        },
+        {
+            'chapterId': 6,
+            'subchapterId': 21,
+            'activityId': 133
+        },
+        {
+            'chapterId': 6,
+            'subchapterId': 21,
+            'activityId': 137
+        },
+        {
+            'chapterId': 6,
+            'subchapterId': 31,
+            'activityId': 172
+        },
+        {
+            'chapterId': 6,
+            'subchapterId': 31,
+            'activityId': 170
+        },
+        {
+            'chapterId': 6,
+            'subchapterId': 31,
+            'activityId': 171
+        },
+        {
+            'chapterId': 6,
+            'subchapterId': 31,
+            'activityId': 168
+        },
+        {
+            'chapterId': 6,
+            'subchapterId': 31,
+            'activityId': 169
+        },
+        {
+            'chapterId': 6,
+            'subchapterId': 31,
+            'activityId': 173
+        },
+        {
+            'chapterId': 6,
+            'subchapterId': 20,
+            'activityId': 131
+        },
+        {
+            'chapterId': 6,
+            'subchapterId': 20,
+            'activityId': 130
+        },
+        {
+            'chapterId': 6,
+            'subchapterId': 20,
+            'activityId': 129
+        },
+        {
+            'chapterId': 6,
+            'subchapterId': 20,
+            'activityId': 128
+        },
+        {
+            'chapterId': 6,
+            'subchapterId': 20,
+            'activityId': 127
+        },
+        {
+            'chapterId': 6,
+            'subchapterId': 20,
+            'activityId': 126
+        },
+        {
+            'chapterId': 6,
+            'subchapterId': 20,
+            'activityId': 132
+        },
+        {
+            'chapterId': 6,
+            'subchapterId': 27,
+            'activityId': 158
+        },
+        {
+            'chapterId': 6,
+            'subchapterId': 27,
+            'activityId': 159
+        },
+        {
+            'chapterId': 6,
+            'subchapterId': 26,
+            'activityId': 155
+        },
+        {
+            'chapterId': 6,
+            'subchapterId': 26,
+            'activityId': 154
+        },
+        {
+            'chapterId': 6,
+            'subchapterId': 26,
+            'activityId': 156
+        },
+        {
+            'chapterId': 6,
+            'subchapterId': 26,
+            'activityId': 153
+        },
+        {
+            'chapterId': 6,
+            'subchapterId': 26,
+            'activityId': 157
+        },
+        {
+            'chapterId': 6,
+            'subchapterId': 28,
+            'activityId': 162
+        },
+        {
+            'chapterId': 6,
+            'subchapterId': 28,
+            'activityId': 160
+        },
+        {
+            'chapterId': 6,
+            'subchapterId': 28,
+            'activityId': 161
+        },
+        {
+            'chapterId': 6,
+            'subchapterId': 28,
+            'activityId': 163
+        },
+        {
+            'chapterId': 7,
+            'subchapterId': 36,
+            'activityId': 221
+        },
+        {
+            'chapterId': 7,
+            'subchapterId': 36,
+            'activityId': 220
+        },
+        {
+            'chapterId': 7,
+            'subchapterId': 36,
+            'activityId': 229
+        },
+        {
+            'chapterId': 7,
+            'subchapterId': 36,
+            'activityId': 228
+        },
+        {
+            'chapterId': 7,
+            'subchapterId': 36,
+            'activityId': 219
+        },
+        {
+            'chapterId': 7,
+            'subchapterId': 36,
+            'activityId': 227
+        },
+        {
+            'chapterId': 7,
+            'subchapterId': 36,
+            'activityId': 226
+        },
+        {
+            'chapterId': 7,
+            'subchapterId': 36,
+            'activityId': 230
+        },
+        {
+            'chapterId': 7,
+            'subchapterId': 36,
+            'activityId': 225
+        },
+        {
+            'chapterId': 7,
+            'subchapterId': 36,
+            'activityId': 224
+        },
+        {
+            'chapterId': 7,
+            'subchapterId': 36,
+            'activityId': 223
+        },
+        {
+            'chapterId': 7,
+            'subchapterId': 36,
+            'activityId': 222
+        },
+        {
+            'chapterId': 7,
+            'subchapterId': 35,
+            'activityId': 210
+        },
+        {
+            'chapterId': 7,
+            'subchapterId': 35,
+            'activityId': 217
+        },
+        {
+            'chapterId': 7,
+            'subchapterId': 35,
+            'activityId': 209
+        },
+        {
+            'chapterId': 7,
+            'subchapterId': 35,
+            'activityId': 215
+        },
+        {
+            'chapterId': 7,
+            'subchapterId': 35,
+            'activityId': 218
+        },
+        {
+            'chapterId': 7,
+            'subchapterId': 35,
+            'activityId': 208
+        },
+        {
+            'chapterId': 7,
+            'subchapterId': 35,
+            'activityId': 216
+        },
+        {
+            'chapterId': 7,
+            'subchapterId': 35,
+            'activityId': 214
+        },
+        {
+            'chapterId': 7,
+            'subchapterId': 35,
+            'activityId': 212
+        },
+        {
+            'chapterId': 7,
+            'subchapterId': 35,
+            'activityId': 213
+        },
+        {
+            'chapterId': 7,
+            'subchapterId': 35,
+            'activityId': 211
+        },
+        {
+            'chapterId': 7,
+            'subchapterId': 38,
+            'activityId': 246
+        },
+        {
+            'chapterId': 7,
+            'subchapterId': 38,
+            'activityId': 247
+        },
+        {
+            'chapterId': 7,
+            'subchapterId': 38,
+            'activityId': 248
+        },
+        {
+            'chapterId': 7,
+            'subchapterId': 38,
+            'activityId': 250
+        },
+        {
+            'chapterId': 7,
+            'subchapterId': 38,
+            'activityId': 241
+        },
+        {
+            'chapterId': 7,
+            'subchapterId': 38,
+            'activityId': 249
+        },
+        {
+            'chapterId': 7,
+            'subchapterId': 38,
+            'activityId': 242
+        },
+        {
+            'chapterId': 7,
+            'subchapterId': 38,
+            'activityId': 243
+        },
+        {
+            'chapterId': 7,
+            'subchapterId': 38,
+            'activityId': 244
+        },
+        {
+            'chapterId': 7,
+            'subchapterId': 38,
+            'activityId': 245
+        },
+        {
+            'chapterId': 7,
+            'subchapterId': 37,
+            'activityId': 234
+        },
+        {
+            'chapterId': 7,
+            'subchapterId': 37,
+            'activityId': 233
+        },
+        {
+            'chapterId': 7,
+            'subchapterId': 37,
+            'activityId': 232
+        },
+        {
+            'chapterId': 7,
+            'subchapterId': 37,
+            'activityId': 231
+        },
+        {
+            'chapterId': 7,
+            'subchapterId': 37,
+            'activityId': 239
+        },
+        {
+            'chapterId': 7,
+            'subchapterId': 37,
+            'activityId': 238
+        },
+        {
+            'chapterId': 7,
+            'subchapterId': 37,
+            'activityId': 240
+        },
+        {
+            'chapterId': 7,
+            'subchapterId': 37,
+            'activityId': 237
+        },
+        {
+            'chapterId': 7,
+            'subchapterId': 37,
+            'activityId': 236
+        },
+        {
+            'chapterId': 7,
+            'subchapterId': 37,
+            'activityId': 235
+        },
+        {
+            'chapterId': 7,
+            'subchapterId': 32,
+            'activityId': 181
+        },
+        {
+            'chapterId': 7,
+            'subchapterId': 32,
+            'activityId': 183
+        },
+        {
+            'chapterId': 7,
+            'subchapterId': 32,
+            'activityId': 180
+        },
+        {
+            'chapterId': 7,
+            'subchapterId': 32,
+            'activityId': 174
+        },
+        {
+            'chapterId': 7,
+            'subchapterId': 32,
+            'activityId': 182
+        },
+        {
+            'chapterId': 7,
+            'subchapterId': 32,
+            'activityId': 178
+        },
+        {
+            'chapterId': 7,
+            'subchapterId': 32,
+            'activityId': 177
+        },
+        {
+            'chapterId': 7,
+            'subchapterId': 32,
+            'activityId': 179
+        },
+        {
+            'chapterId': 7,
+            'subchapterId': 32,
+            'activityId': 176
+        },
+        {
+            'chapterId': 7,
+            'subchapterId': 32,
+            'activityId': 175
+        },
+        {
+            'chapterId': 7,
+            'subchapterId': 34,
+            'activityId': 199
+        },
+        {
+            'chapterId': 7,
+            'subchapterId': 34,
+            'activityId': 200
+        },
+        {
+            'chapterId': 7,
+            'subchapterId': 34,
+            'activityId': 198
+        },
+        {
+            'chapterId': 7,
+            'subchapterId': 34,
+            'activityId': 206
+        },
+        {
+            'chapterId': 7,
+            'subchapterId': 34,
+            'activityId': 204
+        },
+        {
+            'chapterId': 7,
+            'subchapterId': 34,
+            'activityId': 205
+        },
+        {
+            'chapterId': 7,
+            'subchapterId': 34,
+            'activityId': 207
+        },
+        {
+            'chapterId': 7,
+            'subchapterId': 34,
+            'activityId': 203
+        },
+        {
+            'chapterId': 7,
+            'subchapterId': 34,
+            'activityId': 201
+        },
+        {
+            'chapterId': 7,
+            'subchapterId': 34,
+            'activityId': 202
+        },
+        {
+            'chapterId': 7,
+            'subchapterId': 33,
+            'activityId': 184
+        },
+        {
+            'chapterId': 7,
+            'subchapterId': 33,
+            'activityId': 192
+        },
+        {
+            'chapterId': 7,
+            'subchapterId': 33,
+            'activityId': 191
+        },
+        {
+            'chapterId': 7,
+            'subchapterId': 33,
+            'activityId': 197
+        },
+        {
+            'chapterId': 7,
+            'subchapterId': 33,
+            'activityId': 185
+        },
+        {
+            'chapterId': 7,
+            'subchapterId': 33,
+            'activityId': 194
+        },
+        {
+            'chapterId': 7,
+            'subchapterId': 33,
+            'activityId': 193
+        },
+        {
+            'chapterId': 7,
+            'subchapterId': 33,
+            'activityId': 190
+        },
+        {
+            'chapterId': 7,
+            'subchapterId': 33,
+            'activityId': 189
+        },
+        {
+            'chapterId': 7,
+            'subchapterId': 33,
+            'activityId': 188
+        },
+        {
+            'chapterId': 7,
+            'subchapterId': 33,
+            'activityId': 196
+        },
+        {
+            'chapterId': 7,
+            'subchapterId': 33,
+            'activityId': 186
+        },
+        {
+            'chapterId': 7,
+            'subchapterId': 33,
+            'activityId': 195
+        },
+        {
+            'chapterId': 7,
+            'subchapterId': 33,
+            'activityId': 187
+        },
+        {
+            'chapterId': 8,
+            'subchapterId': 43,
+            'activityId': 288
+        },
+        {
+            'chapterId': 8,
+            'subchapterId': 41,
+            'activityId': 268
+        },
+        {
+            'chapterId': 8,
+            'subchapterId': 41,
+            'activityId': 276
+        },
+        {
+            'chapterId': 8,
+            'subchapterId': 41,
+            'activityId': 272
+        },
+        {
+            'chapterId': 8,
+            'subchapterId': 41,
+            'activityId': 273
+        },
+        {
+            'chapterId': 8,
+            'subchapterId': 41,
+            'activityId': 274
+        },
+        {
+            'chapterId': 8,
+            'subchapterId': 41,
+            'activityId': 267
+        },
+        {
+            'chapterId': 8,
+            'subchapterId': 41,
+            'activityId': 275
+        },
+        {
+            'chapterId': 8,
+            'subchapterId': 41,
+            'activityId': 277
+        },
+        {
+            'chapterId': 8,
+            'subchapterId': 41,
+            'activityId': 269
+        },
+        {
+            'chapterId': 8,
+            'subchapterId': 41,
+            'activityId': 270
+        },
+        {
+            'chapterId': 8,
+            'subchapterId': 41,
+            'activityId': 271
+        },
+        {
+            'chapterId': 8,
+            'subchapterId': 42,
+            'activityId': 278
+        },
+        {
+            'chapterId': 8,
+            'subchapterId': 42,
+            'activityId': 285
+        },
+        {
+            'chapterId': 8,
+            'subchapterId': 42,
+            'activityId': 286
+        },
+        {
+            'chapterId': 8,
+            'subchapterId': 42,
+            'activityId': 281
+        },
+        {
+            'chapterId': 8,
+            'subchapterId': 42,
+            'activityId': 282
+        },
+        {
+            'chapterId': 8,
+            'subchapterId': 42,
+            'activityId': 283
+        },
+        {
+            'chapterId': 8,
+            'subchapterId': 42,
+            'activityId': 284
+        },
+        {
+            'chapterId': 8,
+            'subchapterId': 42,
+            'activityId': 279
+        },
+        {
+            'chapterId': 8,
+            'subchapterId': 42,
+            'activityId': 280
+        },
+        {
+            'chapterId': 8,
+            'subchapterId': 42,
+            'activityId': 287
+        },
+        {
+            'chapterId': 8,
+            'subchapterId': 39,
+            'activityId': 256
+        },
+        {
+            'chapterId': 8,
+            'subchapterId': 39,
+            'activityId': 255
+        },
+        {
+            'chapterId': 8,
+            'subchapterId': 39,
+            'activityId': 254
+        },
+        {
+            'chapterId': 8,
+            'subchapterId': 39,
+            'activityId': 253
+        },
+        {
+            'chapterId': 8,
+            'subchapterId': 39,
+            'activityId': 259
+        },
+        {
+            'chapterId': 8,
+            'subchapterId': 39,
+            'activityId': 258
+        },
+        {
+            'chapterId': 8,
+            'subchapterId': 39,
+            'activityId': 257
+        },
+        {
+            'chapterId': 8,
+            'subchapterId': 39,
+            'activityId': 252
+        },
+        {
+            'chapterId': 8,
+            'subchapterId': 39,
+            'activityId': 251
+        },
+        {
+            'chapterId': 8,
+            'subchapterId': 39,
+            'activityId': 262
+        },
+        {
+            'chapterId': 8,
+            'subchapterId': 39,
+            'activityId': 261
+        },
+        {
+            'chapterId': 8,
+            'subchapterId': 39,
+            'activityId': 260
+        },
+        {
+            'chapterId': 8,
+            'subchapterId': 40,
+            'activityId': 265
+        },
+        {
+            'chapterId': 8,
+            'subchapterId': 40,
+            'activityId': 266
+        },
+        {
+            'chapterId': 8,
+            'subchapterId': 40,
+            'activityId': 263
+        },
+        {
+            'chapterId': 8,
+            'subchapterId': 40,
+            'activityId': 264
+        },
+        {
+            'chapterId': 9,
+            'subchapterId': 44,
+            'activityId': 298
+        },
+        {
+            'chapterId': 9,
+            'subchapterId': 44,
+            'activityId': 301
+        },
+        {
+            'chapterId': 9,
+            'subchapterId': 44,
+            'activityId': 297
+        },
+        {
+            'chapterId': 9,
+            'subchapterId': 44,
+            'activityId': 290
+        },
+        {
+            'chapterId': 9,
+            'subchapterId': 44,
+            'activityId': 300
+        },
+        {
+            'chapterId': 9,
+            'subchapterId': 44,
+            'activityId': 289
+        },
+        {
+            'chapterId': 9,
+            'subchapterId': 44,
+            'activityId': 299
+        },
+        {
+            'chapterId': 9,
+            'subchapterId': 44,
+            'activityId': 292
+        },
+        {
+            'chapterId': 9,
+            'subchapterId': 44,
+            'activityId': 291
+        },
+        {
+            'chapterId': 9,
+            'subchapterId': 44,
+            'activityId': 294
+        },
+        {
+            'chapterId': 9,
+            'subchapterId': 44,
+            'activityId': 293
+        },
+        {
+            'chapterId': 9,
+            'subchapterId': 44,
+            'activityId': 296
+        },
+        {
+            'chapterId': 9,
+            'subchapterId': 44,
+            'activityId': 295
+        },
+        {
+            'chapterId': 10,
+            'subchapterId': 52,
+            'activityId': 395
+        },
+        {
+            'chapterId': 10,
+            'subchapterId': 52,
+            'activityId': 406
+        },
+        {
+            'chapterId': 10,
+            'subchapterId': 52,
+            'activityId': 396
+        },
+        {
+            'chapterId': 10,
+            'subchapterId': 52,
+            'activityId': 404
+        },
+        {
+            'chapterId': 10,
+            'subchapterId': 52,
+            'activityId': 405
+        },
+        {
+            'chapterId': 10,
+            'subchapterId': 52,
+            'activityId': 394
+        },
+        {
+            'chapterId': 10,
+            'subchapterId': 52,
+            'activityId': 402
+        },
+        {
+            'chapterId': 10,
+            'subchapterId': 52,
+            'activityId': 403
+        },
+        {
+            'chapterId': 10,
+            'subchapterId': 52,
+            'activityId': 400
+        },
+        {
+            'chapterId': 10,
+            'subchapterId': 52,
+            'activityId': 401
+        },
+        {
+            'chapterId': 10,
+            'subchapterId': 52,
+            'activityId': 398
+        },
+        {
+            'chapterId': 10,
+            'subchapterId': 52,
+            'activityId': 408
+        },
+        {
+            'chapterId': 10,
+            'subchapterId': 52,
+            'activityId': 399
+        },
+        {
+            'chapterId': 10,
+            'subchapterId': 52,
+            'activityId': 407
+        },
+        {
+            'chapterId': 10,
+            'subchapterId': 52,
+            'activityId': 397
+        },
+        {
+            'chapterId': 10,
+            'subchapterId': 53,
+            'activityId': 414
+        },
+        {
+            'chapterId': 10,
+            'subchapterId': 53,
+            'activityId': 412
+        },
+        {
+            'chapterId': 10,
+            'subchapterId': 53,
+            'activityId': 413
+        },
+        {
+            'chapterId': 10,
+            'subchapterId': 53,
+            'activityId': 410
+        },
+        {
+            'chapterId': 10,
+            'subchapterId': 53,
+            'activityId': 421
+        },
+        {
+            'chapterId': 10,
+            'subchapterId': 53,
+            'activityId': 411
+        },
+        {
+            'chapterId': 10,
+            'subchapterId': 53,
+            'activityId': 409
+        },
+        {
+            'chapterId': 10,
+            'subchapterId': 53,
+            'activityId': 419
+        },
+        {
+            'chapterId': 10,
+            'subchapterId': 53,
+            'activityId': 420
+        },
+        {
+            'chapterId': 10,
+            'subchapterId': 53,
+            'activityId': 417
+        },
+        {
+            'chapterId': 10,
+            'subchapterId': 53,
+            'activityId': 418
+        },
+        {
+            'chapterId': 10,
+            'subchapterId': 53,
+            'activityId': 415
+        },
+        {
+            'chapterId': 10,
+            'subchapterId': 53,
+            'activityId': 416
+        },
+        {
+            'chapterId': 10,
+            'subchapterId': 53,
+            'activityId': 422
+        },
+        {
+            'chapterId': 10,
+            'subchapterId': 55,
+            'activityId': 437
+        },
+        {
+            'chapterId': 10,
+            'subchapterId': 55,
+            'activityId': 444
+        },
+        {
+            'chapterId': 10,
+            'subchapterId': 55,
+            'activityId': 443
+        },
+        {
+            'chapterId': 10,
+            'subchapterId': 55,
+            'activityId': 438
+        },
+        {
+            'chapterId': 10,
+            'subchapterId': 55,
+            'activityId': 446
+        },
+        {
+            'chapterId': 10,
+            'subchapterId': 55,
+            'activityId': 445
+        },
+        {
+            'chapterId': 10,
+            'subchapterId': 55,
+            'activityId': 448
+        },
+        {
+            'chapterId': 10,
+            'subchapterId': 55,
+            'activityId': 447
+        },
+        {
+            'chapterId': 10,
+            'subchapterId': 55,
+            'activityId': 439
+        },
+        {
+            'chapterId': 10,
+            'subchapterId': 55,
+            'activityId': 449
+        },
+        {
+            'chapterId': 10,
+            'subchapterId': 55,
+            'activityId': 440
+        },
+        {
+            'chapterId': 10,
+            'subchapterId': 55,
+            'activityId': 450
+        },
+        {
+            'chapterId': 10,
+            'subchapterId': 55,
+            'activityId': 442
+        },
+        {
+            'chapterId': 10,
+            'subchapterId': 55,
+            'activityId': 441
+        },
+        {
+            'chapterId': 10,
+            'subchapterId': 55,
+            'activityId': 451
+        },
+        {
+            'chapterId': 10,
+            'subchapterId': 45,
+            'activityId': 316
+        },
+        {
+            'chapterId': 10,
+            'subchapterId': 45,
+            'activityId': 302
+        },
+        {
+            'chapterId': 10,
+            'subchapterId': 45,
+            'activityId': 319
+        },
+        {
+            'chapterId': 10,
+            'subchapterId': 45,
+            'activityId': 303
+        },
+        {
+            'chapterId': 10,
+            'subchapterId': 45,
+            'activityId': 309
+        },
+        {
+            'chapterId': 10,
+            'subchapterId': 45,
+            'activityId': 320
+        },
+        {
+            'chapterId': 10,
+            'subchapterId': 45,
+            'activityId': 317
+        },
+        {
+            'chapterId': 10,
+            'subchapterId': 45,
+            'activityId': 318
+        },
+        {
+            'chapterId': 10,
+            'subchapterId': 45,
+            'activityId': 323
+        },
+        {
+            'chapterId': 10,
+            'subchapterId': 45,
+            'activityId': 306
+        },
+        {
+            'chapterId': 10,
+            'subchapterId': 45,
+            'activityId': 312
+        },
+        {
+            'chapterId': 10,
+            'subchapterId': 45,
+            'activityId': 313
+        },
+        {
+            'chapterId': 10,
+            'subchapterId': 45,
+            'activityId': 304
+        },
+        {
+            'chapterId': 10,
+            'subchapterId': 45,
+            'activityId': 310
+        },
+        {
+            'chapterId': 10,
+            'subchapterId': 45,
+            'activityId': 321
+        },
+        {
+            'chapterId': 10,
+            'subchapterId': 45,
+            'activityId': 305
+        },
+        {
+            'chapterId': 10,
+            'subchapterId': 45,
+            'activityId': 311
+        },
+        {
+            'chapterId': 10,
+            'subchapterId': 45,
+            'activityId': 322
+        },
+        {
+            'chapterId': 10,
+            'subchapterId': 45,
+            'activityId': 308
+        },
+        {
+            'chapterId': 10,
+            'subchapterId': 45,
+            'activityId': 307
+        },
+        {
+            'chapterId': 10,
+            'subchapterId': 45,
+            'activityId': 314
+        },
+        {
+            'chapterId': 10,
+            'subchapterId': 45,
+            'activityId': 315
+        },
+        {
+            'chapterId': 10,
+            'subchapterId': 56,
+            'activityId': 459
+        },
+        {
+            'chapterId': 10,
+            'subchapterId': 56,
+            'activityId': 462
+        },
+        {
+            'chapterId': 10,
+            'subchapterId': 56,
+            'activityId': 458
+        },
+        {
+            'chapterId': 10,
+            'subchapterId': 56,
+            'activityId': 461
+        },
+        {
+            'chapterId': 10,
+            'subchapterId': 56,
+            'activityId': 452
+        },
+        {
+            'chapterId': 10,
+            'subchapterId': 56,
+            'activityId': 460
+        },
+        {
+            'chapterId': 10,
+            'subchapterId': 56,
+            'activityId': 453
+        },
+        {
+            'chapterId': 10,
+            'subchapterId': 56,
+            'activityId': 455
+        },
+        {
+            'chapterId': 10,
+            'subchapterId': 56,
+            'activityId': 454
+        },
+        {
+            'chapterId': 10,
+            'subchapterId': 56,
+            'activityId': 456
+        },
+        {
+            'chapterId': 10,
+            'subchapterId': 56,
+            'activityId': 457
+        },
+        {
+            'chapterId': 10,
+            'subchapterId': 46,
+            'activityId': 328
+        },
+        {
+            'chapterId': 10,
+            'subchapterId': 46,
+            'activityId': 332
+        },
+        {
+            'chapterId': 10,
+            'subchapterId': 46,
+            'activityId': 325
+        },
+        {
+            'chapterId': 10,
+            'subchapterId': 46,
+            'activityId': 331
+        },
+        {
+            'chapterId': 10,
+            'subchapterId': 46,
+            'activityId': 324
+        },
+        {
+            'chapterId': 10,
+            'subchapterId': 46,
+            'activityId': 330
+        },
+        {
+            'chapterId': 10,
+            'subchapterId': 46,
+            'activityId': 329
+        },
+        {
+            'chapterId': 10,
+            'subchapterId': 46,
+            'activityId': 334
+        },
+        {
+            'chapterId': 10,
+            'subchapterId': 46,
+            'activityId': 326
+        },
+        {
+            'chapterId': 10,
+            'subchapterId': 46,
+            'activityId': 333
+        },
+        {
+            'chapterId': 10,
+            'subchapterId': 46,
+            'activityId': 327
+        },
+        {
+            'chapterId': 10,
+            'subchapterId': 57,
+            'activityId': 468
+        },
+        {
+            'chapterId': 10,
+            'subchapterId': 57,
+            'activityId': 463
+        },
+        {
+            'chapterId': 10,
+            'subchapterId': 57,
+            'activityId': 470
+        },
+        {
+            'chapterId': 10,
+            'subchapterId': 57,
+            'activityId': 469
+        },
+        {
+            'chapterId': 10,
+            'subchapterId': 57,
+            'activityId': 473
+        },
+        {
+            'chapterId': 10,
+            'subchapterId': 57,
+            'activityId': 472
+        },
+        {
+            'chapterId': 10,
+            'subchapterId': 57,
+            'activityId': 471
+        },
+        {
+            'chapterId': 10,
+            'subchapterId': 57,
+            'activityId': 464
+        },
+        {
+            'chapterId': 10,
+            'subchapterId': 57,
+            'activityId': 466
+        },
+        {
+            'chapterId': 10,
+            'subchapterId': 57,
+            'activityId': 465
+        },
+        {
+            'chapterId': 10,
+            'subchapterId': 57,
+            'activityId': 467
+        },
+        {
+            'chapterId': 10,
+            'subchapterId': 47,
+            'activityId': 347
+        },
+        {
+            'chapterId': 10,
+            'subchapterId': 47,
+            'activityId': 356
+        },
+        {
+            'chapterId': 10,
+            'subchapterId': 47,
+            'activityId': 346
+        },
+        {
+            'chapterId': 10,
+            'subchapterId': 47,
+            'activityId': 345
+        },
+        {
+            'chapterId': 10,
+            'subchapterId': 47,
+            'activityId': 355
+        },
+        {
+            'chapterId': 10,
+            'subchapterId': 47,
+            'activityId': 336
+        },
+        {
+            'chapterId': 10,
+            'subchapterId': 47,
+            'activityId': 340
+        },
+        {
+            'chapterId': 10,
+            'subchapterId': 47,
+            'activityId': 351
+        },
+        {
+            'chapterId': 10,
+            'subchapterId': 47,
+            'activityId': 350
+        },
+        {
+            'chapterId': 10,
+            'subchapterId': 47,
+            'activityId': 335
+        },
+        {
+            'chapterId': 10,
+            'subchapterId': 47,
+            'activityId': 349
+        },
+        {
+            'chapterId': 10,
+            'subchapterId': 47,
+            'activityId': 348
+        },
+        {
+            'chapterId': 10,
+            'subchapterId': 47,
+            'activityId': 338
+        },
+        {
+            'chapterId': 10,
+            'subchapterId': 47,
+            'activityId': 344
+        },
+        {
+            'chapterId': 10,
+            'subchapterId': 47,
+            'activityId': 343
+        },
+        {
+            'chapterId': 10,
+            'subchapterId': 47,
+            'activityId': 354
+        },
+        {
+            'chapterId': 10,
+            'subchapterId': 47,
+            'activityId': 342
+        },
+        {
+            'chapterId': 10,
+            'subchapterId': 47,
+            'activityId': 353
+        },
+        {
+            'chapterId': 10,
+            'subchapterId': 47,
+            'activityId': 337
+        },
+        {
+            'chapterId': 10,
+            'subchapterId': 47,
+            'activityId': 341
+        },
+        {
+            'chapterId': 10,
+            'subchapterId': 47,
+            'activityId': 352
+        },
+        {
+            'chapterId': 10,
+            'subchapterId': 47,
+            'activityId': 339
+        },
+        {
+            'chapterId': 10,
+            'subchapterId': 58,
+            'activityId': 474
+        },
+        {
+            'chapterId': 10,
+            'subchapterId': 48,
+            'activityId': 358
+        },
+        {
+            'chapterId': 10,
+            'subchapterId': 48,
+            'activityId': 359
+        },
+        {
+            'chapterId': 10,
+            'subchapterId': 48,
+            'activityId': 360
+        },
+        {
+            'chapterId': 10,
+            'subchapterId': 48,
+            'activityId': 361
+        },
+        {
+            'chapterId': 10,
+            'subchapterId': 48,
+            'activityId': 365
+        },
+        {
+            'chapterId': 10,
+            'subchapterId': 48,
+            'activityId': 366
+        },
+        {
+            'chapterId': 10,
+            'subchapterId': 48,
+            'activityId': 357
+        },
+        {
+            'chapterId': 10,
+            'subchapterId': 48,
+            'activityId': 362
+        },
+        {
+            'chapterId': 10,
+            'subchapterId': 48,
+            'activityId': 363
+        },
+        {
+            'chapterId': 10,
+            'subchapterId': 48,
+            'activityId': 364
+        },
+        {
+            'chapterId': 10,
+            'subchapterId': 49,
+            'activityId': 368
+        },
+        {
+            'chapterId': 10,
+            'subchapterId': 49,
+            'activityId': 369
+        },
+        {
+            'chapterId': 10,
+            'subchapterId': 49,
+            'activityId': 370
+        },
+        {
+            'chapterId': 10,
+            'subchapterId': 49,
+            'activityId': 371
+        },
+        {
+            'chapterId': 10,
+            'subchapterId': 49,
+            'activityId': 374
+        },
+        {
+            'chapterId': 10,
+            'subchapterId': 49,
+            'activityId': 375
+        },
+        {
+            'chapterId': 10,
+            'subchapterId': 49,
+            'activityId': 376
+        },
+        {
+            'chapterId': 10,
+            'subchapterId': 49,
+            'activityId': 367
+        },
+        {
+            'chapterId': 10,
+            'subchapterId': 49,
+            'activityId': 372
+        },
+        {
+            'chapterId': 10,
+            'subchapterId': 49,
+            'activityId': 373
+        },
+        {
+            'chapterId': 10,
+            'subchapterId': 50,
+            'activityId': 380
+        },
+        {
+            'chapterId': 10,
+            'subchapterId': 50,
+            'activityId': 382
+        },
+        {
+            'chapterId': 10,
+            'subchapterId': 50,
+            'activityId': 381
+        },
+        {
+            'chapterId': 10,
+            'subchapterId': 50,
+            'activityId': 377
+        },
+        {
+            'chapterId': 10,
+            'subchapterId': 50,
+            'activityId': 385
+        },
+        {
+            'chapterId': 10,
+            'subchapterId': 50,
+            'activityId': 379
+        },
+        {
+            'chapterId': 10,
+            'subchapterId': 50,
+            'activityId': 378
+        },
+        {
+            'chapterId': 10,
+            'subchapterId': 50,
+            'activityId': 384
+        },
+        {
+            'chapterId': 10,
+            'subchapterId': 50,
+            'activityId': 383
+        },
+        {
+            'chapterId': 10,
+            'subchapterId': 51,
+            'activityId': 390
+        },
+        {
+            'chapterId': 10,
+            'subchapterId': 51,
+            'activityId': 392
+        },
+        {
+            'chapterId': 10,
+            'subchapterId': 51,
+            'activityId': 391
+        },
+        {
+            'chapterId': 10,
+            'subchapterId': 51,
+            'activityId': 387
+        },
+        {
+            'chapterId': 10,
+            'subchapterId': 51,
+            'activityId': 386
+        },
+        {
+            'chapterId': 10,
+            'subchapterId': 51,
+            'activityId': 389
+        },
+        {
+            'chapterId': 10,
+            'subchapterId': 51,
+            'activityId': 388
+        },
+        {
+            'chapterId': 10,
+            'subchapterId': 51,
+            'activityId': 393
+        },
+        {
+            'chapterId': 10,
+            'subchapterId': 54,
+            'activityId': 428
+        },
+        {
+            'chapterId': 10,
+            'subchapterId': 54,
+            'activityId': 431
+        },
+        {
+            'chapterId': 10,
+            'subchapterId': 54,
+            'activityId': 432
+        },
+        {
+            'chapterId': 10,
+            'subchapterId': 54,
+            'activityId': 423
+        },
+        {
+            'chapterId': 10,
+            'subchapterId': 54,
+            'activityId': 433
+        },
+        {
+            'chapterId': 10,
+            'subchapterId': 54,
+            'activityId': 434
+        },
+        {
+            'chapterId': 10,
+            'subchapterId': 54,
+            'activityId': 424
+        },
+        {
+            'chapterId': 10,
+            'subchapterId': 54,
+            'activityId': 435
+        },
+        {
+            'chapterId': 10,
+            'subchapterId': 54,
+            'activityId': 425
+        },
+        {
+            'chapterId': 10,
+            'subchapterId': 54,
+            'activityId': 426
+        },
+        {
+            'chapterId': 10,
+            'subchapterId': 54,
+            'activityId': 427
+        },
+        {
+            'chapterId': 10,
+            'subchapterId': 54,
+            'activityId': 429
+        },
+        {
+            'chapterId': 10,
+            'subchapterId': 54,
+            'activityId': 430
+        },
+        {
+            'chapterId': 10,
+            'subchapterId': 54,
+            'activityId': 436
+        },
+        {
+            'chapterId': 11,
+            'subchapterId': 60,
+            'activityId': 490
+        },
+        {
+            'chapterId': 11,
+            'subchapterId': 60,
+            'activityId': 492
+        },
+        {
+            'chapterId': 11,
+            'subchapterId': 60,
+            'activityId': 491
+        },
+        {
+            'chapterId': 11,
+            'subchapterId': 60,
+            'activityId': 493
+        },
+        {
+            'chapterId': 11,
+            'subchapterId': 60,
+            'activityId': 494
+        },
+        {
+            'chapterId': 11,
+            'subchapterId': 60,
+            'activityId': 489
+        },
+        {
+            'chapterId': 11,
+            'subchapterId': 59,
+            'activityId': 484
+        },
+        {
+            'chapterId': 11,
+            'subchapterId': 59,
+            'activityId': 483
+        },
+        {
+            'chapterId': 11,
+            'subchapterId': 59,
+            'activityId': 475
+        },
+        {
+            'chapterId': 11,
+            'subchapterId': 59,
+            'activityId': 486
+        },
+        {
+            'chapterId': 11,
+            'subchapterId': 59,
+            'activityId': 485
+        },
+        {
+            'chapterId': 11,
+            'subchapterId': 59,
+            'activityId': 477
+        },
+        {
+            'chapterId': 11,
+            'subchapterId': 59,
+            'activityId': 476
+        },
+        {
+            'chapterId': 11,
+            'subchapterId': 59,
+            'activityId': 479
+        },
+        {
+            'chapterId': 11,
+            'subchapterId': 59,
+            'activityId': 478
+        },
+        {
+            'chapterId': 11,
+            'subchapterId': 59,
+            'activityId': 480
+        },
+        {
+            'chapterId': 11,
+            'subchapterId': 59,
+            'activityId': 487
+        },
+        {
+            'chapterId': 11,
+            'subchapterId': 59,
+            'activityId': 482
+        },
+        {
+            'chapterId': 11,
+            'subchapterId': 59,
+            'activityId': 481
+        },
+        {
+            'chapterId': 11,
+            'subchapterId': 59,
+            'activityId': 488
+        },
+        {
+            'chapterId': 11,
+            'subchapterId': 61,
+            'activityId': 496
+        },
+        {
+            'chapterId': 11,
+            'subchapterId': 61,
+            'activityId': 495
+        },
+        {
+            'chapterId': 11,
+            'subchapterId': 62,
+            'activityId': 497
+        },
+        {
+            'chapterId': 11,
+            'subchapterId': 62,
+            'activityId': 501
+        },
+        {
+            'chapterId': 11,
+            'subchapterId': 62,
+            'activityId': 500
+        },
+        {
+            'chapterId': 11,
+            'subchapterId': 62,
+            'activityId': 499
+        },
+        {
+            'chapterId': 11,
+            'subchapterId': 62,
+            'activityId': 498
+        },
+        {
+            'chapterId': 12,
+            'subchapterId': 63,
+            'activityId': 509
+        },
+        {
+            'chapterId': 12,
+            'subchapterId': 63,
+            'activityId': 519
+        },
+        {
+            'chapterId': 12,
+            'subchapterId': 63,
+            'activityId': 508
+        },
+        {
+            'chapterId': 12,
+            'subchapterId': 63,
+            'activityId': 518
+        },
+        {
+            'chapterId': 12,
+            'subchapterId': 63,
+            'activityId': 507
+        },
+        {
+            'chapterId': 12,
+            'subchapterId': 63,
+            'activityId': 517
+        },
+        {
+            'chapterId': 12,
+            'subchapterId': 63,
+            'activityId': 506
+        },
+        {
+            'chapterId': 12,
+            'subchapterId': 63,
+            'activityId': 516
+        },
+        {
+            'chapterId': 12,
+            'subchapterId': 63,
+            'activityId': 505
+        },
+        {
+            'chapterId': 12,
+            'subchapterId': 63,
+            'activityId': 515
+        },
+        {
+            'chapterId': 12,
+            'subchapterId': 63,
+            'activityId': 504
+        },
+        {
+            'chapterId': 12,
+            'subchapterId': 63,
+            'activityId': 514
+        },
+        {
+            'chapterId': 12,
+            'subchapterId': 63,
+            'activityId': 503
+        },
+        {
+            'chapterId': 12,
+            'subchapterId': 63,
+            'activityId': 513
+        },
+        {
+            'chapterId': 12,
+            'subchapterId': 63,
+            'activityId': 502
+        },
+        {
+            'chapterId': 12,
+            'subchapterId': 63,
+            'activityId': 512
+        },
+        {
+            'chapterId': 12,
+            'subchapterId': 63,
+            'activityId': 510
+        },
+        {
+            'chapterId': 12,
+            'subchapterId': 63,
+            'activityId': 522
+        },
+        {
+            'chapterId': 12,
+            'subchapterId': 63,
+            'activityId': 511
+        },
+        {
+            'chapterId': 12,
+            'subchapterId': 63,
+            'activityId': 521
+        },
+        {
+            'chapterId': 12,
+            'subchapterId': 63,
+            'activityId': 520
+        },
+        {
+            'chapterId': 12,
+            'subchapterId': 64,
+            'activityId': 523
+        },
+        {
+            'chapterId': 12,
+            'subchapterId': 64,
+            'activityId': 524
+        },
+        {
+            'chapterId': 13,
+            'subchapterId': 65,
+            'activityId': 529
+        },
+        {
+            'chapterId': 13,
+            'subchapterId': 65,
+            'activityId': 528
+        },
+        {
+            'chapterId': 13,
+            'subchapterId': 65,
+            'activityId': 527
+        },
+        {
+            'chapterId': 13,
+            'subchapterId': 65,
+            'activityId': 526
+        },
+        {
+            'chapterId': 13,
+            'subchapterId': 65,
+            'activityId': 525
+        },
+        {
+            'chapterId': 13,
+            'subchapterId': 65,
+            'activityId': 531
+        },
+        {
+            'chapterId': 13,
+            'subchapterId': 65,
+            'activityId': 530
+        },
+        {
+            'chapterId': 13,
+            'subchapterId': 65,
+            'activityId': 532
+        },
+        {
+            'chapterId': 13,
+            'subchapterId': 66,
+            'activityId': 536
+        },
+        {
+            'chapterId': 13,
+            'subchapterId': 66,
+            'activityId': 537
+        },
+        {
+            'chapterId': 13,
+            'subchapterId': 66,
+            'activityId': 534
+        },
+        {
+            'chapterId': 13,
+            'subchapterId': 66,
+            'activityId': 535
+        },
+        {
+            'chapterId': 13,
+            'subchapterId': 66,
+            'activityId': 533
+        },
+        {
+            'chapterId': 13,
+            'subchapterId': 69,
+            'activityId': 549
+        },
+        {
+            'chapterId': 13,
+            'subchapterId': 69,
+            'activityId': 548
+        },
+        {
+            'chapterId': 13,
+            'subchapterId': 69,
+            'activityId': 547
+        },
+        {
+            'chapterId': 13,
+            'subchapterId': 69,
+            'activityId': 552
+        },
+        {
+            'chapterId': 13,
+            'subchapterId': 69,
+            'activityId': 551
+        },
+        {
+            'chapterId': 13,
+            'subchapterId': 69,
+            'activityId': 550
+        },
+        {
+            'chapterId': 13,
+            'subchapterId': 67,
+            'activityId': 538
+        },
+        {
+            'chapterId': 13,
+            'subchapterId': 67,
+            'activityId': 543
+        },
+        {
+            'chapterId': 13,
+            'subchapterId': 67,
+            'activityId': 541
+        },
+        {
+            'chapterId': 13,
+            'subchapterId': 67,
+            'activityId': 542
+        },
+        {
+            'chapterId': 13,
+            'subchapterId': 67,
+            'activityId': 539
+        },
+        {
+            'chapterId': 13,
+            'subchapterId': 67,
+            'activityId': 540
+        },
+        {
+            'chapterId': 13,
+            'subchapterId': 68,
+            'activityId': 545
+        },
+        {
+            'chapterId': 13,
+            'subchapterId': 68,
+            'activityId': 544
+        },
+        {
+            'chapterId': 13,
+            'subchapterId': 68,
+            'activityId': 546
+        },
+        {
+            'chapterId': 13,
+            'subchapterId': 70,
+            'activityId': 553
+        },
+        {
+            'chapterId': 13,
+            'subchapterId': 70,
+            'activityId': 554
+        },
+        {
+            'chapterId': 13,
+            'subchapterId': 70,
+            'activityId': 555
+        },
+        {
+            'chapterId': 13,
+            'subchapterId': 71,
+            'activityId': 558
+        },
+        {
+            'chapterId': 13,
+            'subchapterId': 71,
+            'activityId': 556
+        },
+        {
+            'chapterId': 13,
+            'subchapterId': 71,
+            'activityId': 557
+        },
+        {
+            'chapterId': 14,
+            'subchapterId': 72,
+            'activityId': 562
+        },
+        {
+            'chapterId': 14,
+            'subchapterId': 72,
+            'activityId': 563
+        },
+        {
+            'chapterId': 14,
+            'subchapterId': 72,
+            'activityId': 560
+        },
+        {
+            'chapterId': 14,
+            'subchapterId': 72,
+            'activityId': 561
+        },
+        {
+            'chapterId': 14,
+            'subchapterId': 72,
+            'activityId': 559
+        },
+        {
+            'chapterId': 15,
+            'subchapterId': 74,
+            'activityId': 574
+        },
+        {
+            'chapterId': 15,
+            'subchapterId': 74,
+            'activityId': 575
+        },
+        {
+            'chapterId': 15,
+            'subchapterId': 73,
+            'activityId': 571
+        },
+        {
+            'chapterId': 15,
+            'subchapterId': 73,
+            'activityId': 569
+        },
+        {
+            'chapterId': 15,
+            'subchapterId': 73,
+            'activityId': 570
+        },
+        {
+            'chapterId': 15,
+            'subchapterId': 73,
+            'activityId': 573
+        },
+        {
+            'chapterId': 15,
+            'subchapterId': 73,
+            'activityId': 564
+        },
+        {
+            'chapterId': 15,
+            'subchapterId': 73,
+            'activityId': 572
+        },
+        {
+            'chapterId': 15,
+            'subchapterId': 73,
+            'activityId': 567
+        },
+        {
+            'chapterId': 15,
+            'subchapterId': 73,
+            'activityId': 568
+        },
+        {
+            'chapterId': 15,
+            'subchapterId': 73,
+            'activityId': 565
+        },
+        {
+            'chapterId': 15,
+            'subchapterId': 73,
+            'activityId': 566
+        },
+        {
+            'chapterId': 16,
+            'subchapterId': 75,
+            'activityId': 592
+        },
+        {
+            'chapterId': 16,
+            'subchapterId': 75,
+            'activityId': 582
+        },
+        {
+            'chapterId': 16,
+            'subchapterId': 75,
+            'activityId': 593
+        },
+        {
+            'chapterId': 16,
+            'subchapterId': 75,
+            'activityId': 583
+        },
+        {
+            'chapterId': 16,
+            'subchapterId': 75,
+            'activityId': 594
+        },
+        {
+            'chapterId': 16,
+            'subchapterId': 75,
+            'activityId': 595
+        },
+        {
+            'chapterId': 16,
+            'subchapterId': 75,
+            'activityId': 584
+        },
+        {
+            'chapterId': 16,
+            'subchapterId': 75,
+            'activityId': 585
+        },
+        {
+            'chapterId': 16,
+            'subchapterId': 75,
+            'activityId': 576
+        },
+        {
+            'chapterId': 16,
+            'subchapterId': 75,
+            'activityId': 586
+        },
+        {
+            'chapterId': 16,
+            'subchapterId': 75,
+            'activityId': 577
+        },
+        {
+            'chapterId': 16,
+            'subchapterId': 75,
+            'activityId': 587
+        },
+        {
+            'chapterId': 16,
+            'subchapterId': 75,
+            'activityId': 588
+        },
+        {
+            'chapterId': 16,
+            'subchapterId': 75,
+            'activityId': 578
+        },
+        {
+            'chapterId': 16,
+            'subchapterId': 75,
+            'activityId': 589
+        },
+        {
+            'chapterId': 16,
+            'subchapterId': 75,
+            'activityId': 579
+        },
+        {
+            'chapterId': 16,
+            'subchapterId': 75,
+            'activityId': 590
+        },
+        {
+            'chapterId': 16,
+            'subchapterId': 75,
+            'activityId': 580
+        },
+        {
+            'chapterId': 16,
+            'subchapterId': 75,
+            'activityId': 591
+        },
+        {
+            'chapterId': 16,
+            'subchapterId': 75,
+            'activityId': 581
+        },
+        {
+            'chapterId': 16,
+            'subchapterId': 85,
+            'activityId': 646
+        },
+        {
+            'chapterId': 16,
+            'subchapterId': 85,
+            'activityId': 644
+        },
+        {
+            'chapterId': 16,
+            'subchapterId': 85,
+            'activityId': 645
+        },
+        {
+            'chapterId': 16,
+            'subchapterId': 85,
+            'activityId': 642
+        },
+        {
+            'chapterId': 16,
+            'subchapterId': 85,
+            'activityId': 643
+        },
+        {
+            'chapterId': 16,
+            'subchapterId': 85,
+            'activityId': 641
+        },
+        {
+            'chapterId': 16,
+            'subchapterId': 84,
+            'activityId': 640
+        },
+        {
+            'chapterId': 16,
+            'subchapterId': 84,
+            'activityId': 639
+        },
+        {
+            'chapterId': 16,
+            'subchapterId': 84,
+            'activityId': 638
+        },
+        {
+            'chapterId': 16,
+            'subchapterId': 84,
+            'activityId': 637
+        },
+        {
+            'chapterId': 16,
+            'subchapterId': 79,
+            'activityId': 611
+        },
+        {
+            'chapterId': 16,
+            'subchapterId': 79,
+            'activityId': 614
+        },
+        {
+            'chapterId': 16,
+            'subchapterId': 79,
+            'activityId': 615
+        },
+        {
+            'chapterId': 16,
+            'subchapterId': 79,
+            'activityId': 612
+        },
+        {
+            'chapterId': 16,
+            'subchapterId': 79,
+            'activityId': 613
+        },
+        {
+            'chapterId': 16,
+            'subchapterId': 79,
+            'activityId': 616
+        },
+        {
+            'chapterId': 16,
+            'subchapterId': 78,
+            'activityId': 608
+        },
+        {
+            'chapterId': 16,
+            'subchapterId': 78,
+            'activityId': 610
+        },
+        {
+            'chapterId': 16,
+            'subchapterId': 78,
+            'activityId': 609
+        },
+        {
+            'chapterId': 16,
+            'subchapterId': 77,
+            'activityId': 605
+        },
+        {
+            'chapterId': 16,
+            'subchapterId': 77,
+            'activityId': 604
+        },
+        {
+            'chapterId': 16,
+            'subchapterId': 77,
+            'activityId': 607
+        },
+        {
+            'chapterId': 16,
+            'subchapterId': 77,
+            'activityId': 606
+        },
+        {
+            'chapterId': 16,
+            'subchapterId': 76,
+            'activityId': 597
+        },
+        {
+            'chapterId': 16,
+            'subchapterId': 76,
+            'activityId': 598
+        },
+        {
+            'chapterId': 16,
+            'subchapterId': 76,
+            'activityId': 599
+        },
+        {
+            'chapterId': 16,
+            'subchapterId': 76,
+            'activityId': 600
+        },
+        {
+            'chapterId': 16,
+            'subchapterId': 76,
+            'activityId': 601
+        },
+        {
+            'chapterId': 16,
+            'subchapterId': 76,
+            'activityId': 602
+        },
+        {
+            'chapterId': 16,
+            'subchapterId': 76,
+            'activityId': 603
+        },
+        {
+            'chapterId': 16,
+            'subchapterId': 76,
+            'activityId': 596
+        },
+        {
+            'chapterId': 16,
+            'subchapterId': 83,
+            'activityId': 636
+        },
+        {
+            'chapterId': 16,
+            'subchapterId': 83,
+            'activityId': 635
+        },
+        {
+            'chapterId': 16,
+            'subchapterId': 83,
+            'activityId': 634
+        },
+        {
+            'chapterId': 16,
+            'subchapterId': 83,
+            'activityId': 633
+        },
+        {
+            'chapterId': 16,
+            'subchapterId': 82,
+            'activityId': 632
+        },
+        {
+            'chapterId': 16,
+            'subchapterId': 82,
+            'activityId': 631
+        },
+        {
+            'chapterId': 16,
+            'subchapterId': 82,
+            'activityId': 630
+        },
+        {
+            'chapterId': 16,
+            'subchapterId': 82,
+            'activityId': 629
+        },
+        {
+            'chapterId': 16,
+            'subchapterId': 82,
+            'activityId': 628
+        },
+        {
+            'chapterId': 16,
+            'subchapterId': 82,
+            'activityId': 627
+        },
+        {
+            'chapterId': 16,
+            'subchapterId': 82,
+            'activityId': 626
+        },
+        {
+            'chapterId': 16,
+            'subchapterId': 81,
+            'activityId': 624
+        },
+        {
+            'chapterId': 16,
+            'subchapterId': 81,
+            'activityId': 623
+        },
+        {
+            'chapterId': 16,
+            'subchapterId': 81,
+            'activityId': 625
+        },
+        {
+            'chapterId': 16,
+            'subchapterId': 80,
+            'activityId': 620
+        },
+        {
+            'chapterId': 16,
+            'subchapterId': 80,
+            'activityId': 621
+        },
+        {
+            'chapterId': 16,
+            'subchapterId': 80,
+            'activityId': 618
+        },
+        {
+            'chapterId': 16,
+            'subchapterId': 80,
+            'activityId': 619
+        },
+        {
+            'chapterId': 16,
+            'subchapterId': 80,
+            'activityId': 622
+        },
+        {
+            'chapterId': 16,
+            'subchapterId': 80,
+            'activityId': 617
+        },
+        {
+            'chapterId': 17,
+            'subchapterId': 87,
+            'activityId': 655
+        },
+        {
+            'chapterId': 17,
+            'subchapterId': 87,
+            'activityId': 654
+        },
+        {
+            'chapterId': 17,
+            'subchapterId': 87,
+            'activityId': 653
+        },
+        {
+            'chapterId': 17,
+            'subchapterId': 87,
+            'activityId': 652
+        },
+        {
+            'chapterId': 17,
+            'subchapterId': 86,
+            'activityId': 648
+        },
+        {
+            'chapterId': 17,
+            'subchapterId': 86,
+            'activityId': 649
+        },
+        {
+            'chapterId': 17,
+            'subchapterId': 86,
+            'activityId': 647
+        },
+        {
+            'chapterId': 17,
+            'subchapterId': 86,
+            'activityId': 650
+        },
+        {
+            'chapterId': 17,
+            'subchapterId': 86,
+            'activityId': 651
+        },
+        {
+            'chapterId': 17,
+            'subchapterId': 91,
+            'activityId': 675
+        },
+        {
+            'chapterId': 17,
+            'subchapterId': 91,
+            'activityId': 676
+        },
+        {
+            'chapterId': 17,
+            'subchapterId': 91,
+            'activityId': 677
+        },
+        {
+            'chapterId': 17,
+            'subchapterId': 91,
+            'activityId': 678
+        },
+        {
+            'chapterId': 17,
+            'subchapterId': 90,
+            'activityId': 674
+        },
+        {
+            'chapterId': 17,
+            'subchapterId': 90,
+            'activityId': 669
+        },
+        {
+            'chapterId': 17,
+            'subchapterId': 90,
+            'activityId': 670
+        },
+        {
+            'chapterId': 17,
+            'subchapterId': 90,
+            'activityId': 671
+        },
+        {
+            'chapterId': 17,
+            'subchapterId': 90,
+            'activityId': 672
+        },
+        {
+            'chapterId': 17,
+            'subchapterId': 90,
+            'activityId': 673
+        },
+        {
+            'chapterId': 17,
+            'subchapterId': 89,
+            'activityId': 664
+        },
+        {
+            'chapterId': 17,
+            'subchapterId': 89,
+            'activityId': 663
+        },
+        {
+            'chapterId': 17,
+            'subchapterId': 89,
+            'activityId': 662
+        },
+        {
+            'chapterId': 17,
+            'subchapterId': 89,
+            'activityId': 661
+        },
+        {
+            'chapterId': 17,
+            'subchapterId': 89,
+            'activityId': 660
+        },
+        {
+            'chapterId': 17,
+            'subchapterId': 89,
+            'activityId': 659
+        },
+        {
+            'chapterId': 17,
+            'subchapterId': 89,
+            'activityId': 668
+        },
+        {
+            'chapterId': 17,
+            'subchapterId': 89,
+            'activityId': 667
+        },
+        {
+            'chapterId': 17,
+            'subchapterId': 89,
+            'activityId': 666
+        },
+        {
+            'chapterId': 17,
+            'subchapterId': 89,
+            'activityId': 665
+        },
+        {
+            'chapterId': 17,
+            'subchapterId': 88,
+            'activityId': 658
+        },
+        {
+            'chapterId': 17,
+            'subchapterId': 88,
+            'activityId': 657
+        },
+        {
+            'chapterId': 17,
+            'subchapterId': 88,
+            'activityId': 656
+        },
+        {
+            'chapterId': 17,
+            'subchapterId': 93,
+            'activityId': 682
+        },
+        {
+            'chapterId': 17,
+            'subchapterId': 93,
+            'activityId': 683
+        },
+        {
+            'chapterId': 17,
+            'subchapterId': 93,
+            'activityId': 681
+        },
+        {
+            'chapterId': 17,
+            'subchapterId': 93,
+            'activityId': 684
+        },
+        {
+            'chapterId': 17,
+            'subchapterId': 92,
+            'activityId': 680
+        },
+        {
+            'chapterId': 17,
+            'subchapterId': 92,
+            'activityId': 679
+        },
+        {
+            'chapterId': 18,
+            'subchapterId': 94,
+            'activityId': 690
+        },
+        {
+            'chapterId': 18,
+            'subchapterId': 94,
+            'activityId': 691
+        },
+        {
+            'chapterId': 18,
+            'subchapterId': 94,
+            'activityId': 692
+        },
+        {
+            'chapterId': 18,
+            'subchapterId': 94,
+            'activityId': 687
+        },
+        {
+            'chapterId': 18,
+            'subchapterId': 94,
+            'activityId': 688
+        },
+        {
+            'chapterId': 18,
+            'subchapterId': 94,
+            'activityId': 689
+        },
+        {
+            'chapterId': 18,
+            'subchapterId': 94,
+            'activityId': 693
+        },
+        {
+            'chapterId': 18,
+            'subchapterId': 94,
+            'activityId': 685
+        },
+        {
+            'chapterId': 18,
+            'subchapterId': 94,
+            'activityId': 686
+        },
+        {
+            'chapterId': 18,
+            'subchapterId': 95,
+            'activityId': 700
+        },
+        {
+            'chapterId': 18,
+            'subchapterId': 95,
+            'activityId': 697
+        },
+        {
+            'chapterId': 18,
+            'subchapterId': 95,
+            'activityId': 699
+        },
+        {
+            'chapterId': 18,
+            'subchapterId': 95,
+            'activityId': 698
+        },
+        {
+            'chapterId': 18,
+            'subchapterId': 95,
+            'activityId': 694
+        },
+        {
+            'chapterId': 18,
+            'subchapterId': 95,
+            'activityId': 696
+        },
+        {
+            'chapterId': 18,
+            'subchapterId': 95,
+            'activityId': 695
+        },
+        {
+            'chapterId': 19,
+            'subchapterId': 104,
+            'activityId': 763
+        },
+        {
+            'chapterId': 19,
+            'subchapterId': 104,
+            'activityId': 761
+        },
+        {
+            'chapterId': 19,
+            'subchapterId': 104,
+            'activityId': 762
+        },
+        {
+            'chapterId': 19,
+            'subchapterId': 104,
+            'activityId': 759
+        },
+        {
+            'chapterId': 19,
+            'subchapterId': 104,
+            'activityId': 760
+        },
+        {
+            'chapterId': 19,
+            'subchapterId': 104,
+            'activityId': 764
+        },
+        {
+            'chapterId': 19,
+            'subchapterId': 104,
+            'activityId': 758
+        },
+        {
+            'chapterId': 19,
+            'subchapterId': 100,
+            'activityId': 735
+        },
+        {
+            'chapterId': 19,
+            'subchapterId': 100,
+            'activityId': 736
+        },
+        {
+            'chapterId': 19,
+            'subchapterId': 100,
+            'activityId': 737
+        },
+        {
+            'chapterId': 19,
+            'subchapterId': 100,
+            'activityId': 734
+        },
+        {
+            'chapterId': 19,
+            'subchapterId': 101,
+            'activityId': 739
+        },
+        {
+            'chapterId': 19,
+            'subchapterId': 101,
+            'activityId': 738
+        },
+        {
+            'chapterId': 19,
+            'subchapterId': 101,
+            'activityId': 741
+        },
+        {
+            'chapterId': 19,
+            'subchapterId': 101,
+            'activityId': 740
+        },
+        {
+            'chapterId': 19,
+            'subchapterId': 101,
+            'activityId': 742
+        },
+        {
+            'chapterId': 19,
+            'subchapterId': 102,
+            'activityId': 744
+        },
+        {
+            'chapterId': 19,
+            'subchapterId': 102,
+            'activityId': 743
+        },
+        {
+            'chapterId': 19,
+            'subchapterId': 103,
+            'activityId': 752
+        },
+        {
+            'chapterId': 19,
+            'subchapterId': 103,
+            'activityId': 753
+        },
+        {
+            'chapterId': 19,
+            'subchapterId': 103,
+            'activityId': 757
+        },
+        {
+            'chapterId': 19,
+            'subchapterId': 103,
+            'activityId': 749
+        },
+        {
+            'chapterId': 19,
+            'subchapterId': 103,
+            'activityId': 750
+        },
+        {
+            'chapterId': 19,
+            'subchapterId': 103,
+            'activityId': 747
+        },
+        {
+            'chapterId': 19,
+            'subchapterId': 103,
+            'activityId': 748
+        },
+        {
+            'chapterId': 19,
+            'subchapterId': 103,
+            'activityId': 756
+        },
+        {
+            'chapterId': 19,
+            'subchapterId': 103,
+            'activityId': 745
+        },
+        {
+            'chapterId': 19,
+            'subchapterId': 103,
+            'activityId': 754
+        },
+        {
+            'chapterId': 19,
+            'subchapterId': 103,
+            'activityId': 746
+        },
+        {
+            'chapterId': 19,
+            'subchapterId': 103,
+            'activityId': 755
+        },
+        {
+            'chapterId': 19,
+            'subchapterId': 103,
+            'activityId': 751
+        },
+        {
+            'chapterId': 19,
+            'subchapterId': 96,
+            'activityId': 707
+        },
+        {
+            'chapterId': 19,
+            'subchapterId': 96,
+            'activityId': 706
+        },
+        {
+            'chapterId': 19,
+            'subchapterId': 96,
+            'activityId': 715
+        },
+        {
+            'chapterId': 19,
+            'subchapterId': 96,
+            'activityId': 705
+        },
+        {
+            'chapterId': 19,
+            'subchapterId': 96,
+            'activityId': 702
+        },
+        {
+            'chapterId': 19,
+            'subchapterId': 96,
+            'activityId': 711
+        },
+        {
+            'chapterId': 19,
+            'subchapterId': 96,
+            'activityId': 710
+        },
+        {
+            'chapterId': 19,
+            'subchapterId': 96,
+            'activityId': 709
+        },
+        {
+            'chapterId': 19,
+            'subchapterId': 96,
+            'activityId': 701
+        },
+        {
+            'chapterId': 19,
+            'subchapterId': 96,
+            'activityId': 708
+        },
+        {
+            'chapterId': 19,
+            'subchapterId': 96,
+            'activityId': 714
+        },
+        {
+            'chapterId': 19,
+            'subchapterId': 96,
+            'activityId': 704
+        },
+        {
+            'chapterId': 19,
+            'subchapterId': 96,
+            'activityId': 713
+        },
+        {
+            'chapterId': 19,
+            'subchapterId': 96,
+            'activityId': 703
+        },
+        {
+            'chapterId': 19,
+            'subchapterId': 96,
+            'activityId': 712
+        },
+        {
+            'chapterId': 19,
+            'subchapterId': 107,
+            'activityId': 788
+        },
+        {
+            'chapterId': 19,
+            'subchapterId': 107,
+            'activityId': 779
+        },
+        {
+            'chapterId': 19,
+            'subchapterId': 107,
+            'activityId': 790
+        },
+        {
+            'chapterId': 19,
+            'subchapterId': 107,
+            'activityId': 789
+        },
+        {
+            'chapterId': 19,
+            'subchapterId': 107,
+            'activityId': 781
+        },
+        {
+            'chapterId': 19,
+            'subchapterId': 107,
+            'activityId': 780
+        },
+        {
+            'chapterId': 19,
+            'subchapterId': 107,
+            'activityId': 783
+        },
+        {
+            'chapterId': 19,
+            'subchapterId': 107,
+            'activityId': 782
+        },
+        {
+            'chapterId': 19,
+            'subchapterId': 107,
+            'activityId': 785
+        },
+        {
+            'chapterId': 19,
+            'subchapterId': 107,
+            'activityId': 784
+        },
+        {
+            'chapterId': 19,
+            'subchapterId': 107,
+            'activityId': 787
+        },
+        {
+            'chapterId': 19,
+            'subchapterId': 107,
+            'activityId': 786
+        },
+        {
+            'chapterId': 19,
+            'subchapterId': 97,
+            'activityId': 724
+        },
+        {
+            'chapterId': 19,
+            'subchapterId': 97,
+            'activityId': 725
+        },
+        {
+            'chapterId': 19,
+            'subchapterId': 97,
+            'activityId': 723
+        },
+        {
+            'chapterId': 19,
+            'subchapterId': 97,
+            'activityId': 719
+        },
+        {
+            'chapterId': 19,
+            'subchapterId': 97,
+            'activityId': 718
+        },
+        {
+            'chapterId': 19,
+            'subchapterId': 97,
+            'activityId': 717
+        },
+        {
+            'chapterId': 19,
+            'subchapterId': 97,
+            'activityId': 716
+        },
+        {
+            'chapterId': 19,
+            'subchapterId': 97,
+            'activityId': 722
+        },
+        {
+            'chapterId': 19,
+            'subchapterId': 97,
+            'activityId': 721
+        },
+        {
+            'chapterId': 19,
+            'subchapterId': 97,
+            'activityId': 720
+        },
+        {
+            'chapterId': 19,
+            'subchapterId': 108,
+            'activityId': 791
+        },
+        {
+            'chapterId': 19,
+            'subchapterId': 108,
+            'activityId': 792
+        },
+        {
+            'chapterId': 19,
+            'subchapterId': 108,
+            'activityId': 795
+        },
+        {
+            'chapterId': 19,
+            'subchapterId': 108,
+            'activityId': 796
+        },
+        {
+            'chapterId': 19,
+            'subchapterId': 108,
+            'activityId': 793
+        },
+        {
+            'chapterId': 19,
+            'subchapterId': 108,
+            'activityId': 794
+        },
+        {
+            'chapterId': 19,
+            'subchapterId': 108,
+            'activityId': 797
+        },
+        {
+            'chapterId': 19,
+            'subchapterId': 108,
+            'activityId': 798
+        },
+        {
+            'chapterId': 19,
+            'subchapterId': 98,
+            'activityId': 729
+        },
+        {
+            'chapterId': 19,
+            'subchapterId': 98,
+            'activityId': 728
+        },
+        {
+            'chapterId': 19,
+            'subchapterId': 98,
+            'activityId': 727
+        },
+        {
+            'chapterId': 19,
+            'subchapterId': 98,
+            'activityId': 726
+        },
+        {
+            'chapterId': 19,
+            'subchapterId': 99,
+            'activityId': 730
+        },
+        {
+            'chapterId': 19,
+            'subchapterId': 99,
+            'activityId': 731
+        },
+        {
+            'chapterId': 19,
+            'subchapterId': 99,
+            'activityId': 732
+        },
+        {
+            'chapterId': 19,
+            'subchapterId': 99,
+            'activityId': 733
+        },
+        {
+            'chapterId': 19,
+            'subchapterId': 105,
+            'activityId': 765
+        },
+        {
+            'chapterId': 19,
+            'subchapterId': 105,
+            'activityId': 766
+        },
+        {
+            'chapterId': 19,
+            'subchapterId': 105,
+            'activityId': 767
+        },
+        {
+            'chapterId': 19,
+            'subchapterId': 105,
+            'activityId': 768
+        },
+        {
+            'chapterId': 19,
+            'subchapterId': 105,
+            'activityId': 769
+        },
+        {
+            'chapterId': 19,
+            'subchapterId': 105,
+            'activityId': 770
+        },
+        {
+            'chapterId': 19,
+            'subchapterId': 106,
+            'activityId': 778
+        },
+        {
+            'chapterId': 19,
+            'subchapterId': 106,
+            'activityId': 772
+        },
+        {
+            'chapterId': 19,
+            'subchapterId': 106,
+            'activityId': 771
+        },
+        {
+            'chapterId': 19,
+            'subchapterId': 106,
+            'activityId': 774
+        },
+        {
+            'chapterId': 19,
+            'subchapterId': 106,
+            'activityId': 773
+        },
+        {
+            'chapterId': 19,
+            'subchapterId': 106,
+            'activityId': 776
+        },
+        {
+            'chapterId': 19,
+            'subchapterId': 106,
+            'activityId': 775
+        },
+        {
+            'chapterId': 19,
+            'subchapterId': 106,
+            'activityId': 777
+        },
+        {
+            'chapterId': 20,
+            'subchapterId': 111,
+            'activityId': 834
+        },
+        {
+            'chapterId': 20,
+            'subchapterId': 111,
+            'activityId': 833
+        },
+        {
+            'chapterId': 20,
+            'subchapterId': 111,
+            'activityId': 835
+        },
+        {
+            'chapterId': 20,
+            'subchapterId': 111,
+            'activityId': 832
+        },
+        {
+            'chapterId': 20,
+            'subchapterId': 111,
+            'activityId': 838
+        },
+        {
+            'chapterId': 20,
+            'subchapterId': 111,
+            'activityId': 837
+        },
+        {
+            'chapterId': 20,
+            'subchapterId': 111,
+            'activityId': 836
+        },
+        {
+            'chapterId': 20,
+            'subchapterId': 109,
+            'activityId': 799
+        },
+        {
+            'chapterId': 20,
+            'subchapterId': 109,
+            'activityId': 810
+        },
+        {
+            'chapterId': 20,
+            'subchapterId': 109,
+            'activityId': 800
+        },
+        {
+            'chapterId': 20,
+            'subchapterId': 109,
+            'activityId': 811
+        },
+        {
+            'chapterId': 20,
+            'subchapterId': 109,
+            'activityId': 826
+        },
+        {
+            'chapterId': 20,
+            'subchapterId': 109,
+            'activityId': 827
+        },
+        {
+            'chapterId': 20,
+            'subchapterId': 109,
+            'activityId': 809
+        },
+        {
+            'chapterId': 20,
+            'subchapterId': 109,
+            'activityId': 808
+        },
+        {
+            'chapterId': 20,
+            'subchapterId': 109,
+            'activityId': 806
+        },
+        {
+            'chapterId': 20,
+            'subchapterId': 109,
+            'activityId': 823
+        },
+        {
+            'chapterId': 20,
+            'subchapterId': 109,
+            'activityId': 824
+        },
+        {
+            'chapterId': 20,
+            'subchapterId': 109,
+            'activityId': 807
+        },
+        {
+            'chapterId': 20,
+            'subchapterId': 109,
+            'activityId': 825
+        },
+        {
+            'chapterId': 20,
+            'subchapterId': 109,
+            'activityId': 803
+        },
+        {
+            'chapterId': 20,
+            'subchapterId': 109,
+            'activityId': 819
+        },
+        {
+            'chapterId': 20,
+            'subchapterId': 109,
+            'activityId': 828
+        },
+        {
+            'chapterId': 20,
+            'subchapterId': 109,
+            'activityId': 820
+        },
+        {
+            'chapterId': 20,
+            'subchapterId': 109,
+            'activityId': 804
+        },
+        {
+            'chapterId': 20,
+            'subchapterId': 109,
+            'activityId': 821
+        },
+        {
+            'chapterId': 20,
+            'subchapterId': 109,
+            'activityId': 805
+        },
+        {
+            'chapterId': 20,
+            'subchapterId': 109,
+            'activityId': 822
+        },
+        {
+            'chapterId': 20,
+            'subchapterId': 109,
+            'activityId': 816
+        },
+        {
+            'chapterId': 20,
+            'subchapterId': 109,
+            'activityId': 817
+        },
+        {
+            'chapterId': 20,
+            'subchapterId': 109,
+            'activityId': 802
+        },
+        {
+            'chapterId': 20,
+            'subchapterId': 109,
+            'activityId': 818
+        },
+        {
+            'chapterId': 20,
+            'subchapterId': 109,
+            'activityId': 801
+        },
+        {
+            'chapterId': 20,
+            'subchapterId': 109,
+            'activityId': 812
+        },
+        {
+            'chapterId': 20,
+            'subchapterId': 109,
+            'activityId': 813
+        },
+        {
+            'chapterId': 20,
+            'subchapterId': 109,
+            'activityId': 814
+        },
+        {
+            'chapterId': 20,
+            'subchapterId': 109,
+            'activityId': 815
+        },
+        {
+            'chapterId': 20,
+            'subchapterId': 110,
+            'activityId': 829
+        },
+        {
+            'chapterId': 20,
+            'subchapterId': 110,
+            'activityId': 830
+        },
+        {
+            'chapterId': 20,
+            'subchapterId': 110,
+            'activityId': 831
+        }
     ],
 
     ewcActivity: [
-        { 'id': 1342, 'subChapter': '01', 'chapter': '01', 'hazardous': 0, 'code': '01', 'description': 'Wastes from mineral metalliferous excavation' },
-        { 'id': 1343, 'subChapter': '01', 'chapter': '01', 'hazardous': 0, 'code': '02', 'description': 'Wastes from mineral non-metalliferous excavation' },
-        { 'id': 1344, 'subChapter': '03', 'chapter': '01', 'hazardous': 1, 'code': '04', 'description': 'Acid-generating tailings from processing of sulphide ore' },
-        { 'id': 1345, 'subChapter': '03', 'chapter': '01', 'hazardous': 1, 'code': '05', 'description': 'Other tailings containing dangerous substances' },
-        { 'id': 1346, 'subChapter': '03', 'chapter': '01', 'hazardous': 0, 'code': '06', 'description': 'Tailings other than those mentioned in 01 03 04 and 01 03 05' },
-        { 'id': 1347, 'subChapter': '03', 'chapter': '01', 'hazardous': 1, 'code': '07', 'description': 'Other wastes containing dangerous substances from physical and chemical processing of metalliferous minerals' },
-        { 'id': 1348, 'subChapter': '03', 'chapter': '01', 'hazardous': 0, 'code': '08', 'description': 'Dusty and powdery wastes other than those mentioned in 01 03 07' },
-        { 'id': 1349, 'subChapter': '03', 'chapter': '01', 'hazardous': 0, 'code': '09', 'description': 'Red mud from alumina production other than the wastes mentioned in 01 03 07' },
-        { 'id': 1350, 'subChapter': '03', 'chapter': '01', 'hazardous': 0, 'code': '99', 'description': 'Wastes not otherwise specified' },
-        { 'id': 1351, 'subChapter': '04', 'chapter': '01', 'hazardous': 1, 'code': '07', 'description': 'Wastes containing dangerous substances from physical and chemical processing of non-metalliferous minerals' },
-        { 'id': 1352, 'subChapter': '04', 'chapter': '01', 'hazardous': 0, 'code': '08', 'description': 'Waste gravel and crushed rocks other than those mentioned in 01 04 07' },
-        { 'id': 1353, 'subChapter': '04', 'chapter': '01', 'hazardous': 0, 'code': '09', 'description': 'Waste sand and clays' },
-        { 'id': 1354, 'subChapter': '04', 'chapter': '01', 'hazardous': 0, 'code': '10', 'description': 'Dusty and powdery wastes other than those mentioned in 01 04 07' },
-        { 'id': 1355, 'subChapter': '04', 'chapter': '01', 'hazardous': 0, 'code': '11', 'description': 'Wastes from potash and rock salt processing other than those mentioned in 01 04 07' },
-        { 'id': 1356, 'subChapter': '04', 'chapter': '01', 'hazardous': 0, 'code': '12', 'description': 'Tailings and other wastes from washing and cleaning of minerals other than those mentioned in 01 04 07 and 01 04 11' },
-        { 'id': 1357, 'subChapter': '04', 'chapter': '01', 'hazardous': 0, 'code': '13', 'description': 'Wastes from stone cutting and sawing other than those mentioned in 01 04 07' },
-        { 'id': 1358, 'subChapter': '04', 'chapter': '01', 'hazardous': 0, 'code': '99', 'description': 'Wastes not otherwise specified' },
-        { 'id': 1359, 'subChapter': '05', 'chapter': '01', 'hazardous': 0, 'code': '04', 'description': 'Freshwater drilling muds and wastes' },
-        { 'id': 1360, 'subChapter': '05', 'chapter': '01', 'hazardous': 1, 'code': '05', 'description': 'Oil-containing drilling muds and wastes' },
-        { 'id': 1361, 'subChapter': '05', 'chapter': '01', 'hazardous': 1, 'code': '06', 'description': 'Drilling muds and other drilling wastes containing dangerous substances' },
-        { 'id': 1362, 'subChapter': '05', 'chapter': '01', 'hazardous': 0, 'code': '07', 'description': 'Barite-containing drilling muds and wastes other than those mentioned in 01 05 05 and 01 05 06' },
-        { 'id': 1363, 'subChapter': '05', 'chapter': '01', 'hazardous': 0, 'code': '08', 'description': 'Chloride-containing drilling muds and wastes other than those mentioned in 01 05 05 and 01 05 06' },
-        { 'id': 1364, 'subChapter': '05', 'chapter': '01', 'hazardous': 0, 'code': '99', 'description': 'Wastes not otherwise specified' },
-        { 'id': 1365, 'subChapter': '01', 'chapter': '02', 'hazardous': 0, 'code': '01', 'description': 'Sludges from washing and cleaning' },
-        { 'id': 1366, 'subChapter': '01', 'chapter': '02', 'hazardous': 0, 'code': '02', 'description': 'Animal-tissue waste' },
-        { 'id': 1367, 'subChapter': '01', 'chapter': '02', 'hazardous': 0, 'code': '03', 'description': 'Plant-tissue waste' },
-        { 'id': 1368, 'subChapter': '01', 'chapter': '02', 'hazardous': 0, 'code': '04', 'description': 'Waste plastics (except packaging)' },
-        { 'id': 1369, 'subChapter': '01', 'chapter': '02', 'hazardous': 0, 'code': '06', 'description': 'Animal faeces, urine and manure (including spoiled straw), effluent, collected separately and treated off-site' },
-        { 'id': 1370, 'subChapter': '01', 'chapter': '02', 'hazardous': 0, 'code': '07', 'description': 'Wastes from forestry' },
-        { 'id': 1371, 'subChapter': '01', 'chapter': '02', 'hazardous': 1, 'code': '08', 'description': 'Agrochemical waste containing dangerous substances' },
-        { 'id': 1372, 'subChapter': '01', 'chapter': '02', 'hazardous': 0, 'code': '09', 'description': 'Agrochemical waste other than those mentioned in 02 01 08' },
-        { 'id': 1373, 'subChapter': '01', 'chapter': '02', 'hazardous': 0, 'code': '10', 'description': 'Waste metal' },
-        { 'id': 1374, 'subChapter': '01', 'chapter': '02', 'hazardous': 0, 'code': '99', 'description': 'Wastes not otherwise specified' },
-        { 'id': 1375, 'subChapter': '02', 'chapter': '02', 'hazardous': 0, 'code': '01', 'description': 'Sludges from washing and cleaning' },
-        { 'id': 1376, 'subChapter': '02', 'chapter': '02', 'hazardous': 0, 'code': '02', 'description': 'Animal-tissue waste' },
-        { 'id': 1377, 'subChapter': '02', 'chapter': '02', 'hazardous': 0, 'code': '03', 'description': 'Materials unsuitable for consumption or processing' },
-        { 'id': 1378, 'subChapter': '02', 'chapter': '02', 'hazardous': 0, 'code': '04', 'description': 'Sludges from on-site effluent treatment' },
-        { 'id': 1379, 'subChapter': '02', 'chapter': '02', 'hazardous': 0, 'code': '99', 'description': 'Wastes not otherwise specified' },
-        { 'id': 1380, 'subChapter': '03', 'chapter': '02', 'hazardous': 0, 'code': '01', 'description': 'Sludges from washing, cleaning, peeling, centrifuging and separation' },
-        { 'id': 1381, 'subChapter': '03', 'chapter': '02', 'hazardous': 0, 'code': '02', 'description': 'Wastes from preserving agents' },
-        { 'id': 1382, 'subChapter': '03', 'chapter': '02', 'hazardous': 0, 'code': '03', 'description': 'Wastes from solvent extraction' },
-        { 'id': 1383, 'subChapter': '03', 'chapter': '02', 'hazardous': 0, 'code': '04', 'description': 'Materials unsuitable for consumption or processing' },
-        { 'id': 1384, 'subChapter': '03', 'chapter': '02', 'hazardous': 0, 'code': '05', 'description': 'Sludges from on-site effluent treatment' },
-        { 'id': 1385, 'subChapter': '03', 'chapter': '02', 'hazardous': 0, 'code': '99', 'description': 'Wastes not otherwise specified' },
-        { 'id': 1386, 'subChapter': '04', 'chapter': '02', 'hazardous': 0, 'code': '01', 'description': 'Soil from cleaning and washing beet' },
-        { 'id': 1387, 'subChapter': '04', 'chapter': '02', 'hazardous': 0, 'code': '02', 'description': 'Off-specification calcium carbonate' },
-        { 'id': 1388, 'subChapter': '04', 'chapter': '02', 'hazardous': 0, 'code': '03', 'description': 'Sludges from on-site effluent treatment' },
-        { 'id': 1389, 'subChapter': '04', 'chapter': '02', 'hazardous': 0, 'code': '99', 'description': 'Wastes not otherwise specified' },
-        { 'id': 1390, 'subChapter': '05', 'chapter': '02', 'hazardous': 0, 'code': '01', 'description': 'Materials unsuitable for consumption or processing' },
-        { 'id': 1391, 'subChapter': '05', 'chapter': '02', 'hazardous': 0, 'code': '02', 'description': 'Sludges from on-site effluent treatment' },
-        { 'id': 1392, 'subChapter': '05', 'chapter': '02', 'hazardous': 0, 'code': '99', 'description': 'Wastes not otherwise specified' },
-        { 'id': 1393, 'subChapter': '06', 'chapter': '02', 'hazardous': 0, 'code': '01', 'description': 'Materials unsuitable for consumption or processing' },
-        { 'id': 1394, 'subChapter': '06', 'chapter': '02', 'hazardous': 0, 'code': '02', 'description': 'Wastes from preserving agents' },
-        { 'id': 1395, 'subChapter': '06', 'chapter': '02', 'hazardous': 0, 'code': '03', 'description': 'Sludges from on-site effluent treatment' },
-        { 'id': 1396, 'subChapter': '06', 'chapter': '02', 'hazardous': 0, 'code': '99', 'description': 'Wastes not otherwise specified' },
-        { 'id': 1397, 'subChapter': '07', 'chapter': '02', 'hazardous': 0, 'code': '01', 'description': 'Wastes from washing, cleaning and mechanical reduction of raw materials' },
-        { 'id': 1398, 'subChapter': '07', 'chapter': '02', 'hazardous': 0, 'code': '02', 'description': 'Wastes from spirits distillation' },
-        { 'id': 1399, 'subChapter': '07', 'chapter': '02', 'hazardous': 0, 'code': '03', 'description': 'Wastes from chemical treatment' },
-        { 'id': 1400, 'subChapter': '07', 'chapter': '02', 'hazardous': 0, 'code': '04', 'description': 'Materials unsuitable for consumption or processing' },
-        { 'id': 1401, 'subChapter': '07', 'chapter': '02', 'hazardous': 0, 'code': '05', 'description': 'Sludges from on-site effluent treatment' },
-        { 'id': 1402, 'subChapter': '07', 'chapter': '02', 'hazardous': 0, 'code': '99', 'description': 'Wastes not otherwise specified' },
-        { 'id': 1403, 'subChapter': '01', 'chapter': '03', 'hazardous': 0, 'code': '01', 'description': 'Waste bark and cork' },
-        { 'id': 1404, 'subChapter': '01', 'chapter': '03', 'hazardous': 1, 'code': '04', 'description': 'Sawdust, shavings, cuttings, wood, particle board and veneer containing dangerous substances' },
-        { 'id': 1405, 'subChapter': '01', 'chapter': '03', 'hazardous': 0, 'code': '05', 'description': 'Sawdust, shavings, cuttings, wood, particle board and veneer other than those mentioned in 03 01 04' },
-        { 'id': 1406, 'subChapter': '01', 'chapter': '03', 'hazardous': 0, 'code': '99', 'description': 'Wastes not otherwise specified' },
-        { 'id': 1407, 'subChapter': '02', 'chapter': '03', 'hazardous': 1, 'code': '01', 'description': 'Non-halogenated organic wood preservatives' },
-        { 'id': 1408, 'subChapter': '02', 'chapter': '03', 'hazardous': 1, 'code': '02', 'description': 'Organochlorinated wood preservatives' },
-        { 'id': 1409, 'subChapter': '02', 'chapter': '03', 'hazardous': 1, 'code': '03', 'description': 'Organometallic wood preservatives' },
-        { 'id': 1410, 'subChapter': '02', 'chapter': '03', 'hazardous': 1, 'code': '04', 'description': 'Inorganic wood preservatives' },
-        { 'id': 1411, 'subChapter': '02', 'chapter': '03', 'hazardous': 1, 'code': '05', 'description': 'Other wood preservatives containing dangerous substances' },
-        { 'id': 1412, 'subChapter': '02', 'chapter': '03', 'hazardous': 0, 'code': '99', 'description': 'Wood preservatives not otherwise specified' },
-        { 'id': 1413, 'subChapter': '03', 'chapter': '03', 'hazardous': 0, 'code': '01', 'description': 'Waste bark and wood' },
-        { 'id': 1414, 'subChapter': '03', 'chapter': '03', 'hazardous': 0, 'code': '02', 'description': 'Green liquor sludge (from recovery of cooking liquor)' },
-        { 'id': 1415, 'subChapter': '03', 'chapter': '03', 'hazardous': 0, 'code': '05', 'description': 'De-inking sludges from paper recycling' },
-        { 'id': 1416, 'subChapter': '03', 'chapter': '03', 'hazardous': 0, 'code': '07', 'description': 'Mechanically separated rejects from pulping of waste paper and cardboard' },
-        { 'id': 1417, 'subChapter': '03', 'chapter': '03', 'hazardous': 0, 'code': '08', 'description': 'Wastes from sorting of paper and cardboard destined for recycling' },
-        { 'id': 1418, 'subChapter': '03', 'chapter': '03', 'hazardous': 0, 'code': '09', 'description': 'Lime mud waste' },
-        { 'id': 1419, 'subChapter': '03', 'chapter': '03', 'hazardous': 0, 'code': '10', 'description': 'Fibre rejects, fibre-, filler- and coating-sludges from mechanical separation' },
-        { 'id': 1420, 'subChapter': '03', 'chapter': '03', 'hazardous': 0, 'code': '11', 'description': 'Sludges from on-site effluent treatment other than those mentioned in 03 03 10' },
-        { 'id': 1421, 'subChapter': '03', 'chapter': '03', 'hazardous': 0, 'code': '99', 'description': 'Wastes not otherwise specified' },
-        { 'id': 1422, 'subChapter': '01', 'chapter': '04', 'hazardous': 0, 'code': '01', 'description': 'Fleshings and lime split wastes' },
-        { 'id': 1423, 'subChapter': '01', 'chapter': '04', 'hazardous': 0, 'code': '02', 'description': 'Liming waste' },
-        { 'id': 1424, 'subChapter': '01', 'chapter': '04', 'hazardous': 1, 'code': '03', 'description': 'Degreasing wastes containing solvents without a liquid phase' },
-        { 'id': 1425, 'subChapter': '01', 'chapter': '04', 'hazardous': 0, 'code': '04', 'description': 'Tanning liquor containing chromium' },
-        { 'id': 1426, 'subChapter': '01', 'chapter': '04', 'hazardous': 0, 'code': '05', 'description': 'Tanning liquor free of chromium' },
-        { 'id': 1427, 'subChapter': '01', 'chapter': '04', 'hazardous': 0, 'code': '06', 'description': 'Sludges, in particular from on-site effluent treatment containing chromium' },
-        { 'id': 1428, 'subChapter': '01', 'chapter': '04', 'hazardous': 0, 'code': '07', 'description': 'Sludges, in particular from on-site effluent treatment free of chromium' },
-        { 'id': 1429, 'subChapter': '01', 'chapter': '04', 'hazardous': 0, 'code': '08', 'description': 'Waste tanned leather (blue sheetings, shavings, cuttings, buffing dust) containing chromium' },
-        { 'id': 1430, 'subChapter': '01', 'chapter': '04', 'hazardous': 0, 'code': '09', 'description': 'Wastes from dressing and finishing' },
-        { 'id': 1431, 'subChapter': '01', 'chapter': '04', 'hazardous': 0, 'code': '99', 'description': 'Wastes not otherwise specified.' },
-        { 'id': 1432, 'subChapter': '02', 'chapter': '04', 'hazardous': 0, 'code': '09', 'description': 'Wastes from composite materials (impregnated textile, elastomer, plastomer)' },
-        { 'id': 1433, 'subChapter': '02', 'chapter': '04', 'hazardous': 0, 'code': '10', 'description': 'Organic matter from natural products (for example grease, wax)' },
-        { 'id': 1434, 'subChapter': '02', 'chapter': '04', 'hazardous': 1, 'code': '14', 'description': 'Wastes from finishing containing organic solvents' },
-        { 'id': 1435, 'subChapter': '02', 'chapter': '04', 'hazardous': 0, 'code': '15', 'description': 'Wastes from finishing other than those mentioned in 04 02 14' },
-        { 'id': 1436, 'subChapter': '02', 'chapter': '04', 'hazardous': 1, 'code': '16', 'description': 'Dyestuffs and pigments containing dangerous substances' },
-        { 'id': 1437, 'subChapter': '02', 'chapter': '04', 'hazardous': 0, 'code': '17', 'description': 'Dyestuffs and pigments other than those mentioned in 04 02 16' },
-        { 'id': 1438, 'subChapter': '02', 'chapter': '04', 'hazardous': 1, 'code': '19', 'description': 'Sludges from on-site effluent treatment containing dangerous substances' },
-        { 'id': 1439, 'subChapter': '02', 'chapter': '04', 'hazardous': 0, 'code': '20', 'description': 'Sludges from on-site effluent treatment other than those mentioned in 04 02 19' },
-        { 'id': 1440, 'subChapter': '02', 'chapter': '04', 'hazardous': 0, 'code': '21', 'description': 'Wastes from unprocessed textile fibres' },
-        { 'id': 1441, 'subChapter': '02', 'chapter': '04', 'hazardous': 0, 'code': '22', 'description': 'Wastes from processed textile fibres' },
-        { 'id': 1442, 'subChapter': '02', 'chapter': '04', 'hazardous': 0, 'code': '99', 'description': 'Wastes not otherwise specified' },
-        { 'id': 1443, 'subChapter': '01', 'chapter': '05', 'hazardous': 1, 'code': '02', 'description': 'Desalter sludges' },
-        { 'id': 1444, 'subChapter': '01', 'chapter': '05', 'hazardous': 1, 'code': '03', 'description': 'Tank bottom sludges' },
-        { 'id': 1445, 'subChapter': '01', 'chapter': '05', 'hazardous': 1, 'code': '04', 'description': 'Acid alkyl sludges' },
-        { 'id': 1446, 'subChapter': '01', 'chapter': '05', 'hazardous': 1, 'code': '05', 'description': 'Oil spills' },
-        { 'id': 1447, 'subChapter': '01', 'chapter': '05', 'hazardous': 1, 'code': '06', 'description': 'Oily sludges from maintenance operations of the plant or equipment' },
-        { 'id': 1448, 'subChapter': '01', 'chapter': '05', 'hazardous': 1, 'code': '07', 'description': 'Acid tars' },
-        { 'id': 1449, 'subChapter': '01', 'chapter': '05', 'hazardous': 1, 'code': '08', 'description': 'Other tars' },
-        { 'id': 1450, 'subChapter': '01', 'chapter': '05', 'hazardous': 1, 'code': '09', 'description': 'Sludges from on-site effluent treatment containing dangerous substances' },
-        { 'id': 1451, 'subChapter': '01', 'chapter': '05', 'hazardous': 0, 'code': '10', 'description': 'Sludges from on-site effluent treatment other than those mentioned in 05 01 09' },
-        { 'id': 1452, 'subChapter': '01', 'chapter': '05', 'hazardous': 1, 'code': '11', 'description': 'Wastes from cleaning of fuels with bases' },
-        { 'id': 1453, 'subChapter': '01', 'chapter': '05', 'hazardous': 1, 'code': '12', 'description': 'Oil containing acids' },
-        { 'id': 1454, 'subChapter': '01', 'chapter': '05', 'hazardous': 0, 'code': '13', 'description': 'Boiler feedwater sludges' },
-        { 'id': 1455, 'subChapter': '01', 'chapter': '05', 'hazardous': 0, 'code': '14', 'description': 'Wastes from cooling columns' },
-        { 'id': 1456, 'subChapter': '01', 'chapter': '05', 'hazardous': 1, 'code': '15', 'description': 'Spent filter clays' },
-        { 'id': 1457, 'subChapter': '01', 'chapter': '05', 'hazardous': 0, 'code': '16', 'description': 'Sulphur-containing wastes from petroleum desulphurisation' },
-        { 'id': 1458, 'subChapter': '01', 'chapter': '05', 'hazardous': 0, 'code': '17', 'description': 'Bitumen' },
-        { 'id': 1459, 'subChapter': '01', 'chapter': '05', 'hazardous': 0, 'code': '99', 'description': 'Wastes not otherwise specified' },
-        { 'id': 1460, 'subChapter': '06', 'chapter': '05', 'hazardous': 1, 'code': '01', 'description': 'Acid tars' },
-        { 'id': 1461, 'subChapter': '06', 'chapter': '05', 'hazardous': 1, 'code': '03', 'description': 'Other tars' },
-        { 'id': 1462, 'subChapter': '06', 'chapter': '05', 'hazardous': 0, 'code': '04', 'description': 'Waste from cooling columns' },
-        { 'id': 1463, 'subChapter': '06', 'chapter': '05', 'hazardous': 0, 'code': '99', 'description': 'Wastes not otherwise specified' },
-        { 'id': 1464, 'subChapter': '07', 'chapter': '05', 'hazardous': 1, 'code': '01', 'description': 'Wastes containing mercury' },
-        { 'id': 1465, 'subChapter': '07', 'chapter': '05', 'hazardous': 0, 'code': '02', 'description': 'Wastes containing sulphur' },
-        { 'id': 1466, 'subChapter': '07', 'chapter': '05', 'hazardous': 0, 'code': '99', 'description': 'Wastes not otherwise specified' },
-        { 'id': 1467, 'subChapter': '01', 'chapter': '06', 'hazardous': 1, 'code': '01', 'description': 'Sulphuric acid and sulphurous acid' },
-        { 'id': 1468, 'subChapter': '01', 'chapter': '06', 'hazardous': 1, 'code': '02', 'description': 'Hydrochloric acid' },
-        { 'id': 1469, 'subChapter': '01', 'chapter': '06', 'hazardous': 1, 'code': '03', 'description': 'Hydrofluoric acid' },
-        { 'id': 1470, 'subChapter': '01', 'chapter': '06', 'hazardous': 1, 'code': '04', 'description': 'Phosphoric and phosphorous acid' },
-        { 'id': 1471, 'subChapter': '01', 'chapter': '06', 'hazardous': 1, 'code': '05', 'description': 'Nitric acid and nitrous acid' },
-        { 'id': 1472, 'subChapter': '01', 'chapter': '06', 'hazardous': 1, 'code': '06', 'description': 'Other acids' },
-        { 'id': 1473, 'subChapter': '01', 'chapter': '06', 'hazardous': 0, 'code': '99', 'description': 'Wastes not otherwise specified' },
-        { 'id': 1474, 'subChapter': '02', 'chapter': '06', 'hazardous': 1, 'code': '01', 'description': 'Calcium hydroxide' },
-        { 'id': 1475, 'subChapter': '02', 'chapter': '06', 'hazardous': 1, 'code': '03', 'description': 'Ammonium hydroxide' },
-        { 'id': 1476, 'subChapter': '02', 'chapter': '06', 'hazardous': 1, 'code': '04', 'description': 'Sodium and potassium hydroxide' },
-        { 'id': 1477, 'subChapter': '02', 'chapter': '06', 'hazardous': 1, 'code': '05', 'description': 'Other bases' },
-        { 'id': 1478, 'subChapter': '02', 'chapter': '06', 'hazardous': 0, 'code': '99', 'description': 'Wastes not otherwise specified' },
-        { 'id': 1479, 'subChapter': '03', 'chapter': '06', 'hazardous': 1, 'code': '11', 'description': 'Solid salts and solutions containing cyanides' },
-        { 'id': 1480, 'subChapter': '03', 'chapter': '06', 'hazardous': 1, 'code': '13', 'description': 'Solid salts and solutions containing heavy metals' },
-        { 'id': 1481, 'subChapter': '03', 'chapter': '06', 'hazardous': 0, 'code': '14', 'description': 'Solid salts and solutions other than those mentioned in 06 03 11 and 06 03 13' },
-        { 'id': 1482, 'subChapter': '03', 'chapter': '06', 'hazardous': 1, 'code': '15', 'description': 'Metallic oxides containing heavy metals' },
-        { 'id': 1483, 'subChapter': '03', 'chapter': '06', 'hazardous': 0, 'code': '16', 'description': 'Metallic oxides other than those mentioned in 06 03 15' },
-        { 'id': 1484, 'subChapter': '03', 'chapter': '06', 'hazardous': 0, 'code': '99', 'description': 'Wastes not otherwise specified' },
-        { 'id': 1485, 'subChapter': '04', 'chapter': '06', 'hazardous': 1, 'code': '03', 'description': 'Wastes containing arsenic' },
-        { 'id': 1486, 'subChapter': '04', 'chapter': '06', 'hazardous': 1, 'code': '04', 'description': 'Wastes containing mercury' },
-        { 'id': 1487, 'subChapter': '04', 'chapter': '06', 'hazardous': 1, 'code': '05', 'description': 'Wastes containing other heavy metals' },
-        { 'id': 1488, 'subChapter': '04', 'chapter': '06', 'hazardous': 0, 'code': '99', 'description': 'Wastes not otherwise specified' },
-        { 'id': 1489, 'subChapter': '05', 'chapter': '06', 'hazardous': 1, 'code': '02', 'description': 'Sludges from on-site effluent treatment containing dangerous substances' },
-        { 'id': 1490, 'subChapter': '05', 'chapter': '06', 'hazardous': 0, 'code': '03', 'description': 'Sludges from on-site effluent treatment other than those mentioned in 06 05 02' },
-        { 'id': 1491, 'subChapter': '06', 'chapter': '06', 'hazardous': 1, 'code': '02', 'description': 'Wastes containing dangerous sulphides' },
-        { 'id': 1492, 'subChapter': '06', 'chapter': '06', 'hazardous': 0, 'code': '03', 'description': 'Wastes containing sulphides other than those mentioned in 06 06 02' },
-        { 'id': 1493, 'subChapter': '06', 'chapter': '06', 'hazardous': 0, 'code': '99', 'description': 'Wastes not otherwise specified' },
-        { 'id': 1494, 'subChapter': '07', 'chapter': '06', 'hazardous': 1, 'code': '01', 'description': 'Wastes containing asbestos from electrolysis' },
-        { 'id': 1495, 'subChapter': '07', 'chapter': '06', 'hazardous': 1, 'code': '02', 'description': 'Activated carbon from chlorine production' },
-        { 'id': 1496, 'subChapter': '07', 'chapter': '06', 'hazardous': 1, 'code': '03', 'description': 'Barium sulphate sludge containing mercury' },
-        { 'id': 1497, 'subChapter': '07', 'chapter': '06', 'hazardous': 1, 'code': '04', 'description': 'Solutions and acids, for example contact acid' },
-        { 'id': 1498, 'subChapter': '07', 'chapter': '06', 'hazardous': 0, 'code': '99', 'description': 'Wastes not otherwise specified' },
-        { 'id': 1499, 'subChapter': '08', 'chapter': '06', 'hazardous': 1, 'code': '02', 'description': 'Wastes containing chlorosilanes' },
-        { 'id': 1500, 'subChapter': '08', 'chapter': '06', 'hazardous': 0, 'code': '99', 'description': 'Wastes not otherwise specified' },
-        { 'id': 1501, 'subChapter': '09', 'chapter': '06', 'hazardous': 0, 'code': '02', 'description': 'Phosphorous slag' },
-        { 'id': 1502, 'subChapter': '09', 'chapter': '06', 'hazardous': 1, 'code': '03', 'description': 'Calcium-based reaction wastes containing or contaminated with dangerous substances' },
-        { 'id': 1503, 'subChapter': '09', 'chapter': '06', 'hazardous': 0, 'code': '04', 'description': 'Calcium-based reaction wastes other than those mentioned in 06 09 03' },
-        { 'id': 1504, 'subChapter': '09', 'chapter': '06', 'hazardous': 0, 'code': '99', 'description': 'Wastes not otherwise specified' },
-        { 'id': 1505, 'subChapter': '10', 'chapter': '06', 'hazardous': 1, 'code': '02', 'description': 'Wastes containing dangerous substances' },
-        { 'id': 1506, 'subChapter': '10', 'chapter': '06', 'hazardous': 0, 'code': '99', 'description': 'Wastes not otherwise specified' },
-        { 'id': 1507, 'subChapter': '11', 'chapter': '06', 'hazardous': 0, 'code': '01', 'description': 'Calcium-based reaction wastes from titanium dioxide production' },
-        { 'id': 1508, 'subChapter': '11', 'chapter': '06', 'hazardous': 0, 'code': '99', 'description': 'Wastes not otherwise specified' },
-        { 'id': 1509, 'subChapter': '13', 'chapter': '06', 'hazardous': 1, 'code': '01', 'description': 'Inorganic plant protection products, wood-preserving agents and other biocides.' },
-        { 'id': 1510, 'subChapter': '13', 'chapter': '06', 'hazardous': 1, 'code': '02', 'description': 'Spent activated carbon (except 06 07 02)' },
-        { 'id': 1511, 'subChapter': '13', 'chapter': '06', 'hazardous': 0, 'code': '03', 'description': 'Carbon black' },
-        { 'id': 1512, 'subChapter': '13', 'chapter': '06', 'hazardous': 1, 'code': '04', 'description': 'Wastes from asbestos processing' },
-        { 'id': 1513, 'subChapter': '13', 'chapter': '06', 'hazardous': 1, 'code': '05', 'description': 'Soot' },
-        { 'id': 1514, 'subChapter': '13', 'chapter': '06', 'hazardous': 0, 'code': '99', 'description': 'Wastes not otherwise specified' },
-        { 'id': 1515, 'subChapter': '01', 'chapter': '07', 'hazardous': 1, 'code': '01', 'description': 'Aqueous washing liquids and mother liquors' },
-        { 'id': 1516, 'subChapter': '01', 'chapter': '07', 'hazardous': 1, 'code': '03', 'description': 'Organic halogenated solvents, washing liquids and mother liquors' },
-        { 'id': 1517, 'subChapter': '01', 'chapter': '07', 'hazardous': 1, 'code': '04', 'description': 'Other organic solvents, washing liquids and mother liquors' },
-        { 'id': 1518, 'subChapter': '01', 'chapter': '07', 'hazardous': 1, 'code': '07', 'description': 'Halogenated still bottoms and reaction residues' },
-        { 'id': 1519, 'subChapter': '01', 'chapter': '07', 'hazardous': 1, 'code': '08', 'description': 'Other still bottoms and reaction residues' },
-        { 'id': 1520, 'subChapter': '01', 'chapter': '07', 'hazardous': 1, 'code': '09', 'description': 'Halogenated filter cakes and spent absorbents' },
-        { 'id': 1521, 'subChapter': '01', 'chapter': '07', 'hazardous': 1, 'code': '10', 'description': 'Other filter cakes and spent absorbents' },
-        { 'id': 1522, 'subChapter': '01', 'chapter': '07', 'hazardous': 1, 'code': '11', 'description': 'Sludges from on-site effluent treatment containing dangerous substances' },
-        { 'id': 1523, 'subChapter': '01', 'chapter': '07', 'hazardous': 0, 'code': '12', 'description': 'Sludges from on-site effluent treatment other than those mentioned in 07 01 11' },
-        { 'id': 1524, 'subChapter': '01', 'chapter': '07', 'hazardous': 0, 'code': '99', 'description': 'Wastes not otherwise specified' },
-        { 'id': 1525, 'subChapter': '02', 'chapter': '07', 'hazardous': 1, 'code': '01', 'description': 'Aqueous washing liquids and mother liquors' },
-        { 'id': 1526, 'subChapter': '02', 'chapter': '07', 'hazardous': 1, 'code': '03', 'description': 'Organic halogenated solvents, washing liquids and mother liquors' },
-        { 'id': 1527, 'subChapter': '02', 'chapter': '07', 'hazardous': 1, 'code': '04', 'description': 'Other organic solvents, washing liquids and mother liquors' },
-        { 'id': 1528, 'subChapter': '02', 'chapter': '07', 'hazardous': 1, 'code': '07', 'description': 'Halogenated still bottoms and reaction residues' },
-        { 'id': 1529, 'subChapter': '02', 'chapter': '07', 'hazardous': 1, 'code': '08', 'description': 'Other still bottoms and reaction residues' },
-        { 'id': 1530, 'subChapter': '02', 'chapter': '07', 'hazardous': 1, 'code': '09', 'description': 'Halogenated filter cakes and spent absorbents' },
-        { 'id': 1531, 'subChapter': '02', 'chapter': '07', 'hazardous': 1, 'code': '10', 'description': 'Other filter cakes and spent absorbents' },
-        { 'id': 1532, 'subChapter': '02', 'chapter': '07', 'hazardous': 1, 'code': '11', 'description': 'Sludges from on-site effluent treatment containing dangerous substances' },
-        { 'id': 1533, 'subChapter': '02', 'chapter': '07', 'hazardous': 0, 'code': '12', 'description': 'Sludges from on-site effluent treatment other than those mentioned in 07 02 11' },
-        { 'id': 1534, 'subChapter': '02', 'chapter': '07', 'hazardous': 0, 'code': '13', 'description': 'Waste plastic' },
-        { 'id': 1535, 'subChapter': '02', 'chapter': '07', 'hazardous': 1, 'code': '14', 'description': 'Wastes from additives containing dangerous substances' },
-        { 'id': 1536, 'subChapter': '02', 'chapter': '07', 'hazardous': 0, 'code': '15', 'description': 'Wastes from additives other than those mentioned in 07 02 14' },
-        { 'id': 1537, 'subChapter': '02', 'chapter': '07', 'hazardous': 1, 'code': '16', 'description': 'Wastes containing silicones' },
-        { 'id': 1538, 'subChapter': '02', 'chapter': '07', 'hazardous': 0, 'code': '17', 'description': null },
-        { 'id': 1539, 'subChapter': '02', 'chapter': '07', 'hazardous': 0, 'code': '99', 'description': 'Wastes not otherwise specified' },
-        { 'id': 1540, 'subChapter': '03', 'chapter': '07', 'hazardous': 1, 'code': '01', 'description': 'Aqueous washing liquids and mother liquors' },
-        { 'id': 1541, 'subChapter': '03', 'chapter': '07', 'hazardous': 1, 'code': '03', 'description': 'Organic halogenated solvents, washing liquids and mother liquors' },
-        { 'id': 1542, 'subChapter': '03', 'chapter': '07', 'hazardous': 1, 'code': '04', 'description': 'Other organic solvents, washing liquids and mother liquors' },
-        { 'id': 1543, 'subChapter': '03', 'chapter': '07', 'hazardous': 1, 'code': '07', 'description': 'Halogenated still bottoms and reaction residues' },
-        { 'id': 1544, 'subChapter': '03', 'chapter': '07', 'hazardous': 1, 'code': '08', 'description': 'Other still bottoms and reaction residues' },
-        { 'id': 1545, 'subChapter': '03', 'chapter': '07', 'hazardous': 1, 'code': '09', 'description': 'Halogenated filter cakes and spent absorbents' },
-        { 'id': 1546, 'subChapter': '03', 'chapter': '07', 'hazardous': 1, 'code': '10', 'description': 'Other filter cakes and spent absorbents' },
-        { 'id': 1547, 'subChapter': '03', 'chapter': '07', 'hazardous': 1, 'code': '11', 'description': 'Sludges from on-site effluent treatment containing dangerous substances' },
-        { 'id': 1548, 'subChapter': '03', 'chapter': '07', 'hazardous': 0, 'code': '12', 'description': 'Sludges from on-site effluent treatment other than those mentioned in 07 03 11' },
-        { 'id': 1549, 'subChapter': '03', 'chapter': '07', 'hazardous': 0, 'code': '99', 'description': 'Wastes not otherwise specified' },
-        { 'id': 1550, 'subChapter': '04', 'chapter': '07', 'hazardous': 1, 'code': '01', 'description': 'Aqueous washing liquids and mother liquors' },
-        { 'id': 1551, 'subChapter': '04', 'chapter': '07', 'hazardous': 1, 'code': '03', 'description': 'Organic halogenated solvents, washing liquids and mother liquors' },
-        { 'id': 1552, 'subChapter': '04', 'chapter': '07', 'hazardous': 1, 'code': '04', 'description': 'Other organic solvents, washing liquids and mother liquors' },
-        { 'id': 1553, 'subChapter': '04', 'chapter': '07', 'hazardous': 1, 'code': '07', 'description': 'Halogenated still bottoms and reaction residues' },
-        { 'id': 1554, 'subChapter': '04', 'chapter': '07', 'hazardous': 1, 'code': '08', 'description': 'Other still bottoms and reaction residues' },
-        { 'id': 1555, 'subChapter': '04', 'chapter': '07', 'hazardous': 1, 'code': '09', 'description': 'Halogenated filter cakes and spent absorbents' },
-        { 'id': 1556, 'subChapter': '04', 'chapter': '07', 'hazardous': 1, 'code': '10', 'description': 'Other filter cakes and spent absorbents' },
-        { 'id': 1557, 'subChapter': '04', 'chapter': '07', 'hazardous': 1, 'code': '11', 'description': 'Sludges from on-site effluent treatment containing dangerous substances' },
-        { 'id': 1558, 'subChapter': '04', 'chapter': '07', 'hazardous': 0, 'code': '12', 'description': 'Sludges from on-site effluent treatment other than those mentioned in 07 04 11' },
-        { 'id': 1559, 'subChapter': '04', 'chapter': '07', 'hazardous': 1, 'code': '13', 'description': 'Solid wastes containing dangerous substances' },
-        { 'id': 1560, 'subChapter': '04', 'chapter': '07', 'hazardous': 0, 'code': '99', 'description': 'Wastes not otherwise specified' },
-        { 'id': 1561, 'subChapter': '05', 'chapter': '07', 'hazardous': 1, 'code': '01', 'description': 'Aqueous washing liquids and mother liquors' },
-        { 'id': 1562, 'subChapter': '05', 'chapter': '07', 'hazardous': 1, 'code': '03', 'description': 'Organic halogenated solvents, washing liquids and mother liquors' },
-        { 'id': 1563, 'subChapter': '05', 'chapter': '07', 'hazardous': 1, 'code': '04', 'description': 'Other organic solvents, washing liquids and mother liquors' },
-        { 'id': 1564, 'subChapter': '05', 'chapter': '07', 'hazardous': 1, 'code': '07', 'description': 'Halogenated still bottoms and reaction residues' },
-        { 'id': 1565, 'subChapter': '05', 'chapter': '07', 'hazardous': 1, 'code': '08', 'description': 'Other still bottoms and reaction residues' },
-        { 'id': 1566, 'subChapter': '05', 'chapter': '07', 'hazardous': 1, 'code': '09', 'description': 'Halogenated filter cakes and spent absorbents' },
-        { 'id': 1567, 'subChapter': '05', 'chapter': '07', 'hazardous': 1, 'code': '10', 'description': 'Other filter cakes and spent absorbents' },
-        { 'id': 1568, 'subChapter': '05', 'chapter': '07', 'hazardous': 1, 'code': '11', 'description': 'Sludges from on-site effluent treatment containing dangerous substances' },
-        { 'id': 1569, 'subChapter': '05', 'chapter': '07', 'hazardous': 0, 'code': '12', 'description': 'Sludges from on-site effluent treatment other than those mentioned in 07 05 11' },
-        { 'id': 1570, 'subChapter': '05', 'chapter': '07', 'hazardous': 1, 'code': '13', 'description': 'Solid wastes containing dangerous substances' },
-        { 'id': 1571, 'subChapter': '05', 'chapter': '07', 'hazardous': 0, 'code': '14', 'description': 'Solid wastes other than those mentioned in 07 05 13' },
-        { 'id': 1572, 'subChapter': '05', 'chapter': '07', 'hazardous': 0, 'code': '99', 'description': 'Wastes not otherwise specified' },
-        { 'id': 1573, 'subChapter': '06', 'chapter': '07', 'hazardous': 1, 'code': '01', 'description': 'Aqueous washing liquids and mother liquors' },
-        { 'id': 1574, 'subChapter': '06', 'chapter': '07', 'hazardous': 1, 'code': '03', 'description': 'Organic halogenated solvents, washing liquids and mother liquors' },
-        { 'id': 1575, 'subChapter': '06', 'chapter': '07', 'hazardous': 1, 'code': '04', 'description': 'Other organic solvents, washing liquids and mother liquors' },
-        { 'id': 1576, 'subChapter': '06', 'chapter': '07', 'hazardous': 1, 'code': '07', 'description': 'Halogenated still bottoms and reaction residues' },
-        { 'id': 1577, 'subChapter': '06', 'chapter': '07', 'hazardous': 1, 'code': '08', 'description': 'Other still bottoms and reaction residues' },
-        { 'id': 1578, 'subChapter': '06', 'chapter': '07', 'hazardous': 1, 'code': '09', 'description': 'Halogenated filter cakes and spent absorbents' },
-        { 'id': 1579, 'subChapter': '06', 'chapter': '07', 'hazardous': 1, 'code': '10', 'description': 'Other filter cakes and spent absorbents' },
-        { 'id': 1580, 'subChapter': '06', 'chapter': '07', 'hazardous': 1, 'code': '11', 'description': 'Sludges from on-site effluent treatment containing dangerous substances' },
-        { 'id': 1581, 'subChapter': '06', 'chapter': '07', 'hazardous': 0, 'code': '12', 'description': 'Sludges from on-site effluent treatment other than those mentioned in 07 06 11' },
-        { 'id': 1582, 'subChapter': '06', 'chapter': '07', 'hazardous': 0, 'code': '99', 'description': 'Wastes not otherwise specified' },
-        { 'id': 1583, 'subChapter': '07', 'chapter': '07', 'hazardous': 1, 'code': '01', 'description': 'Aqueous washing liquids and mother liquors' },
-        { 'id': 1584, 'subChapter': '07', 'chapter': '07', 'hazardous': 1, 'code': '03', 'description': 'Organic halogenated solvents, washing liquids and mother liquors' },
-        { 'id': 1585, 'subChapter': '07', 'chapter': '07', 'hazardous': 1, 'code': '04', 'description': 'Other organic solvents, washing liquids and mother liquors' },
-        { 'id': 1586, 'subChapter': '07', 'chapter': '07', 'hazardous': 1, 'code': '07', 'description': 'Halogenated still bottoms and reaction residues' },
-        { 'id': 1587, 'subChapter': '07', 'chapter': '07', 'hazardous': 1, 'code': '08', 'description': 'Other still bottoms and reaction residues' },
-        { 'id': 1588, 'subChapter': '07', 'chapter': '07', 'hazardous': 1, 'code': '09', 'description': 'Halogenated filter cakes and spent absorbents' },
-        { 'id': 1589, 'subChapter': '07', 'chapter': '07', 'hazardous': 1, 'code': '10', 'description': 'Other filter cakes and spent absorbents' },
-        { 'id': 1590, 'subChapter': '07', 'chapter': '07', 'hazardous': 1, 'code': '11', 'description': 'Sludges from on-site effluent treatment containing dangerous substances' },
-        { 'id': 1591, 'subChapter': '07', 'chapter': '07', 'hazardous': 0, 'code': '12', 'description': 'Sludges from on-site effluent treatment other than those mentioned in 07 07 11' },
-        { 'id': 1592, 'subChapter': '07', 'chapter': '07', 'hazardous': 0, 'code': '99', 'description': 'Wastes not otherwise specified' },
-        { 'id': 1593, 'subChapter': '01', 'chapter': '08', 'hazardous': 1, 'code': '11', 'description': 'Waste paint and varnish containing organic solvents or other dangerous substances' },
-        { 'id': 1594, 'subChapter': '01', 'chapter': '08', 'hazardous': 0, 'code': '12', 'description': 'Waste paint and varnish other than those mentioned in 08 01 11' },
-        { 'id': 1595, 'subChapter': '01', 'chapter': '08', 'hazardous': 1, 'code': '13', 'description': 'Sludges from paint or varnish containing organic solvents or other dangerous substances' },
-        { 'id': 1596, 'subChapter': '01', 'chapter': '08', 'hazardous': 0, 'code': '14', 'description': 'Sludges from paint or varnish other than those mentioned in 08 01 13' },
-        { 'id': 1597, 'subChapter': '01', 'chapter': '08', 'hazardous': 1, 'code': '15', 'description': 'Aqueous sludges containing paint or varnish containing organic solvents or other dangerous substances' },
-        { 'id': 1598, 'subChapter': '01', 'chapter': '08', 'hazardous': 0, 'code': '16', 'description': 'Aqueous sludges containing paint or varnish other than those mentioned in 08 01 15' },
-        { 'id': 1599, 'subChapter': '01', 'chapter': '08', 'hazardous': 1, 'code': '17', 'description': 'Wastes from paint or varnish removal containing organic solvents or other dangerous substances' },
-        { 'id': 1600, 'subChapter': '01', 'chapter': '08', 'hazardous': 0, 'code': '18', 'description': 'Wastes from paint or varnish removal other than those mentioned in 08 01 17' },
-        { 'id': 1601, 'subChapter': '01', 'chapter': '08', 'hazardous': 1, 'code': '19', 'description': 'Aqueous suspensions containing paint or varnish containing organic solvents or other dangerous substances' },
-        { 'id': 1602, 'subChapter': '01', 'chapter': '08', 'hazardous': 0, 'code': '20', 'description': 'Aqueous suspensions containing paint or varnish other than those mentioned in 08 01 19' },
-        { 'id': 1603, 'subChapter': '01', 'chapter': '08', 'hazardous': 1, 'code': '21', 'description': 'Waste paint or varnish remover' },
-        { 'id': 1604, 'subChapter': '01', 'chapter': '08', 'hazardous': 0, 'code': '99', 'description': 'Wastes not otherwise specified' },
-        { 'id': 1605, 'subChapter': '02', 'chapter': '08', 'hazardous': 0, 'code': '01', 'description': 'Waste coating powders' },
-        { 'id': 1606, 'subChapter': '02', 'chapter': '08', 'hazardous': 0, 'code': '02', 'description': 'Aqueous sludges containing ceramic materials' },
-        { 'id': 1607, 'subChapter': '02', 'chapter': '08', 'hazardous': 0, 'code': '03', 'description': 'Aqueous suspensions containing ceramic materials' },
-        { 'id': 1608, 'subChapter': '02', 'chapter': '08', 'hazardous': 0, 'code': '99', 'description': 'Wastes not otherwise specified' },
-        { 'id': 1609, 'subChapter': '03', 'chapter': '08', 'hazardous': 0, 'code': '07', 'description': 'Aqueous sludges containing ink' },
-        { 'id': 1610, 'subChapter': '03', 'chapter': '08', 'hazardous': 0, 'code': '08', 'description': 'Aqueous liquid waste containing ink' },
-        { 'id': 1611, 'subChapter': '03', 'chapter': '08', 'hazardous': 1, 'code': '12', 'description': 'Waste ink containing dangerous substances' },
-        { 'id': 1612, 'subChapter': '03', 'chapter': '08', 'hazardous': 0, 'code': '13', 'description': 'Waste ink other than those mentioned in 08 03 12' },
-        { 'id': 1613, 'subChapter': '03', 'chapter': '08', 'hazardous': 1, 'code': '14', 'description': 'Ink sludges containing dangerous substances' },
-        { 'id': 1614, 'subChapter': '03', 'chapter': '08', 'hazardous': 0, 'code': '15', 'description': 'Ink sludges other than those mentioned in 08 03 14' },
-        { 'id': 1615, 'subChapter': '03', 'chapter': '08', 'hazardous': 1, 'code': '16', 'description': 'Waste etching solutions' },
-        { 'id': 1616, 'subChapter': '03', 'chapter': '08', 'hazardous': 1, 'code': '17', 'description': 'Waste printing toner containing dangerous substances' },
-        { 'id': 1617, 'subChapter': '03', 'chapter': '08', 'hazardous': 0, 'code': '18', 'description': 'Waste printing toner other than those mentioned in 08 03 17' },
-        { 'id': 1618, 'subChapter': '03', 'chapter': '08', 'hazardous': 1, 'code': '19', 'description': 'Disperse oil' },
-        { 'id': 1619, 'subChapter': '03', 'chapter': '08', 'hazardous': 0, 'code': '99', 'description': 'Wastes not otherwise specified' },
-        { 'id': 1620, 'subChapter': '04', 'chapter': '08', 'hazardous': 1, 'code': '09', 'description': 'Waste adhesives and sealants containing organic solvents or other dangerous substances' },
-        { 'id': 1621, 'subChapter': '04', 'chapter': '08', 'hazardous': 0, 'code': '10', 'description': 'Waste adhesives and sealants other than those mentioned in 08 04 09' },
-        { 'id': 1622, 'subChapter': '04', 'chapter': '08', 'hazardous': 1, 'code': '11', 'description': 'Adhesive and sealant sludges containing organic solvents or other dangerous substances' },
-        { 'id': 1623, 'subChapter': '04', 'chapter': '08', 'hazardous': 0, 'code': '12', 'description': 'Adhesive and sealant sludges other than those mentioned in 08 04 11' },
-        { 'id': 1624, 'subChapter': '04', 'chapter': '08', 'hazardous': 1, 'code': '13', 'description': 'Aqueous sludges containing adhesives or sealants containing organic solvents or other dangerous substances' },
-        { 'id': 1625, 'subChapter': '04', 'chapter': '08', 'hazardous': 0, 'code': '14', 'description': 'Aqueous sludges containing adhesives or sealants other than those mentioned in 08 04 13' },
-        { 'id': 1626, 'subChapter': '04', 'chapter': '08', 'hazardous': 1, 'code': '15', 'description': 'Aqueous liquid waste containing adhesives or sealants containing organic solvents or other dangerous substances' },
-        { 'id': 1627, 'subChapter': '04', 'chapter': '08', 'hazardous': 0, 'code': '16', 'description': 'Aqueous liquid waste containing adhesives or sealants other than those mentioned in 08 04 15' },
-        { 'id': 1628, 'subChapter': '04', 'chapter': '08', 'hazardous': 1, 'code': '17', 'description': 'Rosin oil' },
-        { 'id': 1629, 'subChapter': '04', 'chapter': '08', 'hazardous': 0, 'code': '99', 'description': 'Wastes not otherwise specified' },
-        { 'id': 1630, 'subChapter': '05', 'chapter': '08', 'hazardous': 1, 'code': '01', 'description': 'Waste isocyanates' },
-        { 'id': 1631, 'subChapter': '01', 'chapter': '09', 'hazardous': 1, 'code': '01', 'description': 'Water-based developer and activator solutions' },
-        { 'id': 1632, 'subChapter': '01', 'chapter': '09', 'hazardous': 1, 'code': '02', 'description': 'Water-based offset plate developer solutions' },
-        { 'id': 1633, 'subChapter': '01', 'chapter': '09', 'hazardous': 1, 'code': '03', 'description': 'Solvent-based developer solutions' },
-        { 'id': 1634, 'subChapter': '01', 'chapter': '09', 'hazardous': 1, 'code': '04', 'description': 'Fixer solutions' },
-        { 'id': 1635, 'subChapter': '01', 'chapter': '09', 'hazardous': 1, 'code': '05', 'description': 'Bleach solutions and bleach fixer solutions' },
-        { 'id': 1636, 'subChapter': '01', 'chapter': '09', 'hazardous': 1, 'code': '06', 'description': 'Wastes containing silver from on-site treatment of photographic wastes' },
-        { 'id': 1637, 'subChapter': '01', 'chapter': '09', 'hazardous': 0, 'code': '07', 'description': 'Photographic film and paper containing silver or silver compounds' },
-        { 'id': 1638, 'subChapter': '01', 'chapter': '09', 'hazardous': 0, 'code': '08', 'description': 'Photographic film and paper free of silver or silver compounds' },
-        { 'id': 1639, 'subChapter': '01', 'chapter': '09', 'hazardous': 0, 'code': '10', 'description': 'Single-use cameras without batteries' },
-        { 'id': 1640, 'subChapter': '01', 'chapter': '09', 'hazardous': 1, 'code': '11', 'description': 'Single-use cameras containing batteries included in 16 06 01, 16 06 02 or 16 06 03' },
-        { 'id': 1641, 'subChapter': '01', 'chapter': '09', 'hazardous': 0, 'code': '12', 'description': 'Single-use cameras containing batteries other than those mentioned in 09 01 11' },
-        { 'id': 1642, 'subChapter': '01', 'chapter': '09', 'hazardous': 1, 'code': '13', 'description': 'Aqueous liquid waste from on-site reclamation of silver other than those mentioned in 09 01 06' },
-        { 'id': 1643, 'subChapter': '01', 'chapter': '09', 'hazardous': 0, 'code': '99', 'description': 'Wastes not otherwise specified' },
-        { 'id': 1644, 'subChapter': '01', 'chapter': '10', 'hazardous': 0, 'code': '01', 'description': 'Bottom ash, slag and boiler dust (excluding boiler dust mentioned in 10 01 04)' },
-        { 'id': 1645, 'subChapter': '01', 'chapter': '10', 'hazardous': 0, 'code': '02', 'description': 'Coal fly ash' },
-        { 'id': 1646, 'subChapter': '01', 'chapter': '10', 'hazardous': 0, 'code': '03', 'description': 'Fly ash from peat and untreated wood' },
-        { 'id': 1647, 'subChapter': '01', 'chapter': '10', 'hazardous': 1, 'code': '04', 'description': 'Oil fly ash and boiler dust' },
-        { 'id': 1648, 'subChapter': '01', 'chapter': '10', 'hazardous': 0, 'code': '05', 'description': 'Calcium-based reaction wastes from flue-gas desulphurisation in solid form' },
-        { 'id': 1649, 'subChapter': '01', 'chapter': '10', 'hazardous': 0, 'code': '07', 'description': 'Calcium-based reaction wastes from flue-gas desulphurisation in sludge form' },
-        { 'id': 1650, 'subChapter': '01', 'chapter': '10', 'hazardous': 1, 'code': '09', 'description': 'Sulphuric acid' },
-        { 'id': 1651, 'subChapter': '01', 'chapter': '10', 'hazardous': 1, 'code': '13', 'description': 'Fly ash from emulsified hydrocarbons used as fuel' },
-        { 'id': 1652, 'subChapter': '01', 'chapter': '10', 'hazardous': 1, 'code': '14', 'description': 'Bottom ash, slag and boiler dust from co-incineration containing dangerous substances' },
-        { 'id': 1653, 'subChapter': '01', 'chapter': '10', 'hazardous': 0, 'code': '15', 'description': 'Bottom ash, slag and boiler dust from co-incineration other than those mentioned in 10 01 14' },
-        { 'id': 1654, 'subChapter': '01', 'chapter': '10', 'hazardous': 1, 'code': '16', 'description': 'Fly ash from co-incineration containing dangerous substances' },
-        { 'id': 1655, 'subChapter': '01', 'chapter': '10', 'hazardous': 0, 'code': '17', 'description': 'Fly ash from co-incineration other than those mentioned in 10 01 16' },
-        { 'id': 1656, 'subChapter': '01', 'chapter': '10', 'hazardous': 1, 'code': '18', 'description': 'Wastes from gas cleaning containing dangerous substances' },
-        { 'id': 1657, 'subChapter': '01', 'chapter': '10', 'hazardous': 0, 'code': '19', 'description': 'Wastes from gas cleaning other than those mentioned in 10 01 05, 10 01 07 and 10 01 18' },
-        { 'id': 1658, 'subChapter': '01', 'chapter': '10', 'hazardous': 1, 'code': '20', 'description': 'Sludges from on-site effluent treatment containing dangerous substances' },
-        { 'id': 1659, 'subChapter': '01', 'chapter': '10', 'hazardous': 0, 'code': '21', 'description': 'Sludges from on-site effluent treatment other than those mentioned in 10 01 20' },
-        { 'id': 1660, 'subChapter': '01', 'chapter': '10', 'hazardous': 1, 'code': '22', 'description': 'Aqueous sludges from boiler cleansing containing dangerous substances' },
-        { 'id': 1661, 'subChapter': '01', 'chapter': '10', 'hazardous': 0, 'code': '23', 'description': 'Aqueous sludges from boiler cleansing other than those mentioned in 10 01 22' },
-        { 'id': 1662, 'subChapter': '01', 'chapter': '10', 'hazardous': 0, 'code': '24', 'description': 'Sands from fluidised beds' },
-        { 'id': 1663, 'subChapter': '01', 'chapter': '10', 'hazardous': 0, 'code': '25', 'description': 'Wastes from fuel storage and preparation of coal-fired power plants' },
-        { 'id': 1664, 'subChapter': '01', 'chapter': '10', 'hazardous': 0, 'code': '26', 'description': 'Wastes from cooling-water treatment' },
-        { 'id': 1665, 'subChapter': '01', 'chapter': '10', 'hazardous': 0, 'code': '99', 'description': 'Wastes not otherwise specified' },
-        { 'id': 1666, 'subChapter': '02', 'chapter': '10', 'hazardous': 0, 'code': '01', 'description': 'Wastes from the processing of slag' },
-        { 'id': 1667, 'subChapter': '02', 'chapter': '10', 'hazardous': 0, 'code': '02', 'description': 'Unprocessed slag' },
-        { 'id': 1668, 'subChapter': '02', 'chapter': '10', 'hazardous': 1, 'code': '07', 'description': 'Solid wastes from gas treatment containing dangerous substances' },
-        { 'id': 1669, 'subChapter': '02', 'chapter': '10', 'hazardous': 0, 'code': '08', 'description': 'Solid wastes from gas treatment other than those mentioned in 10 02 07' },
-        { 'id': 1670, 'subChapter': '02', 'chapter': '10', 'hazardous': 0, 'code': '10', 'description': 'Mill scales' },
-        { 'id': 1671, 'subChapter': '02', 'chapter': '10', 'hazardous': 1, 'code': '11', 'description': 'Wastes from cooling-water treatment containing oil' },
-        { 'id': 1672, 'subChapter': '02', 'chapter': '10', 'hazardous': 0, 'code': '12', 'description': 'Wastes from cooling-water treatment other than those mentioned in 10 02 11' },
-        { 'id': 1673, 'subChapter': '02', 'chapter': '10', 'hazardous': 1, 'code': '13', 'description': 'Sludges and filter cakes from gas treatment containing dangerous substances' },
-        { 'id': 1674, 'subChapter': '02', 'chapter': '10', 'hazardous': 0, 'code': '14', 'description': 'Sludges and filter cakes from gas treatment other than those mentioned in 10 02 13' },
-        { 'id': 1675, 'subChapter': '02', 'chapter': '10', 'hazardous': 0, 'code': '15', 'description': 'Other sludges and filter cakes' },
-        { 'id': 1676, 'subChapter': '02', 'chapter': '10', 'hazardous': 0, 'code': '99', 'description': 'Wastes not otherwise specified' },
-        { 'id': 1677, 'subChapter': '03', 'chapter': '10', 'hazardous': 0, 'code': '02', 'description': 'Anode scraps' },
-        { 'id': 1678, 'subChapter': '03', 'chapter': '10', 'hazardous': 1, 'code': '04', 'description': 'Primary production slags' },
-        { 'id': 1679, 'subChapter': '03', 'chapter': '10', 'hazardous': 0, 'code': '05', 'description': 'Waste alumina' },
-        { 'id': 1680, 'subChapter': '03', 'chapter': '10', 'hazardous': 1, 'code': '08', 'description': 'Salt slags from secondary production' },
-        { 'id': 1681, 'subChapter': '03', 'chapter': '10', 'hazardous': 1, 'code': '09', 'description': 'Black drosses from secondary production' },
-        { 'id': 1682, 'subChapter': '03', 'chapter': '10', 'hazardous': 1, 'code': '15', 'description': 'Skimmings that are flammable or emit, upon contact with water, flammable gases in dangerous quantities' },
-        { 'id': 1683, 'subChapter': '03', 'chapter': '10', 'hazardous': 0, 'code': '16', 'description': 'Skimmings other than those mentioned in 10 03 15' },
-        { 'id': 1684, 'subChapter': '03', 'chapter': '10', 'hazardous': 1, 'code': '17', 'description': 'Tar-containing wastes from anode manufacture' },
-        { 'id': 1685, 'subChapter': '03', 'chapter': '10', 'hazardous': 0, 'code': '18', 'description': 'Carbon-containing wastes from anode manufacture other than those mentioned in 10 03 17' },
-        { 'id': 1686, 'subChapter': '03', 'chapter': '10', 'hazardous': 1, 'code': '19', 'description': 'Flue-gas dust containing dangerous substances' },
-        { 'id': 1687, 'subChapter': '03', 'chapter': '10', 'hazardous': 0, 'code': '20', 'description': 'Flue-gas dust other than those mentioned in 10 03 19' },
-        { 'id': 1688, 'subChapter': '03', 'chapter': '10', 'hazardous': 1, 'code': '21', 'description': 'Other particulates and dust (including ball-mill dust) containing dangerous substances' },
-        { 'id': 1689, 'subChapter': '03', 'chapter': '10', 'hazardous': 0, 'code': '22', 'description': 'Other particulates and dust (including ball-mill dust) other than those mentioned in 10 03 21' },
-        { 'id': 1690, 'subChapter': '03', 'chapter': '10', 'hazardous': 1, 'code': '23', 'description': 'Solid wastes from gas treatment containing dangerous substances' },
-        { 'id': 1691, 'subChapter': '03', 'chapter': '10', 'hazardous': 0, 'code': '24', 'description': 'Solid wastes from gas treatment other than those mentioned in 10 03 23' },
-        { 'id': 1692, 'subChapter': '03', 'chapter': '10', 'hazardous': 1, 'code': '25', 'description': 'Sludges and filter cakes from gas treatment containing dangerous substances' },
-        { 'id': 1693, 'subChapter': '03', 'chapter': '10', 'hazardous': 0, 'code': '26', 'description': 'Sludges and filter cakes from gas treatment other than those mentioned in 10 03 25' },
-        { 'id': 1694, 'subChapter': '03', 'chapter': '10', 'hazardous': 1, 'code': '27', 'description': 'Wastes from cooling-water treatment containing oil' },
-        { 'id': 1695, 'subChapter': '03', 'chapter': '10', 'hazardous': 0, 'code': '28', 'description': 'Wastes from cooling-water treatment other than those mentioned in 10 03 27' },
-        { 'id': 1696, 'subChapter': '03', 'chapter': '10', 'hazardous': 1, 'code': '29', 'description': 'Wastes from treatment of salt slags and black drosses containing dangerous substances' },
-        { 'id': 1697, 'subChapter': '03', 'chapter': '10', 'hazardous': 0, 'code': '30', 'description': 'Wastes from treatment of salt slags and black drosses other than those mentioned in 10 03 29' },
-        { 'id': 1698, 'subChapter': '03', 'chapter': '10', 'hazardous': 0, 'code': '99', 'description': 'Wastes not otherwise specified' },
-        { 'id': 1699, 'subChapter': '04', 'chapter': '10', 'hazardous': 1, 'code': '01', 'description': 'Slags from primary and secondary production' },
-        { 'id': 1700, 'subChapter': '04', 'chapter': '10', 'hazardous': 1, 'code': '02', 'description': 'Dross and skimmings from primary and secondary production' },
-        { 'id': 1701, 'subChapter': '04', 'chapter': '10', 'hazardous': 1, 'code': '03', 'description': 'Calcium arsenate' },
-        { 'id': 1702, 'subChapter': '04', 'chapter': '10', 'hazardous': 1, 'code': '04', 'description': 'Flue-gas dust' },
-        { 'id': 1703, 'subChapter': '04', 'chapter': '10', 'hazardous': 1, 'code': '05', 'description': 'Other particulates and dust' },
-        { 'id': 1704, 'subChapter': '04', 'chapter': '10', 'hazardous': 1, 'code': '06', 'description': 'Solid wastes from gas treatment' },
-        { 'id': 1705, 'subChapter': '04', 'chapter': '10', 'hazardous': 1, 'code': '07', 'description': 'Sludges and filter cakes from gas treatment' },
-        { 'id': 1706, 'subChapter': '04', 'chapter': '10', 'hazardous': 1, 'code': '09', 'description': 'Wastes from cooling-water treatment containing oil' },
-        { 'id': 1707, 'subChapter': '04', 'chapter': '10', 'hazardous': 0, 'code': '10', 'description': 'Wastes from cooling-water treatment other than those mentioned in 10 04 09' },
-        { 'id': 1708, 'subChapter': '04', 'chapter': '10', 'hazardous': 0, 'code': '99', 'description': 'Wastes not otherwise specified' },
-        { 'id': 1709, 'subChapter': '05', 'chapter': '10', 'hazardous': 0, 'code': '01', 'description': 'Slags from primary and secondary production' },
-        { 'id': 1710, 'subChapter': '05', 'chapter': '10', 'hazardous': 1, 'code': '03', 'description': 'Flue-gas dust' },
-        { 'id': 1711, 'subChapter': '05', 'chapter': '10', 'hazardous': 0, 'code': '04', 'description': 'Other particulates and dust' },
-        { 'id': 1712, 'subChapter': '05', 'chapter': '10', 'hazardous': 1, 'code': '05', 'description': 'Solid waste from gas treatment' },
-        { 'id': 1713, 'subChapter': '05', 'chapter': '10', 'hazardous': 1, 'code': '06', 'description': 'Sludges and filter cakes from gas treatment' },
-        { 'id': 1714, 'subChapter': '05', 'chapter': '10', 'hazardous': 1, 'code': '08', 'description': 'Wastes from cooling-water treatment containing oil' },
-        { 'id': 1715, 'subChapter': '05', 'chapter': '10', 'hazardous': 0, 'code': '09', 'description': 'Wastes from cooling-water treatment other than those mentioned in 10 05 08' },
-        { 'id': 1716, 'subChapter': '05', 'chapter': '10', 'hazardous': 1, 'code': '10', 'description': 'Dross and skimmings that are flammable or emit, upon contact with water, flammable gases in dangerous quantities' },
-        { 'id': 1717, 'subChapter': '05', 'chapter': '10', 'hazardous': 0, 'code': '11', 'description': 'Dross and skimmings other than those mentioned in 10 05 10' },
-        { 'id': 1718, 'subChapter': '05', 'chapter': '10', 'hazardous': 0, 'code': '99', 'description': 'Wastes not otherwise specified' },
-        { 'id': 1719, 'subChapter': '06', 'chapter': '10', 'hazardous': 0, 'code': '01', 'description': 'Slags from primary and secondary production' },
-        { 'id': 1720, 'subChapter': '06', 'chapter': '10', 'hazardous': 0, 'code': '02', 'description': 'Dross and skimmings from primary and secondary production' },
-        { 'id': 1721, 'subChapter': '06', 'chapter': '10', 'hazardous': 1, 'code': '03', 'description': 'Flue-gas dust' },
-        { 'id': 1722, 'subChapter': '06', 'chapter': '10', 'hazardous': 0, 'code': '04', 'description': 'Other particulates and dust' },
-        { 'id': 1723, 'subChapter': '06', 'chapter': '10', 'hazardous': 1, 'code': '06', 'description': 'Solid wastes from gas treatment' },
-        { 'id': 1724, 'subChapter': '06', 'chapter': '10', 'hazardous': 1, 'code': '07', 'description': 'Sludges and filter cakes from gas treatment' },
-        { 'id': 1725, 'subChapter': '06', 'chapter': '10', 'hazardous': 1, 'code': '09', 'description': 'Wastes from cooling-water treatment containing oil' },
-        { 'id': 1726, 'subChapter': '06', 'chapter': '10', 'hazardous': 0, 'code': '10', 'description': 'Wastes from cooling-water treatment other than those mentioned in 10 06 09' },
-        { 'id': 1727, 'subChapter': '06', 'chapter': '10', 'hazardous': 0, 'code': '99', 'description': 'Wastes not otherwise specified' },
-        { 'id': 1728, 'subChapter': '07', 'chapter': '10', 'hazardous': 0, 'code': '01', 'description': 'Slags from primary and secondary production' },
-        { 'id': 1729, 'subChapter': '07', 'chapter': '10', 'hazardous': 0, 'code': '02', 'description': 'Dross and skimmings from primary and secondary production' },
-        { 'id': 1730, 'subChapter': '07', 'chapter': '10', 'hazardous': 0, 'code': '03', 'description': 'Solid wastes from gas treatment' },
-        { 'id': 1731, 'subChapter': '07', 'chapter': '10', 'hazardous': 0, 'code': '04', 'description': 'Other particulates and dust' },
-        { 'id': 1732, 'subChapter': '07', 'chapter': '10', 'hazardous': 0, 'code': '05', 'description': 'Sludges and filter cakes from gas treatment' },
-        { 'id': 1733, 'subChapter': '07', 'chapter': '10', 'hazardous': 1, 'code': '07', 'description': 'Wastes from cooling-water treatment containing oil' },
-        { 'id': 1734, 'subChapter': '07', 'chapter': '10', 'hazardous': 0, 'code': '08', 'description': 'Wastes from cooling-water treatment other than those mentioned in 10 07 07' },
-        { 'id': 1735, 'subChapter': '07', 'chapter': '10', 'hazardous': 0, 'code': '99', 'description': 'Wastes not otherwise specified' },
-        { 'id': 1736, 'subChapter': '08', 'chapter': '10', 'hazardous': 0, 'code': '04', 'description': 'Particulates and dust' },
-        { 'id': 1737, 'subChapter': '08', 'chapter': '10', 'hazardous': 1, 'code': '08', 'description': 'Salt slag from primary and secondary production' },
-        { 'id': 1738, 'subChapter': '08', 'chapter': '10', 'hazardous': 0, 'code': '09', 'description': 'Other slags' },
-        { 'id': 1739, 'subChapter': '08', 'chapter': '10', 'hazardous': 1, 'code': '10', 'description': 'Dross and skimmings that are flammable or emit, upon contact with water, flammable gases in dangerous quantities' },
-        { 'id': 1740, 'subChapter': '08', 'chapter': '10', 'hazardous': 0, 'code': '11', 'description': 'Dross and skimmings other than those mentioned in 10 08 10' },
-        { 'id': 1741, 'subChapter': '08', 'chapter': '10', 'hazardous': 1, 'code': '12', 'description': 'Tar-containing wastes from anode manufacture' },
-        { 'id': 1742, 'subChapter': '08', 'chapter': '10', 'hazardous': 0, 'code': '13', 'description': 'Carbon-containing wastes from anode manufacture other than those mentioned in 10 08 12' },
-        { 'id': 1743, 'subChapter': '08', 'chapter': '10', 'hazardous': 0, 'code': '14', 'description': 'Anode scrap' },
-        { 'id': 1744, 'subChapter': '08', 'chapter': '10', 'hazardous': 1, 'code': '15', 'description': 'Flue-gas dust containing dangerous substances' },
-        { 'id': 1745, 'subChapter': '08', 'chapter': '10', 'hazardous': 0, 'code': '16', 'description': 'Flue-gas dust other than those mentioned in 10 08 15' },
-        { 'id': 1746, 'subChapter': '08', 'chapter': '10', 'hazardous': 1, 'code': '17', 'description': 'Sludges and filter cakes from flue-gas treatment containing dangerous substances' },
-        { 'id': 1747, 'subChapter': '08', 'chapter': '10', 'hazardous': 0, 'code': '18', 'description': 'Sludges and filter cakes from flue-gas treatment other than those mentioned in 10 08 17' },
-        { 'id': 1748, 'subChapter': '08', 'chapter': '10', 'hazardous': 1, 'code': '19', 'description': 'Wastes from cooling-water treatment containing oil' },
-        { 'id': 1749, 'subChapter': '08', 'chapter': '10', 'hazardous': 0, 'code': '20', 'description': 'Wastes from cooling-water treatment other than those mentioned in 10 08 19' },
-        { 'id': 1750, 'subChapter': '08', 'chapter': '10', 'hazardous': 0, 'code': '99', 'description': 'Wastes not otherwise specified' },
-        { 'id': 1751, 'subChapter': '09', 'chapter': '10', 'hazardous': 0, 'code': '03', 'description': 'Furnace slag' },
-        { 'id': 1752, 'subChapter': '09', 'chapter': '10', 'hazardous': 1, 'code': '05', 'description': 'Casting cores and moulds which have not undergone pouring containing dangerous substances' },
-        { 'id': 1753, 'subChapter': '09', 'chapter': '10', 'hazardous': 0, 'code': '06', 'description': 'Casting cores and moulds which have not undergone pouring other than those mentioned in 10 09 05' },
-        { 'id': 1754, 'subChapter': '09', 'chapter': '10', 'hazardous': 1, 'code': '07', 'description': 'Casting cores and moulds which have undergone pouring containing dangerous substances' },
-        { 'id': 1755, 'subChapter': '09', 'chapter': '10', 'hazardous': 0, 'code': '08', 'description': 'Casting cores and moulds which have undergone pouring other than those mentioned in 10 09 07' },
-        { 'id': 1756, 'subChapter': '09', 'chapter': '10', 'hazardous': 1, 'code': '09', 'description': 'Flue-gas dust containing dangerous substances' },
-        { 'id': 1757, 'subChapter': '09', 'chapter': '10', 'hazardous': 0, 'code': '10', 'description': 'Flue-gas dust other than those mentioned in 10 09 09' },
-        { 'id': 1758, 'subChapter': '09', 'chapter': '10', 'hazardous': 1, 'code': '11', 'description': 'Other particulates containing dangerous substances' },
-        { 'id': 1759, 'subChapter': '09', 'chapter': '10', 'hazardous': 0, 'code': '12', 'description': 'Other particulates other than those mentioned in 10 09 11' },
-        { 'id': 1760, 'subChapter': '09', 'chapter': '10', 'hazardous': 1, 'code': '13', 'description': 'Waste binders containing dangerous substances' },
-        { 'id': 1761, 'subChapter': '09', 'chapter': '10', 'hazardous': 0, 'code': '14', 'description': 'Waste binders other than those mentioned in 10 09 13' },
-        { 'id': 1762, 'subChapter': '09', 'chapter': '10', 'hazardous': 1, 'code': '15', 'description': 'Waste crack-indicating agent containing dangerous substances' },
-        { 'id': 1763, 'subChapter': '09', 'chapter': '10', 'hazardous': 0, 'code': '16', 'description': 'Waste crack-indicating agent other than those mentioned in 10 09 15' },
-        { 'id': 1764, 'subChapter': '09', 'chapter': '10', 'hazardous': 0, 'code': '99', 'description': 'Wastes not otherwise specified' },
-        { 'id': 1765, 'subChapter': '10', 'chapter': '10', 'hazardous': 0, 'code': '03', 'description': 'Furnace slag' },
-        { 'id': 1766, 'subChapter': '10', 'chapter': '10', 'hazardous': 1, 'code': '05', 'description': 'Casting cores and moulds which have not undergone pouring, containing dangerous substances' },
-        { 'id': 1767, 'subChapter': '10', 'chapter': '10', 'hazardous': 0, 'code': '06', 'description': 'Casting cores and moulds which have not undergone pouring, other than those mentioned in 10 10 05' },
-        { 'id': 1768, 'subChapter': '10', 'chapter': '10', 'hazardous': 1, 'code': '07', 'description': 'Casting cores and moulds which have undergone pouring, containing dangerous substances' },
-        { 'id': 1769, 'subChapter': '10', 'chapter': '10', 'hazardous': 0, 'code': '08', 'description': 'Casting cores and moulds which have undergone pouring, other than those mentioned in 10 10 07' },
-        { 'id': 1770, 'subChapter': '10', 'chapter': '10', 'hazardous': 1, 'code': '09', 'description': 'Flue-gas dust containing dangerous substances' },
-        { 'id': 1771, 'subChapter': '10', 'chapter': '10', 'hazardous': 0, 'code': '10', 'description': 'Flue-gas dust other than those mentioned in 10 10 09' },
-        { 'id': 1772, 'subChapter': '10', 'chapter': '10', 'hazardous': 1, 'code': '11', 'description': 'Other particulates containing dangerous substances' },
-        { 'id': 1773, 'subChapter': '10', 'chapter': '10', 'hazardous': 0, 'code': '12', 'description': 'Other particulates other than those mentioned in 10 10 11' },
-        { 'id': 1774, 'subChapter': '10', 'chapter': '10', 'hazardous': 1, 'code': '13', 'description': 'Waste binders containing dangerous substances' },
-        { 'id': 1775, 'subChapter': '10', 'chapter': '10', 'hazardous': 0, 'code': '14', 'description': 'Waste binders other than those mentioned in 10 10 13' },
-        { 'id': 1776, 'subChapter': '10', 'chapter': '10', 'hazardous': 1, 'code': '15', 'description': 'Waste crack-indicating agent containing dangerous substances' },
-        { 'id': 1777, 'subChapter': '10', 'chapter': '10', 'hazardous': 0, 'code': '16', 'description': 'Waste crack-indicating agent other than those mentioned in 10 10 15' },
-        { 'id': 1778, 'subChapter': '10', 'chapter': '10', 'hazardous': 0, 'code': '99', 'description': 'Wastes not otherwise specified' },
-        { 'id': 1779, 'subChapter': '11', 'chapter': '10', 'hazardous': 0, 'code': '03', 'description': 'Waste glass-based fibrous materials' },
-        { 'id': 1780, 'subChapter': '11', 'chapter': '10', 'hazardous': 0, 'code': '05', 'description': 'Particulates and dust' },
-        { 'id': 1781, 'subChapter': '11', 'chapter': '10', 'hazardous': 1, 'code': '09', 'description': 'Waste preparation mixture before thermal processing, containing dangerous substances' },
-        { 'id': 1782, 'subChapter': '11', 'chapter': '10', 'hazardous': 0, 'code': '10', 'description': 'Waste preparation mixture before thermal processing, other than those mentioned in 10 11 09' },
-        { 'id': 1783, 'subChapter': '11', 'chapter': '10', 'hazardous': 1, 'code': '11', 'description': 'Waste glass in small particles and glass powder containing heavy metals (for example from cathode ray tubes)' },
-        { 'id': 1784, 'subChapter': '11', 'chapter': '10', 'hazardous': 0, 'code': '12', 'description': 'Waste glass other than those mentioned in 10 11 11' },
-        { 'id': 1785, 'subChapter': '11', 'chapter': '10', 'hazardous': 1, 'code': '13', 'description': 'Glass-polishing and -grinding sludge containing dangerous substances' },
-        { 'id': 1786, 'subChapter': '11', 'chapter': '10', 'hazardous': 0, 'code': '14', 'description': 'Glass-polishing and -grinding sludge other than those mentioned in 10 11 13' },
-        { 'id': 1787, 'subChapter': '11', 'chapter': '10', 'hazardous': 1, 'code': '15', 'description': 'Solid wastes from flue-gas treatment containing dangerous substances' },
-        { 'id': 1788, 'subChapter': '11', 'chapter': '10', 'hazardous': 0, 'code': '16', 'description': 'Solid wastes from flue-gas treatment other than those mentioned in 10 11 15' },
-        { 'id': 1789, 'subChapter': '11', 'chapter': '10', 'hazardous': 1, 'code': '17', 'description': 'Sludges and filter cakes from flue-gas treatment containing dangerous substances' },
-        { 'id': 1790, 'subChapter': '11', 'chapter': '10', 'hazardous': 0, 'code': '18', 'description': 'Sludges and filter cakes from flue-gas treatment other than those mentioned in 10 11 17' },
-        { 'id': 1791, 'subChapter': '11', 'chapter': '10', 'hazardous': 1, 'code': '19', 'description': 'Solid wastes from on-site effluent treatment containing dangerous substances' },
-        { 'id': 1792, 'subChapter': '11', 'chapter': '10', 'hazardous': 0, 'code': '20', 'description': 'Solid wastes from on-site effluent treatment other than those mentioned in 10 11 19' },
-        { 'id': 1793, 'subChapter': '11', 'chapter': '10', 'hazardous': 0, 'code': '99', 'description': 'Wastes not otherwise specified' },
-        { 'id': 1794, 'subChapter': '12', 'chapter': '10', 'hazardous': 0, 'code': '01', 'description': 'Waste preparation mixture before thermal processing' },
-        { 'id': 1795, 'subChapter': '12', 'chapter': '10', 'hazardous': 0, 'code': '03', 'description': 'Particulates and dust' },
-        { 'id': 1796, 'subChapter': '12', 'chapter': '10', 'hazardous': 0, 'code': '05', 'description': 'Sludges and filter cakes from gas treatment' },
-        { 'id': 1797, 'subChapter': '12', 'chapter': '10', 'hazardous': 0, 'code': '06', 'description': 'Discarded moulds' },
-        { 'id': 1798, 'subChapter': '12', 'chapter': '10', 'hazardous': 0, 'code': '08', 'description': 'Waste ceramics, bricks, tiles and construction products (after thermal processing)' },
-        { 'id': 1799, 'subChapter': '12', 'chapter': '10', 'hazardous': 1, 'code': '09', 'description': 'Solid wastes from gas treatment containing dangerous substances' },
-        { 'id': 1800, 'subChapter': '12', 'chapter': '10', 'hazardous': 0, 'code': '10', 'description': 'Solid wastes from gas treatment other than those mentioned in 10 12 09' },
-        { 'id': 1801, 'subChapter': '12', 'chapter': '10', 'hazardous': 1, 'code': '11', 'description': 'Wastes from glazing containing heavy metals' },
-        { 'id': 1802, 'subChapter': '12', 'chapter': '10', 'hazardous': 0, 'code': '12', 'description': 'Wastes from glazing other than those mentioned in 10 12 11' },
-        { 'id': 1803, 'subChapter': '12', 'chapter': '10', 'hazardous': 0, 'code': '13', 'description': 'Sludge from on-site effluent treatment' },
-        { 'id': 1804, 'subChapter': '12', 'chapter': '10', 'hazardous': 0, 'code': '99', 'description': 'Wastes not otherwise specified' },
-        { 'id': 1805, 'subChapter': '13', 'chapter': '10', 'hazardous': 0, 'code': '01', 'description': 'Waste preparation mixture before thermal processing' },
-        { 'id': 1806, 'subChapter': '13', 'chapter': '10', 'hazardous': 0, 'code': '04', 'description': 'Wastes from calcination and hydration of lime' },
-        { 'id': 1807, 'subChapter': '13', 'chapter': '10', 'hazardous': 0, 'code': '06', 'description': 'Particulates and dust (except 10 13 12 and 10 13 13)' },
-        { 'id': 1808, 'subChapter': '13', 'chapter': '10', 'hazardous': 0, 'code': '07', 'description': 'Sludges and filter cakes from gas treatment' },
-        { 'id': 1809, 'subChapter': '13', 'chapter': '10', 'hazardous': 1, 'code': '09', 'description': 'Wastes from asbestos-cement manufacture containing asbestos' },
-        { 'id': 1810, 'subChapter': '13', 'chapter': '10', 'hazardous': 0, 'code': '10', 'description': 'Wastes from asbestos-cement manufacture other than those mentioned in 10 13 09' },
-        { 'id': 1811, 'subChapter': '13', 'chapter': '10', 'hazardous': 0, 'code': '11', 'description': 'Wastes from cement-based composite materials other than those mentioned in 10 13 09 and 10 13 10' },
-        { 'id': 1812, 'subChapter': '13', 'chapter': '10', 'hazardous': 1, 'code': '12', 'description': 'Solid wastes from gas treatment containing dangerous substances' },
-        { 'id': 1813, 'subChapter': '13', 'chapter': '10', 'hazardous': 0, 'code': '13', 'description': 'Solid wastes from gas treatment other than those mentioned in 10 13 12' },
-        { 'id': 1814, 'subChapter': '13', 'chapter': '10', 'hazardous': 0, 'code': '14', 'description': 'Waste concrete and concrete sludge' },
-        { 'id': 1815, 'subChapter': '13', 'chapter': '10', 'hazardous': 0, 'code': '99', 'description': 'Wastes not otherwise specified' },
-        { 'id': 1816, 'subChapter': '14', 'chapter': '10', 'hazardous': 1, 'code': '01', 'description': 'Waste from gas cleaning containing mercury' },
-        { 'id': 1817, 'subChapter': '01', 'chapter': '11', 'hazardous': 1, 'code': '05', 'description': 'Pickling acids' },
-        { 'id': 1818, 'subChapter': '01', 'chapter': '11', 'hazardous': 1, 'code': '06', 'description': 'Acids not otherwise specified' },
-        { 'id': 1819, 'subChapter': '01', 'chapter': '11', 'hazardous': 1, 'code': '07', 'description': 'Pickling bases' },
-        { 'id': 1820, 'subChapter': '01', 'chapter': '11', 'hazardous': 1, 'code': '08', 'description': 'Phosphatising sludges' },
-        { 'id': 1821, 'subChapter': '01', 'chapter': '11', 'hazardous': 1, 'code': '09', 'description': 'Sludges and filter cakes containing dangerous substances' },
-        { 'id': 1822, 'subChapter': '01', 'chapter': '11', 'hazardous': 0, 'code': '10', 'description': 'Sludges and filter cakes other than those mentioned in 11 01 09' },
-        { 'id': 1823, 'subChapter': '01', 'chapter': '11', 'hazardous': 1, 'code': '11', 'description': 'Aqueous rinsing liquids containing dangerous substances' },
-        { 'id': 1824, 'subChapter': '01', 'chapter': '11', 'hazardous': 0, 'code': '12', 'description': 'Aqueous rinsing liquids other than those mentioned in 11 01 11' },
-        { 'id': 1825, 'subChapter': '01', 'chapter': '11', 'hazardous': 1, 'code': '13', 'description': 'Degreasing wastes containing dangerous substances' },
-        { 'id': 1826, 'subChapter': '01', 'chapter': '11', 'hazardous': 0, 'code': '14', 'description': 'Degreasing wastes other than those mentioned in 11 01 13' },
-        { 'id': 1827, 'subChapter': '01', 'chapter': '11', 'hazardous': 1, 'code': '15', 'description': 'Eluate and sludges from membrane systems or ion exchange systems containing dangerous substances' },
-        { 'id': 1828, 'subChapter': '01', 'chapter': '11', 'hazardous': 1, 'code': '16', 'description': 'Saturated or spent ion exchange resins' },
-        { 'id': 1829, 'subChapter': '01', 'chapter': '11', 'hazardous': 1, 'code': '98', 'description': 'Other wastes containing dangerous substances' },
-        { 'id': 1830, 'subChapter': '01', 'chapter': '11', 'hazardous': 0, 'code': '99', 'description': 'Wastes not otherwise specified' },
-        { 'id': 1831, 'subChapter': '02', 'chapter': '11', 'hazardous': 1, 'code': '02', 'description': 'Sludges from zinc hydrometallurgy (including jarosite, goethite)' },
-        { 'id': 1832, 'subChapter': '02', 'chapter': '11', 'hazardous': 0, 'code': '03', 'description': 'Wastes from the production of anodes for aqueous electrolytical processes' },
-        { 'id': 1833, 'subChapter': '02', 'chapter': '11', 'hazardous': 1, 'code': '05', 'description': 'Wastes from copper hydrometallurgical processes containing dangerous substances' },
-        { 'id': 1834, 'subChapter': '02', 'chapter': '11', 'hazardous': 0, 'code': '06', 'description': 'Wastes from copper hydrometallurgical processes other than those mentioned in 11 02 05' },
-        { 'id': 1835, 'subChapter': '02', 'chapter': '11', 'hazardous': 1, 'code': '07', 'description': 'Other wastes containing dangerous substances' },
-        { 'id': 1836, 'subChapter': '02', 'chapter': '11', 'hazardous': 0, 'code': '99', 'description': 'Wastes not otherwise specified' },
-        { 'id': 1837, 'subChapter': '03', 'chapter': '11', 'hazardous': 1, 'code': '01', 'description': 'Wastes containing cyanide' },
-        { 'id': 1838, 'subChapter': '03', 'chapter': '11', 'hazardous': 1, 'code': '02', 'description': 'Other wastes' },
-        { 'id': 1839, 'subChapter': '05', 'chapter': '11', 'hazardous': 0, 'code': '01', 'description': 'Hard zinc' },
-        { 'id': 1840, 'subChapter': '05', 'chapter': '11', 'hazardous': 0, 'code': '02', 'description': 'Zinc ash' },
-        { 'id': 1841, 'subChapter': '05', 'chapter': '11', 'hazardous': 1, 'code': '03', 'description': 'Solid wastes from gas treatment' },
-        { 'id': 1842, 'subChapter': '05', 'chapter': '11', 'hazardous': 1, 'code': '04', 'description': 'Spent flux' },
-        { 'id': 1843, 'subChapter': '05', 'chapter': '11', 'hazardous': 0, 'code': '99', 'description': 'Wastes not otherwise specified' },
-        { 'id': 1844, 'subChapter': '01', 'chapter': '12', 'hazardous': 0, 'code': '01', 'description': 'Ferrous metal filings and turnings' },
-        { 'id': 1845, 'subChapter': '01', 'chapter': '12', 'hazardous': 0, 'code': '02', 'description': 'Ferrous metal dust and particles' },
-        { 'id': 1846, 'subChapter': '01', 'chapter': '12', 'hazardous': 0, 'code': '03', 'description': 'Non-ferrous metal filings and turnings' },
-        { 'id': 1847, 'subChapter': '01', 'chapter': '12', 'hazardous': 0, 'code': '04', 'description': 'Non-ferrous metal dust and particles' },
-        { 'id': 1848, 'subChapter': '01', 'chapter': '12', 'hazardous': 0, 'code': '05', 'description': 'Plastics shavings and turnings' },
-        { 'id': 1849, 'subChapter': '01', 'chapter': '12', 'hazardous': 1, 'code': '06', 'description': 'Mineral-based machining oils containing halogens (except emulsions and solutions)' },
-        { 'id': 1850, 'subChapter': '01', 'chapter': '12', 'hazardous': 1, 'code': '07', 'description': 'Mineral-based machining oils free of halogens (except emulsions and solutions)' },
-        { 'id': 1851, 'subChapter': '01', 'chapter': '12', 'hazardous': 1, 'code': '08', 'description': 'Machining emulsions and solutions containing halogens' },
-        { 'id': 1852, 'subChapter': '01', 'chapter': '12', 'hazardous': 1, 'code': '09', 'description': 'Machining emulsions and solutions free of halogens' },
-        { 'id': 1853, 'subChapter': '01', 'chapter': '12', 'hazardous': 1, 'code': '10', 'description': 'Synthetic machining oils' },
-        { 'id': 1854, 'subChapter': '01', 'chapter': '12', 'hazardous': 1, 'code': '12', 'description': 'Spent waxes and fats' },
-        { 'id': 1855, 'subChapter': '01', 'chapter': '12', 'hazardous': 0, 'code': '13', 'description': 'Welding wastes' },
-        { 'id': 1856, 'subChapter': '01', 'chapter': '12', 'hazardous': 1, 'code': '14', 'description': 'Machining sludges containing dangerous substances' },
-        { 'id': 1857, 'subChapter': '01', 'chapter': '12', 'hazardous': 0, 'code': '15', 'description': 'Machining sludges other than those mentioned in 12 01 14' },
-        { 'id': 1858, 'subChapter': '01', 'chapter': '12', 'hazardous': 1, 'code': '16', 'description': 'Waste blasting material containing dangerous substances' },
-        { 'id': 1859, 'subChapter': '01', 'chapter': '12', 'hazardous': 0, 'code': '17', 'description': 'Waste blasting material other than those mentioned in 12 01 16' },
-        { 'id': 1860, 'subChapter': '01', 'chapter': '12', 'hazardous': 1, 'code': '18', 'description': 'Metal sludge (grinding, honing and lapping sludge) containing oil' },
-        { 'id': 1861, 'subChapter': '01', 'chapter': '12', 'hazardous': 1, 'code': '19', 'description': 'Readily biodegradable machining oil' },
-        { 'id': 1862, 'subChapter': '01', 'chapter': '12', 'hazardous': 1, 'code': '20', 'description': 'Spent grinding bodies and grinding materials containing dangerous substances' },
-        { 'id': 1863, 'subChapter': '01', 'chapter': '12', 'hazardous': 0, 'code': '21', 'description': 'Spent grinding bodies and grinding materials other than those mentioned in 12 01 20' },
-        { 'id': 1864, 'subChapter': '01', 'chapter': '12', 'hazardous': 0, 'code': '99', 'description': 'Wastes not otherwise specified' },
-        { 'id': 1865, 'subChapter': '03', 'chapter': '12', 'hazardous': 1, 'code': '01', 'description': 'Aqueous washing liquids' },
-        { 'id': 1866, 'subChapter': '03', 'chapter': '12', 'hazardous': 1, 'code': '02', 'description': 'Steam degreasing wastes' },
-        { 'id': 1867, 'subChapter': '01', 'chapter': '13', 'hazardous': 1, 'code': '01', 'description': 'Hydraulic oils, containing PCBs' },
-        { 'id': 1868, 'subChapter': '01', 'chapter': '13', 'hazardous': 1, 'code': '04', 'description': 'Chlorinated emulsions' },
-        { 'id': 1869, 'subChapter': '01', 'chapter': '13', 'hazardous': 1, 'code': '05', 'description': 'Non-chlorinated emulsions' },
-        { 'id': 1870, 'subChapter': '01', 'chapter': '13', 'hazardous': 1, 'code': '09', 'description': 'Mineral-based chlorinated hydraulic oils' },
-        { 'id': 1871, 'subChapter': '01', 'chapter': '13', 'hazardous': 1, 'code': '10', 'description': 'Mineral based non-chlorinated hydraulic oils' },
-        { 'id': 1872, 'subChapter': '01', 'chapter': '13', 'hazardous': 1, 'code': '11', 'description': 'Synthetic hydraulic oils' },
-        { 'id': 1873, 'subChapter': '01', 'chapter': '13', 'hazardous': 1, 'code': '12', 'description': 'Readily biodegradable hydraulic oils' },
-        { 'id': 1874, 'subChapter': '01', 'chapter': '13', 'hazardous': 1, 'code': '13', 'description': 'Other hydraulic oils' },
-        { 'id': 1875, 'subChapter': '02', 'chapter': '13', 'hazardous': 1, 'code': '04', 'description': 'Mineral-based chlorinated engine, gear and lubricating oils' },
-        { 'id': 1876, 'subChapter': '02', 'chapter': '13', 'hazardous': 1, 'code': '05', 'description': 'Mineral-based non-chlorinated engine, gear and lubricating oils' },
-        { 'id': 1877, 'subChapter': '02', 'chapter': '13', 'hazardous': 1, 'code': '06', 'description': 'Synthetic engine, gear and lubricating oils' },
-        { 'id': 1878, 'subChapter': '02', 'chapter': '13', 'hazardous': 1, 'code': '07', 'description': 'Readily biodegradable engine, gear and lubricating oils' },
-        { 'id': 1879, 'subChapter': '02', 'chapter': '13', 'hazardous': 1, 'code': '08', 'description': 'Other engine, gear and lubricating oils' },
-        { 'id': 1880, 'subChapter': '03', 'chapter': '13', 'hazardous': 1, 'code': '01', 'description': 'Insulating or heat transmission oils containing PCBs' },
-        { 'id': 1881, 'subChapter': '03', 'chapter': '13', 'hazardous': 1, 'code': '06', 'description': 'Mineral-based chlorinated insulating and heat transmission oils other than those mentioned in 13 03 01' },
-        { 'id': 1882, 'subChapter': '03', 'chapter': '13', 'hazardous': 1, 'code': '07', 'description': 'Mineral-based non-chlorinated insulating and heat transmission oils' },
-        { 'id': 1883, 'subChapter': '03', 'chapter': '13', 'hazardous': 1, 'code': '08', 'description': 'Synthetic insulating and heat transmission oils' },
-        { 'id': 1884, 'subChapter': '03', 'chapter': '13', 'hazardous': 1, 'code': '09', 'description': 'Readily biodegradable insulating and heat transmission oils' },
-        { 'id': 1885, 'subChapter': '03', 'chapter': '13', 'hazardous': 1, 'code': '10', 'description': 'Other insulating and heat transmission oils' },
-        { 'id': 1886, 'subChapter': '04', 'chapter': '13', 'hazardous': 1, 'code': '01', 'description': 'Bilge oils from inland navigation' },
-        { 'id': 1887, 'subChapter': '04', 'chapter': '13', 'hazardous': 1, 'code': '02', 'description': 'Bilge oils from jetty sewers' },
-        { 'id': 1888, 'subChapter': '04', 'chapter': '13', 'hazardous': 1, 'code': '03', 'description': 'Bilge oils from other navigation' },
-        { 'id': 1889, 'subChapter': '05', 'chapter': '13', 'hazardous': 1, 'code': '01', 'description': 'Solids from grit chambers and oil/water separators' },
-        { 'id': 1890, 'subChapter': '05', 'chapter': '13', 'hazardous': 1, 'code': '02', 'description': 'Sludges from oil/water separators' },
-        { 'id': 1891, 'subChapter': '05', 'chapter': '13', 'hazardous': 1, 'code': '03', 'description': 'Interceptor sludges' },
-        { 'id': 1892, 'subChapter': '05', 'chapter': '13', 'hazardous': 1, 'code': '06', 'description': 'Oil from oil/water separators' },
-        { 'id': 1893, 'subChapter': '05', 'chapter': '13', 'hazardous': 1, 'code': '07', 'description': 'Oily water from oil/water separators' },
-        { 'id': 1894, 'subChapter': '05', 'chapter': '13', 'hazardous': 1, 'code': '08', 'description': 'Mixtures of wastes from grit chambers and oil/water separators' },
-        { 'id': 1895, 'subChapter': '07', 'chapter': '13', 'hazardous': 1, 'code': '01', 'description': 'Fuel oil and diesel' },
-        { 'id': 1896, 'subChapter': '07', 'chapter': '13', 'hazardous': 1, 'code': '02', 'description': 'Petrol' },
-        { 'id': 1897, 'subChapter': '07', 'chapter': '13', 'hazardous': 1, 'code': '03', 'description': 'Other fuels (including mixtures)' },
-        { 'id': 1898, 'subChapter': '08', 'chapter': '13', 'hazardous': 1, 'code': '01', 'description': 'Desalter sludges or emulsions' },
-        { 'id': 1899, 'subChapter': '08', 'chapter': '13', 'hazardous': 1, 'code': '02', 'description': 'Other emulsions' },
-        { 'id': 1900, 'subChapter': '08', 'chapter': '13', 'hazardous': 1, 'code': '99', 'description': 'Wastes not otherwise specified' },
-        { 'id': 1901, 'subChapter': '06', 'chapter': '14', 'hazardous': 1, 'code': '01', 'description': 'Chlorofluorocarbons, HCFC, HFC' },
-        { 'id': 1902, 'subChapter': '06', 'chapter': '14', 'hazardous': 1, 'code': '02', 'description': 'Other halogenated solvents and solvent mixtures' },
-        { 'id': 1903, 'subChapter': '06', 'chapter': '14', 'hazardous': 1, 'code': '03', 'description': 'Other solvents and solvent mixtures' },
-        { 'id': 1904, 'subChapter': '06', 'chapter': '14', 'hazardous': 1, 'code': '04', 'description': 'Sludges or solid wastes containing halogenated solvents' },
-        { 'id': 1905, 'subChapter': '06', 'chapter': '14', 'hazardous': 1, 'code': '05', 'description': 'Sludges or solid wastes containing other solvents' },
-        { 'id': 1906, 'subChapter': '01', 'chapter': '15', 'hazardous': 0, 'code': '01', 'description': 'Paper and cardboard packaging' },
-        { 'id': 1907, 'subChapter': '01', 'chapter': '15', 'hazardous': 0, 'code': '02', 'description': 'Plastic packaging' },
-        { 'id': 1908, 'subChapter': '01', 'chapter': '15', 'hazardous': 0, 'code': '03', 'description': 'Wooden packaging' },
-        { 'id': 1909, 'subChapter': '01', 'chapter': '15', 'hazardous': 0, 'code': '04', 'description': 'Metallic packaging' },
-        { 'id': 1910, 'subChapter': '01', 'chapter': '15', 'hazardous': 0, 'code': '05', 'description': 'Composite packaging' },
-        { 'id': 1911, 'subChapter': '01', 'chapter': '15', 'hazardous': 0, 'code': '06', 'description': 'Mixed packaging' },
-        { 'id': 1912, 'subChapter': '01', 'chapter': '15', 'hazardous': 0, 'code': '07', 'description': 'Glass packaging' },
-        { 'id': 1913, 'subChapter': '01', 'chapter': '15', 'hazardous': 0, 'code': '09', 'description': 'Textile packaging' },
-        { 'id': 1914, 'subChapter': '01', 'chapter': '15', 'hazardous': 1, 'code': '10', 'description': 'Packaging containing residues of or contaminated by dangerous substances' },
-        { 'id': 1915, 'subChapter': '01', 'chapter': '15', 'hazardous': 1, 'code': '11', 'description': 'Metallic packaging containing a dangerous solid porous matrix (e.g asbestos), including empty pressure containers' },
-        { 'id': 1916, 'subChapter': '02', 'chapter': '15', 'hazardous': 1, 'code': '02', 'description': 'Absorbents, filter materials, wiping cloths and protective clothing contaminated by dangerous substances' },
-        { 'id': 1917, 'subChapter': '02', 'chapter': '15', 'hazardous': 0, 'code': '03', 'description': 'Absorbents, filter materials, wiping cloths and protective clothing other than those mentioned in 15 02 02' },
-        { 'id': 1918, 'subChapter': '01', 'chapter': '16', 'hazardous': 0, 'code': '03', 'description': 'End-of-life tyres' },
-        { 'id': 1919, 'subChapter': '01', 'chapter': '16', 'hazardous': 1, 'code': '04', 'description': 'End-of-life vehicles' },
-        { 'id': 1920, 'subChapter': '01', 'chapter': '16', 'hazardous': 0, 'code': '06', 'description': 'End-of-life vehicles, containing neither liquids nor other hazardous components' },
-        { 'id': 1921, 'subChapter': '01', 'chapter': '16', 'hazardous': 1, 'code': '07', 'description': 'Oil filters' },
-        { 'id': 1922, 'subChapter': '01', 'chapter': '16', 'hazardous': 1, 'code': '08', 'description': 'Components containing mercury' },
-        { 'id': 1923, 'subChapter': '01', 'chapter': '16', 'hazardous': 1, 'code': '09', 'description': 'Components containing PCBs' },
-        { 'id': 1924, 'subChapter': '01', 'chapter': '16', 'hazardous': 1, 'code': '10', 'description': 'Explosive components (for example air bags)' },
-        { 'id': 1925, 'subChapter': '01', 'chapter': '16', 'hazardous': 1, 'code': '11', 'description': 'Brake pads containing asbestos' },
-        { 'id': 1926, 'subChapter': '01', 'chapter': '16', 'hazardous': 0, 'code': '12', 'description': 'Brake pads other than those mentioned in 16 01 11' },
-        { 'id': 1927, 'subChapter': '01', 'chapter': '16', 'hazardous': 1, 'code': '13', 'description': 'Brake fluids' },
-        { 'id': 1928, 'subChapter': '01', 'chapter': '16', 'hazardous': 1, 'code': '14', 'description': 'Antifreeze fluids containing dangerous substances' },
-        { 'id': 1929, 'subChapter': '01', 'chapter': '16', 'hazardous': 0, 'code': '15', 'description': 'Antifreeze fluids other than those mentioned in 16 01 14' },
-        { 'id': 1930, 'subChapter': '01', 'chapter': '16', 'hazardous': 0, 'code': '16', 'description': 'Tanks for liquefied gas' },
-        { 'id': 1931, 'subChapter': '01', 'chapter': '16', 'hazardous': 0, 'code': '17', 'description': 'Ferrous metal' },
-        { 'id': 1932, 'subChapter': '01', 'chapter': '16', 'hazardous': 0, 'code': '18', 'description': 'Non-ferrous metal' },
-        { 'id': 1933, 'subChapter': '01', 'chapter': '16', 'hazardous': 0, 'code': '19', 'description': 'Plastic' },
-        { 'id': 1934, 'subChapter': '01', 'chapter': '16', 'hazardous': 0, 'code': '20', 'description': 'Glass' },
-        { 'id': 1935, 'subChapter': '01', 'chapter': '16', 'hazardous': 1, 'code': '21', 'description': 'Hazardous components other than those mentioned in 16 01 07 to 16 01 11 and 16 01 13 and 16 01 14' },
-        { 'id': 1936, 'subChapter': '01', 'chapter': '16', 'hazardous': 0, 'code': '22', 'description': 'Components not otherwise specified' },
-        { 'id': 1937, 'subChapter': '01', 'chapter': '16', 'hazardous': 0, 'code': '99', 'description': 'Wastes not otherwise specified' },
-        { 'id': 1938, 'subChapter': '02', 'chapter': '16', 'hazardous': 1, 'code': '09', 'description': 'Transformers and capacitors containing PCBs' },
-        { 'id': 1939, 'subChapter': '02', 'chapter': '16', 'hazardous': 1, 'code': '10', 'description': 'Discarded equipment containing or contaminated by PCBs other than those mentioned in 16 02 09' },
-        { 'id': 1940, 'subChapter': '02', 'chapter': '16', 'hazardous': 1, 'code': '11', 'description': 'Discarded equipment containing chlorofluorocarbons, HCFC, HFC' },
-        { 'id': 1941, 'subChapter': '02', 'chapter': '16', 'hazardous': 1, 'code': '12', 'description': 'Discarded equipment containing free asbestos' },
-        { 'id': 1942, 'subChapter': '02', 'chapter': '16', 'hazardous': 1, 'code': '13', 'description': 'Discarded equipment containing hazardous components   other than those mentioned in 16 02 09 to 16 02 12' },
-        { 'id': 1943, 'subChapter': '02', 'chapter': '16', 'hazardous': 0, 'code': '14', 'description': 'Discarded equipment other than those mentioned in 16 02 09 to 16 02 13' },
-        { 'id': 1944, 'subChapter': '02', 'chapter': '16', 'hazardous': 1, 'code': '15', 'description': 'Hazardous components removed from discarded equipment' },
-        { 'id': 1945, 'subChapter': '02', 'chapter': '16', 'hazardous': 0, 'code': '16', 'description': 'Components removed from discarded equipment other than those mentioned in 16 02 15' },
-        { 'id': 1946, 'subChapter': '03', 'chapter': '16', 'hazardous': 1, 'code': '03', 'description': 'Inorganic wastes containing dangerous substances' },
-        { 'id': 1947, 'subChapter': '03', 'chapter': '16', 'hazardous': 0, 'code': '04', 'description': 'Inorganic wastes other than those mentioned in 16 03 03' },
-        { 'id': 1948, 'subChapter': '03', 'chapter': '16', 'hazardous': 1, 'code': '05', 'description': 'Organic wastes containing dangerous substances' },
-        { 'id': 1949, 'subChapter': '03', 'chapter': '16', 'hazardous': 0, 'code': '06', 'description': 'Organic wastes other than those mentioned in 16 03 05' },
-        { 'id': 1950, 'subChapter': '04', 'chapter': '16', 'hazardous': 1, 'code': '01', 'description': 'Waste ammunition' },
-        { 'id': 1951, 'subChapter': '04', 'chapter': '16', 'hazardous': 1, 'code': '02', 'description': 'Fireworks wastes' },
-        { 'id': 1952, 'subChapter': '04', 'chapter': '16', 'hazardous': 1, 'code': '03', 'description': 'Other waste explosives' },
-        { 'id': 1953, 'subChapter': '05', 'chapter': '16', 'hazardous': 1, 'code': '04', 'description': 'Gases in pressure containers (including halons) containing dangerous substances' },
-        { 'id': 1954, 'subChapter': '05', 'chapter': '16', 'hazardous': 0, 'code': '05', 'description': 'Gases in pressure containers other than those mentioned in 16 05 04' },
-        { 'id': 1955, 'subChapter': '05', 'chapter': '16', 'hazardous': 1, 'code': '06', 'description': 'Laboratory chemicals, consisting of or containing dangerous substances, including mixtures of laboratory chemicals' },
-        { 'id': 1956, 'subChapter': '05', 'chapter': '16', 'hazardous': 1, 'code': '07', 'description': 'Discarded inorganic chemicals consisting of or containing dangerous substances' },
-        { 'id': 1957, 'subChapter': '05', 'chapter': '16', 'hazardous': 1, 'code': '08', 'description': 'Discarded organic chemicals consisting of or containing dangerous substances' },
-        { 'id': 1958, 'subChapter': '05', 'chapter': '16', 'hazardous': 0, 'code': '09', 'description': 'Discarded chemicals other than those mentioned in 16 05 06, 16 05 07 or 16 05 08' },
-        { 'id': 1959, 'subChapter': '06', 'chapter': '16', 'hazardous': 1, 'code': '01', 'description': 'Lead batteries' },
-        { 'id': 1960, 'subChapter': '06', 'chapter': '16', 'hazardous': 1, 'code': '02', 'description': 'Ni-Cd batteries' },
-        { 'id': 1961, 'subChapter': '06', 'chapter': '16', 'hazardous': 1, 'code': '03', 'description': 'Mercury-containing batteries' },
-        { 'id': 1962, 'subChapter': '06', 'chapter': '16', 'hazardous': 0, 'code': '04', 'description': 'Alkaline batteries (except 16 06 03)' },
-        { 'id': 1963, 'subChapter': '06', 'chapter': '16', 'hazardous': 0, 'code': '05', 'description': 'Other batteries and accumulators' },
-        { 'id': 1964, 'subChapter': '06', 'chapter': '16', 'hazardous': 1, 'code': '06', 'description': 'Separately collected electrolyte from batteries and accumulators' },
-        { 'id': 1965, 'subChapter': '07', 'chapter': '16', 'hazardous': 1, 'code': '08', 'description': 'Wastes containing oil' },
-        { 'id': 1966, 'subChapter': '07', 'chapter': '16', 'hazardous': 1, 'code': '09', 'description': 'Wastes containing other dangerous substances' },
-        { 'id': 1967, 'subChapter': '07', 'chapter': '16', 'hazardous': 0, 'code': '99', 'description': 'Wastes not otherwise specified' },
-        { 'id': 1968, 'subChapter': '08', 'chapter': '16', 'hazardous': 0, 'code': '01', 'description': 'Spent catalysts containing gold, silver, rhenium, rhodium, palladium, iridium or platinum (except 16 08 07)' },
-        { 'id': 1969, 'subChapter': '08', 'chapter': '16', 'hazardous': 1, 'code': '02', 'description': 'Spent catalysts containing dangerous transition metals  or dangerous transition metal compounds' },
-        { 'id': 1970, 'subChapter': '08', 'chapter': '16', 'hazardous': 0, 'code': '03', 'description': 'Spent catalysts containing transition metals or transition metal compounds not otherwise specified' },
-        { 'id': 1971, 'subChapter': '08', 'chapter': '16', 'hazardous': 0, 'code': '04', 'description': 'Spent fluid catalytic cracking catalysts (except 16 08 07)' },
-        { 'id': 1972, 'subChapter': '08', 'chapter': '16', 'hazardous': 1, 'code': '05', 'description': 'Spent catalysts containing phosphoric acid' },
-        { 'id': 1973, 'subChapter': '08', 'chapter': '16', 'hazardous': 1, 'code': '06', 'description': 'Spent liquids used as catalysts' },
-        { 'id': 1974, 'subChapter': '08', 'chapter': '16', 'hazardous': 1, 'code': '07', 'description': 'Spent catalysts contaminated with dangerous substances' },
-        { 'id': 1975, 'subChapter': '09', 'chapter': '16', 'hazardous': 1, 'code': '01', 'description': 'Permanganates, for example potassium permanganate' },
-        { 'id': 1976, 'subChapter': '09', 'chapter': '16', 'hazardous': 1, 'code': '02', 'description': 'Chromates, for example potassium chromate, potassium or sodium dichromate' },
-        { 'id': 1977, 'subChapter': '09', 'chapter': '16', 'hazardous': 1, 'code': '03', 'description': 'Peroxides, for example hydrogen peroxide' },
-        { 'id': 1978, 'subChapter': '09', 'chapter': '16', 'hazardous': 1, 'code': '04', 'description': 'Oxidising substances, not otherwise specified' },
-        { 'id': 1979, 'subChapter': '10', 'chapter': '16', 'hazardous': 1, 'code': '01', 'description': 'Aqueous liquid wastes containing dangerous substances' },
-        { 'id': 1980, 'subChapter': '10', 'chapter': '16', 'hazardous': 0, 'code': '02', 'description': 'Aqueous liquid wastes other than those mentioned in 16 10 01' },
-        { 'id': 1981, 'subChapter': '10', 'chapter': '16', 'hazardous': 1, 'code': '03', 'description': 'Aqueous concentrates containing dangerous substances' },
-        { 'id': 1982, 'subChapter': '10', 'chapter': '16', 'hazardous': 0, 'code': '04', 'description': 'Aqueous concentrates other than those mentioned in 16 10 03' },
-        { 'id': 1983, 'subChapter': '11', 'chapter': '16', 'hazardous': 1, 'code': '01', 'description': 'Carbon-based linings and refractories from metallurgical processes containing dangerous substances' },
-        { 'id': 1984, 'subChapter': '11', 'chapter': '16', 'hazardous': 0, 'code': '02', 'description': 'Carbon-based linings and refractories from metallurgical processes others than those mentioned in 16 11 01' },
-        { 'id': 1985, 'subChapter': '11', 'chapter': '16', 'hazardous': 1, 'code': '03', 'description': 'Other linings and refractories from metallurgical processes containing dangerous substances' },
-        { 'id': 1986, 'subChapter': '11', 'chapter': '16', 'hazardous': 0, 'code': '04', 'description': 'Other linings and refractories from metallurgical processes other than those mentioned in 16 11 03' },
-        { 'id': 1987, 'subChapter': '11', 'chapter': '16', 'hazardous': 1, 'code': '05', 'description': 'Linings and refractories from non-metallurgical processes containing dangerous substances' },
-        { 'id': 1988, 'subChapter': '11', 'chapter': '16', 'hazardous': 0, 'code': '06', 'description': 'Linings and refractories from non-metallurgical processes others than those mentioned in 16 11 05' },
-        { 'id': 1989, 'subChapter': '01', 'chapter': '17', 'hazardous': 0, 'code': '01', 'description': 'Concrete' },
-        { 'id': 1990, 'subChapter': '01', 'chapter': '17', 'hazardous': 0, 'code': '02', 'description': 'Bricks' },
-        { 'id': 1991, 'subChapter': '01', 'chapter': '17', 'hazardous': 0, 'code': '03', 'description': 'Tiles and ceramics' },
-        { 'id': 1992, 'subChapter': '01', 'chapter': '17', 'hazardous': 1, 'code': '06', 'description': 'Mixtures of, or separate fractions of concrete, bricks, tiles and ceramics containing dangerous substances' },
-        { 'id': 1993, 'subChapter': '01', 'chapter': '17', 'hazardous': 0, 'code': '07', 'description': 'Mixtures of concrete, bricks, tiles and ceramics other than those mentioned in 17 01 06' },
-        { 'id': 1994, 'subChapter': '02', 'chapter': '17', 'hazardous': 0, 'code': '01', 'description': 'Wood' },
-        { 'id': 1995, 'subChapter': '02', 'chapter': '17', 'hazardous': 0, 'code': '02', 'description': 'Glass' },
-        { 'id': 1996, 'subChapter': '02', 'chapter': '17', 'hazardous': 0, 'code': '03', 'description': 'Plastic' },
-        { 'id': 1997, 'subChapter': '02', 'chapter': '17', 'hazardous': 1, 'code': '04', 'description': 'Glass, plastic and wood containing or contaminated with dangerous substances' },
-        { 'id': 1998, 'subChapter': '03', 'chapter': '17', 'hazardous': 1, 'code': '01', 'description': 'Bituminous mixtures containing coal tar' },
-        { 'id': 1999, 'subChapter': '03', 'chapter': '17', 'hazardous': 0, 'code': '02', 'description': 'Bituminous mixtures other than those mentioned in 17 03 01' },
-        { 'id': 2000, 'subChapter': '03', 'chapter': '17', 'hazardous': 1, 'code': '03', 'description': 'Coal tar and tarred products' },
-        { 'id': 2001, 'subChapter': '04', 'chapter': '17', 'hazardous': 0, 'code': '01', 'description': 'Copper, bronze, brass' },
-        { 'id': 2002, 'subChapter': '04', 'chapter': '17', 'hazardous': 0, 'code': '02', 'description': 'Aluminium' },
-        { 'id': 2003, 'subChapter': '04', 'chapter': '17', 'hazardous': 0, 'code': '03', 'description': 'Lead' },
-        { 'id': 2004, 'subChapter': '04', 'chapter': '17', 'hazardous': 0, 'code': '04', 'description': 'Zinc' },
-        { 'id': 2005, 'subChapter': '04', 'chapter': '17', 'hazardous': 0, 'code': '05', 'description': 'Iron and steel' },
-        { 'id': 2006, 'subChapter': '04', 'chapter': '17', 'hazardous': 0, 'code': '06', 'description': 'Tin' },
-        { 'id': 2007, 'subChapter': '04', 'chapter': '17', 'hazardous': 0, 'code': '07', 'description': 'Mixed metals' },
-        { 'id': 2008, 'subChapter': '04', 'chapter': '17', 'hazardous': 1, 'code': '09', 'description': 'Metal waste contaminated with dangerous substances' },
-        { 'id': 2009, 'subChapter': '04', 'chapter': '17', 'hazardous': 1, 'code': '10', 'description': 'Cables containing oil, coal tar and other dangerous substances' },
-        { 'id': 2010, 'subChapter': '04', 'chapter': '17', 'hazardous': 0, 'code': '11', 'description': 'Cables other than those mentioned in 17 04 10' },
-        { 'id': 2011, 'subChapter': '05', 'chapter': '17', 'hazardous': 1, 'code': '03', 'description': 'Soil and stones containing dangerous substances' },
-        { 'id': 2012, 'subChapter': '05', 'chapter': '17', 'hazardous': 0, 'code': '04', 'description': 'Soil and stones other than those mentioned in 17 05 03' },
-        { 'id': 2013, 'subChapter': '05', 'chapter': '17', 'hazardous': 1, 'code': '05', 'description': 'Dredging spoil containing dangerous substances' },
-        { 'id': 2014, 'subChapter': '05', 'chapter': '17', 'hazardous': 0, 'code': '06', 'description': 'Dredging spoil other than those mentioned in 17 05 05' },
-        { 'id': 2015, 'subChapter': '05', 'chapter': '17', 'hazardous': 1, 'code': '07', 'description': 'Track ballast containing dangerous substances' },
-        { 'id': 2016, 'subChapter': '05', 'chapter': '17', 'hazardous': 0, 'code': '08', 'description': 'Track ballast other than those mentioned in 17 05 07' },
-        { 'id': 2017, 'subChapter': '06', 'chapter': '17', 'hazardous': 1, 'code': '01', 'description': 'Insulation materials containing asbestos' },
-        { 'id': 2018, 'subChapter': '06', 'chapter': '17', 'hazardous': 1, 'code': '03', 'description': 'Other insulation materials consisting of or containing dangerous substances' },
-        { 'id': 2019, 'subChapter': '06', 'chapter': '17', 'hazardous': 0, 'code': '04', 'description': 'Insulation materials other than those mentioned in 17 06 01 and 17 06 03' },
-        { 'id': 2020, 'subChapter': '06', 'chapter': '17', 'hazardous': 1, 'code': '05', 'description': 'Construction materials containing asbestos' },
-        { 'id': 2021, 'subChapter': '08', 'chapter': '17', 'hazardous': 1, 'code': '01', 'description': 'Gypsum-based construction materials contaminated with dangerous substances' },
-        { 'id': 2022, 'subChapter': '08', 'chapter': '17', 'hazardous': 0, 'code': '02', 'description': 'Gypsum-based construction materials other than those mentioned in 17 08 01' },
-        { 'id': 2023, 'subChapter': '09', 'chapter': '17', 'hazardous': 1, 'code': '01', 'description': 'Construction and demolition wastes containing mercury' },
-        { 'id': 2024, 'subChapter': '09', 'chapter': '17', 'hazardous': 1, 'code': '02', 'description': 'Construction and demolition wastes containing PCBs' },
-        { 'id': 2025, 'subChapter': '09', 'chapter': '17', 'hazardous': 1, 'code': '03', 'description': 'Other construction and demolition wastes (including mixed wastes) containing dangerous substances' },
-        { 'id': 2026, 'subChapter': '09', 'chapter': '17', 'hazardous': 0, 'code': '04', 'description': 'Mixed construction and demolition wastes other than those mentioned in 17 09 01, 17 09 02 and 17 09 03' },
-        { 'id': 2027, 'subChapter': '01', 'chapter': '18', 'hazardous': 0, 'code': '01', 'description': 'Sharps (except 18 01 03)' },
-        { 'id': 2028, 'subChapter': '01', 'chapter': '18', 'hazardous': 0, 'code': '02', 'description': 'Body parts and organs including blood bags and blood preserves (except 18 01 03)' },
-        { 'id': 2029, 'subChapter': '01', 'chapter': '18', 'hazardous': 1, 'code': '03', 'description': 'Wastes whose collection and disposal is subject to special requirements in order to prevent infection' },
-        { 'id': 2030, 'subChapter': '01', 'chapter': '18', 'hazardous': 0, 'code': '04', 'description': 'Wastes whose collection and disposal is not subject to special requirements in order to prevent infection ' },
-        { 'id': 2031, 'subChapter': '01', 'chapter': '18', 'hazardous': 1, 'code': '06', 'description': 'Chemicals consisting of or containing dangerous substances' },
-        { 'id': 2032, 'subChapter': '01', 'chapter': '18', 'hazardous': 0, 'code': '07', 'description': 'Chemicals other than those mentioned in 18 01 06' },
-        { 'id': 2033, 'subChapter': '01', 'chapter': '18', 'hazardous': 1, 'code': '08', 'description': 'Cytotoxic and cytostatic medicines' },
-        { 'id': 2034, 'subChapter': '01', 'chapter': '18', 'hazardous': 0, 'code': '09', 'description': 'Medicines other than those mentioned in 18 01 08' },
-        { 'id': 2035, 'subChapter': '01', 'chapter': '18', 'hazardous': 1, 'code': '10', 'description': 'Amalgam waste from dental care' },
-        { 'id': 2036, 'subChapter': '02', 'chapter': '18', 'hazardous': 0, 'code': '01', 'description': 'Sharps (except 18 02 02)' },
-        { 'id': 2037, 'subChapter': '02', 'chapter': '18', 'hazardous': 1, 'code': '02', 'description': 'Wastes whose collection and disposal is subject to special requirements in order to prevent infection' },
-        { 'id': 2038, 'subChapter': '02', 'chapter': '18', 'hazardous': 0, 'code': '03', 'description': 'Wastes whose collection and disposal is not subject to special requirements in order to prevent infection' },
-        { 'id': 2039, 'subChapter': '02', 'chapter': '18', 'hazardous': 1, 'code': '05', 'description': 'Chemicals consisting of or containing dangerous substances' },
-        { 'id': 2040, 'subChapter': '02', 'chapter': '18', 'hazardous': 0, 'code': '06', 'description': 'Chemicals other than those mentioned in 18 02 05' },
-        { 'id': 2041, 'subChapter': '02', 'chapter': '18', 'hazardous': 1, 'code': '07', 'description': 'Cytotoxic and cytostatic medicines' },
-        { 'id': 2042, 'subChapter': '02', 'chapter': '18', 'hazardous': 0, 'code': '08', 'description': 'Medicines other than those mentioned in 18 02 07' },
-        { 'id': 2043, 'subChapter': '01', 'chapter': '19', 'hazardous': 0, 'code': '02', 'description': 'Ferrous materials removed from bottom ash' },
-        { 'id': 2044, 'subChapter': '01', 'chapter': '19', 'hazardous': 1, 'code': '05', 'description': 'Filter cake from gas treatment' },
-        { 'id': 2045, 'subChapter': '01', 'chapter': '19', 'hazardous': 1, 'code': '06', 'description': 'Aqueous liquid wastes from gas treatment and other aqueous liquid wastes' },
-        { 'id': 2046, 'subChapter': '01', 'chapter': '19', 'hazardous': 1, 'code': '07', 'description': 'Solid wastes from gas treatment' },
-        { 'id': 2047, 'subChapter': '01', 'chapter': '19', 'hazardous': 1, 'code': '10', 'description': 'Spent activated carbon from flue-gas treatment' },
-        { 'id': 2048, 'subChapter': '01', 'chapter': '19', 'hazardous': 1, 'code': '11', 'description': 'Bottom ash and slag containing dangerous substances' },
-        { 'id': 2049, 'subChapter': '01', 'chapter': '19', 'hazardous': 0, 'code': '12', 'description': 'Bottom ash and slag other than those mentioned in 19 01 11' },
-        { 'id': 2050, 'subChapter': '01', 'chapter': '19', 'hazardous': 1, 'code': '13', 'description': 'Fly ash containing dangerous substances' },
-        { 'id': 2051, 'subChapter': '01', 'chapter': '19', 'hazardous': 0, 'code': '14', 'description': 'Fly ash other than those mentioned in 19 01 13' },
-        { 'id': 2052, 'subChapter': '01', 'chapter': '19', 'hazardous': 1, 'code': '15', 'description': 'Boiler dust containing dangerous substances' },
-        { 'id': 2053, 'subChapter': '01', 'chapter': '19', 'hazardous': 0, 'code': '16', 'description': 'Boiler dust other than those mentioned in 19 01 15' },
-        { 'id': 2054, 'subChapter': '01', 'chapter': '19', 'hazardous': 1, 'code': '17', 'description': 'Pyrolysis wastes containing dangerous substances' },
-        { 'id': 2055, 'subChapter': '01', 'chapter': '19', 'hazardous': 0, 'code': '18', 'description': 'Pyrolysis wastes other than those mentioned in 19 01 17' },
-        { 'id': 2056, 'subChapter': '01', 'chapter': '19', 'hazardous': 0, 'code': '19', 'description': 'Sands from fluidised beds' },
-        { 'id': 2057, 'subChapter': '01', 'chapter': '19', 'hazardous': 0, 'code': '99', 'description': 'Wastes not otherwise specified' },
-        { 'id': 2058, 'subChapter': '02', 'chapter': '19', 'hazardous': 0, 'code': '03', 'description': 'Premixed wastes composed only of non-hazardous wastes' },
-        { 'id': 2059, 'subChapter': '02', 'chapter': '19', 'hazardous': 1, 'code': '04', 'description': 'Premixed wastes composed of at least one hazardous waste' },
-        { 'id': 2060, 'subChapter': '02', 'chapter': '19', 'hazardous': 1, 'code': '05', 'description': 'Sludges from physico/chemical treatment containing dangerous substances' },
-        { 'id': 2061, 'subChapter': '02', 'chapter': '19', 'hazardous': 0, 'code': '06', 'description': 'Sludges from physico/chemical treatment other than those mentioned in 19 02 05' },
-        { 'id': 2062, 'subChapter': '02', 'chapter': '19', 'hazardous': 1, 'code': '07', 'description': 'Oil and concentrates from separation' },
-        { 'id': 2063, 'subChapter': '02', 'chapter': '19', 'hazardous': 1, 'code': '08', 'description': 'Liquid combustible wastes containing dangerous substances' },
-        { 'id': 2064, 'subChapter': '02', 'chapter': '19', 'hazardous': 1, 'code': '09', 'description': 'Solid combustible wastes containing dangerous substances' },
-        { 'id': 2065, 'subChapter': '02', 'chapter': '19', 'hazardous': 0, 'code': '10', 'description': 'Combustible wastes other than those mentioned in 19 02 08 and 19 02 09' },
-        { 'id': 2066, 'subChapter': '02', 'chapter': '19', 'hazardous': 1, 'code': '11', 'description': 'Other wastes containing dangerous substances' },
-        { 'id': 2067, 'subChapter': '02', 'chapter': '19', 'hazardous': 0, 'code': '99', 'description': 'Wastes not otherwise specified' },
-        { 'id': 2068, 'subChapter': '03', 'chapter': '19', 'hazardous': 1, 'code': '04', 'description': 'Wastes marked as hazardous, partly   stabilised' },
-        { 'id': 2069, 'subChapter': '03', 'chapter': '19', 'hazardous': 0, 'code': '05', 'description': 'Stabilised wastes other than those mentioned in 19 03 04' },
-        { 'id': 2070, 'subChapter': '03', 'chapter': '19', 'hazardous': 1, 'code': '06', 'description': 'Wastes marked as hazardous, solidified' },
-        { 'id': 2071, 'subChapter': '03', 'chapter': '19', 'hazardous': 0, 'code': '07', 'description': 'Solidified wastes other than those mentioned in 19 03 06' },
-        { 'id': 2072, 'subChapter': '04', 'chapter': '19', 'hazardous': 0, 'code': '01', 'description': 'Vitrified waste' },
-        { 'id': 2073, 'subChapter': '04', 'chapter': '19', 'hazardous': 1, 'code': '02', 'description': 'Fly ash and other flue-gas treatment wastes' },
-        { 'id': 2074, 'subChapter': '04', 'chapter': '19', 'hazardous': 1, 'code': '03', 'description': 'Non-vitrified solid phase' },
-        { 'id': 2075, 'subChapter': '04', 'chapter': '19', 'hazardous': 0, 'code': '04', 'description': 'Aqueous liquid wastes from vitrified waste tempering' },
-        { 'id': 2076, 'subChapter': '05', 'chapter': '19', 'hazardous': 0, 'code': '01', 'description': 'Non-composted fraction of municipal and similar wastes' },
-        { 'id': 2077, 'subChapter': '05', 'chapter': '19', 'hazardous': 0, 'code': '02', 'description': 'Non-composted fraction of animal and vegetable waste' },
-        { 'id': 2078, 'subChapter': '05', 'chapter': '19', 'hazardous': 0, 'code': '03', 'description': 'Off-specification compost' },
-        { 'id': 2079, 'subChapter': '05', 'chapter': '19', 'hazardous': 0, 'code': '99', 'description': 'Wastes not otherwise specified' },
-        { 'id': 2080, 'subChapter': '06', 'chapter': '19', 'hazardous': 0, 'code': '03', 'description': 'Liquor from anaerobic treatment of municipal waste' },
-        { 'id': 2081, 'subChapter': '06', 'chapter': '19', 'hazardous': 0, 'code': '04', 'description': 'Digestate from anaerobic treatment of municipal waste' },
-        { 'id': 2082, 'subChapter': '06', 'chapter': '19', 'hazardous': 0, 'code': '05', 'description': 'Liquor from anaerobic treatment of animal and vegetable waste' },
-        { 'id': 2083, 'subChapter': '06', 'chapter': '19', 'hazardous': 0, 'code': '06', 'description': 'Digestate from anaerobic treatment of animal and vegetable waste' },
-        { 'id': 2084, 'subChapter': '06', 'chapter': '19', 'hazardous': 0, 'code': '99', 'description': 'Wastes not otherwise specified' },
-        { 'id': 2085, 'subChapter': '07', 'chapter': '19', 'hazardous': 1, 'code': '02', 'description': 'Landfill leachate containing dangerous substances' },
-        { 'id': 2086, 'subChapter': '07', 'chapter': '19', 'hazardous': 0, 'code': '03', 'description': 'Landfill leachate other than those mentioned in 19 07 02' },
-        { 'id': 2087, 'subChapter': '08', 'chapter': '19', 'hazardous': 0, 'code': '01', 'description': 'Screenings' },
-        { 'id': 2088, 'subChapter': '08', 'chapter': '19', 'hazardous': 0, 'code': '02', 'description': 'Waste from desanding' },
-        { 'id': 2089, 'subChapter': '08', 'chapter': '19', 'hazardous': 0, 'code': '05', 'description': 'Sludges from treatment of urban waste water' },
-        { 'id': 2090, 'subChapter': '08', 'chapter': '19', 'hazardous': 1, 'code': '06', 'description': 'Saturated or spent ion exchange resins' },
-        { 'id': 2091, 'subChapter': '08', 'chapter': '19', 'hazardous': 1, 'code': '07', 'description': 'Solutions and sludges from regeneration of ion exchangers' },
-        { 'id': 2092, 'subChapter': '08', 'chapter': '19', 'hazardous': 1, 'code': '08', 'description': 'Membrane system waste containing heavy metals' },
-        { 'id': 2093, 'subChapter': '08', 'chapter': '19', 'hazardous': 0, 'code': '09', 'description': 'Grease and oil mixture from oil/water separation containing edible oil and fats' },
-        { 'id': 2094, 'subChapter': '08', 'chapter': '19', 'hazardous': 1, 'code': '10', 'description': 'Grease and oil mixture from oil/water separation other than those mentioned in 19 08 09' },
-        { 'id': 2095, 'subChapter': '08', 'chapter': '19', 'hazardous': 1, 'code': '11', 'description': 'Sludges containing dangerous substances from biological treatment of industrial waste water' },
-        { 'id': 2096, 'subChapter': '08', 'chapter': '19', 'hazardous': 0, 'code': '12', 'description': 'Sludges from biological treatment of industrial waste water other than those mentioned in 19 08 11' },
-        { 'id': 2097, 'subChapter': '08', 'chapter': '19', 'hazardous': 1, 'code': '13', 'description': 'Sludges containing dangerous substances from other treatment of industrial waste water' },
-        { 'id': 2098, 'subChapter': '08', 'chapter': '19', 'hazardous': 0, 'code': '14', 'description': 'Sludges from other treatment of industrial waste water other than those mentioned in 19 08 13' },
-        { 'id': 2099, 'subChapter': '08', 'chapter': '19', 'hazardous': 0, 'code': '99', 'description': 'Wastes not otherwise specified' },
-        { 'id': 2100, 'subChapter': '09', 'chapter': '19', 'hazardous': 0, 'code': '01', 'description': 'Solid waste from primary filtration and screenings' },
-        { 'id': 2101, 'subChapter': '09', 'chapter': '19', 'hazardous': 0, 'code': '02', 'description': 'Sludges from water clarification' },
-        { 'id': 2102, 'subChapter': '09', 'chapter': '19', 'hazardous': 0, 'code': '03', 'description': 'Sludges from decarbonation' },
-        { 'id': 2103, 'subChapter': '09', 'chapter': '19', 'hazardous': 0, 'code': '04', 'description': 'Spent activated carbon' },
-        { 'id': 2104, 'subChapter': '09', 'chapter': '19', 'hazardous': 0, 'code': '05', 'description': 'Saturated or spent ion exchange resins' },
-        { 'id': 2105, 'subChapter': '09', 'chapter': '19', 'hazardous': 0, 'code': '06', 'description': 'Solutions and sludges from regeneration of ion exchangers' },
-        { 'id': 2106, 'subChapter': '09', 'chapter': '19', 'hazardous': 0, 'code': '99', 'description': 'Wastes not otherwise specified' },
-        { 'id': 2107, 'subChapter': '10', 'chapter': '19', 'hazardous': 0, 'code': '01', 'description': 'Iron and steel waste' },
-        { 'id': 2108, 'subChapter': '10', 'chapter': '19', 'hazardous': 0, 'code': '02', 'description': 'Non-ferrous waste' },
-        { 'id': 2109, 'subChapter': '10', 'chapter': '19', 'hazardous': 1, 'code': '03', 'description': 'Fluff-light fraction and dust containing dangerous substances' },
-        { 'id': 2110, 'subChapter': '10', 'chapter': '19', 'hazardous': 0, 'code': '04', 'description': 'Fluff-light fraction and dust other than those mentioned in 19 10 03' },
-        { 'id': 2111, 'subChapter': '10', 'chapter': '19', 'hazardous': 1, 'code': '05', 'description': 'Other fractions containing dangerous substances' },
-        { 'id': 2112, 'subChapter': '10', 'chapter': '19', 'hazardous': 0, 'code': '06', 'description': 'Other fractions other than those mentioned in 19 10 05' },
-        { 'id': 2113, 'subChapter': '11', 'chapter': '19', 'hazardous': 1, 'code': '01', 'description': 'Spent filter clays' },
-        { 'id': 2114, 'subChapter': '11', 'chapter': '19', 'hazardous': 1, 'code': '02', 'description': 'Acid tars' },
-        { 'id': 2115, 'subChapter': '11', 'chapter': '19', 'hazardous': 1, 'code': '03', 'description': 'Aqueous liquid wastes' },
-        { 'id': 2116, 'subChapter': '11', 'chapter': '19', 'hazardous': 1, 'code': '04', 'description': 'Wastes from cleaning of fuel with bases' },
-        { 'id': 2117, 'subChapter': '11', 'chapter': '19', 'hazardous': 1, 'code': '05', 'description': 'Sludges from on-site effluent treatment containing dangerous substances' },
-        { 'id': 2118, 'subChapter': '11', 'chapter': '19', 'hazardous': 0, 'code': '06', 'description': 'Sludges from on-site effluent treatment other than those mentioned in 19 11 05' },
-        { 'id': 2119, 'subChapter': '11', 'chapter': '19', 'hazardous': 1, 'code': '07', 'description': 'Wastes from flue-gas cleaning' },
-        { 'id': 2120, 'subChapter': '11', 'chapter': '19', 'hazardous': 0, 'code': '99', 'description': 'Wastes not otherwise specified' },
-        { 'id': 2121, 'subChapter': '12', 'chapter': '19', 'hazardous': 0, 'code': '01', 'description': 'Paper and cardboard' },
-        { 'id': 2122, 'subChapter': '12', 'chapter': '19', 'hazardous': 0, 'code': '02', 'description': 'Ferrous metal' },
-        { 'id': 2123, 'subChapter': '12', 'chapter': '19', 'hazardous': 0, 'code': '03', 'description': 'Non-ferrous metal' },
-        { 'id': 2124, 'subChapter': '12', 'chapter': '19', 'hazardous': 0, 'code': '04', 'description': 'Plastic and rubber' },
-        { 'id': 2125, 'subChapter': '12', 'chapter': '19', 'hazardous': 0, 'code': '05', 'description': 'Glass' },
-        { 'id': 2126, 'subChapter': '12', 'chapter': '19', 'hazardous': 1, 'code': '06', 'description': 'Wood containing dangerous substances' },
-        { 'id': 2127, 'subChapter': '12', 'chapter': '19', 'hazardous': 0, 'code': '07', 'description': 'Wood other than that mentioned in 19 12 06' },
-        { 'id': 2128, 'subChapter': '12', 'chapter': '19', 'hazardous': 0, 'code': '08', 'description': 'Textiles' },
-        { 'id': 2129, 'subChapter': '12', 'chapter': '19', 'hazardous': 0, 'code': '09', 'description': 'Minerals (for example sand, stones)' },
-        { 'id': 2130, 'subChapter': '12', 'chapter': '19', 'hazardous': 0, 'code': '10', 'description': 'Combustible waste (refuse derived fuel)' },
-        { 'id': 2131, 'subChapter': '12', 'chapter': '19', 'hazardous': 1, 'code': '11', 'description': 'Other wastes (including mixtures of materials) from mechanical treatment of waste containing dangerous substances' },
-        { 'id': 2132, 'subChapter': '12', 'chapter': '19', 'hazardous': 0, 'code': '12', 'description': 'Other wastes (incl. mixtures of materials) from mechanical treatment of wastes other than those mentioned in 19 12 11' },
-        { 'id': 2133, 'subChapter': '13', 'chapter': '19', 'hazardous': 1, 'code': '01', 'description': 'Solid wastes from soil remediation containing dangerous substances' },
-        { 'id': 2134, 'subChapter': '13', 'chapter': '19', 'hazardous': 0, 'code': '02', 'description': 'Solid wastes from soil remediation other than those mentioned in 19 13 01' },
-        { 'id': 2135, 'subChapter': '13', 'chapter': '19', 'hazardous': 1, 'code': '03', 'description': 'Sludges from soil remediation containing dangerous substances' },
-        { 'id': 2136, 'subChapter': '13', 'chapter': '19', 'hazardous': 0, 'code': '04', 'description': 'Sludges from soil remediation other than those mentioned in 19 13 03' },
-        { 'id': 2137, 'subChapter': '13', 'chapter': '19', 'hazardous': 1, 'code': '05', 'description': 'Sludges from groundwater remediation containing dangerous substances' },
-        { 'id': 2138, 'subChapter': '13', 'chapter': '19', 'hazardous': 0, 'code': '06', 'description': 'Sludges from groundwater remediation other than those mentioned in 19 13 05' },
-        { 'id': 2139, 'subChapter': '13', 'chapter': '19', 'hazardous': 1, 'code': '07', 'description': 'Aqueous liquid wastes and aqueous concentrates from groundwater remediation containing dangerous substances' },
-        { 'id': 2140, 'subChapter': '13', 'chapter': '19', 'hazardous': 0, 'code': '08', 'description': 'Aqueous liquid wastes and aqueous concentrates from groundwater remediation other than those mentioned in 19 13 07' },
-        { 'id': 2141, 'subChapter': '01', 'chapter': '20', 'hazardous': 0, 'code': '01', 'description': 'Paper and cardboard' },
-        { 'id': 2142, 'subChapter': '01', 'chapter': '20', 'hazardous': 0, 'code': '02', 'description': 'Glass' },
-        { 'id': 2143, 'subChapter': '01', 'chapter': '20', 'hazardous': 0, 'code': '08', 'description': 'Biodegradable kitchen and canteen waste' },
-        { 'id': 2144, 'subChapter': '01', 'chapter': '20', 'hazardous': 0, 'code': '10', 'description': 'Clothes' },
-        { 'id': 2145, 'subChapter': '01', 'chapter': '20', 'hazardous': 0, 'code': '11', 'description': 'Textiles' },
-        { 'id': 2146, 'subChapter': '01', 'chapter': '20', 'hazardous': 1, 'code': '13', 'description': 'Solvents' },
-        { 'id': 2147, 'subChapter': '01', 'chapter': '20', 'hazardous': 1, 'code': '14', 'description': 'Acids' },
-        { 'id': 2148, 'subChapter': '01', 'chapter': '20', 'hazardous': 1, 'code': '15', 'description': 'Alkalines' },
-        { 'id': 2149, 'subChapter': '01', 'chapter': '20', 'hazardous': 1, 'code': '17', 'description': 'Photochemicals' },
-        { 'id': 2150, 'subChapter': '01', 'chapter': '20', 'hazardous': 1, 'code': '19', 'description': 'Pesticides' },
-        { 'id': 2151, 'subChapter': '01', 'chapter': '20', 'hazardous': 1, 'code': '21', 'description': 'Fluorescent tubes and other mercury-containing waste' },
-        { 'id': 2152, 'subChapter': '01', 'chapter': '20', 'hazardous': 1, 'code': '23', 'description': 'Discarded equipment containing chlorofluorocarbons' },
-        { 'id': 2153, 'subChapter': '01', 'chapter': '20', 'hazardous': 0, 'code': '25', 'description': 'Edible oil and fat' },
-        { 'id': 2154, 'subChapter': '01', 'chapter': '20', 'hazardous': 1, 'code': '26', 'description': 'Oil and fat other than those mentioned in 20 01 25' },
-        { 'id': 2155, 'subChapter': '01', 'chapter': '20', 'hazardous': 1, 'code': '27', 'description': 'Paint, inks, adhesives and resins containing dangerous substances' },
-        { 'id': 2156, 'subChapter': '01', 'chapter': '20', 'hazardous': 0, 'code': '28', 'description': 'Paint, inks, adhesives and resins other than those mentioned in 20 01 27' },
-        { 'id': 2157, 'subChapter': '01', 'chapter': '20', 'hazardous': 1, 'code': '29', 'description': 'Detergents containing dangerous substances' },
-        { 'id': 2158, 'subChapter': '01', 'chapter': '20', 'hazardous': 0, 'code': '30', 'description': 'Detergents other than those mentioned in 20 01 29' },
-        { 'id': 2159, 'subChapter': '01', 'chapter': '20', 'hazardous': 1, 'code': '31', 'description': 'Cytotoxic and cytostatic medicines' },
-        { 'id': 2160, 'subChapter': '01', 'chapter': '20', 'hazardous': 0, 'code': '32', 'description': 'Medicines other than those mentioned in 20 01 31' },
-        { 'id': 2161, 'subChapter': '01', 'chapter': '20', 'hazardous': 1, 'code': '33', 'description': 'Batteries and accumulators included in 16 06 01, 16 06 02 or 16 06 03 (inc where mixed with other batteries)' },
-        { 'id': 2162, 'subChapter': '01', 'chapter': '20', 'hazardous': 0, 'code': '34', 'description': 'Batteries and accumulators other than those mentioned in 20 01 33' },
-        { 'id': 2163, 'subChapter': '01', 'chapter': '20', 'hazardous': 1, 'code': '35', 'description': 'Discarded electrical equipment other than those mentioned in 20 01 21 and 20 01 23 containing hazardous components' },
-        { 'id': 2164, 'subChapter': '01', 'chapter': '20', 'hazardous': 0, 'code': '36', 'description': 'Discarded electrical and electronic equipment other than those mentioned in 20 01 21, 20 01 23 and 20 01 35' },
-        { 'id': 2165, 'subChapter': '01', 'chapter': '20', 'hazardous': 1, 'code': '37', 'description': 'Wood containing dangerous substances' },
-        { 'id': 2166, 'subChapter': '01', 'chapter': '20', 'hazardous': 0, 'code': '38', 'description': 'Wood other than that mentioned in 20 01 37' },
-        { 'id': 2167, 'subChapter': '01', 'chapter': '20', 'hazardous': 0, 'code': '39', 'description': 'Plastics' },
-        { 'id': 2168, 'subChapter': '01', 'chapter': '20', 'hazardous': 0, 'code': '40', 'description': 'Metals' },
-        { 'id': 2169, 'subChapter': '01', 'chapter': '20', 'hazardous': 0, 'code': '41', 'description': 'Wastes from chimney sweeping' },
-        { 'id': 2170, 'subChapter': '01', 'chapter': '20', 'hazardous': 0, 'code': '99', 'description': 'Other fractions not otherwise specified' },
-        { 'id': 2171, 'subChapter': '02', 'chapter': '20', 'hazardous': 0, 'code': '01', 'description': 'Biodegradable waste' },
-        { 'id': 2172, 'subChapter': '02', 'chapter': '20', 'hazardous': 0, 'code': '02', 'description': 'Soil and stones' },
-        { 'id': 2173, 'subChapter': '02', 'chapter': '20', 'hazardous': 0, 'code': '03', 'description': 'Other non-biodegradable wastes' },
-        { 'id': 2174, 'subChapter': '03', 'chapter': '20', 'hazardous': 0, 'code': '01', 'description': 'Mixed municipal waste' },
-        { 'id': 2175, 'subChapter': '03', 'chapter': '20', 'hazardous': 0, 'code': '02', 'description': 'Waste from markets' },
-        { 'id': 2176, 'subChapter': '03', 'chapter': '20', 'hazardous': 0, 'code': '03', 'description': 'Street-cleaning residues' },
-        { 'id': 2177, 'subChapter': '03', 'chapter': '20', 'hazardous': 0, 'code': '04', 'description': 'Septic tank sludge' },
-        { 'id': 2178, 'subChapter': '03', 'chapter': '20', 'hazardous': 0, 'code': '06', 'description': 'Waste from sewage cleaning' },
-        { 'id': 2179, 'subChapter': '03', 'chapter': '20', 'hazardous': 0, 'code': '07', 'description': 'Bulky waste' },
-        { 'id': 2180, 'subChapter': '03', 'chapter': '20', 'hazardous': 0, 'code': '99', 'description': 'Municipal wastes not otherwise specified' }
+        {
+            'id': 474,
+            'name': '10 14 01',
+            'code': '01',
+            'description': 'waste from gas cleaning containing mercury',
+            'hazardous': true
+        },
+        {
+            'id': 1,
+            'name': '01 01 01',
+            'code': '01',
+            'description': 'wastes from mineral metalliferous excavation',
+            'hazardous': false
+        },
+        {
+            'id': 656,
+            'name': '17 03 01',
+            'code': '01',
+            'description': 'bituminous mixtures containing coal tar',
+            'hazardous': true
+        },
+        {
+            'id': 652,
+            'name': '17 02 01',
+            'code': '01',
+            'description': 'wood',
+            'hazardous': false
+        },
+        {
+            'id': 647,
+            'name': '17 01 01',
+            'code': '01',
+            'description': 'concrete',
+            'hazardous': false
+        },
+        {
+            'id': 641,
+            'name': '16 11 01',
+            'code': '01',
+            'description': 'carbon-based linings and refractories from metallurgical processes containing dangerous substances',
+            'hazardous': true
+        },
+        {
+            'id': 637,
+            'name': '16 10 01',
+            'code': '01',
+            'description': 'aqueous liquid wastes containing dangerous substances',
+            'hazardous': true
+        },
+        {
+            'id': 633,
+            'name': '16 09 01',
+            'code': '01',
+            'description': 'permanganates, for example potassium permanganate',
+            'hazardous': true
+        },
+        {
+            'id': 626,
+            'name': '16 08 01',
+            'code': '01',
+            'description': 'spent catalysts containing gold, silver, rhenium, rhodium, palladium, iridium or platinum (except 16 08 07)',
+            'hazardous': false
+        },
+        {
+            'id': 617,
+            'name': '16 06 01',
+            'code': '01',
+            'description': 'lead batteries',
+            'hazardous': true
+        },
+        {
+            'id': 608,
+            'name': '16 04 01',
+            'code': '01',
+            'description': 'waste ammunition',
+            'hazardous': true
+        },
+        {
+            'id': 24,
+            'name': '02 01 01',
+            'code': '01',
+            'description': 'sludges from washing and cleaning',
+            'hazardous': false
+        },
+        {
+            'id': 675,
+            'name': '17 06 01',
+            'code': '01',
+            'description': 'insulation materials containing asbestos',
+            'hazardous': true
+        },
+        {
+            'id': 564,
+            'name': '15 01 01',
+            'code': '01',
+            'description': 'paper and cardboard packaging',
+            'hazardous': false
+        },
+        {
+            'id': 559,
+            'name': '14 06 01',
+            'code': '01',
+            'description': 'chlorofluorocarbons, HCFC, HFC',
+            'hazardous': true
+        },
+        {
+            'id': 556,
+            'name': '13 08 01',
+            'code': '01',
+            'description': 'desalter sludges or emulsions',
+            'hazardous': true
+        },
+        {
+            'id': 34,
+            'name': '02 02 01',
+            'code': '01',
+            'description': 'sludges from washing and cleaning',
+            'hazardous': false
+        },
+        {
+            'id': 553,
+            'name': '13 07 01',
+            'code': '01',
+            'description': 'fuel oil and diesel',
+            'hazardous': true
+        },
+        {
+            'id': 39,
+            'name': '02 03 01',
+            'code': '01',
+            'description': 'sludges from washing, cleaning, peeling, centrifuging and separation',
+            'hazardous': false
+        },
+        {
+            'id': 547,
+            'name': '13 05 01',
+            'code': '01',
+            'description': 'solids from grit chambers and oil/water separators',
+            'hazardous': true
+        },
+        {
+            'id': 832,
+            'name': '20 03 01',
+            'code': '01',
+            'description': 'mixed municipal waste',
+            'hazardous': false
+        },
+        {
+            'id': 45,
+            'name': '02 04 01',
+            'code': '01',
+            'description': 'soil from cleaning and washing beet',
+            'hazardous': false
+        },
+        {
+            'id': 538,
+            'name': '13 03 01',
+            'code': '01',
+            'description': 'insulating or heat transmission oils containing PCBs',
+            'hazardous': true
+        },
+        {
+            'id': 525,
+            'name': '13 01 01',
+            'code': '01',
+            'description': 'hydraulic oils, containing PCBs (1)',
+            'hazardous': true
+        },
+        {
+            'id': 49,
+            'name': '02 05 01',
+            'code': '01',
+            'description': 'materials unsuitable for consumption or processing',
+            'hazardous': false
+        },
+        {
+            'id': 52,
+            'name': '02 06 01',
+            'code': '01',
+            'description': 'materials unsuitable for consumption or processing',
+            'hazardous': false
+        },
+        {
+            'id': 829,
+            'name': '20 02 01',
+            'code': '01',
+            'description': 'biodegradable waste',
+            'hazardous': false
+        },
+        {
+            'id': 56,
+            'name': '02 07 01',
+            'code': '01',
+            'description': 'wastes from washing, cleaning and mechanical reduction of raw materials',
+            'hazardous': false
+        },
+        {
+            'id': 523,
+            'name': '12 03 01',
+            'code': '01',
+            'description': 'aqueous washing liquids',
+            'hazardous': true
+        },
+        {
+            'id': 679,
+            'name': '17 08 01',
+            'code': '01',
+            'description': 'gypsum-based construction materials contaminated with dangerous substances',
+            'hazardous': true
+        },
+        {
+            'id': 62,
+            'name': '03 01 01',
+            'code': '01',
+            'description': 'waste bark and cork',
+            'hazardous': false
+        },
+        {
+            'id': 681,
+            'name': '17 09 01',
+            'code': '01',
+            'description': 'construction and demolition wastes containing mercury',
+            'hazardous': true
+        },
+        {
+            'id': 685,
+            'name': '18 01 01',
+            'code': '01',
+            'description': 'sharps (except 18 01 03)',
+            'hazardous': false
+        },
+        {
+            'id': 66,
+            'name': '03 02 01',
+            'code': '01',
+            'description': 'non-halogenated organic wood preservatives',
+            'hazardous': true
+        },
+        {
+            'id': 502,
+            'name': '12 01 01',
+            'code': '01',
+            'description': 'ferrous metal filings and turnings',
+            'hazardous': false
+        },
+        {
+            'id': 72,
+            'name': '03 03 01',
+            'code': '01',
+            'description': 'waste bark and wood',
+            'hazardous': false
+        },
+        {
+            'id': 497,
+            'name': '11 05 01',
+            'code': '01',
+            'description': 'hard zinc',
+            'hazardous': false
+        },
+        {
+            'id': 495,
+            'name': '11 03 01',
+            'code': '01',
+            'description': 'wastes containing cyanide',
+            'hazardous': true
+        },
+        {
+            'id': 659,
+            'name': '17 04 01',
+            'code': '01',
+            'description': 'copper, bronze, brass',
+            'hazardous': false
+        },
+        {
+            'id': 463,
+            'name': '10 13 01',
+            'code': '01',
+            'description': 'waste preparation mixture before thermal processing',
+            'hazardous': false
+        },
+        {
+            'id': 452,
+            'name': '10 12 01',
+            'code': '01',
+            'description': 'waste preparation mixture before thermal processing',
+            'hazardous': false
+        },
+        {
+            'id': 81,
+            'name': '04 01 01',
+            'code': '01',
+            'description': 'fleshings and lime split wastes',
+            'hazardous': false
+        },
+        {
+            'id': 694,
+            'name': '18 02 01',
+            'code': '01',
+            'description': 'sharps (except 18 02 02)',
+            'hazardous': false
+        },
+        {
+            'id': 544,
+            'name': '13 04 01',
+            'code': '01',
+            'description': 'bilge oils from inland navigation',
+            'hazardous': true
+        },
+        {
+            'id': 386,
+            'name': '10 07 01',
+            'code': '01',
+            'description': 'slags from primary and secondary production',
+            'hazardous': false
+        },
+        {
+            'id': 377,
+            'name': '10 06 01',
+            'code': '01',
+            'description': 'slags from primary and secondary production',
+            'hazardous': false
+        },
+        {
+            'id': 367,
+            'name': '10 05 01',
+            'code': '01',
+            'description': 'slags from primary and secondary production',
+            'hazardous': false
+        },
+        {
+            'id': 357,
+            'name': '10 04 01',
+            'code': '01',
+            'description': 'slags from primary and secondary production',
+            'hazardous': true
+        },
+        {
+            'id': 799,
+            'name': '20 01 01',
+            'code': '01',
+            'description': 'paper and cardboard',
+            'hazardous': false
+        },
+        {
+            'id': 730,
+            'name': '19 04 01',
+            'code': '01',
+            'description': 'vitrified waste',
+            'hazardous': false
+        },
+        {
+            'id': 734,
+            'name': '19 05 01',
+            'code': '01',
+            'description': 'non-composted fraction of municipal and similar wastes',
+            'hazardous': false
+        },
+        {
+            'id': 324,
+            'name': '10 02 01',
+            'code': '01',
+            'description': 'wastes from the processing of slag',
+            'hazardous': false
+        },
+        {
+            'id': 745,
+            'name': '19 08 01',
+            'code': '01',
+            'description': 'screenings',
+            'hazardous': false
+        },
+        {
+            'id': 302,
+            'name': '10 01 01',
+            'code': '01',
+            'description': 'bottom ash, slag and boiler dust (excluding boiler dust mentioned in 10 01 04)',
+            'hazardous': false
+        },
+        {
+            'id': 289,
+            'name': '09 01 01',
+            'code': '01',
+            'description': 'water-based developer and activator solutions',
+            'hazardous': true
+        },
+        {
+            'id': 288,
+            'name': '08 05 01',
+            'code': '01',
+            'description': 'waste isocyanates',
+            'hazardous': true
+        },
+        {
+            'id': 758,
+            'name': '19 09 01',
+            'code': '01',
+            'description': 'solid waste from primary filtration and screenings',
+            'hazardous': false
+        },
+        {
+            'id': 263,
+            'name': '08 02 01',
+            'code': '01',
+            'description': 'waste coating powders',
+            'hazardous': false
+        },
+        {
+            'id': 119,
+            'name': '05 06 01',
+            'code': '01',
+            'description': 'acid tars',
+            'hazardous': true
+        },
+        {
+            'id': 765,
+            'name': '19 10 01',
+            'code': '01',
+            'description': 'iron and steel waste',
+            'hazardous': false
+        },
+        {
+            'id': 791,
+            'name': '19 13 01',
+            'code': '01',
+            'description': 'solid wastes from soil remediation containing dangerous substances',
+            'hazardous': true
+        },
+        {
+            'id': 123,
+            'name': '05 07 01',
+            'code': '01',
+            'description': 'wastes containing mercury',
+            'hazardous': true
+        },
+        {
+            'id': 241,
+            'name': '07 07 01',
+            'code': '01',
+            'description': 'aqueous washing liquids and mother liquors',
+            'hazardous': true
+        },
+        {
+            'id': 126,
+            'name': '06 01 01',
+            'code': '01',
+            'description': 'sulphuric acid and sulphurous acid',
+            'hazardous': true
+        },
+        {
+            'id': 231,
+            'name': '07 06 01',
+            'code': '01',
+            'description': 'aqueous washing liquids and mother liquors',
+            'hazardous': true
+        },
+        {
+            'id': 771,
+            'name': '19 11 01',
+            'code': '01',
+            'description': 'spent filter clays',
+            'hazardous': true
+        },
+        {
+            'id': 219,
+            'name': '07 05 01',
+            'code': '01',
+            'description': 'aqueous washing liquids and mother liquors',
+            'hazardous': true
+        },
+        {
+            'id': 208,
+            'name': '07 04 01',
+            'code': '01',
+            'description': 'aqueous washing liquids and mother liquors',
+            'hazardous': true
+        },
+        {
+            'id': 133,
+            'name': '06 02 01',
+            'code': '01',
+            'description': 'calcium hydroxide',
+            'hazardous': true
+        },
+        {
+            'id': 198,
+            'name': '07 03 01',
+            'code': '01',
+            'description': 'aqueous washing liquids and mother liquors',
+            'hazardous': true
+        },
+        {
+            'id': 184,
+            'name': '07 02 01',
+            'code': '01',
+            'description': 'aqueous washing liquids and mother liquors',
+            'hazardous': true
+        },
+        {
+            'id': 174,
+            'name': '07 01 01',
+            'code': '01',
+            'description': 'aqueous washing liquids and mother liquors',
+            'hazardous': true
+        },
+        {
+            'id': 168,
+            'name': '06 13 01',
+            'code': '01',
+            'description': 'inorganic plant protection products, wood-preserving agents and other biocides.',
+            'hazardous': true
+        },
+        {
+            'id': 779,
+            'name': '19 12 01',
+            'code': '01',
+            'description': 'paper and cardboard',
+            'hazardous': false
+        },
+        {
+            'id': 166,
+            'name': '06 11 01',
+            'code': '01',
+            'description': 'calcium-based reaction wastes from titanium dioxide production',
+            'hazardous': false
+        },
+        {
+            'id': 153,
+            'name': '06 07 01',
+            'code': '01',
+            'description': 'wastes containing asbestos from electrolysis',
+            'hazardous': true
+        },
+        {
+            'id': 548,
+            'name': '13 05 02',
+            'code': '02',
+            'description': 'sludges from oil/water separators',
+            'hazardous': true
+        },
+        {
+            'id': 657,
+            'name': '17 03 02',
+            'code': '02',
+            'description': 'bituminous mixtures other than those mentioned in 17 03 01',
+            'hazardous': false
+        },
+        {
+            'id': 545,
+            'name': '13 04 02',
+            'code': '02',
+            'description': 'bilge oils from jetty sewers',
+            'hazardous': true
+        },
+        {
+            'id': 82,
+            'name': '04 01 02',
+            'code': '02',
+            'description': 'liming waste',
+            'hazardous': false
+        },
+        {
+            'id': 609,
+            'name': '16 04 02',
+            'code': '02',
+            'description': 'fireworks wastes',
+            'hazardous': true
+        },
+        {
+            'id': 695,
+            'name': '18 02 02',
+            'code': '02',
+            'description': 'wastes whose collection and disposal is subject to special requirements in order to prevent infection',
+            'hazardous': true
+        },
+        {
+            'id': 642,
+            'name': '16 11 02',
+            'code': '02',
+            'description': 'carbon-based linings and refractories from metallurgical processes others than those mentioned in 16 11 01,',
+            'hazardous': false
+        },
+        {
+            'id': 701,
+            'name': '19 01 02',
+            'code': '02',
+            'description': 'ferrous materials removed from bottom ash',
+            'hazardous': false
+        },
+        {
+            'id': 2,
+            'name': '01 01 02',
+            'code': '02',
+            'description': 'wastes from mineral non-metalliferous excavation',
+            'hazardous': false
+        },
+        {
+            'id': 387,
+            'name': '10 07 02',
+            'code': '02',
+            'description': 'dross and skimmings from primary and secondary production',
+            'hazardous': false
+        },
+        {
+            'id': 46,
+            'name': '02 04 02',
+            'code': '02',
+            'description': 'off-specification calcium carbonate',
+            'hazardous': false
+        },
+        {
+            'id': 378,
+            'name': '10 06 02',
+            'code': '02',
+            'description': 'dross and skimmings from primary and secondary production',
+            'hazardous': false
+        },
+        {
+            'id': 660,
+            'name': '17 04 02',
+            'code': '02',
+            'description': 'aluminium',
+            'hazardous': false
+        },
+        {
+            'id': 25,
+            'name': '02 01 02',
+            'code': '02',
+            'description': 'animal-tissue waste',
+            'hazardous': false
+        },
+        {
+            'id': 358,
+            'name': '10 04 02',
+            'code': '02',
+            'description': 'dross and skimmings from primary and secondary production',
+            'hazardous': true
+        },
+        {
+            'id': 638,
+            'name': '16 10 02',
+            'code': '02',
+            'description': 'aqueous liquid wastes other than those mentioned in 16 10 01',
+            'hazardous': false
+        },
+        {
+            'id': 800,
+            'name': '20 01 02',
+            'code': '02',
+            'description': 'glass',
+            'hazardous': false
+        },
+        {
+            'id': 50,
+            'name': '02 05 02',
+            'code': '02',
+            'description': 'sludges from on-site effluent treatment',
+            'hazardous': false
+        },
+        {
+            'id': 830,
+            'name': '20 02 02',
+            'code': '02',
+            'description': 'soil and stones',
+            'hazardous': false
+        },
+        {
+            'id': 731,
+            'name': '19 04 02',
+            'code': '02',
+            'description': 'fly ash and other flue-gas treatment wastes',
+            'hazardous': true
+        },
+        {
+            'id': 574,
+            'name': '15 02 02',
+            'code': '02',
+            'description': 'absorbents, filter materials (including oil filters not otherwise specified), wiping cloths, protective clothing contaminated by dangerous substances',
+            'hazardous': true
+        },
+        {
+            'id': 735,
+            'name': '19 05 02',
+            'code': '02',
+            'description': 'non-composted fraction of animal and vegetable waste',
+            'hazardous': false
+        },
+        {
+            'id': 102,
+            'name': '05 01 02',
+            'code': '02',
+            'description': 'desalter sludges',
+            'hazardous': true
+        },
+        {
+            'id': 325,
+            'name': '10 02 02',
+            'code': '02',
+            'description': 'unprocessed slag',
+            'hazardous': false
+        },
+        {
+            'id': 53,
+            'name': '02 06 02',
+            'code': '02',
+            'description': 'wastes from preserving agents',
+            'hazardous': false
+        },
+        {
+            'id': 743,
+            'name': '19 07 02',
+            'code': '02',
+            'description': 'landfill leachate containing dangerous substances',
+            'hazardous': true
+        },
+        {
+            'id': 524,
+            'name': '12 03 02',
+            'code': '02',
+            'description': 'steam degreasing wastes',
+            'hazardous': true
+        },
+        {
+            'id': 746,
+            'name': '19 08 02',
+            'code': '02',
+            'description': 'waste from desanding',
+            'hazardous': false
+        },
+        {
+            'id': 303,
+            'name': '10 01 02',
+            'code': '02',
+            'description': 'coal fly ash',
+            'hazardous': false
+        },
+        {
+            'id': 565,
+            'name': '15 01 02',
+            'code': '02',
+            'description': 'plastic packaging',
+            'hazardous': false
+        },
+        {
+            'id': 290,
+            'name': '09 01 02',
+            'code': '02',
+            'description': 'water-based offset plate developer solutions',
+            'hazardous': true
+        },
+        {
+            'id': 653,
+            'name': '17 02 02',
+            'code': '02',
+            'description': 'glass',
+            'hazardous': false
+        },
+        {
+            'id': 57,
+            'name': '02 07 02',
+            'code': '02',
+            'description': 'wastes from spirits distillation',
+            'hazardous': false
+        },
+        {
+            'id': 560,
+            'name': '14 06 02',
+            'code': '02',
+            'description': 'other halogenated solvents and solvent mixtures',
+            'hazardous': true
+        },
+        {
+            'id': 759,
+            'name': '19 09 02',
+            'code': '02',
+            'description': 'sludges from water clarification',
+            'hazardous': false
+        },
+        {
+            'id': 264,
+            'name': '08 02 02',
+            'code': '02',
+            'description': 'aqueous sludges containing ceramic materials',
+            'hazardous': false
+        },
+        {
+            'id': 634,
+            'name': '16 09 02',
+            'code': '02',
+            'description': 'chromates, for example potassium chromate, potassium or sodium dichromate',
+            'hazardous': true
+        },
+        {
+            'id': 792,
+            'name': '19 13 02',
+            'code': '02',
+            'description': 'solid wastes from soil remediation other than those mentioned in 19 13 01',
+            'hazardous': false
+        },
+        {
+            'id': 680,
+            'name': '17 08 02',
+            'code': '02',
+            'description': 'gypsum-based construction materials other than those mentioned in 17 08 01',
+            'hazardous': false
+        },
+        {
+            'id': 557,
+            'name': '13 08 02',
+            'code': '02',
+            'description': 'other emulsions',
+            'hazardous': true
+        },
+        {
+            'id': 766,
+            'name': '19 10 02',
+            'code': '02',
+            'description': 'non-ferrous waste',
+            'hazardous': false
+        },
+        {
+            'id': 335,
+            'name': '10 03 02',
+            'code': '02',
+            'description': 'anode scraps',
+            'hazardous': false
+        },
+        {
+            'id': 682,
+            'name': '17 09 02',
+            'code': '02',
+            'description': 'construction and demolition wastes containing PCB (for example PCB-containing sealants, PCB-containing resin-based floorings, PCB-containing sealed glazing units, PCB-containing capacitors)',
+            'hazardous': true
+        },
+        {
+            'id': 124,
+            'name': '05 07 02',
+            'code': '02',
+            'description': 'wastes containing sulphur',
+            'hazardous': false
+        },
+        {
+            'id': 627,
+            'name': '16 08 02',
+            'code': '02',
+            'description': 'spent catalysts containing dangerous transition metals (3) or dangerous transition metal compounds',
+            'hazardous': true
+        },
+        {
+            'id': 35,
+            'name': '02 02 02',
+            'code': '02',
+            'description': 'animal-tissue waste',
+            'hazardous': false
+        },
+        {
+            'id': 127,
+            'name': '06 01 02',
+            'code': '02',
+            'description': 'hydrochloric acid',
+            'hazardous': true
+        },
+        {
+            'id': 67,
+            'name': '03 02 02',
+            'code': '02',
+            'description': 'organochlorinated wood preservatives',
+            'hazardous': true
+        },
+        {
+            'id': 503,
+            'name': '12 01 02',
+            'code': '02',
+            'description': 'ferrous metal dust and particles',
+            'hazardous': false
+        },
+        {
+            'id': 554,
+            'name': '13 07 02',
+            'code': '02',
+            'description': 'petrol',
+            'hazardous': true
+        },
+        {
+            'id': 772,
+            'name': '19 11 02',
+            'code': '02',
+            'description': 'acid tars',
+            'hazardous': true
+        },
+        {
+            'id': 686,
+            'name': '18 01 02',
+            'code': '02',
+            'description': 'body parts and organs including blood bags and blood preserves (except 18 01 03)',
+            'hazardous': false
+        },
+        {
+            'id': 498,
+            'name': '11 05 02',
+            'code': '02',
+            'description': 'zinc ash',
+            'hazardous': false
+        },
+        {
+            'id': 648,
+            'name': '17 01 02',
+            'code': '02',
+            'description': 'bricks',
+            'hazardous': false
+        },
+        {
+            'id': 73,
+            'name': '03 03 02',
+            'code': '02',
+            'description': 'green liquor sludge (from recovery of cooking liquor)',
+            'hazardous': false
+        },
+        {
+            'id': 833,
+            'name': '20 03 02',
+            'code': '02',
+            'description': 'waste from markets',
+            'hazardous': false
+        },
+        {
+            'id': 169,
+            'name': '06 13 02',
+            'code': '02',
+            'description': 'spent activated carbon (except 06 07 02)',
+            'hazardous': true
+        },
+        {
+            'id': 496,
+            'name': '11 03 02',
+            'code': '02',
+            'description': 'other wastes',
+            'hazardous': true
+        },
+        {
+            'id': 618,
+            'name': '16 06 02',
+            'code': '02',
+            'description': 'Ni-Cd batteries',
+            'hazardous': true
+        },
+        {
+            'id': 489,
+            'name': '11 02 02',
+            'code': '02',
+            'description': 'sludges from zinc hydrometallurgy (including jarosite, goethite)',
+            'hazardous': true
+        },
+        {
+            'id': 780,
+            'name': '19 12 02',
+            'code': '02',
+            'description': 'ferrous metal',
+            'hazardous': false
+        },
+        {
+            'id': 164,
+            'name': '06 10 02',
+            'code': '02',
+            'description': 'wastes containing dangerous substances',
+            'hazardous': true
+        },
+        {
+            'id': 160,
+            'name': '06 09 02',
+            'code': '02',
+            'description': 'phosphorous slag',
+            'hazardous': false
+        },
+        {
+            'id': 158,
+            'name': '06 08 02',
+            'code': '02',
+            'description': 'wastes containing chlorosilanes',
+            'hazardous': false
+        },
+        {
+            'id': 154,
+            'name': '06 07 02',
+            'code': '02',
+            'description': 'activated carbon from chlorine production',
+            'hazardous': true
+        },
+        {
+            'id': 40,
+            'name': '02 03 02',
+            'code': '02',
+            'description': 'wastes from preserving agents',
+            'hazardous': false
+        },
+        {
+            'id': 148,
+            'name': '06 05 02',
+            'code': '02',
+            'description': 'sludges from on-site effluent treatment containing dangerous substances',
+            'hazardous': true
+        },
+        {
+            'id': 150,
+            'name': '06 06 02',
+            'code': '02',
+            'description': 'wastes containing dangerous sulphides',
+            'hazardous': true
+        },
+        {
+            'id': 549,
+            'name': '13 05 03',
+            'code': '03',
+            'description': 'interceptor sludges',
+            'hazardous': true
+        },
+        {
+            'id': 149,
+            'name': '06 05 03',
+            'code': '03',
+            'description': 'sludges from on-site effluent treatment other than those mentioned in 06 05 02',
+            'hazardous': false
+        },
+        {
+            'id': 155,
+            'name': '06 07 03',
+            'code': '03',
+            'description': 'barium sulphate sludge containing mercury',
+            'hazardous': true
+        },
+        {
+            'id': 732,
+            'name': '19 04 03',
+            'code': '03',
+            'description': 'non-vitrified solid phase',
+            'hazardous': true
+        },
+        {
+            'id': 359,
+            'name': '10 04 03',
+            'code': '03',
+            'description': 'calcium arsenate',
+            'hazardous': true
+        },
+        {
+            'id': 368,
+            'name': '10 05 03',
+            'code': '03',
+            'description': 'flue-gas dust',
+            'hazardous': true
+        },
+        {
+            'id': 144,
+            'name': '06 04 03',
+            'code': '03',
+            'description': 'wastes containing arsenic',
+            'hazardous': true
+        },
+        {
+            'id': 161,
+            'name': '06 09 03',
+            'code': '03',
+            'description': 'calcium-based reaction wastes containing or contaminated with dangerous substances',
+            'hazardous': true
+        },
+        {
+            'id': 103,
+            'name': '05 01 03',
+            'code': '03',
+            'description': 'tank bottom sludges',
+            'hazardous': true
+        },
+        {
+            'id': 781,
+            'name': '19 12 03',
+            'code': '03',
+            'description': 'non-ferrous metal',
+            'hazardous': false
+        },
+        {
+            'id': 661,
+            'name': '17 04 03',
+            'code': '03',
+            'description': 'lead',
+            'hazardous': false
+        },
+        {
+            'id': 658,
+            'name': '17 03 03',
+            'code': '03',
+            'description': 'coal tar and tarred products',
+            'hazardous': true
+        },
+        {
+            'id': 736,
+            'name': '19 05 03',
+            'code': '03',
+            'description': 'off-specification compost',
+            'hazardous': false
+        },
+        {
+            'id': 654,
+            'name': '17 02 03',
+            'code': '03',
+            'description': 'plastic',
+            'hazardous': false
+        },
+        {
+            'id': 649,
+            'name': '17 01 03',
+            'code': '03',
+            'description': 'tiles and ceramics',
+            'hazardous': false
+        },
+        {
+            'id': 170,
+            'name': '06 13 03',
+            'code': '03',
+            'description': 'carbon black',
+            'hazardous': false
+        },
+        {
+            'id': 738,
+            'name': '19 06 03',
+            'code': '03',
+            'description': 'liquor from anaerobic treatment of municipal waste',
+            'hazardous': false
+        },
+        {
+            'id': 175,
+            'name': '07 01 03',
+            'code': '03',
+            'description': 'organic halogenated solvents, washing liquids and mother liquors',
+            'hazardous': true
+        },
+        {
+            'id': 744,
+            'name': '19 07 03',
+            'code': '03',
+            'description': 'landfill leachate other than those mentioned in 19 07 02',
+            'hazardous': false
+        },
+        {
+            'id': 716,
+            'name': '19 02 03',
+            'code': '03',
+            'description': 'premixed wastes composed only of non-hazardous wastes',
+            'hazardous': false
+        },
+        {
+            'id': 643,
+            'name': '16 11 03',
+            'code': '03',
+            'description': 'other linings and refractories from metallurgical processes containing dangerous substances',
+            'hazardous': true
+        },
+        {
+            'id': 379,
+            'name': '10 06 03',
+            'code': '03',
+            'description': 'flue-gas dust',
+            'hazardous': true
+        },
+        {
+            'id': 639,
+            'name': '16 10 03',
+            'code': '03',
+            'description': 'aqueous concentrates containing dangerous substances',
+            'hazardous': true
+        },
+        {
+            'id': 388,
+            'name': '10 07 03',
+            'code': '03',
+            'description': 'solid wastes from gas treatment',
+            'hazardous': false
+        },
+        {
+            'id': 635,
+            'name': '16 09 03',
+            'code': '03',
+            'description': 'peroxides, for example hydrogen peroxide',
+            'hazardous': true
+        },
+        {
+            'id': 409,
+            'name': '10 09 03',
+            'code': '03',
+            'description': 'furnace slag',
+            'hazardous': false
+        },
+        {
+            'id': 185,
+            'name': '07 02 03',
+            'code': '03',
+            'description': 'organic halogenated solvents, washing liquids and mother liquors',
+            'hazardous': true
+        },
+        {
+            'id': 304,
+            'name': '10 01 03',
+            'code': '03',
+            'description': 'fly ash from peat and untreated wood',
+            'hazardous': false
+        },
+        {
+            'id': 151,
+            'name': '06 06 03',
+            'code': '03',
+            'description': 'wastes containing sulphides other than those mentioned in 06 06 02',
+            'hazardous': false
+        },
+        {
+            'id': 628,
+            'name': '16 08 03',
+            'code': '03',
+            'description': 'spent catalysts containing transition metals or transition metal compounds not otherwise specified',
+            'hazardous': false
+        },
+        {
+            'id': 423,
+            'name': '10 10 03',
+            'code': '03',
+            'description': 'furnace slag',
+            'hazardous': false
+        },
+        {
+            'id': 437,
+            'name': '10 11 03',
+            'code': '03',
+            'description': 'waste glass-based fibrous materials',
+            'hazardous': false
+        },
+        {
+            'id': 619,
+            'name': '16 06 03',
+            'code': '03',
+            'description': 'mercury-containing batteries',
+            'hazardous': true
+        },
+        {
+            'id': 696,
+            'name': '18 02 03',
+            'code': '03',
+            'description': 'wastes whose collection and disposal is not subject to special requirements in order to prevent infection',
+            'hazardous': false
+        },
+        {
+            'id': 134,
+            'name': '06 02 03',
+            'code': '03',
+            'description': 'ammonium hydroxide',
+            'hazardous': true
+        },
+        {
+            'id': 199,
+            'name': '07 03 03',
+            'code': '03',
+            'description': 'organic halogenated solvents, washing liquids and mother liquors',
+            'hazardous': true
+        },
+        {
+            'id': 291,
+            'name': '09 01 03',
+            'code': '03',
+            'description': 'solvent-based developer solutions',
+            'hazardous': true
+        },
+        {
+            'id': 83,
+            'name': '04 01 03',
+            'code': '03',
+            'description': 'degreasing wastes containing solvents without a liquid phase',
+            'hazardous': true
+        },
+        {
+            'id': 610,
+            'name': '16 04 03',
+            'code': '03',
+            'description': 'other waste explosives',
+            'hazardous': true
+        },
+        {
+            'id': 453,
+            'name': '10 12 03',
+            'code': '03',
+            'description': 'particulates and dust',
+            'hazardous': false
+        },
+        {
+            'id': 490,
+            'name': '11 02 03',
+            'code': '03',
+            'description': 'wastes from the production of anodes for aqueous electrolytical processes',
+            'hazardous': false
+        },
+        {
+            'id': 604,
+            'name': '16 03 03',
+            'code': '03',
+            'description': 'inorganic wastes containing dangerous substances',
+            'hazardous': true
+        },
+        {
+            'id': 773,
+            'name': '19 11 03',
+            'code': '03',
+            'description': 'aqueous liquid wastes',
+            'hazardous': true
+        },
+        {
+            'id': 669,
+            'name': '17 05 03',
+            'code': '03',
+            'description': 'soil and stones containing dangerous substances',
+            'hazardous': true
+        },
+        {
+            'id': 209,
+            'name': '07 04 03',
+            'code': '03',
+            'description': 'organic halogenated solvents, washing liquids and mother liquors',
+            'hazardous': true
+        },
+        {
+            'id': 687,
+            'name': '18 01 03',
+            'code': '03',
+            'description': 'wastes whose collection and disposal is subject to special requirements in order to prevent infection',
+            'hazardous': true
+        },
+        {
+            'id': 499,
+            'name': '11 05 03',
+            'code': '03',
+            'description': 'solid wastes from gas treatment',
+            'hazardous': true
+        },
+        {
+            'id': 26,
+            'name': '02 01 03',
+            'code': '03',
+            'description': 'plant-tissue waste',
+            'hazardous': false
+        },
+        {
+            'id': 676,
+            'name': '17 06 03',
+            'code': '03',
+            'description': 'other insulation materials consisting of or containing dangerous substances',
+            'hazardous': true
+        },
+        {
+            'id': 68,
+            'name': '03 02 03',
+            'code': '03',
+            'description': 'organometallic wood preservatives',
+            'hazardous': true
+        },
+        {
+            'id': 504,
+            'name': '12 01 03',
+            'code': '03',
+            'description': 'non-ferrous metal filings and turnings',
+            'hazardous': false
+        },
+        {
+            'id': 576,
+            'name': '16 01 03',
+            'code': '03',
+            'description': 'end-of-life tyres',
+            'hazardous': false
+        },
+        {
+            'id': 575,
+            'name': '15 02 03',
+            'code': '03',
+            'description': 'absorbents, filter materials, wiping cloths and protective clothing other than those mentioned in 15 02 02',
+            'hazardous': false
+        },
+        {
+            'id': 220,
+            'name': '07 05 03',
+            'code': '03',
+            'description': 'organic halogenated solvents, washing liquids and mother liquors',
+            'hazardous': true
+        },
+        {
+            'id': 683,
+            'name': '17 09 03',
+            'code': '03',
+            'description': 'other construction and demolition wastes (including mixed wastes) containing dangerous substances',
+            'hazardous': true
+        },
+        {
+            'id': 760,
+            'name': '19 09 03',
+            'code': '03',
+            'description': 'sludges from decarbonation',
+            'hazardous': false
+        },
+        {
+            'id': 265,
+            'name': '08 02 03',
+            'code': '03',
+            'description': 'aqueous suspensions containing ceramic materials',
+            'hazardous': false
+        },
+        {
+            'id': 566,
+            'name': '15 01 03',
+            'code': '03',
+            'description': 'wooden packaging',
+            'hazardous': false
+        },
+        {
+            'id': 793,
+            'name': '19 13 03',
+            'code': '03',
+            'description': 'sludges from soil remediation containing dangerous substances',
+            'hazardous': true
+        },
+        {
+            'id': 561,
+            'name': '14 06 03',
+            'code': '03',
+            'description': 'other solvents and solvent mixtures',
+            'hazardous': true
+        },
+        {
+            'id': 120,
+            'name': '05 06 03',
+            'code': '03',
+            'description': 'other tars',
+            'hazardous': true
+        },
+        {
+            'id': 128,
+            'name': '06 01 03',
+            'code': '03',
+            'description': 'hydrofluoric acid',
+            'hazardous': true
+        },
+        {
+            'id': 232,
+            'name': '07 06 03',
+            'code': '03',
+            'description': 'organic halogenated solvents, washing liquids and mother liquors',
+            'hazardous': true
+        },
+        {
+            'id': 767,
+            'name': '19 10 03',
+            'code': '03',
+            'description': 'fluff-light fraction and dust containing dangerous substances',
+            'hazardous': true
+        },
+        {
+            'id': 834,
+            'name': '20 03 03',
+            'code': '03',
+            'description': 'street-cleaning residues',
+            'hazardous': false
+        },
+        {
+            'id': 555,
+            'name': '13 07 03',
+            'code': '03',
+            'description': 'other fuels (including mixtures)',
+            'hazardous': true
+        },
+        {
+            'id': 36,
+            'name': '02 02 03',
+            'code': '03',
+            'description': 'materials unsuitable for consumption or processing',
+            'hazardous': false
+        },
+        {
+            'id': 58,
+            'name': '02 07 03',
+            'code': '03',
+            'description': 'wastes from chemical treatment',
+            'hazardous': false
+        },
+        {
+            'id': 54,
+            'name': '02 06 03',
+            'code': '03',
+            'description': 'sludges from on-site effluent treatment',
+            'hazardous': false
+        },
+        {
+            'id': 41,
+            'name': '02 03 03',
+            'code': '03',
+            'description': 'wastes from solvent extraction',
+            'hazardous': false
+        },
+        {
+            'id': 831,
+            'name': '20 02 03',
+            'code': '03',
+            'description': 'other non-biodegradable wastes',
+            'hazardous': false
+        },
+        {
+            'id': 546,
+            'name': '13 04 03',
+            'code': '03',
+            'description': 'bilge oils from other navigation',
+            'hazardous': true
+        },
+        {
+            'id': 242,
+            'name': '07 07 03',
+            'code': '03',
+            'description': 'organic halogenated solvents, washing liquids and mother liquors',
+            'hazardous': true
+        },
+        {
+            'id': 47,
+            'name': '02 04 03',
+            'code': '03',
+            'description': 'sludges from on-site effluent treatment',
+            'hazardous': false
+        },
+        {
+            'id': 200,
+            'name': '07 03 04',
+            'code': '04',
+            'description': 'other organic solvents, washing liquids and mother liquors',
+            'hazardous': true
+        },
+        {
+            'id': 243,
+            'name': '07 07 04',
+            'code': '04',
+            'description': 'other organic solvents, washing liquids and mother liquors',
+            'hazardous': true
+        },
+        {
+            'id': 526,
+            'name': '13 01 04',
+            'code': '04',
+            'description': 'chlorinated emulsions',
+            'hazardous': true
+        },
+        {
+            'id': 42,
+            'name': '02 03 04',
+            'code': '04',
+            'description': 'materials unsuitable for consumption or processing',
+            'hazardous': false
+        },
+        {
+            'id': 662,
+            'name': '17 04 04',
+            'code': '04',
+            'description': 'zinc',
+            'hazardous': false
+        },
+        {
+            'id': 37,
+            'name': '02 02 04',
+            'code': '04',
+            'description': 'sludges from on-site effluent treatment',
+            'hazardous': false
+        },
+        {
+            'id': 59,
+            'name': '02 07 04',
+            'code': '04',
+            'description': 'materials unsuitable for consumption or processing',
+            'hazardous': false
+        },
+        {
+            'id': 768,
+            'name': '19 10 04',
+            'code': '04',
+            'description': 'fluff-light fraction and dust other than those mentioned in 19 10 03',
+            'hazardous': false
+        },
+        {
+            'id': 233,
+            'name': '07 06 04',
+            'code': '04',
+            'description': 'other organic solvents, washing liquids and mother liquors',
+            'hazardous': true
+        },
+        {
+            'id': 121,
+            'name': '05 06 04',
+            'code': '04',
+            'description': 'waste from cooling columns',
+            'hazardous': false
+        },
+        {
+            'id': 129,
+            'name': '06 01 04',
+            'code': '04',
+            'description': 'phosphoric and phosphorous acid',
+            'hazardous': true
+        },
+        {
+            'id': 761,
+            'name': '19 09 04',
+            'code': '04',
+            'description': 'spent activated carbon',
+            'hazardous': false
+        },
+        {
+            'id': 562,
+            'name': '14 06 04',
+            'code': '04',
+            'description': 'sludges or solid wastes containing halogenated solvents',
+            'hazardous': true
+        },
+        {
+            'id': 794,
+            'name': '19 13 04',
+            'code': '04',
+            'description': 'sludges from soil remediation other than those mentioned in 19 13 03',
+            'hazardous': false
+        },
+        {
+            'id': 567,
+            'name': '15 01 04',
+            'code': '04',
+            'description': 'metallic packaging',
+            'hazardous': false
+        },
+        {
+            'id': 27,
+            'name': '02 01 04',
+            'code': '04',
+            'description': 'waste plastics (except packaging)',
+            'hazardous': false
+        },
+        {
+            'id': 63,
+            'name': '03 01 04',
+            'code': '04',
+            'description': 'sawdust, shavings, cuttings, wood, particle board and veneer containing dangerous substances',
+            'hazardous': true
+        },
+        {
+            'id': 221,
+            'name': '07 05 04',
+            'code': '04',
+            'description': 'other organic solvents, washing liquids and mother liquors',
+            'hazardous': true
+        },
+        {
+            'id': 684,
+            'name': '17 09 04',
+            'code': '04',
+            'description': 'mixed construction and demolition wastes other than those mentioned in 17 09 01, 17 09 02 and 17 09 03',
+            'hazardous': false
+        },
+        {
+            'id': 505,
+            'name': '12 01 04',
+            'code': '04',
+            'description': 'non-ferrous metal dust and particles',
+            'hazardous': false
+        },
+        {
+            'id': 577,
+            'name': '16 01 04',
+            'code': '04',
+            'description': 'discarded vehicles; NB: This entry is not part of the proposal submitted for opinion to the Committee. The necessary changes to this entry will be made on the basis of the outcome of the procedure in Council on the proposal included in document COM(2000) 546',
+            'hazardous': false
+        },
+        {
+            'id': 677,
+            'name': '17 06 04',
+            'code': '04',
+            'description': 'insulation materials other than those mentioned in 17 06 01 and 17 06 03',
+            'hazardous': false
+        },
+        {
+            'id': 69,
+            'name': '03 02 04',
+            'code': '04',
+            'description': 'inorganic wood preservatives',
+            'hazardous': true
+        },
+        {
+            'id': 500,
+            'name': '11 05 04',
+            'code': '04',
+            'description': 'spent flux',
+            'hazardous': true
+        },
+        {
+            'id': 670,
+            'name': '17 05 04',
+            'code': '04',
+            'description': 'soil and stones other than those mentioned in 17 05 03',
+            'hazardous': false
+        },
+        {
+            'id': 210,
+            'name': '07 04 04',
+            'code': '04',
+            'description': 'other organic solvents, washing liquids and mother liquors',
+            'hazardous': true
+        },
+        {
+            'id': 605,
+            'name': '16 03 04',
+            'code': '04',
+            'description': 'inorganic wastes other than those mentioned in 16 03 03',
+            'hazardous': false
+        },
+        {
+            'id': 688,
+            'name': '18 01 04',
+            'code': '04',
+            'description': 'wastes whose collection and disposal is not subject to special requirements in order to prevent infection (for example dressings, plaster casts, linen, disposable clothing, diapers)',
+            'hazardous': false
+        },
+        {
+            'id': 464,
+            'name': '10 13 04',
+            'code': '04',
+            'description': 'wastes from calcination and hydration of lime',
+            'hazardous': false
+        },
+        {
+            'id': 835,
+            'name': '20 03 04',
+            'code': '04',
+            'description': 'septic tank sludge',
+            'hazardous': false
+        },
+        {
+            'id': 611,
+            'name': '16 05 04',
+            'code': '04',
+            'description': 'gases in pressure containers (including halons) containing dangerous substances',
+            'hazardous': true
+        },
+        {
+            'id': 533,
+            'name': '13 02 04',
+            'code': '04',
+            'description': 'mineral-based chlorinated engine, gear and lubricating oils',
+            'hazardous': true
+        },
+        {
+            'id': 292,
+            'name': '09 01 04',
+            'code': '04',
+            'description': 'fixer solutions',
+            'hazardous': true
+        },
+        {
+            'id': 84,
+            'name': '04 01 04',
+            'code': '04',
+            'description': 'tanning liquor containing chromium',
+            'hazardous': false
+        },
+        {
+            'id': 774,
+            'name': '19 11 04',
+            'code': '04',
+            'description': 'wastes from cleaning of fuel with bases',
+            'hazardous': true
+        },
+        {
+            'id': 620,
+            'name': '16 06 04',
+            'code': '04',
+            'description': 'alkaline batteries (except 16 06 03)',
+            'hazardous': false
+        },
+        {
+            'id': 18,
+            'name': '01 05 04',
+            'code': '04',
+            'description': 'freshwater drilling muds and wastes',
+            'hazardous': false
+        },
+        {
+            'id': 629,
+            'name': '16 08 04',
+            'code': '04',
+            'description': 'spent fluid catalytic cracking catalysts (except 16 08 07)',
+            'hazardous': false
+        },
+        {
+            'id': 186,
+            'name': '07 02 04',
+            'code': '04',
+            'description': 'other organic solvents, washing liquids and mother liquors',
+            'hazardous': true
+        },
+        {
+            'id': 305,
+            'name': '10 01 04',
+            'code': '04',
+            'description': 'oil fly ash and boiler dust',
+            'hazardous': true
+        },
+        {
+            'id': 135,
+            'name': '06 02 04',
+            'code': '04',
+            'description': 'sodium and potassium hydroxide',
+            'hazardous': true
+        },
+        {
+            'id': 394,
+            'name': '10 08 04',
+            'code': '04',
+            'description': 'particulates and dust',
+            'hazardous': false
+        },
+        {
+            'id': 389,
+            'name': '10 07 04',
+            'code': '04',
+            'description': 'other particulates and dust',
+            'hazardous': false
+        },
+        {
+            'id': 636,
+            'name': '16 09 04',
+            'code': '04',
+            'description': 'oxidising substances, not otherwise specified',
+            'hazardous': true
+        },
+        {
+            'id': 380,
+            'name': '10 06 04',
+            'code': '04',
+            'description': 'other particulates and dust',
+            'hazardous': false
+        },
+        {
+            'id': 640,
+            'name': '16 10 04',
+            'code': '04',
+            'description': 'aqueous concentrates other than those mentioned in 16 10 03',
+            'hazardous': false
+        },
+        {
+            'id': 644,
+            'name': '16 11 04',
+            'code': '04',
+            'description': 'other linings and refractories from metallurgical processes other than those mentioned in 16 11 03',
+            'hazardous': false
+        },
+        {
+            'id': 176,
+            'name': '07 01 04',
+            'code': '04',
+            'description': 'other organic solvents, washing liquids and mother liquors',
+            'hazardous': true
+        },
+        {
+            'id': 739,
+            'name': '19 06 04',
+            'code': '04',
+            'description': 'digestate from anaerobic treatment of municipal waste',
+            'hazardous': false
+        },
+        {
+            'id': 171,
+            'name': '06 13 04',
+            'code': '04',
+            'description': 'wastes from asbestos processing',
+            'hazardous': true
+        },
+        {
+            'id': 655,
+            'name': '17 02 04',
+            'code': '04',
+            'description': 'glass, plastic and wood containing or contaminated with dangerous substances',
+            'hazardous': true
+        },
+        {
+            'id': 104,
+            'name': '05 01 04',
+            'code': '04',
+            'description': 'acid alkyl sludges',
+            'hazardous': true
+        },
+        {
+            'id': 162,
+            'name': '06 09 04',
+            'code': '04',
+            'description': 'calcium-based reaction wastes other than those mentioned in 06 09 03',
+            'hazardous': false
+        },
+        {
+            'id': 369,
+            'name': '10 05 04',
+            'code': '04',
+            'description': 'other particulates and dust',
+            'hazardous': false
+        },
+        {
+            'id': 782,
+            'name': '19 12 04',
+            'code': '04',
+            'description': 'plastic and rubber',
+            'hazardous': false
+        },
+        {
+            'id': 717,
+            'name': '19 02 04',
+            'code': '04',
+            'description': 'premixed wastes composed of at least one hazardous waste',
+            'hazardous': true
+        },
+        {
+            'id': 360,
+            'name': '10 04 04',
+            'code': '04',
+            'description': 'flue-gas dust',
+            'hazardous': true
+        },
+        {
+            'id': 145,
+            'name': '06 04 04',
+            'code': '04',
+            'description': 'wastes containing mercury',
+            'hazardous': true
+        },
+        {
+            'id': 3,
+            'name': '01 03 04',
+            'code': '04',
+            'description': 'acid-generating tailings from processing of sulphide ore',
+            'hazardous': true
+        },
+        {
+            'id': 336,
+            'name': '10 03 04',
+            'code': '04',
+            'description': 'primary production slags',
+            'hazardous': true
+        },
+        {
+            'id': 726,
+            'name': '19 03 04',
+            'code': '04',
+            'description': 'wastes marked as hazardous, partly (5) stabilised',
+            'hazardous': true
+        },
+        {
+            'id': 156,
+            'name': '06 07 04',
+            'code': '04',
+            'description': 'solutions and acids, for example contact acid',
+            'hazardous': true
+        },
+        {
+            'id': 733,
+            'name': '19 04 04',
+            'code': '04',
+            'description': 'aqueous liquid wastes from vitrified waste tempering',
+            'hazardous': false
+        },
+        {
+            'id': 663,
+            'name': '17 04 05',
+            'code': '05',
+            'description': 'iron and steel',
+            'hazardous': false
+        },
+        {
+            'id': 410,
+            'name': '10 09 05',
+            'code': '05',
+            'description': 'casting cores and moulds which have not undergone pouring containing dangerous substances',
+            'hazardous': true
+        },
+        {
+            'id': 293,
+            'name': '09 01 05',
+            'code': '05',
+            'description': 'bleach solutions and bleach fixer solutions',
+            'hazardous': true
+        },
+        {
+            'id': 4,
+            'name': '01 03 05',
+            'code': '05',
+            'description': 'other tailings containing dangerous substances',
+            'hazardous': true
+        },
+        {
+            'id': 60,
+            'name': '02 07 05',
+            'code': '05',
+            'description': 'sludges from on-site effluent treatment',
+            'hazardous': false
+        },
+        {
+            'id': 697,
+            'name': '18 02 05',
+            'code': '05',
+            'description': 'chemicals consisting of or containing dangerous substances',
+            'hazardous': true
+        },
+        {
+            'id': 438,
+            'name': '10 11 05',
+            'code': '05',
+            'description': 'particulates and dust',
+            'hazardous': false
+        },
+        {
+            'id': 762,
+            'name': '19 09 05',
+            'code': '05',
+            'description': 'saturated or spent ion exchange resins',
+            'hazardous': false
+        },
+        {
+            'id': 85,
+            'name': '04 01 05',
+            'code': '05',
+            'description': 'tanning liquor free of chromium',
+            'hazardous': false
+        },
+        {
+            'id': 424,
+            'name': '10 10 05',
+            'code': '05',
+            'description': 'casting cores and moulds which have not undergone pouring, containing dangerous substances',
+            'hazardous': true
+        },
+        {
+            'id': 783,
+            'name': '19 12 05',
+            'code': '05',
+            'description': 'glass',
+            'hazardous': false
+        },
+        {
+            'id': 702,
+            'name': '19 01 05',
+            'code': '05',
+            'description': 'filter cake from gas treatment',
+            'hazardous': true
+        },
+        {
+            'id': 172,
+            'name': '06 13 05',
+            'code': '05',
+            'description': 'soot',
+            'hazardous': true
+        },
+        {
+            'id': 130,
+            'name': '06 01 05',
+            'code': '05',
+            'description': 'nitric acid and nitrous acid',
+            'hazardous': true
+        },
+        {
+            'id': 606,
+            'name': '16 03 05',
+            'code': '05',
+            'description': 'organic wastes containing dangerous substances',
+            'hazardous': true
+        },
+        {
+            'id': 306,
+            'name': '10 01 05',
+            'code': '05',
+            'description': 'Calcium-based reaction wastes from flue-gas desulphurisation in solid form',
+            'hazardous': false
+        },
+        {
+            'id': 19,
+            'name': '01 05 05',
+            'code': '05',
+            'description': 'oil-containing drilling muds and wastes',
+            'hazardous': true
+        },
+        {
+            'id': 621,
+            'name': '16 06 05',
+            'code': '05',
+            'description': 'other batteries and accumulators',
+            'hazardous': false
+        },
+        {
+            'id': 390,
+            'name': '10 07 05',
+            'code': '05',
+            'description': 'sludges and filter cakes from gas treatment',
+            'hazardous': false
+        },
+        {
+            'id': 64,
+            'name': '03 01 05',
+            'code': '05',
+            'description': 'sawdust, shavings, cuttings, wood, particle board and veneer other than those mentioned in 03 01 04',
+            'hazardous': false
+        },
+        {
+            'id': 568,
+            'name': '15 01 05',
+            'code': '05',
+            'description': 'composite packaging',
+            'hazardous': false
+        },
+        {
+            'id': 645,
+            'name': '16 11 05',
+            'code': '05',
+            'description': 'linings and refractories from non-metallurgical processes containing dangerous substances',
+            'hazardous': true
+        },
+        {
+            'id': 747,
+            'name': '19 08 05',
+            'code': '05',
+            'description': 'sludges from treatment of urban waste water',
+            'hazardous': false
+        },
+        {
+            'id': 506,
+            'name': '12 01 05',
+            'code': '05',
+            'description': 'plastics shavings and turnings',
+            'hazardous': false
+        },
+        {
+            'id': 43,
+            'name': '02 03 05',
+            'code': '05',
+            'description': 'sludges from on-site effluent treatment',
+            'hazardous': false
+        },
+        {
+            'id': 136,
+            'name': '06 02 05',
+            'code': '05',
+            'description': 'other bases',
+            'hazardous': true
+        },
+        {
+            'id': 105,
+            'name': '05 01 05',
+            'code': '05',
+            'description': 'oil spills',
+            'hazardous': true
+        },
+        {
+            'id': 370,
+            'name': '10 05 05',
+            'code': '05',
+            'description': 'solid waste from gas treatment',
+            'hazardous': true
+        },
+        {
+            'id': 740,
+            'name': '19 06 05',
+            'code': '05',
+            'description': 'liquor from anaerobic treatment of animal and vegetable waste',
+            'hazardous': false
+        },
+        {
+            'id': 534,
+            'name': '13 02 05',
+            'code': '05',
+            'description': 'mineral-based non-chlorinated engine, gear and lubricating oils',
+            'hazardous': true
+        },
+        {
+            'id': 563,
+            'name': '14 06 05',
+            'code': '05',
+            'description': 'sludges or solid wastes containing other solvents',
+            'hazardous': true
+        },
+        {
+            'id': 70,
+            'name': '03 02 05',
+            'code': '05',
+            'description': 'other wood preservatives containing dangerous substances',
+            'hazardous': true
+        },
+        {
+            'id': 527,
+            'name': '13 01 05',
+            'code': '05',
+            'description': 'non-chlorinated emulsions',
+            'hazardous': true
+        },
+        {
+            'id': 612,
+            'name': '16 05 05',
+            'code': '05',
+            'description': 'gases in pressure containers other than those mentioned in 16 05 04',
+            'hazardous': false
+        },
+        {
+            'id': 74,
+            'name': '03 03 05',
+            'code': '05',
+            'description': 'de-inking sludges from paper recycling',
+            'hazardous': false
+        },
+        {
+            'id': 769,
+            'name': '19 10 05',
+            'code': '05',
+            'description': 'other fractions containing dangerous substances',
+            'hazardous': true
+        },
+        {
+            'id': 491,
+            'name': '11 02 05',
+            'code': '05',
+            'description': 'wastes from copper hydrometallurgical processes containing dangerous substances',
+            'hazardous': true
+        },
+        {
+            'id': 361,
+            'name': '10 04 05',
+            'code': '05',
+            'description': 'other particulates and dust',
+            'hazardous': true
+        },
+        {
+            'id': 775,
+            'name': '19 11 05',
+            'code': '05',
+            'description': 'sludges from on-site effluent treatment containing dangerous substances',
+            'hazardous': true
+        },
+        {
+            'id': 678,
+            'name': '17 06 05',
+            'code': '05',
+            'description': 'construction materials containing asbestos',
+            'hazardous': true
+        },
+        {
+            'id': 718,
+            'name': '19 02 05',
+            'code': '05',
+            'description': 'sludges from physico/chemical treatment containing dangerous substances',
+            'hazardous': true
+        },
+        {
+            'id': 795,
+            'name': '19 13 05',
+            'code': '05',
+            'description': 'sludges from groundwater remediation containing dangerous substances',
+            'hazardous': true
+        },
+        {
+            'id': 475,
+            'name': '11 01 05',
+            'code': '05',
+            'description': 'pickling acids',
+            'hazardous': true
+        },
+        {
+            'id': 630,
+            'name': '16 08 05',
+            'code': '05',
+            'description': 'spent catalysts containing phosphoric acid',
+            'hazardous': true
+        },
+        {
+            'id': 337,
+            'name': '10 03 05',
+            'code': '05',
+            'description': 'waste alumina',
+            'hazardous': false
+        },
+        {
+            'id': 454,
+            'name': '10 12 05',
+            'code': '05',
+            'description': 'sludges and filter cakes from gas treatment',
+            'hazardous': false
+        },
+        {
+            'id': 727,
+            'name': '19 03 05',
+            'code': '05',
+            'description': 'stabilised wastes other than those mentioned in 19 03 04',
+            'hazardous': false
+        },
+        {
+            'id': 671,
+            'name': '17 05 05',
+            'code': '05',
+            'description': 'dredging spoil containing dangerous substances',
+            'hazardous': true
+        },
+        {
+            'id': 146,
+            'name': '06 04 05',
+            'code': '05',
+            'description': 'wastes containing other heavy metals',
+            'hazardous': true
+        },
+        {
+            'id': 507,
+            'name': '12 01 06',
+            'code': '06',
+            'description': 'mineral-based machining oils containing halogens (except emulsions and solutions)',
+            'hazardous': true
+        },
+        {
+            'id': 796,
+            'name': '19 13 06',
+            'code': '06',
+            'description': 'sludges from groundwater remediation other than those mentioned in 19 13 05',
+            'hazardous': false
+        },
+        {
+            'id': 550,
+            'name': '13 05 06',
+            'code': '06',
+            'description': 'oil from oil/water separators',
+            'hazardous': true
+        },
+        {
+            'id': 770,
+            'name': '19 10 06',
+            'code': '06',
+            'description': 'other fractions other than those mentioned in 19 10 05',
+            'hazardous': false
+        },
+        {
+            'id': 719,
+            'name': '19 02 06',
+            'code': '06',
+            'description': 'sludges from physico/chemical treatment other than those mentioned in 19 02 05',
+            'hazardous': false
+        },
+        {
+            'id': 539,
+            'name': '13 03 06',
+            'code': '06',
+            'description': 'mineral-based chlorinated insulating and heat transmission oils other than those mentioned in 13 03 01',
+            'hazardous': true
+        },
+        {
+            'id': 664,
+            'name': '17 04 06',
+            'code': '06',
+            'description': 'tin',
+            'hazardous': false
+        },
+        {
+            'id': 784,
+            'name': '19 12 06',
+            'code': '06',
+            'description': 'wood containing dangerous substances',
+            'hazardous': true
+        },
+        {
+            'id': 362,
+            'name': '10 04 06',
+            'code': '06',
+            'description': 'solid wastes from gas treatment',
+            'hazardous': true
+        },
+        {
+            'id': 535,
+            'name': '13 02 06',
+            'code': '06',
+            'description': 'synthetic engine, gear and lubricating oils',
+            'hazardous': true
+        },
+        {
+            'id': 741,
+            'name': '19 06 06',
+            'code': '06',
+            'description': 'digestate from anaerobic treatment of animal and vegetable waste',
+            'hazardous': false
+        },
+        {
+            'id': 371,
+            'name': '10 05 06',
+            'code': '06',
+            'description': 'sludges and filter cakes from gas treatment',
+            'hazardous': true
+        },
+        {
+            'id': 28,
+            'name': '02 01 06',
+            'code': '06',
+            'description': 'animal faeces, urine and manure (including spoiled straw), effluent, collected separately and treated off-site',
+            'hazardous': false
+        },
+        {
+            'id': 569,
+            'name': '15 01 06',
+            'code': '06',
+            'description': 'mixed packaging',
+            'hazardous': false
+        },
+        {
+            'id': 106,
+            'name': '05 01 06',
+            'code': '06',
+            'description': 'oily sludges from maintenance operations of the plant or equipment',
+            'hazardous': true
+        },
+        {
+            'id': 763,
+            'name': '19 09 06',
+            'code': '06',
+            'description': 'solutions and sludges from regeneration of ion exchangers',
+            'hazardous': false
+        },
+        {
+            'id': 748,
+            'name': '19 08 06',
+            'code': '06',
+            'description': 'saturated or spent ion exchange resins',
+            'hazardous': true
+        },
+        {
+            'id': 381,
+            'name': '10 06 06',
+            'code': '06',
+            'description': 'solid wastes from gas treatment',
+            'hazardous': true
+        },
+        {
+            'id': 131,
+            'name': '06 01 06',
+            'code': '06',
+            'description': 'other acids',
+            'hazardous': true
+        },
+        {
+            'id': 5,
+            'name': '01 03 06',
+            'code': '06',
+            'description': 'tailings other than those mentioned in 01 03 04 and 01 03 05',
+            'hazardous': false
+        },
+        {
+            'id': 578,
+            'name': '16 01 06',
+            'code': '06',
+            'description': 'end-of-life vehicles, containing neither liquids nor other hazardous components',
+            'hazardous': false
+        },
+        {
+            'id': 728,
+            'name': '19 03 06',
+            'code': '06',
+            'description': 'wastes marked as hazardous, solidified',
+            'hazardous': true
+        },
+        {
+            'id': 650,
+            'name': '17 01 06',
+            'code': '06',
+            'description': 'mixtures of, or separate fractions of concrete, bricks, tiles and ceramics containing dangerous substances',
+            'hazardous': true
+        },
+        {
+            'id': 672,
+            'name': '17 05 06',
+            'code': '06',
+            'description': 'dredging spoil other than those mentioned in 17 05 05',
+            'hazardous': false
+        },
+        {
+            'id': 703,
+            'name': '19 01 06',
+            'code': '06',
+            'description': 'aqueous liquid wastes from gas treatment and other aqueous liquid wastes',
+            'hazardous': true
+        },
+        {
+            'id': 411,
+            'name': '10 09 06',
+            'code': '06',
+            'description': 'casting cores and moulds which have not undergone pouring other than those mentioned in 10 09 05',
+            'hazardous': false
+        },
+        {
+            'id': 646,
+            'name': '16 11 06',
+            'code': '06',
+            'description': 'linings and refractories from non-metallurgical processes others than those mentioned in 16 11 05',
+            'hazardous': false
+        },
+        {
+            'id': 492,
+            'name': '11 02 06',
+            'code': '06',
+            'description': 'wastes from copper hydrometallurgical processes other than those mentioned in 11 02 05',
+            'hazardous': false
+        },
+        {
+            'id': 689,
+            'name': '18 01 06',
+            'code': '06',
+            'description': 'chemicals consisting of or containing dangerous substances',
+            'hazardous': true
+        },
+        {
+            'id': 86,
+            'name': '04 01 06',
+            'code': '06',
+            'description': 'sludges, in particular from on-site effluent treatment containing chromium',
+            'hazardous': false
+        },
+        {
+            'id': 607,
+            'name': '16 03 06',
+            'code': '06',
+            'description': 'organic wastes other than those mentioned in 16 03 05',
+            'hazardous': false
+        },
+        {
+            'id': 425,
+            'name': '10 10 06',
+            'code': '06',
+            'description': 'casting cores and moulds which have not undergone pouring, other than those mentioned in 10 10 05',
+            'hazardous': false
+        },
+        {
+            'id': 476,
+            'name': '11 01 06',
+            'code': '06',
+            'description': 'acids not otherwise specified',
+            'hazardous': true
+        },
+        {
+            'id': 836,
+            'name': '20 03 06',
+            'code': '06',
+            'description': 'waste from sewage cleaning',
+            'hazardous': false
+        },
+        {
+            'id': 613,
+            'name': '16 05 06',
+            'code': '06',
+            'description': 'laboratory chemicals, consisting of or containing dangerous substances, including mixtures of laboratory chemicals',
+            'hazardous': true
+        },
+        {
+            'id': 631,
+            'name': '16 08 06',
+            'code': '06',
+            'description': 'spent liquids used as catalysts',
+            'hazardous': true
+        },
+        {
+            'id': 776,
+            'name': '19 11 06',
+            'code': '06',
+            'description': 'sludges from on-site effluent treatment other than those mentioned in 19 11 05',
+            'hazardous': false
+        },
+        {
+            'id': 465,
+            'name': '10 13 06',
+            'code': '06',
+            'description': 'particulates and dust (except 10 13 12 and 10 13 13)',
+            'hazardous': false
+        },
+        {
+            'id': 698,
+            'name': '18 02 06',
+            'code': '06',
+            'description': 'chemicals other than those mentioned in 18 02 05',
+            'hazardous': false
+        },
+        {
+            'id': 20,
+            'name': '01 05 06',
+            'code': '06',
+            'description': 'drilling muds and other drilling wastes containing dangerous substances',
+            'hazardous': true
+        },
+        {
+            'id': 294,
+            'name': '09 01 06',
+            'code': '06',
+            'description': 'wastes containing silver from on-site treatment of photographic wastes',
+            'hazardous': true
+        },
+        {
+            'id': 622,
+            'name': '16 06 06',
+            'code': '06',
+            'description': 'separately collected electrolyte from batteries and accumulators',
+            'hazardous': true
+        },
+        {
+            'id': 455,
+            'name': '10 12 06',
+            'code': '06',
+            'description': 'discarded moulds',
+            'hazardous': false
+        },
+        {
+            'id': 326,
+            'name': '10 02 07',
+            'code': '07',
+            'description': 'solid wastes from gas treatment containing dangerous substances',
+            'hazardous': true
+        },
+        {
+            'id': 797,
+            'name': '19 13 07',
+            'code': '07',
+            'description': 'aqueous liquid wastes and aqueous concentrates from groundwater remediation containing dangerous substances',
+            'hazardous': true
+        },
+        {
+            'id': 673,
+            'name': '17 05 07',
+            'code': '07',
+            'description': 'track ballast containing dangerous substances',
+            'hazardous': true
+        },
+        {
+            'id': 837,
+            'name': '20 03 07',
+            'code': '07',
+            'description': 'bulky waste',
+            'hazardous': false
+        },
+        {
+            'id': 651,
+            'name': '17 01 07',
+            'code': '07',
+            'description': 'mixtures of concrete, bricks, tiles and ceramics other than those mentioned in 17 01 06',
+            'hazardous': false
+        },
+        {
+            'id': 551,
+            'name': '13 05 07',
+            'code': '07',
+            'description': 'oily water from oil/water separators',
+            'hazardous': true
+        },
+        {
+            'id': 10,
+            'name': '01 04 07',
+            'code': '07',
+            'description': 'wastes containing dangerous substances from physical and chemical processing of non-metalliferous minerals',
+            'hazardous': true
+        },
+        {
+            'id': 665,
+            'name': '17 04 07',
+            'code': '07',
+            'description': 'mixed metals',
+            'hazardous': false
+        },
+        {
+            'id': 704,
+            'name': '19 01 07',
+            'code': '07',
+            'description': 'solid wastes from gas treatment',
+            'hazardous': true
+        },
+        {
+            'id': 729,
+            'name': '19 03 07',
+            'code': '07',
+            'description': 'solidified wastes other than those mentioned in 19 03 06',
+            'hazardous': false
+        },
+        {
+            'id': 307,
+            'name': '10 01 07',
+            'code': '07',
+            'description': 'calcium-based reaction wastes from flue-gas desulphurisation in sludge form',
+            'hazardous': false
+        },
+        {
+            'id': 75,
+            'name': '03 03 07',
+            'code': '07',
+            'description': 'mechanically separated rejects from pulping of waste paper and cardboard',
+            'hazardous': false
+        },
+        {
+            'id': 234,
+            'name': '07 06 07',
+            'code': '07',
+            'description': 'halogenated still bottoms and reaction residues',
+            'hazardous': true
+        },
+        {
+            'id': 412,
+            'name': '10 09 07',
+            'code': '07',
+            'description': 'casting cores and moulds which have undergone pouring containing dangerous substances',
+            'hazardous': true
+        },
+        {
+            'id': 211,
+            'name': '07 04 07',
+            'code': '07',
+            'description': 'halogenated still bottoms and reaction residues',
+            'hazardous': true
+        },
+        {
+            'id': 493,
+            'name': '11 02 07',
+            'code': '07',
+            'description': 'other wastes containing dangerous substances',
+            'hazardous': true
+        },
+        {
+            'id': 570,
+            'name': '15 01 07',
+            'code': '07',
+            'description': 'glass packaging',
+            'hazardous': false
+        },
+        {
+            'id': 777,
+            'name': '19 11 07',
+            'code': '07',
+            'description': 'wastes from flue-gas cleaning',
+            'hazardous': true
+        },
+        {
+            'id': 177,
+            'name': '07 01 07',
+            'code': '07',
+            'description': 'halogenated still bottoms and reaction residues',
+            'hazardous': true
+        },
+        {
+            'id': 244,
+            'name': '07 07 07',
+            'code': '07',
+            'description': 'halogenated still bottoms and reaction residues',
+            'hazardous': true
+        },
+        {
+            'id': 87,
+            'name': '04 01 07',
+            'code': '07',
+            'description': 'sludges, in particular from on-site effluent treatment free of chromium',
+            'hazardous': false
+        },
+        {
+            'id': 785,
+            'name': '19 12 07',
+            'code': '07',
+            'description': 'wood other than that mentioned in 19 12 06',
+            'hazardous': false
+        },
+        {
+            'id': 107,
+            'name': '05 01 07',
+            'code': '07',
+            'description': 'acid tars',
+            'hazardous': true
+        },
+        {
+            'id': 690,
+            'name': '18 01 07',
+            'code': '07',
+            'description': 'chemicals other than those mentioned in 18 01 06',
+            'hazardous': false
+        },
+        {
+            'id': 536,
+            'name': '13 02 07',
+            'code': '07',
+            'description': 'readily biodegradable engine, gear and lubricating oils',
+            'hazardous': true
+        },
+        {
+            'id': 540,
+            'name': '13 03 07',
+            'code': '07',
+            'description': 'mineral-based non-chlorinated insulating and heat transmission oils',
+            'hazardous': true
+        },
+        {
+            'id': 426,
+            'name': '10 10 07',
+            'code': '07',
+            'description': 'casting cores and moulds which have undergone pouring, containing dangerous substances',
+            'hazardous': true
+        },
+        {
+            'id': 477,
+            'name': '11 01 07',
+            'code': '07',
+            'description': 'pickling bases',
+            'hazardous': true
+        },
+        {
+            'id': 382,
+            'name': '10 06 07',
+            'code': '07',
+            'description': 'sludges and filter cakes from gas treatment',
+            'hazardous': true
+        },
+        {
+            'id': 201,
+            'name': '07 03 07',
+            'code': '07',
+            'description': 'halogenated still bottoms and reaction residues',
+            'hazardous': true
+        },
+        {
+            'id': 267,
+            'name': '08 03 07',
+            'code': '07',
+            'description': 'aqueous sludges containing ink',
+            'hazardous': false
+        },
+        {
+            'id': 632,
+            'name': '16 08 07',
+            'code': '07',
+            'description': 'spent catalysts contaminated with dangerous substances',
+            'hazardous': true
+        },
+        {
+            'id': 222,
+            'name': '07 05 07',
+            'code': '07',
+            'description': 'halogenated still bottoms and reaction residues',
+            'hazardous': true
+        },
+        {
+            'id': 699,
+            'name': '18 02 07',
+            'code': '07',
+            'description': 'cytotoxic and cytostatic medicines',
+            'hazardous': true
+        },
+        {
+            'id': 363,
+            'name': '10 04 07',
+            'code': '07',
+            'description': 'sludges and filter cakes from gas treatment',
+            'hazardous': true
+        },
+        {
+            'id': 614,
+            'name': '16 05 07',
+            'code': '07',
+            'description': 'discarded inorganic chemicals consisting of or containing dangerous substances',
+            'hazardous': true
+        },
+        {
+            'id': 749,
+            'name': '19 08 07',
+            'code': '07',
+            'description': 'solutions and sludges from regeneration of ion exchangers',
+            'hazardous': true
+        },
+        {
+            'id': 187,
+            'name': '07 02 07',
+            'code': '07',
+            'description': 'halogenated still bottoms and reaction residues',
+            'hazardous': true
+        },
+        {
+            'id': 466,
+            'name': '10 13 07',
+            'code': '07',
+            'description': 'sludges and filter cakes from gas treatment',
+            'hazardous': false
+        },
+        {
+            'id': 720,
+            'name': '19 02 07',
+            'code': '07',
+            'description': 'oil and concentrates from separation',
+            'hazardous': true
+        },
+        {
+            'id': 6,
+            'name': '01 03 07',
+            'code': '07',
+            'description': 'other wastes containing dangerous substances from physical and chemical processing of metalliferous minerals',
+            'hazardous': true
+        },
+        {
+            'id': 21,
+            'name': '01 05 07',
+            'code': '07',
+            'description': 'barite-containing drilling muds and wastes other than those mentioned in 01 05 05 and 01 05 06',
+            'hazardous': false
+        },
+        {
+            'id': 391,
+            'name': '10 07 07',
+            'code': '07',
+            'description': 'wastes from cooling-water treatment containing oil',
+            'hazardous': true
+        },
+        {
+            'id': 29,
+            'name': '02 01 07',
+            'code': '07',
+            'description': 'wastes from forestry',
+            'hazardous': false
+        },
+        {
+            'id': 579,
+            'name': '16 01 07',
+            'code': '07',
+            'description': 'oil filters',
+            'hazardous': true
+        },
+        {
+            'id': 508,
+            'name': '12 01 07',
+            'code': '07',
+            'description': 'mineral-based machining oils free of halogens (except emulsions and solutions)',
+            'hazardous': true
+        },
+        {
+            'id': 295,
+            'name': '09 01 07',
+            'code': '07',
+            'description': 'photographic film and paper containing silver or silver compounds',
+            'hazardous': false
+        },
+        {
+            'id': 623,
+            'name': '16 07 08',
+            'code': '08',
+            'description': 'wastes containing oil',
+            'hazardous': true
+        },
+        {
+            'id': 235,
+            'name': '07 06 08',
+            'code': '08',
+            'description': 'other still bottoms and reaction residues',
+            'hazardous': true
+        },
+        {
+            'id': 552,
+            'name': '13 05 08',
+            'code': '08',
+            'description': 'mixtures of wastes from grit chambers and oil/water separators',
+            'hazardous': true
+        },
+        {
+            'id': 798,
+            'name': '19 13 08',
+            'code': '08',
+            'description': 'aqueous liquid wastes and aqueous concentrates from groundwater remediation other than those mentioned in 19 13 07',
+            'hazardous': false
+        },
+        {
+            'id': 296,
+            'name': '09 01 08',
+            'code': '08',
+            'description': 'photographic film and paper free of silver or silver compounds',
+            'hazardous': false
+        },
+        {
+            'id': 338,
+            'name': '10 03 08',
+            'code': '08',
+            'description': 'salt slags from secondary production',
+            'hazardous': true
+        },
+        {
+            'id': 30,
+            'name': '02 01 08',
+            'code': '08',
+            'description': 'agrochemical waste containing dangerous substances',
+            'hazardous': true
+        },
+        {
+            'id': 541,
+            'name': '13 03 08',
+            'code': '08',
+            'description': 'synthetic insulating and heat transmission oils',
+            'hazardous': true
+        },
+        {
+            'id': 721,
+            'name': '19 02 08',
+            'code': '08',
+            'description': 'liquid combustible wastes containing dangerous substances',
+            'hazardous': true
+        },
+        {
+            'id': 188,
+            'name': '07 02 08',
+            'code': '08',
+            'description': 'other still bottoms and reaction residues',
+            'hazardous': true
+        },
+        {
+            'id': 801,
+            'name': '20 01 08',
+            'code': '08',
+            'description': 'biodegradable kitchen and canteen waste',
+            'hazardous': false
+        },
+        {
+            'id': 615,
+            'name': '16 05 08',
+            'code': '08',
+            'description': 'discarded organic chemicals consisting of or containing dangerous substances',
+            'hazardous': true
+        },
+        {
+            'id': 245,
+            'name': '07 07 08',
+            'code': '08',
+            'description': 'other still bottoms and reaction residues',
+            'hazardous': true
+        },
+        {
+            'id': 700,
+            'name': '18 02 08',
+            'code': '08',
+            'description': 'medicines other than those mentioned in 18 02 07',
+            'hazardous': false
+        },
+        {
+            'id': 537,
+            'name': '13 02 08',
+            'code': '08',
+            'description': 'other engine, gear and lubricating oils',
+            'hazardous': true
+        },
+        {
+            'id': 691,
+            'name': '18 01 08',
+            'code': '08',
+            'description': 'cytotoxic and cytostatic medicines',
+            'hazardous': true
+        },
+        {
+            'id': 786,
+            'name': '19 12 08',
+            'code': '08',
+            'description': 'textiles',
+            'hazardous': false
+        },
+        {
+            'id': 427,
+            'name': '10 10 08',
+            'code': '08',
+            'description': 'casting cores and moulds which have undergone pouring, other than those mentioned in 10 10 07',
+            'hazardous': false
+        },
+        {
+            'id': 478,
+            'name': '11 01 08',
+            'code': '08',
+            'description': 'phosphatising sludges',
+            'hazardous': true
+        },
+        {
+            'id': 327,
+            'name': '10 02 08',
+            'code': '08',
+            'description': 'solid wastes from gas treatment other than those mentioned in 10 02 07',
+            'hazardous': false
+        },
+        {
+            'id': 202,
+            'name': '07 03 08',
+            'code': '08',
+            'description': 'other still bottoms and reaction residues',
+            'hazardous': true
+        },
+        {
+            'id': 22,
+            'name': '01 05 08',
+            'code': '08',
+            'description': 'chloride-containing drilling muds and wastes other than those mentioned in 01 05 05 and 01 05 06',
+            'hazardous': false
+        },
+        {
+            'id': 372,
+            'name': '10 05 08',
+            'code': '08',
+            'description': 'wastes from cooling-water treatment containing oil',
+            'hazardous': true
+        },
+        {
+            'id': 223,
+            'name': '07 05 08',
+            'code': '08',
+            'description': 'other still bottoms and reaction residues',
+            'hazardous': true
+        },
+        {
+            'id': 750,
+            'name': '19 08 08',
+            'code': '08',
+            'description': 'membrane system waste containing heavy metals',
+            'hazardous': true
+        },
+        {
+            'id': 268,
+            'name': '08 03 08',
+            'code': '08',
+            'description': 'aqueous liquid waste containing ink',
+            'hazardous': false
+        },
+        {
+            'id': 88,
+            'name': '04 01 08',
+            'code': '08',
+            'description': 'waste tanned leather (blue sheetings, shavings, cuttings, buffing dust) containing chromium',
+            'hazardous': false
+        },
+        {
+            'id': 392,
+            'name': '10 07 08',
+            'code': '08',
+            'description': 'wastes from cooling-water treatment other than those mentioned in 10 07 07',
+            'hazardous': false
+        },
+        {
+            'id': 178,
+            'name': '07 01 08',
+            'code': '08',
+            'description': 'other still bottoms and reaction residues',
+            'hazardous': true
+        },
+        {
+            'id': 7,
+            'name': '01 03 08',
+            'code': '08',
+            'description': 'dusty and powdery wastes other than those mentioned in 01 03 07',
+            'hazardous': false
+        },
+        {
+            'id': 413,
+            'name': '10 09 08',
+            'code': '08',
+            'description': 'casting cores and moulds which have undergone pouring other than those mentioned in 10 09 07',
+            'hazardous': false
+        },
+        {
+            'id': 76,
+            'name': '03 03 08',
+            'code': '08',
+            'description': 'wastes from sorting of paper and cardboard destined for recycling',
+            'hazardous': false
+        },
+        {
+            'id': 108,
+            'name': '05 01 08',
+            'code': '08',
+            'description': 'other tars',
+            'hazardous': true
+        },
+        {
+            'id': 212,
+            'name': '07 04 08',
+            'code': '08',
+            'description': 'other still bottoms and reaction residues',
+            'hazardous': true
+        },
+        {
+            'id': 11,
+            'name': '01 04 08',
+            'code': '08',
+            'description': 'waste gravel and crushed rocks other than those mentioned in 01 04 07',
+            'hazardous': false
+        },
+        {
+            'id': 580,
+            'name': '16 01 08',
+            'code': '08',
+            'description': 'components containing mercury',
+            'hazardous': true
+        },
+        {
+            'id': 509,
+            'name': '12 01 08',
+            'code': '08',
+            'description': 'machining emulsions and solutions containing halogens',
+            'hazardous': true
+        },
+        {
+            'id': 674,
+            'name': '17 05 08',
+            'code': '08',
+            'description': 'track ballast other than those mentioned in 17 05 07',
+            'hazardous': false
+        },
+        {
+            'id': 395,
+            'name': '10 08 08',
+            'code': '08',
+            'description': 'salt slag from primary and secondary production',
+            'hazardous': true
+        },
+        {
+            'id': 456,
+            'name': '10 12 08',
+            'code': '08',
+            'description': 'waste ceramics, bricks, tiles and construction products (after thermal processing)',
+            'hazardous': false
+        },
+        {
+            'id': 479,
+            'name': '11 01 09',
+            'code': '09',
+            'description': 'sludges and filter cakes containing dangerous substances',
+            'hazardous': true
+        },
+        {
+            'id': 213,
+            'name': '07 04 09',
+            'code': '09',
+            'description': 'halogenated filter cakes and spent absorbents',
+            'hazardous': true
+        },
+        {
+            'id': 8,
+            'name': '01 03 09',
+            'code': '09',
+            'description': 'red mud from alumina production other than the wastes mentioned in 01 03 07',
+            'hazardous': false
+        },
+        {
+            'id': 510,
+            'name': '12 01 09',
+            'code': '09',
+            'description': 'machining emulsions and solutions free of halogens',
+            'hazardous': true
+        },
+        {
+            'id': 581,
+            'name': '16 01 09',
+            'code': '09',
+            'description': 'components containing PCBs',
+            'hazardous': true
+        },
+        {
+            'id': 278,
+            'name': '08 04 09',
+            'code': '09',
+            'description': 'waste adhesives and sealants containing organic solvents or other dangerous substances',
+            'hazardous': true
+        },
+        {
+            'id': 414,
+            'name': '10 09 09',
+            'code': '09',
+            'description': 'flue-gas dust containing dangerous substances',
+            'hazardous': true
+        },
+        {
+            'id': 596,
+            'name': '16 02 09',
+            'code': '09',
+            'description': 'transformers and capacitors containing PCBs',
+            'hazardous': true
+        },
+        {
+            'id': 77,
+            'name': '03 03 09',
+            'code': '09',
+            'description': 'lime mud waste',
+            'hazardous': false
+        },
+        {
+            'id': 89,
+            'name': '04 01 09',
+            'code': '09',
+            'description': 'wastes from dressing and finishing',
+            'hazardous': false
+        },
+        {
+            'id': 109,
+            'name': '05 01 09',
+            'code': '09',
+            'description': 'sludges from on-site effluent treatment containing dangerous substances',
+            'hazardous': true
+        },
+        {
+            'id': 383,
+            'name': '10 06 09',
+            'code': '09',
+            'description': 'wastes from cooling-water treatment containing oil',
+            'hazardous': true
+        },
+        {
+            'id': 91,
+            'name': '04 02 09',
+            'code': '09',
+            'description': 'wastes from composite materials (impregnated textile, elastomer, plastomer)',
+            'hazardous': false
+        },
+        {
+            'id': 571,
+            'name': '15 01 09',
+            'code': '09',
+            'description': 'textile packaging',
+            'hazardous': false
+        },
+        {
+            'id': 787,
+            'name': '19 12 09',
+            'code': '09',
+            'description': 'minerals (for example sand, stones)',
+            'hazardous': false
+        },
+        {
+            'id': 373,
+            'name': '10 05 09',
+            'code': '09',
+            'description': 'wastes from cooling-water treatment other than those mentioned in 10 05 08',
+            'hazardous': false
+        },
+        {
+            'id': 12,
+            'name': '01 04 09',
+            'code': '09',
+            'description': 'waste sand and clays',
+            'hazardous': false
+        },
+        {
+            'id': 224,
+            'name': '07 05 09',
+            'code': '09',
+            'description': 'halogenated filter cakes and spent absorbents',
+            'hazardous': true
+        },
+        {
+            'id': 528,
+            'name': '13 01 09',
+            'code': '09',
+            'description': 'mineral-based chlorinated hydraulic oils',
+            'hazardous': true
+        },
+        {
+            'id': 203,
+            'name': '07 03 09',
+            'code': '09',
+            'description': 'halogenated filter cakes and spent absorbents',
+            'hazardous': true
+        },
+        {
+            'id': 308,
+            'name': '10 01 09',
+            'code': '09',
+            'description': 'sulphuric acid',
+            'hazardous': true
+        },
+        {
+            'id': 246,
+            'name': '07 07 09',
+            'code': '09',
+            'description': 'halogenated filter cakes and spent absorbents',
+            'hazardous': true
+        },
+        {
+            'id': 364,
+            'name': '10 04 09',
+            'code': '09',
+            'description': 'wastes from cooling-water treatment containing oil',
+            'hazardous': true
+        },
+        {
+            'id': 428,
+            'name': '10 10 09',
+            'code': '09',
+            'description': 'flue-gas dust containing dangerous substances',
+            'hazardous': true
+        },
+        {
+            'id': 179,
+            'name': '07 01 09',
+            'code': '09',
+            'description': 'halogenated filter cakes and spent absorbents',
+            'hazardous': true
+        },
+        {
+            'id': 439,
+            'name': '10 11 09',
+            'code': '09',
+            'description': 'waste preparation mixture before thermal processing, containing dangerous substances',
+            'hazardous': true
+        },
+        {
+            'id': 467,
+            'name': '10 13 09',
+            'code': '09',
+            'description': 'wastes from asbestos-cement manufacture containing asbestos',
+            'hazardous': true
+        },
+        {
+            'id': 189,
+            'name': '07 02 09',
+            'code': '09',
+            'description': 'halogenated filter cakes and spent absorbents',
+            'hazardous': true
+        },
+        {
+            'id': 751,
+            'name': '19 08 09',
+            'code': '09',
+            'description': 'grease and oil mixture from oil/water separation containing edible oil and fats',
+            'hazardous': true
+        },
+        {
+            'id': 542,
+            'name': '13 03 09',
+            'code': '09',
+            'description': 'readily biodegradable insulating and heat transmission oils',
+            'hazardous': true
+        },
+        {
+            'id': 722,
+            'name': '19 02 09',
+            'code': '09',
+            'description': 'solid combustible wastes containing dangerous substances',
+            'hazardous': true
+        },
+        {
+            'id': 616,
+            'name': '16 05 09',
+            'code': '09',
+            'description': 'discarded chemicals other than those mentioned in 16 05 06, 16 05 07 or 16 05 08',
+            'hazardous': false
+        },
+        {
+            'id': 666,
+            'name': '17 04 09',
+            'code': '09',
+            'description': 'metal waste contaminated with dangerous substances',
+            'hazardous': true
+        },
+        {
+            'id': 31,
+            'name': '02 01 09',
+            'code': '09',
+            'description': 'agrochemical waste other than those mentioned in 02 01 08',
+            'hazardous': false
+        },
+        {
+            'id': 692,
+            'name': '18 01 09',
+            'code': '09',
+            'description': 'medicines other than those mentioned in 18 01 08',
+            'hazardous': false
+        },
+        {
+            'id': 339,
+            'name': '10 03 09',
+            'code': '09',
+            'description': 'black drosses from secondary production',
+            'hazardous': true
+        },
+        {
+            'id': 624,
+            'name': '16 07 09',
+            'code': '09',
+            'description': 'wastes containing other dangerous substances',
+            'hazardous': true
+        },
+        {
+            'id': 236,
+            'name': '07 06 09',
+            'code': '09',
+            'description': 'halogenated filter cakes and spent absorbents',
+            'hazardous': true
+        },
+        {
+            'id': 457,
+            'name': '10 12 09',
+            'code': '09',
+            'description': 'solid wastes from gas treatment containing dangerous substances',
+            'hazardous': true
+        },
+        {
+            'id': 396,
+            'name': '10 08 09',
+            'code': '09',
+            'description': 'other slags',
+            'hazardous': false
+        },
+        {
+            'id': 297,
+            'name': '09 01 10',
+            'code': '10',
+            'description': 'single-use cameras without batteries',
+            'hazardous': false
+        },
+        {
+            'id': 374,
+            'name': '10 05 10',
+            'code': '10',
+            'description': 'dross and skimmings that are flammable or emit, upon contact with water, flammable gases in dangerous quantities',
+            'hazardous': true
+        },
+        {
+            'id': 204,
+            'name': '07 03 10',
+            'code': '10',
+            'description': 'other filter cakes and spent absorbents',
+            'hazardous': true
+        },
+        {
+            'id': 440,
+            'name': '10 11 10',
+            'code': '10',
+            'description': 'waste preparation mixture before thermal processing, other than those mentioned in 10 11 09',
+            'hazardous': false
+        },
+        {
+            'id': 572,
+            'name': '15 01 10',
+            'code': '10',
+            'description': 'packaging containing residues of or contaminated by dangerous substances',
+            'hazardous': true
+        },
+        {
+            'id': 597,
+            'name': '16 02 10',
+            'code': '10',
+            'description': 'discarded equipment containing or contaminated by PCBs other than those mentioned in 16 02 09',
+            'hazardous': true
+        },
+        {
+            'id': 667,
+            'name': '17 04 10',
+            'code': '10',
+            'description': 'cables containing oil, coal tar and other dangerous substances',
+            'hazardous': true
+        },
+        {
+            'id': 13,
+            'name': '01 04 10',
+            'code': '10',
+            'description': 'dusty and powdery wastes other than those mentioned in 01 04 07',
+            'hazardous': false
+        },
+        {
+            'id': 365,
+            'name': '10 04 10',
+            'code': '10',
+            'description': 'wastes from cooling-water treatment other than those mentioned in 10 04 09',
+            'hazardous': false
+        },
+        {
+            'id': 788,
+            'name': '19 12 10',
+            'code': '10',
+            'description': 'combustible waste (refuse derived fuel)',
+            'hazardous': false
+        },
+        {
+            'id': 415,
+            'name': '10 09 10',
+            'code': '10',
+            'description': 'flue-gas dust other than those mentioned in 10 09 09',
+            'hazardous': false
+        },
+        {
+            'id': 529,
+            'name': '13 01 10',
+            'code': '10',
+            'description': 'mineral based non-chlorinated hydraulic oils',
+            'hazardous': true
+        },
+        {
+            'id': 225,
+            'name': '07 05 10',
+            'code': '10',
+            'description': 'other filter cakes and spent absorbents',
+            'hazardous': true
+        },
+        {
+            'id': 468,
+            'name': '10 13 10',
+            'code': '10',
+            'description': 'wastes from asbestos-cement manufacture other than those mentioned in 10 13 09',
+            'hazardous': false
+        },
+        {
+            'id': 384,
+            'name': '10 06 10',
+            'code': '10',
+            'description': 'wastes from cooling-water treatment other than those mentioned in 10 06 09',
+            'hazardous': false
+        },
+        {
+            'id': 247,
+            'name': '07 07 10',
+            'code': '10',
+            'description': 'other filter cakes and spent absorbents',
+            'hazardous': true
+        },
+        {
+            'id': 429,
+            'name': '10 10 10',
+            'code': '10',
+            'description': 'flue-gas dust other than those mentioned in 10 10 09',
+            'hazardous': false
+        },
+        {
+            'id': 279,
+            'name': '08 04 10',
+            'code': '10',
+            'description': 'waste adhesives and sealants other than those mentioned in 08 04 09',
+            'hazardous': false
+        },
+        {
+            'id': 328,
+            'name': '10 02 10',
+            'code': '10',
+            'description': 'mill scales',
+            'hazardous': false
+        },
+        {
+            'id': 110,
+            'name': '05 01 10',
+            'code': '10',
+            'description': 'Sludges from on-site effluent treatment other than those mentioned in 05 01 09',
+            'hazardous': false
+        },
+        {
+            'id': 693,
+            'name': '18 01 10',
+            'code': '10',
+            'description': 'amalgam waste from dental care',
+            'hazardous': true
+        },
+        {
+            'id': 78,
+            'name': '03 03 10',
+            'code': '10',
+            'description': 'fibre rejects, fibre-, filler- and coating-sludges from mechanical separation',
+            'hazardous': false
+        },
+        {
+            'id': 214,
+            'name': '07 04 10',
+            'code': '10',
+            'description': 'other filter cakes and spent absorbents',
+            'hazardous': true
+        },
+        {
+            'id': 752,
+            'name': '19 08 10',
+            'code': '10',
+            'description': 'grease and oil mixture from oil/water separation other than those mentioned in 19 08 09',
+            'hazardous': true
+        },
+        {
+            'id': 582,
+            'name': '16 01 10',
+            'code': '10',
+            'description': 'explosive components (for example air bags)',
+            'hazardous': true
+        },
+        {
+            'id': 543,
+            'name': '13 03 10',
+            'code': '10',
+            'description': 'other insulating and heat transmission oils',
+            'hazardous': true
+        },
+        {
+            'id': 190,
+            'name': '07 02 10',
+            'code': '10',
+            'description': 'other filter cakes and spent absorbents',
+            'hazardous': true
+        },
+        {
+            'id': 180,
+            'name': '07 01 10',
+            'code': '10',
+            'description': 'other filter cakes and spent absorbents',
+            'hazardous': true
+        },
+        {
+            'id': 705,
+            'name': '19 01 10',
+            'code': '10',
+            'description': 'spent activated carbon from flue-gas treatment',
+            'hazardous': true
+        },
+        {
+            'id': 802,
+            'name': '20 01 10',
+            'code': '10',
+            'description': 'clothes',
+            'hazardous': false
+        },
+        {
+            'id': 32,
+            'name': '02 01 10',
+            'code': '10',
+            'description': 'waste metal',
+            'hazardous': false
+        },
+        {
+            'id': 511,
+            'name': '12 01 10',
+            'code': '10',
+            'description': 'synthetic machining oils',
+            'hazardous': true
+        },
+        {
+            'id': 480,
+            'name': '11 01 10',
+            'code': '10',
+            'description': 'sludges and filter cakes other than those mentioned in 11 01 09',
+            'hazardous': false
+        },
+        {
+            'id': 92,
+            'name': '04 02 10',
+            'code': '10',
+            'description': 'organic matter from natural products (for example grease, wax)',
+            'hazardous': false
+        },
+        {
+            'id': 237,
+            'name': '07 06 10',
+            'code': '10',
+            'description': 'other filter cakes and spent absorbents',
+            'hazardous': true
+        },
+        {
+            'id': 397,
+            'name': '10 08 10',
+            'code': '10',
+            'description': 'dross and skimmings that are flammable or emit, upon contact with water, flammable gases in dangerous quantities',
+            'hazardous': true
+        },
+        {
+            'id': 458,
+            'name': '10 12 10',
+            'code': '10',
+            'description': 'solid wastes from gas treatment other than those mentioned in 10 12 09',
+            'hazardous': false
+        },
+        {
+            'id': 723,
+            'name': '19 02 10',
+            'code': '10',
+            'description': 'combustible wastes other than those mentioned in 19 02 08 and 19 02 09',
+            'hazardous': false
+        },
+        {
+            'id': 205,
+            'name': '07 03 11',
+            'code': '11',
+            'description': 'sludges from on-site effluent treatment containing dangerous substances',
+            'hazardous': true
+        },
+        {
+            'id': 238,
+            'name': '07 06 11',
+            'code': '11',
+            'description': 'sludges from on-site effluent treatment containing dangerous substances',
+            'hazardous': true
+        },
+        {
+            'id': 416,
+            'name': '10 09 11',
+            'code': '11',
+            'description': 'other particulates containing dangerous substances',
+            'hazardous': true
+        },
+        {
+            'id': 430,
+            'name': '10 10 11',
+            'code': '11',
+            'description': 'other particulates containing dangerous substances',
+            'hazardous': true
+        },
+        {
+            'id': 226,
+            'name': '07 05 11',
+            'code': '11',
+            'description': 'sludges from on-site effluent treatment containing dangerous substances',
+            'hazardous': true
+        },
+        {
+            'id': 14,
+            'name': '01 04 11',
+            'code': '11',
+            'description': 'wastes from potash and rock salt processing other than those mentioned in 01 04 07',
+            'hazardous': false
+        },
+        {
+            'id': 530,
+            'name': '13 01 11',
+            'code': '11',
+            'description': 'synthetic hydraulic oils',
+            'hazardous': true
+        },
+        {
+            'id': 248,
+            'name': '07 07 11',
+            'code': '11',
+            'description': 'sludges from on-site effluent treatment containing dangerous substances',
+            'hazardous': true
+        },
+        {
+            'id': 181,
+            'name': '07 01 11',
+            'code': '11',
+            'description': 'sludges from on-site effluent treatment containing dangerous substances',
+            'hazardous': true
+        },
+        {
+            'id': 251,
+            'name': '08 01 11',
+            'code': '11',
+            'description': 'waste paint and varnish containing organic solvents or other dangerous substances',
+            'hazardous': true
+        },
+        {
+            'id': 706,
+            'name': '19 01 11',
+            'code': '11',
+            'description': 'bottom ash and slag containing dangerous substances',
+            'hazardous': true
+        },
+        {
+            'id': 724,
+            'name': '19 02 11',
+            'code': '11',
+            'description': 'other wastes containing dangerous substances',
+            'hazardous': true
+        },
+        {
+            'id': 573,
+            'name': '15 01 11',
+            'code': '11',
+            'description': 'metallic packaging containing a dangerous solid porous matrix (for example asbestos), including empty pressure containers',
+            'hazardous': true
+        },
+        {
+            'id': 298,
+            'name': '09 01 11',
+            'code': '11',
+            'description': 'single-use cameras containing batteries included in 16 06 01, 16 06 02 or 16 06 03',
+            'hazardous': true
+        },
+        {
+            'id': 441,
+            'name': '10 11 11',
+            'code': '11',
+            'description': 'waste glass in small particles and glass powder containing heavy metals (for example from cathode ray tubes)',
+            'hazardous': true
+        },
+        {
+            'id': 803,
+            'name': '20 01 11',
+            'code': '11',
+            'description': 'textiles',
+            'hazardous': false
+        },
+        {
+            'id': 668,
+            'name': '17 04 11',
+            'code': '11',
+            'description': 'cables other than those mentioned in 17 04 10',
+            'hazardous': false
+        },
+        {
+            'id': 329,
+            'name': '10 02 11',
+            'code': '11',
+            'description': 'wastes from cooling-water treatment containing oil',
+            'hazardous': true
+        },
+        {
+            'id': 583,
+            'name': '16 01 11',
+            'code': '11',
+            'description': 'brake pads containing asbestos',
+            'hazardous': true
+        },
+        {
+            'id': 111,
+            'name': '05 01 11',
+            'code': '11',
+            'description': 'wastes from cleaning of fuels with bases',
+            'hazardous': true
+        },
+        {
+            'id': 375,
+            'name': '10 05 11',
+            'code': '11',
+            'description': 'dross and skimmings other than those mentioned in 10 05 10',
+            'hazardous': false
+        },
+        {
+            'id': 215,
+            'name': '07 04 11',
+            'code': '11',
+            'description': 'sludges from on-site effluent treatment containing dangerous substances',
+            'hazardous': true
+        },
+        {
+            'id': 459,
+            'name': '10 12 11',
+            'code': '11',
+            'description': 'wastes from glazing containing heavy metals',
+            'hazardous': true
+        },
+        {
+            'id': 280,
+            'name': '08 04 11',
+            'code': '11',
+            'description': 'adhesive and sealant sludges containing organic solvents or other dangerous substances',
+            'hazardous': true
+        },
+        {
+            'id': 191,
+            'name': '07 02 11',
+            'code': '11',
+            'description': 'sludges from on-site effluent treatment containing dangerous substances',
+            'hazardous': true
+        },
+        {
+            'id': 598,
+            'name': '16 02 11',
+            'code': '11',
+            'description': 'discarded equipment containing chlorofluorocarbons, HCFC, HFC',
+            'hazardous': true
+        },
+        {
+            'id': 79,
+            'name': '03 03 11',
+            'code': '11',
+            'description': 'sludges from on-site effluent treatment other than those mentioned in 03 03 10',
+            'hazardous': false
+        },
+        {
+            'id': 138,
+            'name': '06 03 11',
+            'code': '11',
+            'description': 'solid salts and solutions containing cyanides',
+            'hazardous': true
+        },
+        {
+            'id': 789,
+            'name': '19 12 11',
+            'code': '11',
+            'description': 'other wastes (including mixtures of materials) from mechanical treatment of waste containing dangerous substances',
+            'hazardous': true
+        },
+        {
+            'id': 469,
+            'name': '10 13 11',
+            'code': '11',
+            'description': 'wastes from cement-based composite materials other than those mentioned in 10 13 09 and 10 13 10',
+            'hazardous': false
+        },
+        {
+            'id': 481,
+            'name': '11 01 11',
+            'code': '11',
+            'description': 'aqueous rinsing liquids containing dangerous substances',
+            'hazardous': true
+        },
+        {
+            'id': 753,
+            'name': '19 08 11',
+            'code': '11',
+            'description': 'sludges containing dangerous substances from biological treatment of industrial waste water',
+            'hazardous': true
+        },
+        {
+            'id': 398,
+            'name': '10 08 11',
+            'code': '11',
+            'description': 'dross and skimmings other than those mentioned in 10 08 10',
+            'hazardous': false
+        },
+        {
+            'id': 707,
+            'name': '19 01 12',
+            'code': '12',
+            'description': 'bottom ash and slag other than those mentioned in 19 01 11',
+            'hazardous': false
+        },
+        {
+            'id': 482,
+            'name': '11 01 12',
+            'code': '12',
+            'description': 'aqueous rinsing liquids other than those mentioned in 11 01 11',
+            'hazardous': false
+        },
+        {
+            'id': 399,
+            'name': '10 08 12',
+            'code': '12',
+            'description': 'tar-containing wastes from anode manufacture',
+            'hazardous': true
+        },
+        {
+            'id': 470,
+            'name': '10 13 12',
+            'code': '12',
+            'description': 'solid wastes from gas treatment containing dangerous substances',
+            'hazardous': true
+        },
+        {
+            'id': 206,
+            'name': '07 03 12',
+            'code': '12',
+            'description': 'sludges from on-site effluent treatment other than those mentioned in 07 03 11',
+            'hazardous': false
+        },
+        {
+            'id': 599,
+            'name': '16 02 12',
+            'code': '12',
+            'description': 'discarded equipment containing free asbestos',
+            'hazardous': true
+        },
+        {
+            'id': 460,
+            'name': '10 12 12',
+            'code': '12',
+            'description': 'wastes from glazing other than those mentioned in 10 12 11',
+            'hazardous': false
+        },
+        {
+            'id': 192,
+            'name': '07 02 12',
+            'code': '12',
+            'description': 'sludges from on-site effluent treatment other than those mentioned in 07 02 11',
+            'hazardous': false
+        },
+        {
+            'id': 281,
+            'name': '08 04 12',
+            'code': '12',
+            'description': 'adhesive and sealant sludges other than those mentioned in 08 04 11',
+            'hazardous': false
+        },
+        {
+            'id': 754,
+            'name': '19 08 12',
+            'code': '12',
+            'description': 'sludges from biological treatment of industrial waste water other than those mentioned in 19 08 11',
+            'hazardous': false
+        },
+        {
+            'id': 112,
+            'name': '05 01 12',
+            'code': '12',
+            'description': 'oil containing acids',
+            'hazardous': true
+        },
+        {
+            'id': 584,
+            'name': '16 01 12',
+            'code': '12',
+            'description': 'brake pads other than those mentioned in 16 01 11',
+            'hazardous': false
+        },
+        {
+            'id': 512,
+            'name': '12 01 12',
+            'code': '12',
+            'description': 'spent waxes and fats',
+            'hazardous': true
+        },
+        {
+            'id': 330,
+            'name': '10 02 12',
+            'code': '12',
+            'description': 'wastes from cooling-water treatment other than those mentioned in 10 02 11',
+            'hazardous': false
+        },
+        {
+            'id': 239,
+            'name': '07 06 12',
+            'code': '12',
+            'description': 'sludges from on-site effluent treatment other than those mentioned in 07 06 11',
+            'hazardous': false
+        },
+        {
+            'id': 442,
+            'name': '10 11 12',
+            'code': '12',
+            'description': 'waste glass other than those mentioned in 10 11 11',
+            'hazardous': false
+        },
+        {
+            'id': 216,
+            'name': '07 04 12',
+            'code': '12',
+            'description': 'sludges from on-site effluent treatment other than those mentioned in 07 04 11',
+            'hazardous': false
+        },
+        {
+            'id': 269,
+            'name': '08 03 12',
+            'code': '12',
+            'description': 'waste ink containing dangerous substances',
+            'hazardous': true
+        },
+        {
+            'id': 252,
+            'name': '08 01 12',
+            'code': '12',
+            'description': 'waste paint and varnish other than those mentioned in 08 01 11',
+            'hazardous': false
+        },
+        {
+            'id': 182,
+            'name': '07 01 12',
+            'code': '12',
+            'description': 'sludges from on-site effluent treatment other than those mentioned in 07 01 11',
+            'hazardous': false
+        },
+        {
+            'id': 249,
+            'name': '07 07 12',
+            'code': '12',
+            'description': 'sludges from on-site effluent treatment other than those mentioned in 07 07 11',
+            'hazardous': false
+        },
+        {
+            'id': 15,
+            'name': '01 04 12',
+            'code': '12',
+            'description': 'tailings and other wastes from washing and cleaning of minerals other than those mentioned in 01 04 07 and 01 04 11',
+            'hazardous': false
+        },
+        {
+            'id': 531,
+            'name': '13 01 12',
+            'code': '12',
+            'description': 'readily biodegradable hydraulic oils',
+            'hazardous': true
+        },
+        {
+            'id': 431,
+            'name': '10 10 12',
+            'code': '12',
+            'description': 'other particulates other than those mentioned in 10 10 11',
+            'hazardous': false
+        },
+        {
+            'id': 227,
+            'name': '07 05 12',
+            'code': '12',
+            'description': 'sludges from on-site effluent treatment other than those mentioned in 07 05 11',
+            'hazardous': false
+        },
+        {
+            'id': 299,
+            'name': '09 01 12',
+            'code': '12',
+            'description': 'single-use cameras containing batteries other than those mentioned in 09 01 11',
+            'hazardous': false
+        },
+        {
+            'id': 790,
+            'name': '19 12 12',
+            'code': '12',
+            'description': 'other wastes (including mixtures of materials) from mechanical treatment of wastes other than those mentioned in 19 12 11',
+            'hazardous': false
+        },
+        {
+            'id': 417,
+            'name': '10 09 12',
+            'code': '12',
+            'description': 'other particulates other than those mentioned in 10 09 11',
+            'hazardous': false
+        },
+        {
+            'id': 532,
+            'name': '13 01 13',
+            'code': '13',
+            'description': 'other hydraulic oils',
+            'hazardous': true
+        },
+        {
+            'id': 270,
+            'name': '08 03 13',
+            'code': '13',
+            'description': 'waste ink other than those mentioned in 08 03 12',
+            'hazardous': false
+        },
+        {
+            'id': 600,
+            'name': '16 02 13',
+            'code': '13',
+            'description': 'discarded equipment containing hazardous components (2) other than those mentioned in 16 02 09 to 16 02 12',
+            'hazardous': true
+        },
+        {
+            'id': 217,
+            'name': '07 04 13',
+            'code': '13',
+            'description': 'solid wastes containing dangerous substances',
+            'hazardous': true
+        },
+        {
+            'id': 585,
+            'name': '16 01 13',
+            'code': '13',
+            'description': 'brake fluids',
+            'hazardous': true
+        },
+        {
+            'id': 253,
+            'name': '08 01 13',
+            'code': '13',
+            'description': 'sludges from paint or varnish containing organic solvents or other dangerous substances',
+            'hazardous': true
+        },
+        {
+            'id': 331,
+            'name': '10 02 13',
+            'code': '13',
+            'description': 'sludges and filter cakes from gas treatment containing dangerous substances',
+            'hazardous': true
+        },
+        {
+            'id': 113,
+            'name': '05 01 13',
+            'code': '13',
+            'description': 'boiler feedwater sludges',
+            'hazardous': false
+        },
+        {
+            'id': 443,
+            'name': '10 11 13',
+            'code': '13',
+            'description': 'glass-polishing and -grinding sludge containing dangerous substances',
+            'hazardous': true
+        },
+        {
+            'id': 309,
+            'name': '10 01 13',
+            'code': '13',
+            'description': 'fly ash from emulsified hydrocarbons used as fuel',
+            'hazardous': true
+        },
+        {
+            'id': 483,
+            'name': '11 01 13',
+            'code': '13',
+            'description': 'degreasing wastes containing dangerous substances',
+            'hazardous': true
+        },
+        {
+            'id': 755,
+            'name': '19 08 13',
+            'code': '13',
+            'description': 'sludges containing dangerous substances from other treatment of industrial waste water',
+            'hazardous': true
+        },
+        {
+            'id': 471,
+            'name': '10 13 13',
+            'code': '13',
+            'description': 'solid wastes from gas treatment other than those mentioned in 10 13 12',
+            'hazardous': false
+        },
+        {
+            'id': 432,
+            'name': '10 10 13',
+            'code': '13',
+            'description': 'waste binders containing dangerous substances',
+            'hazardous': true
+        },
+        {
+            'id': 16,
+            'name': '01 04 13',
+            'code': '13',
+            'description': 'wastes from stone cutting and sawing other than those mentioned in 01 04 07',
+            'hazardous': false
+        },
+        {
+            'id': 804,
+            'name': '20 01 13',
+            'code': '13',
+            'description': 'solvents',
+            'hazardous': true
+        },
+        {
+            'id': 400,
+            'name': '10 08 13',
+            'code': '13',
+            'description': 'carbon-containing wastes from anode manufacture other than those mentioned in 10 08 12',
+            'hazardous': false
+        },
+        {
+            'id': 708,
+            'name': '19 01 13',
+            'code': '13',
+            'description': 'fly ash containing dangerous substances',
+            'hazardous': true
+        },
+        {
+            'id': 513,
+            'name': '12 01 13',
+            'code': '13',
+            'description': 'welding wastes',
+            'hazardous': false
+        },
+        {
+            'id': 228,
+            'name': '07 05 13',
+            'code': '13',
+            'description': 'solid wastes containing dangerous substances',
+            'hazardous': true
+        },
+        {
+            'id': 282,
+            'name': '08 04 13',
+            'code': '13',
+            'description': 'aqueous sludges containing adhesives or sealants containing organic solvents or other dangerous substances',
+            'hazardous': true
+        },
+        {
+            'id': 461,
+            'name': '10 12 13',
+            'code': '13',
+            'description': 'sludge from on-site effluent treatment',
+            'hazardous': false
+        },
+        {
+            'id': 300,
+            'name': '09 01 13',
+            'code': '13',
+            'description': 'aqueous liquid waste from on-site reclamation of silver other than those mentioned in 09 01 06',
+            'hazardous': true
+        },
+        {
+            'id': 139,
+            'name': '06 03 13',
+            'code': '13',
+            'description': 'solid salts and solutions containing heavy metals',
+            'hazardous': true
+        },
+        {
+            'id': 418,
+            'name': '10 09 13',
+            'code': '13',
+            'description': 'waste binders containing dangerous substances',
+            'hazardous': true
+        },
+        {
+            'id': 193,
+            'name': '07 02 13',
+            'code': '13',
+            'description': 'waste plastic',
+            'hazardous': false
+        },
+        {
+            'id': 756,
+            'name': '19 08 14',
+            'code': '14',
+            'description': 'sludges from other treatment of industrial waste water other than those mentioned in 19 08 13',
+            'hazardous': false
+        },
+        {
+            'id': 419,
+            'name': '10 09 14',
+            'code': '14',
+            'description': 'waste binders other than those mentioned in 10 09 13',
+            'hazardous': false
+        },
+        {
+            'id': 444,
+            'name': '10 11 14',
+            'code': '14',
+            'description': 'glass-polishing and -grinding sludge other than those mentioned in 10 11 13',
+            'hazardous': false
+        },
+        {
+            'id': 229,
+            'name': '07 05 14',
+            'code': '14',
+            'description': 'solid wastes other than those mentioned in 07 05 13',
+            'hazardous': false
+        },
+        {
+            'id': 401,
+            'name': '10 08 14',
+            'code': '14',
+            'description': 'anode scrap',
+            'hazardous': false
+        },
+        {
+            'id': 194,
+            'name': '07 02 14',
+            'code': '14',
+            'description': 'wastes from additives containing dangerous substances',
+            'hazardous': true
+        },
+        {
+            'id': 472,
+            'name': '10 13 14',
+            'code': '14',
+            'description': 'waste concrete and concrete sludge',
+            'hazardous': false
+        },
+        {
+            'id': 484,
+            'name': '11 01 14',
+            'code': '14',
+            'description': 'degreasing wastes other than those mentioned in 11 01 13',
+            'hazardous': false
+        },
+        {
+            'id': 601,
+            'name': '16 02 14',
+            'code': '14',
+            'description': 'discarded equipment other than those mentioned in 16 02 09 to 16 02 13',
+            'hazardous': false
+        },
+        {
+            'id': 283,
+            'name': '08 04 14',
+            'code': '14',
+            'description': 'aqueous sludges containing adhesives or sealants other than those mentioned in 08 04 13',
+            'hazardous': false
+        },
+        {
+            'id': 709,
+            'name': '19 01 14',
+            'code': '14',
+            'description': 'fly ash other than those mentioned in 19 01 13',
+            'hazardous': false
+        },
+        {
+            'id': 433,
+            'name': '10 10 14',
+            'code': '14',
+            'description': 'waste binders other than those mentioned in 10 10 13',
+            'hazardous': false
+        },
+        {
+            'id': 140,
+            'name': '06 03 14',
+            'code': '14',
+            'description': 'solid salts and solutions other than those mentioned in 06 03 11 and 06 03 13',
+            'hazardous': false
+        },
+        {
+            'id': 310,
+            'name': '10 01 14',
+            'code': '14',
+            'description': 'bottom ash, slag and boiler dust from co-incineration containing dangerous substances',
+            'hazardous': true
+        },
+        {
+            'id': 586,
+            'name': '16 01 14',
+            'code': '14',
+            'description': 'antifreeze fluids containing dangerous substances',
+            'hazardous': true
+        },
+        {
+            'id': 271,
+            'name': '08 03 14',
+            'code': '14',
+            'description': 'ink sludges containing dangerous substances',
+            'hazardous': true
+        },
+        {
+            'id': 514,
+            'name': '12 01 14',
+            'code': '14',
+            'description': 'machining sludges containing dangerous substances',
+            'hazardous': true
+        },
+        {
+            'id': 805,
+            'name': '20 01 14',
+            'code': '14',
+            'description': 'acids',
+            'hazardous': true
+        },
+        {
+            'id': 93,
+            'name': '04 02 14',
+            'code': '14',
+            'description': 'wastes from finishing containing organic solvents',
+            'hazardous': true
+        },
+        {
+            'id': 332,
+            'name': '10 02 14',
+            'code': '14',
+            'description': 'sludges and filter cakes from gas treatment other than those mentioned in 10 02 13',
+            'hazardous': false
+        },
+        {
+            'id': 254,
+            'name': '08 01 14',
+            'code': '14',
+            'description': 'sludges from paint or varnish other than those mentioned in 08 01 13',
+            'hazardous': false
+        },
+        {
+            'id': 114,
+            'name': '05 01 14',
+            'code': '14',
+            'description': 'wastes from cooling columns',
+            'hazardous': false
+        },
+        {
+            'id': 806,
+            'name': '20 01 15',
+            'code': '15',
+            'description': 'alkalines',
+            'hazardous': true
+        },
+        {
+            'id': 515,
+            'name': '12 01 15',
+            'code': '15',
+            'description': 'machining sludges other than those mentioned in 12 01 14',
+            'hazardous': false
+        },
+        {
+            'id': 311,
+            'name': '10 01 15',
+            'code': '15',
+            'description': 'Bottom ash, slag and boiler dust from co-incineration other than those mentioned in 10 01 14',
+            'hazardous': false
+        },
+        {
+            'id': 434,
+            'name': '10 10 15',
+            'code': '15',
+            'description': 'waste crack-indicating agent containing dangerous substances',
+            'hazardous': true
+        },
+        {
+            'id': 284,
+            'name': '08 04 15',
+            'code': '15',
+            'description': 'aqueous liquid waste containing adhesives or sealants containing organic solvents or other dangerous substances',
+            'hazardous': true
+        },
+        {
+            'id': 333,
+            'name': '10 02 15',
+            'code': '15',
+            'description': 'other sludges and filter cakes',
+            'hazardous': false
+        },
+        {
+            'id': 485,
+            'name': '11 01 15',
+            'code': '15',
+            'description': 'eluate and sludges from membrane systems or ion exchange systems containing dangerous substances',
+            'hazardous': true
+        },
+        {
+            'id': 115,
+            'name': '05 01 15',
+            'code': '15',
+            'description': 'spent filter clays',
+            'hazardous': true
+        },
+        {
+            'id': 255,
+            'name': '08 01 15',
+            'code': '15',
+            'description': 'aqueous sludges containing paint or varnish containing organic solvents or other dangerous substances',
+            'hazardous': true
+        },
+        {
+            'id': 195,
+            'name': '07 02 15',
+            'code': '15',
+            'description': 'wastes from additives other than those mentioned in 07 02 14',
+            'hazardous': false
+        },
+        {
+            'id': 710,
+            'name': '19 01 15',
+            'code': '15',
+            'description': 'boiler dust containing dangerous substances',
+            'hazardous': true
+        },
+        {
+            'id': 94,
+            'name': '04 02 15',
+            'code': '15',
+            'description': 'wastes from finishing other than those mentioned in 04 02 14',
+            'hazardous': false
+        },
+        {
+            'id': 272,
+            'name': '08 03 15',
+            'code': '15',
+            'description': 'ink sludges other than those mentioned in 08 03 14',
+            'hazardous': false
+        },
+        {
+            'id': 141,
+            'name': '06 03 15',
+            'code': '15',
+            'description': 'metallic oxides containing heavy metals',
+            'hazardous': true
+        },
+        {
+            'id': 602,
+            'name': '16 02 15',
+            'code': '15',
+            'description': 'hazardous components removed from discarded equipment',
+            'hazardous': true
+        },
+        {
+            'id': 402,
+            'name': '10 08 15',
+            'code': '15',
+            'description': 'flue-gas dust containing dangerous substances',
+            'hazardous': true
+        },
+        {
+            'id': 445,
+            'name': '10 11 15',
+            'code': '15',
+            'description': 'solid wastes from flue-gas treatment containing dangerous substances',
+            'hazardous': true
+        },
+        {
+            'id': 340,
+            'name': '10 03 15',
+            'code': '15',
+            'description': 'skimmings that are flammable or emit, upon contact with water, flammable gases in dangerous quantities',
+            'hazardous': true
+        },
+        {
+            'id': 420,
+            'name': '10 09 15',
+            'code': '15',
+            'description': 'waste crack-indicating agent containing dangerous substances',
+            'hazardous': true
+        },
+        {
+            'id': 587,
+            'name': '16 01 15',
+            'code': '15',
+            'description': 'antifreeze fluids other than those mentioned in 16 01 14',
+            'hazardous': false
+        },
+        {
+            'id': 312,
+            'name': '10 01 16',
+            'code': '16',
+            'description': 'fly ash from co-incineration containing dangerous substances',
+            'hazardous': true
+        },
+        {
+            'id': 285,
+            'name': '08 04 16',
+            'code': '16',
+            'description': 'aqueous liquid waste containing adhesives or sealants other than those mentioned in 08 04 15',
+            'hazardous': false
+        },
+        {
+            'id': 196,
+            'name': '07 02 16',
+            'code': '16',
+            'description': 'wastes containing silicones',
+            'hazardous': false
+        },
+        {
+            'id': 256,
+            'name': '08 01 16',
+            'code': '16',
+            'description': 'aqueous sludges containing paint or varnish other than those mentioned in 08 01 15',
+            'hazardous': false
+        },
+        {
+            'id': 588,
+            'name': '16 01 16',
+            'code': '16',
+            'description': 'tanks for liquefied gas',
+            'hazardous': false
+        },
+        {
+            'id': 273,
+            'name': '08 03 16',
+            'code': '16',
+            'description': 'waste etching solutions',
+            'hazardous': true
+        },
+        {
+            'id': 603,
+            'name': '16 02 16',
+            'code': '16',
+            'description': 'components removed from discarded equipment other than those mentioned in 16 02 15',
+            'hazardous': false
+        },
+        {
+            'id': 516,
+            'name': '12 01 16',
+            'code': '16',
+            'description': 'waste blasting material containing dangerous substances',
+            'hazardous': true
+        },
+        {
+            'id': 486,
+            'name': '11 01 16',
+            'code': '16',
+            'description': 'saturated or spent ion exchange resins',
+            'hazardous': true
+        },
+        {
+            'id': 142,
+            'name': '06 03 16',
+            'code': '16',
+            'description': 'metallic oxides other than those mentioned in 06 03 15',
+            'hazardous': false
+        },
+        {
+            'id': 446,
+            'name': '10 11 16',
+            'code': '16',
+            'description': 'solid wastes from flue-gas treatment other than those mentioned in 10 11 15',
+            'hazardous': false
+        },
+        {
+            'id': 435,
+            'name': '10 10 16',
+            'code': '16',
+            'description': 'waste crack-indicating agent other than those mentioned in 10 10 15',
+            'hazardous': false
+        },
+        {
+            'id': 421,
+            'name': '10 09 16',
+            'code': '16',
+            'description': 'waste crack-indicating agent other than those mentioned in 10 09 15',
+            'hazardous': false
+        },
+        {
+            'id': 116,
+            'name': '05 01 16',
+            'code': '16',
+            'description': 'sulphur-containing wastes from petroleum desulphurisation',
+            'hazardous': false
+        },
+        {
+            'id': 341,
+            'name': '10 03 16',
+            'code': '16',
+            'description': 'skimmings other than those mentioned in 10 03 15',
+            'hazardous': false
+        },
+        {
+            'id': 403,
+            'name': '10 08 16',
+            'code': '16',
+            'description': 'flue-gas dust other than those mentioned in 10 08 15',
+            'hazardous': false
+        },
+        {
+            'id': 711,
+            'name': '19 01 16',
+            'code': '16',
+            'description': 'boiler dust other than those mentioned in 19 01 15',
+            'hazardous': false
+        },
+        {
+            'id': 95,
+            'name': '04 02 16',
+            'code': '16',
+            'description': 'dyestuffs and pigments containing dangerous substances',
+            'hazardous': true
+        },
+        {
+            'id': 117,
+            'name': '05 01 17',
+            'code': '17',
+            'description': 'bitumen',
+            'hazardous': false
+        },
+        {
+            'id': 517,
+            'name': '12 01 17',
+            'code': '17',
+            'description': 'waste blasting material other than those mentioned in 12 01 16',
+            'hazardous': false
+        },
+        {
+            'id': 257,
+            'name': '08 01 17',
+            'code': '17',
+            'description': 'wastes from paint or varnish removal containing organic solvents or other dangerous substances',
+            'hazardous': true
+        },
+        {
+            'id': 589,
+            'name': '16 01 17',
+            'code': '17',
+            'description': 'ferrous metal',
+            'hazardous': false
+        },
+        {
+            'id': 286,
+            'name': '08 04 17',
+            'code': '17',
+            'description': 'rosin oil',
+            'hazardous': true
+        },
+        {
+            'id': 342,
+            'name': '10 03 17',
+            'code': '17',
+            'description': 'tar-containing wastes from anode manufacture',
+            'hazardous': true
+        },
+        {
+            'id': 404,
+            'name': '10 08 17',
+            'code': '17',
+            'description': 'sludges and filter cakes from flue-gas treatment containing dangerous substances',
+            'hazardous': true
+        },
+        {
+            'id': 274,
+            'name': '08 03 17',
+            'code': '17',
+            'description': 'waste printing toner containing dangerous substances',
+            'hazardous': true
+        },
+        {
+            'id': 313,
+            'name': '10 01 17',
+            'code': '17',
+            'description': 'fly ash from co-incineration other than those mentioned in 10 01 16',
+            'hazardous': false
+        },
+        {
+            'id': 712,
+            'name': '19 01 17',
+            'code': '17',
+            'description': 'pyrolysis wastes containing dangerous substances',
+            'hazardous': true
+        },
+        {
+            'id': 96,
+            'name': '04 02 17',
+            'code': '17',
+            'description': 'dyestuffs and pigments other than those mentioned in 04 02 16',
+            'hazardous': false
+        },
+        {
+            'id': 447,
+            'name': '10 11 17',
+            'code': '17',
+            'description': 'sludges and filter cakes from flue-gas treatment containing dangerous substances',
+            'hazardous': true
+        },
+        {
+            'id': 807,
+            'name': '20 01 17',
+            'code': '17',
+            'description': 'photochemicals',
+            'hazardous': true
+        },
+        {
+            'id': 713,
+            'name': '19 01 18',
+            'code': '18',
+            'description': 'pyrolysis wastes other than those mentioned in 19 01 17',
+            'hazardous': false
+        },
+        {
+            'id': 590,
+            'name': '16 01 18',
+            'code': '18',
+            'description': 'non-ferrous metal',
+            'hazardous': false
+        },
+        {
+            'id': 258,
+            'name': '08 01 18',
+            'code': '18',
+            'description': 'wastes from paint or varnish removal other than those mentioned in 08 01 17',
+            'hazardous': false
+        },
+        {
+            'id': 343,
+            'name': '10 03 18',
+            'code': '18',
+            'description': 'carbon-containing wastes from anode manufacture other than those mentioned in 10 03 17',
+            'hazardous': false
+        },
+        {
+            'id': 405,
+            'name': '10 08 18',
+            'code': '18',
+            'description': 'sludges and filter cakes from flue-gas treatment other than those mentioned in 10 08 17',
+            'hazardous': false
+        },
+        {
+            'id': 275,
+            'name': '08 03 18',
+            'code': '18',
+            'description': 'waste printing toner other than those mentioned in 08 03 17',
+            'hazardous': false
+        },
+        {
+            'id': 518,
+            'name': '12 01 18',
+            'code': '18',
+            'description': 'metal sludge (grinding, honing and lapping sludge) containing oil',
+            'hazardous': true
+        },
+        {
+            'id': 448,
+            'name': '10 11 18',
+            'code': '18',
+            'description': 'sludges and filter cakes from flue-gas treatment other than those mentioned in 10 11 17',
+            'hazardous': false
+        },
+        {
+            'id': 314,
+            'name': '10 01 18',
+            'code': '18',
+            'description': 'wastes from gas cleaning containing dangerous substances',
+            'hazardous': true
+        },
+        {
+            'id': 808,
+            'name': '20 01 19',
+            'code': '19',
+            'description': 'pesticides',
+            'hazardous': true
+        },
+        {
+            'id': 591,
+            'name': '16 01 19',
+            'code': '19',
+            'description': 'plastic',
+            'hazardous': false
+        },
+        {
+            'id': 714,
+            'name': '19 01 19',
+            'code': '19',
+            'description': 'sands from fluidised beds',
+            'hazardous': false
+        },
+        {
+            'id': 406,
+            'name': '10 08 19',
+            'code': '19',
+            'description': 'wastes from cooling-water treatment containing oil',
+            'hazardous': true
+        },
+        {
+            'id': 97,
+            'name': '04 02 19',
+            'code': '19',
+            'description': 'sludges from on-site effluent treatment containing dangerous substances',
+            'hazardous': true
+        },
+        {
+            'id': 276,
+            'name': '08 03 19',
+            'code': '19',
+            'description': 'disperse oil',
+            'hazardous': true
+        },
+        {
+            'id': 259,
+            'name': '08 01 19',
+            'code': '19',
+            'description': 'aqueous suspensions containing paint or varnish containing organic solvents or other dangerous substances',
+            'hazardous': true
+        },
+        {
+            'id': 449,
+            'name': '10 11 19',
+            'code': '19',
+            'description': 'solid wastes from on-site effluent treatment containing dangerous substances',
+            'hazardous': true
+        },
+        {
+            'id': 519,
+            'name': '12 01 19',
+            'code': '19',
+            'description': 'readily biodegradable machining oil',
+            'hazardous': true
+        },
+        {
+            'id': 344,
+            'name': '10 03 19',
+            'code': '19',
+            'description': 'flue-gas dust containing dangerous substances',
+            'hazardous': true
+        },
+        {
+            'id': 315,
+            'name': '10 01 19',
+            'code': '19',
+            'description': 'wastes from gas cleaning other than those mentioned in 10 01 05, 10 01 07 and 10 01 18',
+            'hazardous': false
+        },
+        {
+            'id': 520,
+            'name': '12 01 20',
+            'code': '20',
+            'description': 'spent grinding bodies and grinding materials containing dangerous substances',
+            'hazardous': true
+        },
+        {
+            'id': 316,
+            'name': '10 01 20',
+            'code': '20',
+            'description': 'sludges from on-site effluent treatment containing dangerous substances',
+            'hazardous': true
+        },
+        {
+            'id': 592,
+            'name': '16 01 20',
+            'code': '20',
+            'description': 'glass',
+            'hazardous': false
+        },
+        {
+            'id': 98,
+            'name': '04 02 20',
+            'code': '20',
+            'description': 'Sludges from on-site effluent treatment other than those mentioned in 04 02 19',
+            'hazardous': false
+        },
+        {
+            'id': 450,
+            'name': '10 11 20',
+            'code': '20',
+            'description': 'solid wastes from on-site effluent treatment other than those mentioned in 10 11 19',
+            'hazardous': false
+        },
+        {
+            'id': 407,
+            'name': '10 08 20',
+            'code': '20',
+            'description': 'wastes from cooling-water treatment other than those mentioned in 10 08 19',
+            'hazardous': false
+        },
+        {
+            'id': 260,
+            'name': '08 01 20',
+            'code': '20',
+            'description': 'aqueous suspensions containing paint or varnish other than those mentioned in 08 01 19',
+            'hazardous': false
+        },
+        {
+            'id': 345,
+            'name': '10 03 20',
+            'code': '20',
+            'description': 'flue-gas dust other than those mentioned in 10 03 19',
+            'hazardous': false
+        },
+        {
+            'id': 99,
+            'name': '04 02 21',
+            'code': '21',
+            'description': 'wastes from unprocessed textile fibres',
+            'hazardous': false
+        },
+        {
+            'id': 809,
+            'name': '20 01 21',
+            'code': '21',
+            'description': 'fluorescent tubes and other mercury-containing waste',
+            'hazardous': true
+        },
+        {
+            'id': 261,
+            'name': '08 01 21',
+            'code': '21',
+            'description': 'waste paint or varnish remover',
+            'hazardous': true
+        },
+        {
+            'id': 593,
+            'name': '16 01 21',
+            'code': '21',
+            'description': 'hazardous components other than those mentioned in 16 01 07 to 16 01 11 and 16 01 13 and 16 01 14',
+            'hazardous': true
+        },
+        {
+            'id': 346,
+            'name': '10 03 21',
+            'code': '21',
+            'description': 'other particulates and dust (including ball-mill dust) containing dangerous substances',
+            'hazardous': true
+        },
+        {
+            'id': 317,
+            'name': '10 01 21',
+            'code': '21',
+            'description': 'sludges from on-site effluent treatment other than those mentioned in 10 01 20',
+            'hazardous': false
+        },
+        {
+            'id': 521,
+            'name': '12 01 21',
+            'code': '21',
+            'description': 'spent grinding bodies and grinding materials other than those mentioned in 12 01 20',
+            'hazardous': false
+        },
+        {
+            'id': 594,
+            'name': '16 01 22',
+            'code': '22',
+            'description': 'components not otherwise specified',
+            'hazardous': false
+        },
+        {
+            'id': 100,
+            'name': '04 02 22',
+            'code': '22',
+            'description': 'wastes from processed textile fibres',
+            'hazardous': false
+        },
+        {
+            'id': 318,
+            'name': '10 01 22',
+            'code': '22',
+            'description': 'aqueous sludges from boiler cleansing containing dangerous substances',
+            'hazardous': true
+        },
+        {
+            'id': 347,
+            'name': '10 03 22',
+            'code': '22',
+            'description': 'other particulates and dust (including ball-mill dust) other than those mentioned in 10 03 21',
+            'hazardous': false
+        },
+        {
+            'id': 319,
+            'name': '10 01 23',
+            'code': '23',
+            'description': 'aqueous sludges from boiler cleansing other than those mentioned in 10 01 22',
+            'hazardous': false
+        },
+        {
+            'id': 810,
+            'name': '20 01 23',
+            'code': '23',
+            'description': 'discarded equipment containing chlorofluorocarbons',
+            'hazardous': true
+        },
+        {
+            'id': 348,
+            'name': '10 03 23',
+            'code': '23',
+            'description': 'solid wastes from gas treatment containing dangerous substances',
+            'hazardous': true
+        },
+        {
+            'id': 320,
+            'name': '10 01 24',
+            'code': '24',
+            'description': 'sands from fluidised beds',
+            'hazardous': false
+        },
+        {
+            'id': 349,
+            'name': '10 03 24',
+            'code': '24',
+            'description': 'solid wastes from gas treatment other than those mentioned in 10 03 23',
+            'hazardous': false
+        },
+        {
+            'id': 350,
+            'name': '10 03 25',
+            'code': '25',
+            'description': 'sludges and filter cakes from gas treatment containing dangerous substances',
+            'hazardous': true
+        },
+        {
+            'id': 321,
+            'name': '10 01 25',
+            'code': '25',
+            'description': 'wastes from fuel storage and preparation of coal-fired power plants',
+            'hazardous': false
+        },
+        {
+            'id': 811,
+            'name': '20 01 25',
+            'code': '25',
+            'description': 'edible oil and fat',
+            'hazardous': false
+        },
+        {
+            'id': 322,
+            'name': '10 01 26',
+            'code': '26',
+            'description': 'wastes from cooling-water treatment',
+            'hazardous': false
+        },
+        {
+            'id': 351,
+            'name': '10 03 26',
+            'code': '26',
+            'description': 'sludges and filter cakes from gas treatment other than those mentioned in 10 03 25',
+            'hazardous': false
+        },
+        {
+            'id': 812,
+            'name': '20 01 26',
+            'code': '26',
+            'description': 'oil and fat other than those mentioned in 20 01 25',
+            'hazardous': true
+        },
+        {
+            'id': 352,
+            'name': '10 03 27',
+            'code': '27',
+            'description': 'wastes from cooling-water treatment containing oil',
+            'hazardous': true
+        },
+        {
+            'id': 813,
+            'name': '20 01 27',
+            'code': '27',
+            'description': 'paint, inks, adhesives and resins containing dangerous substances',
+            'hazardous': true
+        },
+        {
+            'id': 814,
+            'name': '20 01 28',
+            'code': '28',
+            'description': 'paint, inks, adhesives and resins other than those mentioned in 20 01 27',
+            'hazardous': false
+        },
+        {
+            'id': 353,
+            'name': '10 03 28',
+            'code': '28',
+            'description': 'wastes from cooling-water treatment other than those mentioned in 10 03 27',
+            'hazardous': false
+        },
+        {
+            'id': 815,
+            'name': '20 01 29',
+            'code': '29',
+            'description': 'detergents containing dangerous substances',
+            'hazardous': true
+        },
+        {
+            'id': 354,
+            'name': '10 03 29',
+            'code': '29',
+            'description': 'wastes from treatment of salt slags and black drosses containing dangerous substances',
+            'hazardous': true
+        },
+        {
+            'id': 355,
+            'name': '10 03 30',
+            'code': '30',
+            'description': 'wastes from treatment of salt slags and black drosses other than those mentioned in 10 03 29',
+            'hazardous': false
+        },
+        {
+            'id': 816,
+            'name': '20 01 30',
+            'code': '30',
+            'description': 'detergents other than those mentioned in 20 01 29',
+            'hazardous': false
+        },
+        {
+            'id': 817,
+            'name': '20 01 31',
+            'code': '31',
+            'description': 'cytotoxic and cytostatic medicines',
+            'hazardous': true
+        },
+        {
+            'id': 818,
+            'name': '20 01 32',
+            'code': '32',
+            'description': 'medicines other than those mentioned in 20 01 31',
+            'hazardous': false
+        },
+        {
+            'id': 819,
+            'name': '20 01 33',
+            'code': '33',
+            'description': 'batteries and accumulators included in 16 06 01, 16 06 02 or 16 06 03 and unsorted batteries and accumulators containing these batteries',
+            'hazardous': true
+        },
+        {
+            'id': 820,
+            'name': '20 01 34',
+            'code': '34',
+            'description': 'batteries and accumulators other than those mentioned in 20 01 33',
+            'hazardous': false
+        },
+        {
+            'id': 821,
+            'name': '20 01 35',
+            'code': '35',
+            'description': 'discarded electrical and electronic equipment other than those mentioned in 20 01 21 and 20 01 23 containing hazardous components (6)',
+            'hazardous': true
+        },
+        {
+            'id': 822,
+            'name': '20 01 36',
+            'code': '36',
+            'description': 'discarded electrical and electronic equipment other than those mentioned in 20 01 21, 20 01 23 and 20 01 35',
+            'hazardous': false
+        },
+        {
+            'id': 823,
+            'name': '20 01 37',
+            'code': '37',
+            'description': 'wood containing dangerous substances',
+            'hazardous': true
+        },
+        {
+            'id': 824,
+            'name': '20 01 38',
+            'code': '38',
+            'description': 'wood other than that mentioned in 20 01 37',
+            'hazardous': false
+        },
+        {
+            'id': 825,
+            'name': '20 01 39',
+            'code': '39',
+            'description': 'plastics',
+            'hazardous': false
+        },
+        {
+            'id': 826,
+            'name': '20 01 40',
+            'code': '40',
+            'description': 'metals',
+            'hazardous': false
+        },
+        {
+            'id': 827,
+            'name': '20 01 41',
+            'code': '41',
+            'description': 'wastes from chimney sweeping',
+            'hazardous': false
+        },
+        {
+            'id': 487,
+            'name': '11 01 98',
+            'code': '98',
+            'description': 'other wastes containing dangerous substances',
+            'hazardous': true
+        },
+        {
+            'id': 250,
+            'name': '07 07 99',
+            'code': '99',
+            'description': 'wastes not otherwise specified',
+            'hazardous': false
+        },
+        {
+            'id': 240,
+            'name': '07 06 99',
+            'code': '99',
+            'description': 'wastes not otherwise specified',
+            'hazardous': false
+        },
+        {
+            'id': 230,
+            'name': '07 05 99',
+            'code': '99',
+            'description': 'wastes not otherwise specified',
+            'hazardous': false
+        },
+        {
+            'id': 218,
+            'name': '07 04 99',
+            'code': '99',
+            'description': 'wastes not otherwise specified',
+            'hazardous': false
+        },
+        {
+            'id': 207,
+            'name': '07 03 99',
+            'code': '99',
+            'description': 'wastes not otherwise specified',
+            'hazardous': false
+        },
+        {
+            'id': 197,
+            'name': '07 02 99',
+            'code': '99',
+            'description': 'wastes not otherwise specified',
+            'hazardous': false
+        },
+        {
+            'id': 715,
+            'name': '19 01 99',
+            'code': '99',
+            'description': 'wastes not otherwise specified',
+            'hazardous': false
+        },
+        {
+            'id': 183,
+            'name': '07 01 99',
+            'code': '99',
+            'description': 'wastes not otherwise specified',
+            'hazardous': false
+        },
+        {
+            'id': 173,
+            'name': '06 13 99',
+            'code': '99',
+            'description': 'wastes not otherwise specified',
+            'hazardous': false
+        },
+        {
+            'id': 778,
+            'name': '19 11 99',
+            'code': '99',
+            'description': 'wastes not otherwise specified',
+            'hazardous': false
+        },
+        {
+            'id': 167,
+            'name': '06 11 99',
+            'code': '99',
+            'description': 'wastes not otherwise specified',
+            'hazardous': false
+        },
+        {
+            'id': 165,
+            'name': '06 10 99',
+            'code': '99',
+            'description': 'wastes not otherwise specified',
+            'hazardous': false
+        },
+        {
+            'id': 163,
+            'name': '06 09 99',
+            'code': '99',
+            'description': 'wastes not otherwise specified',
+            'hazardous': false
+        },
+        {
+            'id': 159,
+            'name': '06 08 99',
+            'code': '99',
+            'description': 'wastes not otherwise specified',
+            'hazardous': false
+        },
+        {
+            'id': 157,
+            'name': '06 07 99',
+            'code': '99',
+            'description': 'wastes not otherwise specified',
+            'hazardous': false
+        },
+        {
+            'id': 152,
+            'name': '06 06 99',
+            'code': '99',
+            'description': 'wastes not otherwise specified',
+            'hazardous': false
+        },
+        {
+            'id': 147,
+            'name': '06 04 99',
+            'code': '99',
+            'description': 'wastes not otherwise specified',
+            'hazardous': false
+        },
+        {
+            'id': 143,
+            'name': '06 03 99',
+            'code': '99',
+            'description': 'wastes not otherwise specified',
+            'hazardous': false
+        },
+        {
+            'id': 376,
+            'name': '10 05 99',
+            'code': '99',
+            'description': 'wastes not otherwise specified',
+            'hazardous': false
+        },
+        {
+            'id': 137,
+            'name': '06 02 99',
+            'code': '99',
+            'description': 'wastes not otherwise specified',
+            'hazardous': false
+        },
+        {
+            'id': 132,
+            'name': '06 01 99',
+            'code': '99',
+            'description': 'wastes not otherwise specified',
+            'hazardous': false
+        },
+        {
+            'id': 125,
+            'name': '05 07 99',
+            'code': '99',
+            'description': 'wastes not otherwise specified',
+            'hazardous': false
+        },
+        {
+            'id': 122,
+            'name': '05 06 99',
+            'code': '99',
+            'description': 'wastes not otherwise specified',
+            'hazardous': false
+        },
+        {
+            'id': 118,
+            'name': '05 01 99',
+            'code': '99',
+            'description': 'wastes not otherwise specified',
+            'hazardous': false
+        },
+        {
+            'id': 366,
+            'name': '10 04 99',
+            'code': '99',
+            'description': 'wastes not otherwise specified',
+            'hazardous': false
+        },
+        {
+            'id': 356,
+            'name': '10 03 99',
+            'code': '99',
+            'description': 'wastes not otherwise specified',
+            'hazardous': false
+        },
+        {
+            'id': 101,
+            'name': '04 02 99',
+            'code': '99',
+            'description': 'wastes not otherwise specified',
+            'hazardous': false
+        },
+        {
+            'id': 742,
+            'name': '19 06 99',
+            'code': '99',
+            'description': 'wastes not otherwise specified',
+            'hazardous': false
+        },
+        {
+            'id': 558,
+            'name': '13 08 99',
+            'code': '99',
+            'description': 'wastes not otherwise specified',
+            'hazardous': true
+        },
+        {
+            'id': 422,
+            'name': '10 09 99',
+            'code': '99',
+            'description': 'wastes not otherwise specified',
+            'hazardous': false
+        },
+        {
+            'id': 522,
+            'name': '12 01 99',
+            'code': '99',
+            'description': 'wastes not otherwise specified',
+            'hazardous': false
+        },
+        {
+            'id': 408,
+            'name': '10 08 99',
+            'code': '99',
+            'description': 'wastes not otherwise specified',
+            'hazardous': false
+        },
+        {
+            'id': 473,
+            'name': '10 13 99',
+            'code': '99',
+            'description': 'wastes not otherwise specified',
+            'hazardous': false
+        },
+        {
+            'id': 90,
+            'name': '04 01 99',
+            'code': '99',
+            'description': 'wastes not otherwise specified',
+            'hazardous': false
+        },
+        {
+            'id': 80,
+            'name': '03 03 99',
+            'code': '99',
+            'description': 'wastes not otherwise specified',
+            'hazardous': false
+        },
+        {
+            'id': 71,
+            'name': '03 02 99',
+            'code': '99',
+            'description': 'wood preservatives not otherwise specified',
+            'hazardous': false
+        },
+        {
+            'id': 65,
+            'name': '03 01 99',
+            'code': '99',
+            'description': 'wastes not otherwise specified',
+            'hazardous': false
+        },
+        {
+            'id': 61,
+            'name': '02 07 99',
+            'code': '99',
+            'description': 'wastes not otherwise specified',
+            'hazardous': false
+        },
+        {
+            'id': 462,
+            'name': '10 12 99',
+            'code': '99',
+            'description': 'wastes not otherwise specified',
+            'hazardous': false
+        },
+        {
+            'id': 725,
+            'name': '19 02 99',
+            'code': '99',
+            'description': 'wastes not otherwise specified',
+            'hazardous': false
+        },
+        {
+            'id': 301,
+            'name': '09 01 99',
+            'code': '99',
+            'description': 'wastes not otherwise specified',
+            'hazardous': false
+        },
+        {
+            'id': 287,
+            'name': '08 04 99',
+            'code': '99',
+            'description': 'wastes not otherwise specified',
+            'hazardous': false
+        },
+        {
+            'id': 451,
+            'name': '10 11 99',
+            'code': '99',
+            'description': 'wastes not otherwise specified',
+            'hazardous': false
+        },
+        {
+            'id': 595,
+            'name': '16 01 99',
+            'code': '99',
+            'description': 'wastes not otherwise specified',
+            'hazardous': false
+        },
+        {
+            'id': 277,
+            'name': '08 03 99',
+            'code': '99',
+            'description': 'wastes not otherwise specified',
+            'hazardous': false
+        },
+        {
+            'id': 625,
+            'name': '16 07 99',
+            'code': '99',
+            'description': 'wastes not otherwise specified',
+            'hazardous': false
+        },
+        {
+            'id': 393,
+            'name': '10 07 99',
+            'code': '99',
+            'description': 'wastes not otherwise specified',
+            'hazardous': false
+        },
+        {
+            'id': 757,
+            'name': '19 08 99',
+            'code': '99',
+            'description': 'wastes not otherwise specified',
+            'hazardous': false
+        },
+        {
+            'id': 385,
+            'name': '10 06 99',
+            'code': '99',
+            'description': 'wastes not otherwise specified',
+            'hazardous': false
+        },
+        {
+            'id': 501,
+            'name': '11 05 99',
+            'code': '99',
+            'description': 'wastes not otherwise specified',
+            'hazardous': false
+        },
+        {
+            'id': 266,
+            'name': '08 02 99',
+            'code': '99',
+            'description': 'wastes not otherwise specified',
+            'hazardous': false
+        },
+        {
+            'id': 262,
+            'name': '08 01 99',
+            'code': '99',
+            'description': 'wastes not otherwise specified',
+            'hazardous': false
+        },
+        {
+            'id': 494,
+            'name': '11 02 99',
+            'code': '99',
+            'description': 'wastes not otherwise specified',
+            'hazardous': false
+        },
+        {
+            'id': 488,
+            'name': '11 01 99',
+            'code': '99',
+            'description': 'wastes not otherwise specified',
+            'hazardous': false
+        },
+        {
+            'id': 764,
+            'name': '19 09 99',
+            'code': '99',
+            'description': 'wastes not otherwise specified',
+            'hazardous': false
+        },
+        {
+            'id': 436,
+            'name': '10 10 99',
+            'code': '99',
+            'description': 'wastes not otherwise specified',
+            'hazardous': false
+        },
+        {
+            'id': 334,
+            'name': '10 02 99',
+            'code': '99',
+            'description': 'wastes not otherwise specified',
+            'hazardous': false
+        },
+        {
+            'id': 323,
+            'name': '10 01 99',
+            'code': '99',
+            'description': 'wastes not otherwise specified',
+            'hazardous': false
+        },
+        {
+            'id': 737,
+            'name': '19 05 99',
+            'code': '99',
+            'description': 'wastes not otherwise specified',
+            'hazardous': false
+        },
+        {
+            'id': 828,
+            'name': '20 01 99',
+            'code': '99',
+            'description': 'other fractions not otherwise specified',
+            'hazardous': false
+        },
+        {
+            'id': 55,
+            'name': '02 06 99',
+            'code': '99',
+            'description': 'wastes not otherwise specified',
+            'hazardous': false
+        },
+        {
+            'id': 51,
+            'name': '02 05 99',
+            'code': '99',
+            'description': 'wastes not otherwise specified',
+            'hazardous': false
+        },
+        {
+            'id': 48,
+            'name': '02 04 99',
+            'code': '99',
+            'description': 'wastes not otherwise specified',
+            'hazardous': false
+        },
+        {
+            'id': 44,
+            'name': '02 03 99',
+            'code': '99',
+            'description': 'wastes not otherwise specified',
+            'hazardous': false
+        },
+        {
+            'id': 38,
+            'name': '02 02 99',
+            'code': '99',
+            'description': 'wastes not otherwise specified',
+            'hazardous': false
+        },
+        {
+            'id': 33,
+            'name': '02 01 99',
+            'code': '99',
+            'description': 'wastes not otherwise specified',
+            'hazardous': false
+        },
+        {
+            'id': 23,
+            'name': '01 05 99',
+            'code': '99',
+            'description': 'wastes not otherwise specified',
+            'hazardous': false
+        },
+        {
+            'id': 17,
+            'name': '01 04 99',
+            'code': '99',
+            'description': 'wastes not otherwise specified',
+            'hazardous': false
+        },
+        {
+            'id': 9,
+            'name': '01 03 99',
+            'code': '99',
+            'description': 'wastes not otherwise specified',
+            'hazardous': false
+        },
+        {
+            'id': 838,
+            'name': '20 03 99',
+            'code': '99',
+            'description': 'municipal wastes not otherwise specified',
+            'hazardous': false
+        }
     ],
 
     recoveryCodes: [

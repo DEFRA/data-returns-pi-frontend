@@ -104,10 +104,10 @@ experiment('Master data service (API)', async () => {
             expect(method.name).to.equal('Disposal');
         });
 
-        test('getEwcActivityById(id)', async () => {
-            const activity = await MasterDataService.getEwcActivityById(1);
-            expect(activity).to.be.an.object();
-            expect(activity.id).to.equal(1);
+        test('getEwcChapters', async () => {
+            const chapters = await MasterDataService.getEwcChapters();
+            expect(chapters).to.be.an.array();
+            // console.log(JSON.stringify(chapters, null, 4));
         });
 
         test('getEwcChapterById(id)', async () => {
@@ -116,10 +116,45 @@ experiment('Master data service (API)', async () => {
             expect(chapter.id).to.equal(1);
         });
 
+        test('getEwcSubchapters', async () => {
+            const subchapters = await MasterDataService.getEwcSubchapters();
+            expect(subchapters).to.be.an.array();
+            // console.log(JSON.stringify(subchapters, null, 4));
+        });
+
         test('getEwcSubChapterById(id)', async () => {
             const subChapter = await MasterDataService.getEwcSubChapterById(1);
             expect(subChapter).to.be.an.object();
             expect(subChapter.id).to.equal(1);
+        });
+
+        test('getEwcActivityById(id)', async () => {
+            const activity = await MasterDataService.getEwcActivityById(1);
+            expect(activity).to.be.an.object();
+            expect(activity.id).to.equal(1);
+        });
+
+        test('getEwcActivities', async () => {
+            const activities = await MasterDataService.getEwcActivities();
+            expect(activities).to.be.an.array();
+            // console.log(JSON.stringify(activities, null, 4));
+        });
+
+        test('getEwcHierarchies()', async () => {
+            const ewcHierarchy = await MasterDataService.getEwcHierarchies();
+            expect(ewcHierarchy).to.be.an.array();
+            // console.log(JSON.stringify(ewcHierarchy, null, 4));
+        });
+
+        test('getEwcHierarchyByKey()', async () => {
+            const ewcHierarchy = await MasterDataService.getEwcHierarchyByKey(20, 110, 830);
+            expect(ewcHierarchy).to.be.an.object();
+            expect(ewcHierarchy).to.equal({
+                'chapterId': 20,
+                'subchapterId': 110,
+                'activityId': 830
+            });
+            // console.log(JSON.stringify(ewcHierarchy, null, 4));
         });
 
         test('getEwc()', async () => {

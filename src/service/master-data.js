@@ -30,9 +30,14 @@ module.exports = {
     getMethodById: process.env.NODE_ENV === 'localtest' ? testService.getMethodById : apiService.getMethodById,
 
     getEwc: process.env.NODE_ENV === 'localtest' ? testService.getEwc : apiService.getEwc,
-    getEwcActivityById: process.env.NODE_ENV === 'localtest' ? testService.getEwcActivityById : apiService.getEwcActivityById,
+    getEwcChapters: process.env.NODE_ENV === 'localtest' ? testService.getEwcChapters : apiService.getEwcChapters,
     getEwcChapterById: process.env.NODE_ENV === 'localtest' ? testService.getEwcChapterById : apiService.getEwcChapterById,
+    getEwcSubchapters: process.env.NODE_ENV === 'localtest' ? testService.getEwcSubchapters : apiService.getEwcSubchapters,
     getEwcSubChapterById: process.env.NODE_ENV === 'localtest' ? testService.getEwcSubChapterById : apiService.getEwcSubChapterById,
+    getEwcActivities: process.env.NODE_ENV === 'localtest' ? testService.getEwcActivities : apiService.getEwcActivities,
+    getEwcActivityById: process.env.NODE_ENV === 'localtest' ? testService.getEwcActivityById : apiService.getEwcActivityById,
+    getEwcHierarchies: process.env.NODE_ENV === 'localtest' ? testService.getEwcHierarchies : apiService.getEwcHierarchies,
+    getEwcHierarchyByKey: process.env.NODE_ENV === 'localtest' ? testService.getEwcHierarchyByKey : apiService.getEwcHierarchyByKey,
 
     getDisposalCode: process.env.NODE_ENV === 'localtest' ? testService.getDisposalCode : apiService.getDisposalCode,
     getDisposalById: process.env.NODE_ENV === 'localtest' ? testService.getDisposalById : apiService.getDisposalById,

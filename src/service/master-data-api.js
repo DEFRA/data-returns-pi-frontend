@@ -124,6 +124,33 @@ module.exports = internals = {
     },
 
     /**
+     * Get the EWC chapters
+     * @param id
+     * @return {Promise.<Array>}
+     */
+    getEwcChapters: async () => {
+        return internals.listEntity(internals._entities.ewcChapters);
+    },
+
+    /**
+     * Get a list of the EWC sub-chapters
+     * @param id
+     * @return {Promise.<Array>}
+     */
+    getEwcSubchapters: async () => {
+        return internals.listEntity(internals._entities.ewcSubchapters);
+    },
+
+    /**
+     * Get a list of the EWC activities
+     * @param id
+     * @return {Promise.<Array>}
+     */
+    getEwcActivities: async () => {
+        return internals.listEntity(internals._entities.ewcActivities);
+    },
+
+    /**
      * Get the EWC Activity code
      * @param id
      * @return {Promise.<V>}
@@ -151,6 +178,25 @@ module.exports = internals = {
     },
 
     /**
+     * Get ewc hierarchies
+     * @return {Promise.<*>}
+     */
+    getEwcHierarchies: async () => {
+        return internals.listRelation(internals._relations.ewcHierarchy);
+    },
+
+    /**
+     * Search the ewc hierarchy
+     * @param activityClassId
+     * @param activityId
+     * @param processId
+     * @return {Promise.<*>}
+     */
+    getEwcHierarchyByKey: async (chapterId, subchapterId, activityId) => {
+        return internals.getRelationByKey(internals._relations.ewcHierarchy, { chapterId, subchapterId, activityId });
+    },
+
+    /**
      * Get a an object containing the id's of the activity, chapter and sub-chapter
      * from the three codes
      * @param activity
@@ -162,23 +208,15 @@ module.exports = internals = {
         const ewcActivity = await internals.getEntityByNamedMapper(internals._entities.ewcActivities, 'byName', `${chapter} ${subChapter} ${activity}`);
         const ewcSubchapter = await internals.getEntityByNamedMapper(internals._entities.ewcSubchapters, 'byName', `${chapter} ${subChapter}`);
         const ewcChapter = await internals.getEntityByNamedMapper(internals._entities.ewcChapters, 'byCode', chapter);
-        const result = {};
 
         if (ewcActivity && ewcChapter && ewcSubchapter) {
-            const _subChapter = await internals.getEwcSubChapterById(ewcActivity.ewc_subchapter);
-
-            if (_subChapter && _subChapter.id === ewcSubchapter.id) {
-
-                const _chapter = await internals.getEwcChapterById(_subChapter.ewc_chapter);
-                if (_chapter && _chapter.id === ewcChapter.id) {
-
-                    result.activityId = ewcActivity.id;
-                    result.chapterId = ewcChapter.id;
-                    result.subChapterId = ewcSubchapter.id;
-
-                    return result;
-
-                }
+            const ewcHierarchy = await internals.getEwcHierarchyByKey(ewcChapter.id, ewcSubchapter.id, ewcActivity.id);
+            if (ewcHierarchy) {
+                return {
+                    activityId: ewcHierarchy.activityId,
+                    subChapterId: ewcHierarchy.subchapterId,
+                    chapterId: ewcHierarchy.chapterId
+                };
             }
         }
 
@@ -961,6 +999,33 @@ internals._relations = {
 
         keyMap: (r) => {
             return `${r.sectorId}-${r.activityId}`;
+        }
+    },
+
+    ewcHierarchy: {
+        name: 'ewcChapters',
+        map: new Map(),
+        arr: [],
+        request: {api: 'MD', uri: 'ewcChapters', method: 'GET', query: 'projection=hierarchy'},
+
+        processor: (results) => {
+            const hierarchy = [];
+            for (const ewcChapter of results) {
+                for (const ewcSubchapter of ewcChapter.ewc_subchapters) {
+                    for (const ewcActivity of ewcSubchapter.ewc_activities) {
+                        hierarchy.push({
+                            chapterId: ewcChapter.id,
+                            subchapterId: ewcSubchapter.id,
+                            activityId: ewcActivity.id
+                        });
+                    }
+                }
+            }
+            return hierarchy;
+        },
+
+        keyMap: (r) => {
+            return `${r.chapterId}-${r.subchapterId}-${r.activityId}`;
         }
     }
 };
