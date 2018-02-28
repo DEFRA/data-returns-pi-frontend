@@ -11391,140 +11391,134 @@ module.exports = {
 
     noseProcesses: [
         {
-            'id': 11,
-            'name': '101.01 Combustion plants > 300 MW'
-        },
-        {
-            'id': 18,
-            'name': '101.02 Combustion plants > 50 and < 300 MW'
-        },
-        {
-            'id': 34,
-            'name': '101.03 Combustion plants < 50MW'
-        },
-        {
-            'id': 26,
-            'name': '101.04 Gas turbines'
-        },
-        {
-            'id': 31,
-            'name': '101.05 Stationary engines'
-        },
-        {
-            'id': 3,
-            'name': '104.08 Coke oven furnaces'
-        },
-        {
-            'id': 30,
-            'name': '104.08 Petroleum product processing'
-        },
-        {
-            'id': 27,
-            'name': '104.08 Solid fuel transformation'
-        },
-        {
-            'id': 20,
-            'name': '104.11 Manufacture of plaster, asphalt, concrete, cement, glass, fibres, bricks, tiles or ceramic products'
-        },
-        {
-            'id': 5,
-            'name': '104.12 Primary and secondary processes in the manufacture of metal and fabricated metal products or sinter plants (involving fuel combustion).'
-        },
-        {
-            'id': 15,
-            'name': '105.01 Surface treatment of metals and plastics'
-        },
-        {
-            'id': 23,
-            'name': '105.03 Manufacture of food products and beverages'
+            'id': 14,
+            'code': '104.11',
+            'description': 'Manufacture of plaster, asphalt, concrete, cement, glass, fibres, bricks, tiles or ceramic products'
         },
         {
             'id': 1,
-            'name': '105.04 Manufacture of textiles and textile products'
+            'code': '105.14',
+            'description': 'Regeneration/recovery of waste materials'
         },
         {
-            'id': 28,
-            'name': '105.05 Processes in the manufacture of leather and leather products'
-        },
-        {
-            'id': 17,
-            'name': '105.06 Processes in the manufacture of wood and wood products'
-        },
-        {
-            'id': 22,
-            'name': '105.07 Manufacture of pulp, paper and paper products'
-        },
-        {
-            'id': 10,
-            'name': '105.08 Petroleum product processing'
-        },
-        {
-            'id': 29,
-            'name': '105.09 Manufacture of carbon or graphite'
-        },
-        {
-            'id': 24,
-            'name': '105.09 Manufacture of inorganic chemicals, NPK fertilisers, pesticides or explosives'
-        },
-        {
-            'id': 33,
-            'name': '105.09 Manufacture of organic chemicals'
-        },
-        {
-            'id': 25,
-            'name': '105.11 Manufacture of asbestos and asbestos-based products'
-        },
-        {
-            'id': 19,
-            'name': '105.12 Processes in the manufacture of metals and fabricated metal products or sinter plants (not involving fuel combustion)'
-        },
-        {
-            'id': 16,
-            'name': '105.14 Recycling of animal carcasses/waste'
-        },
-        {
-            'id': 8,
-            'name': '105.14 Regeneration/recovery of waste materials'
-        },
-        {
-            'id': 14,
-            'name': '107.01 Paint application'
-        },
-        {
-            'id': 32,
-            'name': '107.03 Manufacture of pharmaceutical and other solvent-based products'
-        },
-        {
-            'id': 12,
-            'name': '107.03 Manufacture or processing of solvent-based organic products'
-        },
-        {
-            'id': 6,
-            'name': '107.03 Textile finishing'
-        },
-        {
-            'id': 9,
-            'name': '109.03 Incineration of animal carcasses and animal waste'
-        },
-        {
-            'id': 21,
-            'name': '109.03 Waste incineration'
-        },
-        {
-            'id': 7,
-            'name': '109.06 Landfilling'
-        },
-        {
-            'id': 13,
-            'name': '109.07 Other waste treatment, transfer etc'
-        },
-        {
-            'id': 2,
-            'name': '110.04 Enteric fermentation'
+            'id': 3,
+            'code': '105.12',
+            'description': 'Processes in the manufacture of metals and fabricated metal products or sinter plants (not involving fuel combustion)'
         },
         {
             'id': 4,
-            'name': '110.05 Manure management'
+            'code': '110.04',
+            'description': 'Enteric fermentation'
+        },
+        {
+            'id': 5,
+            'code': '110.05',
+            'description': 'Manure management'
+        },
+        {
+            'id': 6,
+            'code': '101.04',
+            'description': 'Gas turbines'
+        },
+        {
+            'id': 7,
+            'code': '101.05',
+            'description': 'Stationary engines'
+        },
+        {
+            'id': 8,
+            'code': '105.08',
+            'description': 'Petroleum product processing'
+        },
+        {
+            'id': 9,
+            'code': '105.09',
+            'description': 'Manufacture of organic chemicals'
+        },
+        {
+            'id': 10,
+            'code': '104.12',
+            'description': 'Primary and secondary processes in the manufacture of metal and fabricated metal products or sinter plants (involving fuel combustion).'
+        },
+        {
+            'id': 11,
+            'code': '105.03',
+            'description': 'Manufacture of food products and beverages'
+        },
+        {
+            'id': 12,
+            'code': '107.03',
+            'description': 'Manufacture or processing of solvent-based organic products'
+        },
+        {
+            'id': 13,
+            'code': '105.01',
+            'description': 'Surface treatment of metals and plastics'
+        },
+        {
+            'id': 2,
+            'code': '105.11',
+            'description': 'Manufacture of asbestos and asbestos-based products'
+        },
+        {
+            'id': 15,
+            'code': '105.06',
+            'description': 'Processes in the manufacture of wood and wood products'
+        },
+        {
+            'id': 16,
+            'code': '101.01',
+            'description': 'Combustion plants > 300 MW'
+        },
+        {
+            'id': 17,
+            'code': '105.07',
+            'description': 'Manufacture of pulp, paper and paper products'
+        },
+        {
+            'id': 18,
+            'code': '101.02',
+            'description': 'Combustion plants > 50 and < 300 MW'
+        },
+        {
+            'id': 19,
+            'code': '109.06',
+            'description': 'Landfilling'
+        },
+        {
+            'id': 20,
+            'code': '105.04',
+            'description': 'Manufacture of textiles and textile products'
+        },
+        {
+            'id': 21,
+            'code': '101.03',
+            'description': 'Combustion plants < 50MW'
+        },
+        {
+            'id': 22,
+            'code': '109.07',
+            'description': 'Other waste treatment, transfer etc'
+        },
+        {
+            'id': 23,
+            'code': '105.05',
+            'description': 'Processes in the manufacture of leather and leather products'
+        },
+        {
+            'id': 24,
+            'code': '109.03',
+            'description': 'Waste incineration'
+        },
+        {
+            'id': 25,
+            'code': '107.01',
+            'description': 'Paint application'
+        },
+        {
+            'id': 26,
+            'code': '104.08',
+            'description': 'Coke oven furnaces'
         }
     ],
 
@@ -11532,12 +11526,12 @@ module.exports = {
         {
             'activityClassId': 1,
             'activityId': 10,
-            'processId': 32
+            'processId': 12
         },
         {
             'activityClassId': 1,
             'activityId': 14,
-            'processId': 24
+            'processId': 9
         },
         {
             'activityClassId': 1,
@@ -11547,32 +11541,37 @@ module.exports = {
         {
             'activityClassId': 1,
             'activityId': 17,
-            'processId': 33
-        },
-        {
-            'activityClassId': 2,
-            'activityId': 1,
-            'processId': 22
-        },
-        {
-            'activityClassId': 2,
-            'activityId': 3,
-            'processId': 7
-        },
-        {
-            'activityClassId': 2,
-            'activityId': 3,
             'processId': 9
         },
         {
             'activityClassId': 2,
+            'activityId': 1,
+            'processId': 17
+        },
+        {
+            'activityClassId': 2,
             'activityId': 3,
-            'processId': 16
+            'processId': 1
+        },
+        {
+            'activityClassId': 2,
+            'activityId': 3,
+            'processId': 19
+        },
+        {
+            'activityClassId': 2,
+            'activityId': 3,
+            'processId': 24
         },
         {
             'activityClassId': 2,
             'activityId': 11,
-            'processId': 29
+            'processId': 9
+        },
+        {
+            'activityClassId': 2,
+            'activityId': 4,
+            'processId': 5
         },
         {
             'activityClassId': 2,
@@ -11581,88 +11580,78 @@ module.exports = {
         },
         {
             'activityClassId': 2,
-            'activityId': 4,
-            'processId': 2
-        },
-        {
-            'activityClassId': 2,
             'activityId': 25,
-            'processId': 30
+            'processId': 26
         },
         {
             'activityClassId': 2,
             'activityId': 12,
-            'processId': 14
+            'processId': 25
         },
         {
             'activityClassId': 2,
             'activityId': 26,
-            'processId': 23
+            'processId': 11
         },
         {
             'activityClassId': 2,
             'activityId': 13,
-            'processId': 17
+            'processId': 15
         },
         {
             'activityClassId': 2,
             'activityId': 27,
-            'processId': 28
-        },
-        {
-            'activityClassId': 2,
-            'activityId': 6,
             'processId': 23
         },
         {
             'activityClassId': 2,
             'activityId': 6,
-            'processId': 16
+            'processId': 1
+        },
+        {
+            'activityClassId': 2,
+            'activityId': 6,
+            'processId': 11
         },
         {
             'activityClassId': 2,
             'activityId': 7,
-            'processId': 6
+            'processId': 12
         },
         {
             'activityClassId': 2,
             'activityId': 24,
-            'processId': 1
+            'processId': 20
         },
         {
             'activityClassId': 3,
             'activityId': 16,
-            'processId': 15
+            'processId': 13
         },
         {
             'activityClassId': 3,
             'activityId': 18,
-            'processId': 19
+            'processId': 3
         },
         {
             'activityClassId': 3,
             'activityId': 18,
-            'processId': 5
-        },
-        {
-            'activityClassId': 4,
-            'activityId': 19,
-            'processId': 27
-        },
-        {
-            'activityClassId': 4,
-            'activityId': 21,
             'processId': 10
         },
         {
             'activityClassId': 4,
-            'activityId': 5,
+            'activityId': 19,
             'processId': 26
         },
         {
             'activityClassId': 4,
+            'activityId': 21,
+            'processId': 8
+        },
+        {
+            'activityClassId': 4,
             'activityId': 5,
-            'processId': 11
+            'processId': 16
         },
         {
             'activityClassId': 4,
@@ -11672,47 +11661,52 @@ module.exports = {
         {
             'activityClassId': 4,
             'activityId': 5,
-            'processId': 31
+            'processId': 6
+        },
+        {
+            'activityClassId': 4,
+            'activityId': 5,
+            'processId': 7
         },
         {
             'activityClassId': 4,
             'activityId': 15,
-            'processId': 34
+            'processId': 21
         },
         {
             'activityClassId': 4,
             'activityId': 23,
-            'processId': 3
+            'processId': 26
         },
         {
             'activityClassId': 5,
             'activityId': 2,
-            'processId': 25
+            'processId': 2
         },
         {
             'activityClassId': 5,
             'activityId': 22,
-            'processId': 20
+            'processId': 14
         },
         {
             'activityClassId': 6,
             'activityId': 20,
-            'processId': 13
+            'processId': 22
         },
         {
             'activityClassId': 6,
             'activityId': 8,
-            'processId': 7
+            'processId': 19
         },
         {
             'activityClassId': 6,
             'activityId': 28,
-            'processId': 8
+            'processId': 1
         },
         {
             'activityClassId': 6,
             'activityId': 9,
-            'processId': 21
+            'processId': 24
         }
     ],
 

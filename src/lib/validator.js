@@ -6,6 +6,7 @@
 const isNumeric = require('./utils').isNumeric;
 
 const internals = {
+
     /**
      * What it says on the tin
      */

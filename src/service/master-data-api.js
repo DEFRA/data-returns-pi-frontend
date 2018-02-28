@@ -440,6 +440,10 @@ module.exports = internals = {
         return internals.getEntityById(internals._entities.naceClasses, id);
     },
 
+    getNaceClassByCode: async (code) => {
+        return internals.getEntityByNamedMapper(internals._entities.naceClasses, 'byCode', code);
+    },
+
     /**
      * Get the nace code hierarchies
      * @return {Promise.<*>}
@@ -839,7 +843,10 @@ internals._entities = {
                 details: i.details
             };
         },
-        sorter: (a, b) => internals.sortByProperty(a, b, 'code')
+        sorter: (a, b) => internals.sortByProperty(a, b, 'code'),
+        namedMappers: [
+            { name: 'byCode', keyFunc: (i) => i.code }
+        ]
     },
 
     noseActivityClasses: {
@@ -878,7 +885,8 @@ internals._entities = {
         idMapper: (i) => {
             return {
                 id: i.id,
-                name: i.nomenclature
+                code: i.nomenclature,
+                description: i.description
             };
         },
         sorter: (a, b) => internals.sortByProperty(a, b, 'name')

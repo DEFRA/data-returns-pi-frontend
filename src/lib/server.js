@@ -116,7 +116,7 @@ internals.initialize = async () => {
          * Cause the template rendering engine to reread the file on each invocation
          * in development to avoid restarts when changing templates
          */
-        isCached: process.env.NODE_ENV !== 'local'
+        isCached: process.env.NODE_ENV !== 'localtest'
     });
 
     /*

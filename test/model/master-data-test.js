@@ -254,14 +254,14 @@ experiment('Master data service (Test data)', function () {
         });
 
         test('getNoseHierarchyByKey()', async () => {
-            const noseHierarchy = await MasterDataService.getNoseHierarchyByKey(2, 1, 22);
+            const noseHierarchy = await MasterDataService.getNoseHierarchyByKey(2, 1, 17);
             expect(noseHierarchy).to.be.an.object();
             expect(noseHierarchy).to.equal({
                 'activityClassId': 2,
                 'activityId': 1,
-                'processId': 22
+                'processId': 17
             });
-        // console.log(JSON.stringify(noseHierarchy, null, 4));
+            // console.log(JSON.stringify(noseHierarchy, null, 4));
         });
 
         test('getEprtrActivities()', async () => {

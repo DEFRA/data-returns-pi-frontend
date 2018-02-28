@@ -82,6 +82,7 @@ const dynamicHandlers = [
 
     // Handlers for the check phase
     { method: ['GET', 'POST'], path: '/check/site-codes/confirm', options: { handler: SiteCodes.confirm } },
+    { method: ['GET', 'POST'], path: '/check/site-codes/nace', options: { handler: SiteCodes.nace } },
 
     // Releases to air, land, controlled waters and in waste-water
     { method: ['GET', 'POST'], path: '/releases/{route}/confirm', options: { handler: Releases.confirm } },

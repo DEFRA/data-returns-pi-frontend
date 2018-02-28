@@ -64,19 +64,18 @@ module.exports = {
      */
     review: async (request, h) => {
         try {
-            const { route, submissionContext, eaId, year, isOperator } = await cacheHelper(request, 'review');
+            const {route, submissionContext, eaId, year, isOperator} = await cacheHelper(request, 'review');
 
             const challengeStatus = Object.keys(submissionContext.challengeStatus).filter(p => submissionContext.challengeStatus[p]);
-            const valid = Object.keys(submissionContext.valid).filter(p => submissionContext.valid[p]);
+            const invalid = Object.keys(submissionContext.valid).filter(p => !submissionContext.valid[p]);
             const completed = Object.keys(submissionContext.completed).filter(p => submissionContext.completed[p]);
 
             const routes = required.filter(r => {
                 return challengeStatus.find(c => c === r) &&
-              valid.find(v => v === r) &&
-              completed.find(d => d === r);
+          !invalid.find(v => v === r) && completed.find(d => d === r);
             });
 
-            // Determine teh mode View / Review
+            // Determine the mode View / Review
             const reviewMode = ((submissionContext, required) => {
                 if (isOperator) {
                     if (!required.filter(r => r !== 'REVIEW').every(r => completed.includes(r))) {
@@ -84,7 +83,7 @@ module.exports = {
                     }
 
                     if (submissionContext.submission.status === Submission.submissionStatusCodes.SUBMITTED ||
-                        submissionContext.submission.status === Submission.submissionStatusCodes.APPROVED
+            submissionContext.submission.status === Submission.submissionStatusCodes.APPROVED
                     ) {
                         return false;
                     }
@@ -96,7 +95,7 @@ module.exports = {
                     }
 
                     if (submissionContext.submission.status === Submission.submissionStatusCodes.UNSUBMITTED ||
-                    submissionContext.submission.status === Submission.submissionStatusCodes.APPROVED) {
+            submissionContext.submission.status === Submission.submissionStatusCodes.APPROVED) {
                         return false;
                     }
 
@@ -120,6 +119,12 @@ module.exports = {
                     const task = await request.server.app.userCache.cache(cacheNames.TASK_CONTEXT).get(request);
 
                     switch (rte) {
+                        case 'SITE_CODES':
+                            if (task.nace && task.nace.id) {
+                                reviewObject.nace = await MasterDataService.getNaceClassById(task.nace.id);
+                            }
+                            break;
+
                         case 'RELEASES_TO_AIR':
                             if (task.releases) {
                                 reviewObject.releases_to_air = reviewObject.releases_to_air || [];

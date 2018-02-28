@@ -74,6 +74,11 @@
             {{ review.permitNumber }} - {{ review.site }}
         </h1>
 
+        {% if review.nace %}
+            <h2 class="heading-medium">Your site NACE code:</h2>
+            {{ review.nace.code }} {{ review.nace.description }}
+        {% endif %}
+
         {% if review.releases_to_air %}
             {{ releasesTable(review.releases_to_air, 'Your releases to air') }}
         {% endif %}

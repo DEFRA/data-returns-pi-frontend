@@ -323,7 +323,11 @@ module.exports = internals = {
     },
 
     getNaceClassById: async (id) => {
-        return Data.naceClasses.find((e) => { return e.id === id; }) || null; ;
+        return Data.naceClasses.find((e) => { return e.id === id; }) || null;
+    },
+
+    getNaceClassByCode: async (code) => {
+        return Data.naceClasses.find((e) => { return e.code === code; }) || null;
     },
 
     getNaceHierarchy: async () => {
