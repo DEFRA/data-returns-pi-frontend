@@ -27,7 +27,11 @@ const internals = {
         if (!submission) {
             submission = await Submission.createSubmissionForEaIdAndYear(eaIdId, year);
             submissionContext = {};
-            submissionContext.submission = submission;
+            submissionContext.id = submission.id;
+            submissionContext.applicable_year = submission.applicable_year;
+            submissionContext.status = submission.status;
+            submissionContext._created = submission._created;
+            submissionContext._last_modifed = submission._last_modifed;
             submissionContext.confirmation = {};
             submissionContext.challengeStatus = {};
             submissionContext.valid = {};

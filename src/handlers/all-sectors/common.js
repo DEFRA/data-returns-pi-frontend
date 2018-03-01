@@ -132,7 +132,7 @@ module.exports = {
     statusHelper: (submissionContext) => {
         const result = {};
         result.challengeStatus = Object.keys(submissionContext.challengeStatus).filter(p => submissionContext.challengeStatus[p]);
-        result.valid = Object.keys(submissionContext.valid).filter(p => submissionContext.valid[p]);
+        result.invalid = Object.keys(submissionContext.valid).filter(p => !submissionContext.valid[p]);
         result.completed = Object.keys(submissionContext.completed).filter(p => submissionContext.completed[p]);
         return result;
     }

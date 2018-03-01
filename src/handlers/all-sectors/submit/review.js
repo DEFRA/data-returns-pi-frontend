@@ -12,6 +12,7 @@ const required = require('../../../service/task-list').required(allSectorsTaskLi
 const isNumeric = require('../../../lib/utils').isNumeric;
 const isBrt = require('../../../lib/validator').isBrt;
 const setConfirmation = require('../common').setConfirmation;
+const statusHelper = require('../common').statusHelper;
 
 /**
  * Route handlers for check your submission
@@ -65,15 +66,11 @@ module.exports = {
     review: async (request, h) => {
         try {
             const {route, submissionContext, eaId, year, isOperator} = await cacheHelper(request, 'review');
+            const { challengeStatus, invalid, completed } = statusHelper(submissionContext);
 
-            const challengeStatus = Object.keys(submissionContext.challengeStatus).filter(p => submissionContext.challengeStatus[p]);
-            const invalid = Object.keys(submissionContext.valid).filter(p => !submissionContext.valid[p]);
-            const completed = Object.keys(submissionContext.completed).filter(p => submissionContext.completed[p]);
-
-            const routes = required.filter(r => {
-                return challengeStatus.find(c => c === r) &&
-          !invalid.find(v => v === r) && completed.find(d => d === r);
-            });
+            const routes = required.filter(r => challengeStatus.find(c => c === r))
+                .filter(r => completed.find(c => c === r))
+                .filter(r => !invalid.find(c => c === r));
 
             // Determine the mode View / Review
             const reviewMode = ((submissionContext, required) => {
@@ -82,8 +79,8 @@ module.exports = {
                         return false;
                     }
 
-                    if (submissionContext.submission.status === Submission.submissionStatusCodes.SUBMITTED ||
-            submissionContext.submission.status === Submission.submissionStatusCodes.APPROVED
+                    if (submissionContext.status === Submission.submissionStatusCodes.SUBMITTED ||
+                        submissionContext.status === Submission.submissionStatusCodes.APPROVED
                     ) {
                         return false;
                     }
@@ -94,8 +91,8 @@ module.exports = {
                         return false;
                     }
 
-                    if (submissionContext.submission.status === Submission.submissionStatusCodes.UNSUBMITTED ||
-            submissionContext.submission.status === Submission.submissionStatusCodes.APPROVED) {
+                    if (submissionContext.status === Submission.submissionStatusCodes.UNSUBMITTED ||
+                        submissionContext.status === Submission.submissionStatusCodes.APPROVED) {
                         return false;
                     }
 
@@ -138,8 +135,6 @@ module.exports = {
                             if (task.releases) {
                                 reviewObject.releases_to_land = reviewObject.releases_to_land || [];
                                 for (const release of Object.keys(task.releases)) {
-                                    const x = await internals.releasesObj(task, release);
-                                    console.log(JSON.stringify(x));
                                     reviewObject.releases_to_land.push(await internals.releasesObj(task, release));
                                 }
                             }
@@ -204,7 +199,7 @@ module.exports = {
                     review: reviewObject,
                     review_mode: reviewMode,
                     is_operator: isOperator,
-                    submission_status: submissionContext.submission.status
+                    submission_status: submissionContext.status
                 });
 
             } else {
