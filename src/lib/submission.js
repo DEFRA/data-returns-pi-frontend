@@ -334,7 +334,9 @@ const internals = {
 
         await Promise.all(fetches.map(async fetch => {
             const response = await Api.request('SUB', 'GET', `submissions/${submissionContext.id}/${fetch}`);
-            result[fetch] = response._embedded[fetch];
+            result[fetch] = {
+                data: response._embedded[fetch],
+            };
         }));
 
         return result;
@@ -396,8 +398,8 @@ const internals = {
 
                 // Call the function
                 if (task) {
-                    results[route.name] = await func[route.name](task, submission[route.message.fetch],
-                        route.message.fetch, `/submissions/${submissionContext.id}/${route.message.fetch}`);
+                    results[route.name] = await func[route.name](task, submission[route.message.fetch].data,
+                        route.message.fetch, `submissions/${submissionContext.id}`);
                 } else {
                     results[route.name] = null;
                 }
@@ -419,7 +421,7 @@ const internals = {
      */
     releaseRouteOperator: async (task, apiArr, name, uri) => {
         const releaseSchema = Joi.object({
-            submission: Joi.string().uri({ allowRelative: false }),
+            submission: Joi.string().uri({ allowRelative: true }),
             substance_id: Joi.number().integer().required(),
             below_reporting_threshold: Joi.boolean().required(),
             method: Joi.valid(['Measurement', 'Calculation', 'Estimation']),
@@ -486,7 +488,7 @@ const internals = {
      */
     transferRouteOperator: async (task, apiArr, name, uri) => {
         const transferSchema = Joi.alternatives().try(Joi.object({
-            submission: Joi.string().uri({ allowRelative: false }),
+            submission: Joi.string().uri({ allowRelative: true }),
             ewc_activity_id: Joi.number().integer(),
             wfd_disposal_id: Joi.number().integer().required(),
             wfd_recovery_id: Joi.forbidden(),
