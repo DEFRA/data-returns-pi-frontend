@@ -93,7 +93,7 @@ const internals = {
 
 module.exports = {
     request: async (client, method, command, query, body) => {
-        if (process.env.NODE_ENV !== 'localtest') {
+        if (process.env.NODE_ENV !== 'local') {
             return internals.makeRequest(internals.createRequest(client, command, query), method, body);
         }
 

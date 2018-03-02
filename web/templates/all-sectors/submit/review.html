@@ -7,6 +7,7 @@
             <th class="th-substance">Substance</th>
             <th class="th-action">Method</th>
             <th class="th-release numeric">Total</th>
+            <th class="th-release numeric">Notifiable</th>
         </tr>
         </thead>
         <tbody>
@@ -16,10 +17,11 @@
             <td class="td-substance">{{ release.substance_name }}</td>
             <td class="td-method">{{ release.method }}</td>
             {% if release.below_reporting_threshold %}
-            <td class="td-release numeric">BRT</td>
+            <td class="td-release">BRT</td>
             {% else %}
             <td class="td-release numeric">{{ release.value }} {{ release.units }}</td>
             {% endif %}
+            <td class="td-release numeric">{{ release.notifiable.value }} {{ release.notifiable.units }}</td>
         </tr>
         {% endfor %}
         </tbody>

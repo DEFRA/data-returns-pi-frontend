@@ -238,12 +238,20 @@ const internals = {
                         methodId: methods.find(m => m.name === release.method).id,
                         value: 'BRT'
                     };
+
                 } else {
                     tasks.releases[release.substance_id] = {
                         methodId: methods.find(m => m.name === release.method).id,
                         value: release.value,
                         unitId: release.unit_id
                     };
+
+                    if (release.notifiable_value) {
+                        tasks.releases[release.substance_id].notifiable = {};
+                        tasks.releases[release.substance_id].notifiable.value = release.notifiable_value;
+                        tasks.releases[release.substance_id].notifiable.unitId = release.notifiable_unit_id;
+                        tasks.releases[release.substance_id].notifiable.reason = release.notifiable_reason;
+                    }
                 }
             }
 
@@ -335,7 +343,7 @@ const internals = {
         await Promise.all(fetches.map(async fetch => {
             const response = await Api.request('SUB', 'GET', `submissions/${submissionContext.id}/${fetch}`);
             result[fetch] = {
-                data: response._embedded[fetch],
+                data: response._embedded[fetch]
             };
         }));
 
@@ -356,7 +364,10 @@ const internals = {
                 value: Number.parseFloat(task.releases[release].value),
                 unit_id: task.releases[release].unitId,
                 method: (await MasterDataService.getMethodById(task.releases[release].methodId)).name,
-                below_reporting_threshold: false
+                below_reporting_threshold: false,
+                notifiable_value: task.releases[release].notifiable ? task.releases[release].notifiable.value : null,
+                notifiable_unit_id: task.releases[release].notifiable ? task.releases[release].notifiable.unitId : null,
+                notifiable_reason: task.releases[release].notifiable ? task.releases[release].notifiable.reason : null
             };
         } else {
             throw new CacheKeyError('Malformed release object: ' + JSON.stringify(release));
@@ -430,7 +441,10 @@ const internals = {
             }),
             unit_id: Joi.alternatives().when('below_reporting_threshold', {
                 is: true, then: Joi.forbidden(), otherwise: Joi.number().integer().required()
-            })
+            }),
+            notifiable_value: [ Joi.allow(null), Joi.number() ],
+            notifiable_unit_id: [ Joi.allow(null), Joi.number() ],
+            notifiable_reason: [ Joi.allow(null), Joi.string() ]
         });
 
         // We need to sort our tasks into POST, PUT and DELETE
@@ -658,7 +672,7 @@ module.exports = {
     submit: async (request) => {
 
         // In local test mode do nothing
-        if (process.env.NODE_ENV !== 'localtest') {
+        if (process.env.NODE_ENV !== 'local') {
 
             // Fetch submission with children from the PI submissions API
             const submission = await internals.fetchSubmission(request);

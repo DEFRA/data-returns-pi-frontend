@@ -312,13 +312,24 @@ module.exports = {
             } else {
 
                 // Set the task detail elements
-                const { unitId, methodId, value } = request.payload;
+                const { unitId, methodId, value, hasNotifiableRelease,
+                  notifiableUnitId, notifiableValue, notifiableReason } = request.payload;
+
                 const currentRelease = tasks.releases[tasks.currentSubstanceId];
 
                 // Set up the release object
                 currentRelease.unitId = Number.isNaN(Number.parseInt(unitId)) ? null : Number.parseInt(unitId);
                 currentRelease.methodId = Number.isNaN(Number.parseInt(methodId)) ? null : Number.parseInt(methodId);
                 currentRelease.value = Number.isNaN(Number.parseFloat(value)) ? value : Number.parseFloat(value);
+
+                if (hasNotifiableRelease === 'Yes') {
+                    currentRelease.notifiable = {};
+                    currentRelease.notifiable.unitId = Number.isNaN(Number.parseInt(notifiableUnitId)) ? null : Number.parseInt(notifiableUnitId);
+                    currentRelease.notifiable.value = Number.isNaN(Number.parseFloat(notifiableValue)) ? null : Number.parseFloat(notifiableValue);
+                    currentRelease.notifiable.reason = notifiableReason.substring(0, 500);
+                } else {
+                    delete currentRelease.notifiable;
+                }
 
                 delete currentRelease.errors;
 

@@ -120,28 +120,31 @@ module.exports = {
             });
 
             // Determine the submission status
-            let submission;
-            if (process.env.NODE_ENV === 'localtest') {
-                submission = {
-                    id: 1, status: Submission.submissionStatusCodes.UNSUBMITTED
-                };
-                const submissionContext = {};
-                submissionContext.submission = submission;
-                submissionContext.confirmation = {};
-                submissionContext.challengeStatus = {};
-                submissionContext.valid = {};
-                submissionContext.completed = {};
-                await request.server.app.userCache.cache(cacheNames.SUBMISSION_CONTEXT).set(request, submissionContext);
+            let submissionContext = null;
+
+            if (process.env.NODE_ENV === 'local') {
+                submissionContext = await request.server.app.userCache.cache(cacheNames.SUBMISSION_CONTEXT).get(request);
+                if (!submissionContext) {
+                    submissionContext = {};
+                    submissionContext.id = 1;
+                    submissionContext.applicable_year = 2017;
+                    submissionContext.status = Submission.submissionStatusCodes.UNSUBMITTED;
+                    submissionContext.confirmation = {};
+                    submissionContext.challengeStatus = {};
+                    submissionContext.valid = {};
+                    submissionContext.completed = {};
+                    await request.server.app.userCache.cache(cacheNames.SUBMISSION_CONTEXT).set(request, submissionContext);
+                }
             } else {
-                submission = await internals.cacheSynchronize(request, eaIdId, year);
+                submissionContext = await internals.cacheSynchronize(request, eaIdId, year);
             }
 
             if (isOperator) {
 
                 // Operator actions
                 if (action === 'View') {
-                    if (submission.status === Submission.submissionStatusCodes.SUBMITTED ||
-                        submission.status === Submission.submissionStatusCodes.APPROVED) {
+                    if (submissionContext.status === Submission.submissionStatusCodes.SUBMITTED ||
+                        submissionContext.status === Submission.submissionStatusCodes.APPROVED) {
 
                         return h.redirect('/review/confirm');
                     } else {
@@ -149,8 +152,8 @@ module.exports = {
                     }
 
                 } else if (action === 'Review') {
-                    if (submission.status === Submission.submissionStatusCodes.SUBMITTED ||
-                        submission.status === Submission.submissionStatusCodes.APPROVED) {
+                    if (submissionContext.status === Submission.submissionStatusCodes.SUBMITTED ||
+                      submissionContext.status === Submission.submissionStatusCodes.APPROVED) {
 
                         return h.redirect('/review/confirm');
                     } else {
@@ -158,7 +161,7 @@ module.exports = {
                     }
 
                 } else if (action === 'Open') {
-                    if (submission.status === Submission.submissionStatusCodes.UNSUBMITTED) {
+                    if (submissionContext.status === Submission.submissionStatusCodes.UNSUBMITTED) {
 
                         return h.redirect('/task-list');
                     } else {

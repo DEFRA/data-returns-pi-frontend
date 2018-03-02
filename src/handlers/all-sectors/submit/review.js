@@ -36,7 +36,11 @@ const internals = {
                     value: Number.parseFloat(task.releases[release].value),
                     units: (await MasterDataService.getUnitById(task.releases[release].unitId)).name,
                     method: (await MasterDataService.getMethodById(task.releases[release].methodId)).name,
-                    below_reporting_threshold: false
+                    below_reporting_threshold: false,
+                    notifiable: task.releases[release].notifiable ? {
+                        value: task.releases[release].notifiable.value,
+                        units: (await MasterDataService.getUnitById(task.releases[release].notifiable.unitId)).name
+                    } : null
                 };
             } else {
                 throw new CacheKeyError('Malformed release object: ' + JSON.stringify(release));

@@ -62,6 +62,34 @@ const internals = {
             result.push({ key: 'methodId', errno: 'PI-1003' });
         }
 
+        /*
+         * If we have a notifiable release we must also have both a value and a unit
+         */
+        if (release.notifiable) {
+            if (internals.isBrt(release.value)) {
+                // You cannot set BRT for a notifiable release
+                result.push({ key: 'value', errno: 'PI-1004' });
+            } else {
+                if (!isNumeric(release.notifiable.value)) {
+                    // The notifiable release must be a number
+                    result.push({ key: 'notifiableValue', errno: 'PI-1005' });
+                } else {
+                    /*
+                     * Need unit scaling for this test
+                     *if (release.notifiable.value < release.value) {
+                     *    // The value must include any notifable release amount
+                     *    result.push({key: 'value', errno: 'PI-1006'});
+                     *}
+                     */
+                }
+
+                // Notifiable releases must have a unit
+                if (!release.notifiable.unitId) {
+                    result.push({ key: 'notifiableUnitId', errno: 'PI-1007' });
+                }
+            }
+        }
+
         return result.length > 0 ? result : null;
     },
 

@@ -17,7 +17,7 @@ const expect = Code.expect;
 
 experiment('Master data service (Test data)', function () {
 
-    if (process.env.NODE_ENV === 'localtest') {
+    if (process.env.NODE_ENV === 'local') {
         test('getUsers ()', async () => {
             const users = await MasterDataService.getUsers();
             expect(users).to.be.an.array();
