@@ -11,3 +11,13 @@
 /stdout
 /web/templates/govuk
 /data-returns-pi-frontend.iml
+
+# OS generated files #
+######################
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
