@@ -7,7 +7,7 @@
     <form action="/check/site-codes/nace" method="post" class="form">
         <a href="/task-list" class="link-back">Back to sections you must complete</a>
 
-        <h1 class="heading-large">NACE code<span class="heading-secondary">Enter the code for your sites main activity</span></h1>
+        <h1 class="heading-large">Your NACE code</h1>
 
         {% if error %}
         <div class="error-summary" role="alert" aria-labelledby="error-summary-heading" tabindex="-1">
@@ -17,17 +17,18 @@
                 <li><a href="#ewc-code">Enter a correct NACE code</a></li>
             </ul>
         </div>
-
+        <p>Enter the code for your site's main activity:</p>
         <div class="form-group form-group-error">
-            <label class="form-label" for="nace-code">NACE code</label>
-            <span class="form-hint">For example, 01.14</span>
+            <label class="form-label form-label-bold" for="nace-code">NACE code</label>
+            <span class="form-hint">For example '01.14'.</span>
             <span class="error-message">Enter a correct NACE code</span>
             <input class="form-control form-control-error nace-code" id="nace-code-err" name="nace" value="">
         </div>
         {% else %}
+        <p>Enter the code for your site's main activity:</p>
         <div class="form-group">
-            <label class="form-label" for="nace-code">NACE code</label>
-            <span class="form-hint">For example, 01.14</span>
+            <label class="form-label form-label-bold" for="nace-code">NACE code</label>
+            <span class="form-hint">For example, '01.14'.</span>
             <input class="form-control nace-code" id="nace-code" name="nace" value="">
         </div>
         {% endif %}
