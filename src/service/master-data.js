@@ -50,6 +50,7 @@ module.exports = {
     getNoseActivityById: process.env.NODE_ENV === 'local' ? testService.getNoseActivityById : apiService.getNoseActivityById,
     getNoseProcesses: process.env.NODE_ENV === 'local' ? testService.getNoseProcesses : apiService.getNoseProcesses,
     getNoseProcessById: process.env.NODE_ENV === 'local' ? testService.getNoseProcessById : apiService.getNoseProcessById,
+    getNoseProcessByCode: process.env.NODE_ENV === 'local' ? testService.getNoseProcessByCode : apiService.getNoseProcessByCode,
     getNoseHierarchies: process.env.NODE_ENV === 'local' ? testService.getNoseHierarchies : apiService.getNoseHierarchies,
     getNoseHierarchyByKey: process.env.NODE_ENV === 'local' ? testService.getNoseHierarchyByKey : apiService.getNoseHierarchyByKey,
 

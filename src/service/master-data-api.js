@@ -307,6 +307,10 @@ module.exports = internals = {
         return internals.getEntityById(internals._entities.noseProcesses, id);
     },
 
+    getNoseProcessByCode: async (code) => {
+        return internals.getEntityByNamedMapper(internals._entities.noseProcesses, 'byCode', code);
+    },
+
     /**
      * Get nose hierarchies
      * @return {Promise.<*>}
@@ -889,6 +893,9 @@ internals._entities = {
                 description: i.description
             };
         },
+        namedMappers: [
+            { name: 'byCode', keyFunc: (i) => i.code }
+        ],
         sorter: (a, b) => internals.sortByProperty(a, b, 'name')
     },
 

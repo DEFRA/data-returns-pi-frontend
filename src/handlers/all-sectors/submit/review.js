@@ -124,6 +124,13 @@ module.exports = {
                             if (task.nace && task.nace.id) {
                                 reviewObject.nace = await MasterDataService.getNaceClassById(task.nace.id);
                             }
+
+                            if (task.nose && task.nose.noseIds) {
+                                reviewObject.noses = await Promise.all(task.nose.noseIds.map(async p => {
+                                    return MasterDataService.getNoseProcessById(p);
+                                }));
+                            }
+
                             break;
 
                         case 'RELEASES_TO_AIR':

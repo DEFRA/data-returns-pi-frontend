@@ -197,7 +197,7 @@ const internals = {
         setCompletedStatus(submissionContext, submissionContext.currentTask);
 
         const tasks = {};
-        tasks.nace = { id: submission.nace_code };
+        tasks.nace = { id: submission.nace_id };
         await request.server.app.userCache.cache(cacheNames.SUBMISSION_CONTEXT).set(request, submissionContext);
 
         await request.server.app.userCache.cache(cacheNames.TASK_CONTEXT).set(request, tasks);
@@ -617,8 +617,13 @@ const internals = {
         await request.server.app.userCache.cache(cacheNames.SUBMISSION_CONTEXT).set(request, submissionContext);
         const task = await request.server.app.userCache.cache(cacheNames.TASK_CONTEXT).get(request);
         if (task.nace) {
-            submission.nace_code = task.nace.id;
+            submission.nace_id = task.nace.id;
         }
+
+        if (task.nose.nose_ids) {
+            submission.nose_ids = task.nose.nose_ids;
+        }
+
         submission.status = 'Submitted';
         return submission;
     }

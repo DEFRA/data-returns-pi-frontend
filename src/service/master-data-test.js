@@ -261,6 +261,10 @@ module.exports = internals = {
         return Data.noseProcesses.find((e) => { return e.id === id; }) || null;
     },
 
+    getNoseProcessByCode: async (code) => {
+        return Data.noseProcesses.find((e) => { return e.code === code; }) || null;
+    },
+
     getNoseHierarchies: async () => {
         return Data.noseHierarchy;
     },

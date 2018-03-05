@@ -81,6 +81,13 @@
             {{ review.nace.code }} {{ review.nace.description }}
         {% endif %}
 
+        {% if review.noses.length %}
+            <h2 class="heading-medium">Your site NOSE-P codes</h2>
+            {% for nose in review.noses %}
+                {{ nose.code }} - {{ nose.description }}</br>
+            {% endfor %}
+        {% endif %}
+
         {% if review.releases_to_air %}
             {{ releasesTable(review.releases_to_air, 'Your releases to air') }}
         {% endif %}
