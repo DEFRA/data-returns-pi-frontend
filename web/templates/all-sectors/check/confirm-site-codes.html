@@ -6,28 +6,36 @@
     <label id="page-name" hidden>site</label>
     <form action="/check/site-codes/confirm" method="post" class="form">
         <a href="/task-list" class="link-back">Back to sections you must complete</a>
-        <h1 class="heading-large">Your NACE code</h1>
-
+        <h1 class="heading-large">Check your site codes</h1>
         <div class="form-group">
-            <table class="table-control">
+            <table class="codes table-control">
+                <thead>
+                    <tr>
+                        <th class="name">Name</th>
+                        <th class="code-name">Code</th>
+                        <th class="description">Description</th>
+                        <th class="action"><span class="visually-hidden">Action</span></th>
+                    </tr>
+                </thead>
                 <tbody>
-                    <tr><td>{{ nace.naceClass.code }}</td></tr>
-                    <tr><td>Section</td><td>{{ nace.naceSection.description }}</td></tr>
-                    <tr><td>Division</td><td>{{ nace.naceDivision.description }}</td></tr>
-                    <tr><td>Group</td><td>{{ nace.naceGroup.description }}</td></tr>
-                    <tr><td>Class</td><td>{{ nace.naceClass.description }}</td></tr>
+                    <tr>
+                        <td class="name">NACE</td>
+                        <td>{{ nace.naceClass.code }}</td>
+                        <td><span class="visuallyhidden">Section</span>{{ nace.naceSection.description }}. 
+                            <span class="visuallyhidden">Division</span>{{ nace.naceDivision.description }}. 
+                            <span class="visuallyhidden">Group</span>{{ nace.naceGroup.description }}. 
+                            <span class="visuallyhidden">Class</span>{{ nace.naceClass.description }}.
+                        </td>
+                        <td class="change-answer">
+                            <a href="/check/site-codes/nace">Change <span class="visuallyhidden">NACE code</span></a>
+                        </td>
+                    </tr>
                 </tbody>
             </table>
         </div>
-
-        <div class="form-group">
-            <input class="link" type="submit" id="change" name="change" value="Change your NACE code"/>
-        </div>
-
         <div class="form-group">
             <input id="continueBtn" class="button" type="submit" value="Continue">
         </div>
     </form>
 </main>
-
 {% endblock %}}
