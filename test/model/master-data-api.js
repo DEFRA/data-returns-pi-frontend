@@ -57,11 +57,13 @@ experiment('Master data service (API)', async () => {
             // console.log('Off-site transfers in waste water: ' + substances.length);
         });
 
-        test('getSubstances() - routes differ', async () => {
-            const ww = await MasterDataService.getSubstances('OFFSITE_TRANSFERS_IN_WASTE_WATER');
-            const air = await MasterDataService.getSubstances('RELEASES_TO_AIR');
-            expect(ww).to.not.equal(air);
-        });
+        /*
+         *test('getSubstances() - routes differ', async () => {
+         *    const ww = await MasterDataService.getSubstances('OFFSITE_TRANSFERS_IN_WASTE_WATER');
+         *    const air = await MasterDataService.getSubstances('RELEASES_TO_AIR');
+         *    expect(ww).to.not.equal(air);
+         *});
+         */
 
         test('getSubstanceById(id)', async () => {
             const substances = await MasterDataService.getSubstances();
