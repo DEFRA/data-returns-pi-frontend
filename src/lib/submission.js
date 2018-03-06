@@ -198,6 +198,8 @@ const internals = {
 
         const tasks = {};
         tasks.nace = { id: submission.nace_id };
+        tasks.nose = { noseIds: submission.nose_ids };
+
         await request.server.app.userCache.cache(cacheNames.SUBMISSION_CONTEXT).set(request, submissionContext);
 
         await request.server.app.userCache.cache(cacheNames.TASK_CONTEXT).set(request, tasks);
@@ -411,6 +413,7 @@ const internals = {
                 if (task) {
                     results[route.name] = await func[route.name](task, submission[route.message.fetch].data,
                         route.message.fetch, `submissions/${submissionContext.id}`);
+
                 } else {
                     results[route.name] = null;
                 }
@@ -488,7 +491,6 @@ const internals = {
         await Promise.all(puts.map(async put => {
             await Api.request('SUB', 'PUT', `${name}/${put.id}`, null, put.put);
         }));
-
     },
 
     /**
@@ -508,7 +510,7 @@ const internals = {
             wfd_recovery_id: Joi.forbidden(),
             tonnage: Joi.number()
         }), Joi.object({
-            submission: Joi.string().uri({ allowRelative: false }),
+            submission: Joi.string().uri({ allowRelative: true }),
             ewc_activity_id: Joi.number().integer(),
             wfd_disposal_id: Joi.forbidden(),
             wfd_recovery_id: Joi.number().integer().required(),
@@ -620,8 +622,8 @@ const internals = {
             submission.nace_id = task.nace.id;
         }
 
-        if (task.nose.nose_ids) {
-            submission.nose_ids = task.nose.nose_ids;
+        if (task.nose.noseIds) {
+            submission.nose_ids = task.nose.noseIds;
         }
 
         submission.status = 'Submitted';
@@ -698,8 +700,6 @@ module.exports = {
                 OFFSITE_TRANSFERS_IN_WASTE_WATER: internals.releaseRouteOperator,
                 OFFSITE_WASTE_TRANSFERS: internals.transferRouteOperator
             });
-
-            logger.debug(JSON.stringify(result, null, 4));
 
             // Now change the status to submitted
             const newSubmission = await internals.getSubmission(submission.id);
