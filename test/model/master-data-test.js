@@ -17,7 +17,7 @@ const expect = Code.expect;
 
 experiment('Master data service (Test data)', function () {
 
-    if (process.env.NODE_ENV === 'localtest') {
+    if (process.env.NODE_ENV === 'local') {
         test('getUsers ()', async () => {
             const users = await MasterDataService.getUsers();
             expect(users).to.be.an.array();
@@ -119,10 +119,25 @@ experiment('Master data service (Test data)', function () {
             expect(method.name).to.equal('Disposal');
         });
 
-        test('getEwcSubchapter()', async () => {
+        test('getEwcChapters', async () => {
+            const chapter = await MasterDataService.getEwcChapters();
+            expect(chapter).to.be.an.array();
+        });
+
+        test('getEwcSubchapters', async () => {
+            const chapter = await MasterDataService.getEwcSubchapters();
+            expect(chapter).to.be.an.array();
+        });
+
+        test('getEwcActivities', async () => {
+            const chapter = await MasterDataService.getEwcActivities();
+            expect(chapter).to.be.an.array();
+        });
+
+        test('getEwc()', async () => {
             const ewc = await MasterDataService.getEwc('01', '01', '01');
             expect(ewc).to.be.an.object();
-            expect(ewc.activityId).to.equal(1342);
+            expect(ewc.activityId).to.equal(1);
             expect(ewc.chapterId).to.equal(1);
             expect(ewc.subChapterId).to.equal(1);
         });
@@ -155,9 +170,9 @@ experiment('Master data service (Test data)', function () {
         });
 
         test('getEwcActivityById(id)', async () => {
-            const activity = await MasterDataService.getEwcActivityById(1342);
+            const activity = await MasterDataService.getEwcActivityById(1);
             expect(activity).to.be.an.object();
-            expect(activity.id).to.equal(1342);
+            expect(activity.id).to.equal(1);
         });
 
         test('getEwcChapterById(id)', async () => {
@@ -172,6 +187,21 @@ experiment('Master data service (Test data)', function () {
             expect(subChapter.id).to.equal(1);
         });
 
+        test('getEwcHierarchies()', async () => {
+            const ewcHierarchy = await MasterDataService.getEwcHierarchies();
+            expect(ewcHierarchy).to.be.an.array();
+        });
+
+        test('getEwcHierarchyByKey()', async () => {
+            const ewcHierarchy = await MasterDataService.getEwcHierarchyByKey(20, 110, 830);
+            expect(ewcHierarchy).to.be.an.object();
+            expect(ewcHierarchy).to.equal({
+                'chapterId': 20,
+                'subchapterId': 110,
+                'activityId': 830
+            });
+        });
+
         test('getDisposalById(id)', async () => {
             const disposal = await MasterDataService.getDisposalById(1);
             expect(disposal).to.be.an.object();
@@ -182,6 +212,155 @@ experiment('Master data service (Test data)', function () {
             const recovery = await MasterDataService.getRecoveryById(1);
             expect(recovery).to.be.an.object();
             expect(recovery.id).to.equal(1);
+        });
+
+        test('getNoseActivityClasses()', async () => {
+            const noseActivityClasses = await MasterDataService.getNoseActivityClasses();
+            expect(noseActivityClasses).to.be.an.array();
+        });
+
+        test('getNoseActivityClassById()', async () => {
+            const noseActivityClasses = await MasterDataService.getNoseActivityClasses();
+            const noseActivityClass = await MasterDataService.getNoseActivityClassById(noseActivityClasses[1].id);
+            expect(noseActivityClass).to.equal(noseActivityClasses[1]);
+        });
+
+        test('getNoseActivities()', async () => {
+            const noseActivities = await MasterDataService.getNoseActivities();
+            expect(noseActivities).to.be.an.array();
+        });
+
+        test('getNoseActivityById()', async () => {
+            const noseActivities = await MasterDataService.getNoseActivities();
+            const noseActivitiy = await MasterDataService.getNoseActivityById(noseActivities[1].id);
+            expect(noseActivitiy).to.equal(noseActivities[1]);
+        });
+
+        test('getNoseProcesses()', async () => {
+            const noseProcesses = await MasterDataService.getNoseProcesses();
+            expect(noseProcesses).to.be.an.array();
+        });
+
+        test('getNoseProcessesById()', async () => {
+            const noseProcesses = await MasterDataService.getNoseProcesses();
+            const noseProcess = await MasterDataService.getNoseProcessById(noseProcesses[1].id);
+            expect(noseProcess).to.equal(noseProcesses[1]);
+        });
+
+        test('getNoseHierarchies()', async () => {
+            const noseProcesses = await MasterDataService.getNoseProcesses();
+            const noseProcess = await MasterDataService.getNoseProcessById(noseProcesses[1].id);
+            expect(noseProcess).to.equal(noseProcesses[1]);
+        });
+
+        test('getNoseHierarchyByKey()', async () => {
+            const noseHierarchy = await MasterDataService.getNoseHierarchyByKey(2, 1, 17);
+            expect(noseHierarchy).to.be.an.object();
+            expect(noseHierarchy).to.equal({
+                'activityClassId': 2,
+                'activityId': 1,
+                'processId': 17
+            });
+            // console.log(JSON.stringify(noseHierarchy, null, 4));
+        });
+
+        test('getEprtrActivities()', async () => {
+            const eprtrActivities = await MasterDataService.getEprtrActivities();
+            expect(eprtrActivities).to.be.an.array();
+            expect(eprtrActivities).to.be.an.array();
+        });
+
+        test('geEprtrActivitiyById()', async () => {
+            const eprtrActivities = await MasterDataService.getEprtrActivities();
+            const noseActivitiy = await MasterDataService.getEprtrActivityById(eprtrActivities[1].id);
+            expect(noseActivitiy).to.equal(eprtrActivities[1]);
+        });
+
+        test('getEprtrSectors()', async () => {
+            const eprtrSectors = await MasterDataService.getEprtrSectors();
+            expect(eprtrSectors).to.be.an.array();
+        });
+
+        test('getEprtrSectorById()', async () => {
+            const eprtrSectors = await MasterDataService.getEprtrSectors();
+            const eprtrSector = await MasterDataService.getEprtrSectorById(eprtrSectors[1].id);
+            expect(eprtrSector).to.equal(eprtrSectors[1]);
+        });
+
+        test('getEprtrHierarchy()', async () => {
+            const eprtrHierarchy = await MasterDataService.getEprtrHierarchy();
+            expect(eprtrHierarchy).to.be.an.array();
+        });
+
+        test('getEprtrHierarchyByKey()', async () => {
+            const eprtrHierarchy = await MasterDataService.getEprtrHierarchyByKey(2, 21);
+            expect(eprtrHierarchy).to.be.an.object();
+            expect(eprtrHierarchy).to.equal({
+                'sectorId': 2,
+                'activityId': 21
+            });
+        // console.log(JSON.stringify(eprtrHierarchy, null, 4));
+        });
+
+        test('getNaceSections:', async () => {
+            const naceSectors = await MasterDataService.getNaceSections();
+            expect(naceSectors).to.be.an.array();
+        });
+
+        test('getNaceSectionById:', async (id) => {
+            const naceSectors = await MasterDataService.getNaceSections();
+            const naceSector = await MasterDataService.getNaceSectionById(naceSectors[2].id);
+            expect(naceSector).to.equal(naceSectors[2]);
+        });
+
+        test('getNaceDivisions:', async () => {
+            const naceDivisions = await MasterDataService.getNaceDivisions();
+            expect(naceDivisions).to.be.an.array();
+        });
+
+        test('getNaceDivisionById:', async () => {
+            const naceDivisions = await MasterDataService.getNaceDivisions();
+            const naceDivision = await MasterDataService.getNaceDivisionById(naceDivisions[2].id);
+            expect(naceDivision).to.equal(naceDivisions[2]);
+        });
+
+        test('getNaceGroups:', async () => {
+            const naceGroups = await MasterDataService.getNaceGroups();
+            expect(naceGroups).to.be.an.array();
+        });
+
+        test('getNaceGroupById:', async () => {
+            const naceGroups = await MasterDataService.getNaceGroups();
+            const naceGroup = await MasterDataService.getNaceGroupById(naceGroups[2].id);
+            expect(naceGroup).to.equal(naceGroups[2]);
+        });
+
+        test('getNaceClasses:', async () => {
+            const naceClasses = await MasterDataService.getNaceClasses();
+            expect(naceClasses).to.be.an.array();
+        });
+
+        test('getNaceClassById:', async () => {
+            const naceClasses = await MasterDataService.getNaceClasses();
+            const naceClass = await MasterDataService.getNaceClassById(naceClasses[2].id);
+            expect(naceClass).to.equal(naceClasses[2]);
+        });
+
+        test('getNaceHierarchies()', async () => {
+            const naceHierarchy = await MasterDataService.getNaceHierarchy();
+            expect(naceHierarchy).to.be.an.array();
+        });
+
+        test('getNaceHierarchyByKey()', async () => {
+            const naceHierarchy = await MasterDataService.getNaceHierarchyByKey(20, 86, 269, 612);
+            expect(naceHierarchy).to.be.an.object();
+            // console.log(JSON.stringify(naceHierarchy, null, 4));
+            expect(naceHierarchy).to.equal({
+                'sectionId': 20,
+                'divisionId': 86,
+                'groupId': 269,
+                'classId': 612
+            });
         });
     }
 });

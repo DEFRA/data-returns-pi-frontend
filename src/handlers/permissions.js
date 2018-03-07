@@ -5,10 +5,11 @@
  * such as changing an already submitted permit
  */
 const Hoek = require('hoek');
-
+const logger = require('../lib/logging').logger;
 const Submission = require('../lib/submission');
 const cacheNames = require('../lib/user-cache-policies').names;
-const logger = require('../lib/logging').logger;
+const errHdlr = require('../lib/utils').generalErrorHandler;
+
 const expand = (p) => {
     if (p.includes('{route}')) {
         const paths = [];
@@ -113,8 +114,7 @@ module.exports = {
             return h.continue;
 
         } catch (err) {
-            logger.log('error', err);
-            return h.redirect('/logout');
+            return errHdlr(err, h);
         }
     }
 };

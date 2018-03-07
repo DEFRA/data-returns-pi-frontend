@@ -1,7 +1,6 @@
-[![NPM Status](https://david-dm.org/DEFRA/data-returns-frontend.svg)](https://david-dm.org/DEFRA/data-returns-frontend)
-[![NSP Status](https://nodesecurity.io/orgs/ea/projects/70f1821b-3c42-428d-8d80-bf209d23b1ba/badge)](https://nodesecurity.io/orgs/ea/projects/70f1821b-3c42-428d-8d80-bf209d23b1ba)
+[![NSP Status](https://nodesecurity.io/orgs/cruikshanks/projects/2980ec4c-9e33-4e90-9bf0-b8ac1af18952/badge)](https://nodesecurity.io/orgs/cruikshanks/projects/2980ec4c-9e33-4e90-9bf0-b8ac1af18952)
 
-# Data returns: Pollution Inventory Service frontend
+# Data returns: Pollution Inventory Service Web Service
 
 Frontend GOV.uk web interface to support the upload and pollution inventory returns
 
@@ -34,7 +33,7 @@ If you are using nvm try the following config change
 
 Set NODE_ENV=localtest to run the front end in standalone mode using local test data. Any other setting requires the API's to be running at the locations specified in the .env environment file.
 
-The front end may also be run as a standalone docker application 
+The front end may also be run as a standalone docker application
 
 >docker-compose build
->docker-compose up 
+>docker-compose up

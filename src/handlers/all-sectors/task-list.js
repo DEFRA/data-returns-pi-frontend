@@ -4,8 +4,8 @@
 const allSectorsTaskList = require('../../model/all-sectors/task-list');
 const taskListNames = require('../../service/task-list').names(allSectorsTaskList);
 const setCompletedStatus = require('./common').setCompletedStatus;
+const errHdlr = require('../../lib/utils').generalErrorHandler;
 
-const logger = require('../../lib/logging').logger;
 const CacheKeyError = require('../../lib/user-cache-policies').CacheKeyError;
 const cacheNames = require('../../lib/user-cache-policies').names;
 
@@ -45,14 +45,7 @@ module.exports = {
             });
 
         } catch (err) {
-            if (err instanceof CacheKeyError) {
-                // Probably due to unexpected navigation
-                logger.debug('error', err);
-                return h.redirect('/');
-            } else {
-                logger.log('error', err);
-                return h.redirect('/logout');
-            }
+            return errHdlr(err, h);
         }
     }
 };

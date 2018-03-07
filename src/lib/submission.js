@@ -119,110 +119,6 @@ const internals = {
         });
     },
 
-    /*
-     * Reads the redis cache objects and generates the JSON payload for the submission message
-     * @param request
-     * @return {Promise.<void>}
-     */
-    createSubmissionMessage: async (request) => {
-        const submission = await request.server.app.userCache.cache(cacheNames.USER_CONTEXT).get(request);
-        const eaId = await request.server.app.userCache.cache(cacheNames.SUBMISSION_CONTEXT).get(request);
-
-        const submissionContext = await request.server.app.userCache.cache(cacheNames.SUBMISSION_CONTEXT).get(request);
-
-        const { challengeStatus, valid, completed } = statusHelper(submissionContext);
-
-        const routes = required.filter(r => {
-            return challengeStatus.find(c => c === r) &&
-                valid.find(v => v === r) &&
-                completed.find(d => d === r);
-        });
-
-        const transmissionObject = {
-            applicable_year: 2017,
-            reporting_reference: submission.id,
-            status: 'Submitted'
-        };
-
-        for (const route of routes) {
-            // We need to se the current task in the eaId
-            eaId.currentTask = route;
-            await request.server.app.userCache.cache(cacheNames.SUBMISSION_CONTEXT).set(request, eaId);
-            const task = await request.server.app.userCache.cache(cacheNames.TASK_CONTEXT).get(request);
-
-            switch (route) {
-                case 'RELEASES_TO_AIR':
-                    if (task.releases) {
-                        transmissionObject.releases_to_air = transmissionObject.releases_to_air || [];
-                        for (const release of Object.keys(task.releases)) {
-                            transmissionObject.releases_to_air.push(await internals.releasesObj(task, release));
-                        }
-                    }
-                    break;
-
-                case 'RELEASES_TO_LAND':
-                    if (task.releases) {
-                        transmissionObject.releases_to_land = transmissionObject.releases_to_land || [];
-                        for (const release of Object.keys(task.releases)) {
-                            transmissionObject.releases_to_land.push(await internals.releasesObj(task, release));
-                        }
-                    }
-                    break;
-
-                case 'RELEASES_TO_CONTROLLED_WATERS':
-                    if (task.releases) {
-                        transmissionObject.releases_to_controlled_water = transmissionObject.releases_to_controlled_water || [];
-                        for (const release of Object.keys(task.releases)) {
-                            transmissionObject.releases_to_controlled_water.push(await internals.releasesObj(task, release));
-                        }
-                    }
-                    break;
-
-                case 'OFFSITE_TRANSFERS_IN_WASTE_WATER':
-                    if (task.releases) {
-                        transmissionObject.releases_to_waste_water = transmissionObject.releases_to_waste_water || [];
-                        for (const release of Object.keys(task.releases)) {
-                            transmissionObject.releases_to_waste_water.push(await internals.releasesObj(task, release));
-                        }
-                    }
-                    break;
-
-                case 'OFFSITE_WASTE_TRANSFERS':
-                    if (task.transfers) {
-                        transmissionObject.offsite_waste_transfers = transmissionObject.offsite_waste_transfers || [];
-                        for (const transfer of task.transfers) {
-                            if (transfer.wfd.disposalId) {
-                                transmissionObject.offsite_waste_transfers.push({
-                                    ewc_activity_id: transfer.ewc.activityId,
-                                    wfd_disposal_id: transfer.wfd.disposalId,
-                                    tonnage: transfer.value
-                                });
-
-                            } else if (transfer.wfd.recoveryId) {
-                                transmissionObject.offsite_waste_transfers.push({
-                                    ewc_activity_id: transfer.ewc.activityId,
-                                    wfd_recovery_id: transfer.wfd.recoveryId,
-                                    tonnage: transfer.value
-                                });
-
-                            } else {
-                                throw new CacheKeyError('Malformed transfer object' + JSON.stringify(transfer, null, 2));
-                            }
-                        }
-                    }
-                    break;
-
-                case 'OVERSEAS_WASTE_TRANSFERS':
-                    break;
-
-                default:
-                    throw new CacheKeyError('Unknown route object: ' + route);
-            }
-        }
-
-        return transmissionObject;
-    },
-
     /**
      * Remove the cache entries after a (successful) submission
      * @param request
@@ -273,6 +169,43 @@ const internals = {
     },
 
     /**
+     * Set the task cache and submission cache associated with the submission
+     * @param request
+     * @param submission
+     * @return {Promise.<void>}
+     */
+    setSubmissionCache: async (request, submission) => {
+        let submissionContext = await request.server.app.userCache.cache(cacheNames.SUBMISSION_CONTEXT).get(request);
+
+        if (!submissionContext) {
+            submissionContext = {};
+            submissionContext.confirmation = {};
+            submissionContext.challengeStatus = {};
+            submissionContext.valid = {};
+            submissionContext.completed = {};
+        }
+
+        submissionContext.id = submission.id;
+        submissionContext.applicable_year = submission.applicable_year;
+        submissionContext.status = submission.status;
+        submissionContext._created = submission._created;
+        submissionContext._last_modifed = submission._last_modifed;
+
+        submissionContext.currentTask = 'SITE_CODES';
+        submissionContext.confirmation[submissionContext.currentTask] = true;
+        submissionContext.challengeStatus[submissionContext.currentTask] = true;
+        setCompletedStatus(submissionContext, submissionContext.currentTask);
+
+        const tasks = {};
+        tasks.nace = { id: submission.nace_id };
+        tasks.nose = { noseIds: submission.nose_ids };
+
+        await request.server.app.userCache.cache(cacheNames.SUBMISSION_CONTEXT).set(request, submissionContext);
+
+        await request.server.app.userCache.cache(cacheNames.TASK_CONTEXT).set(request, tasks);
+    },
+
+    /**
      * Set the task and permit status caches for releases
      * @param id
      * @return {Promise.<void>}
@@ -307,12 +240,20 @@ const internals = {
                         methodId: methods.find(m => m.name === release.method).id,
                         value: 'BRT'
                     };
+
                 } else {
                     tasks.releases[release.substance_id] = {
                         methodId: methods.find(m => m.name === release.method).id,
                         value: release.value,
                         unitId: release.unit_id
                     };
+
+                    if (release.notifiable_value) {
+                        tasks.releases[release.substance_id].notifiable = {};
+                        tasks.releases[release.substance_id].notifiable.value = release.notifiable_value;
+                        tasks.releases[release.substance_id].notifiable.unitId = release.notifiable_unit_id;
+                        tasks.releases[release.substance_id].notifiable.reason = release.notifiable_reason;
+                    }
                 }
             }
 
@@ -359,15 +300,14 @@ const internals = {
             setCompletedStatus(submissionContext, transferType);
 
             for (const transfer of transfers) {
-                const activity = await MasterDataService.getEwcActivityById(transfer.ewc_activity_id);
-                const subChapter = await MasterDataService.getEwcSubChapterById(activity.ewc_subchapter);
-                const chapter = await MasterDataService.getEwcChapterById(subChapter.ewc_chapter);
+                const hierarchies = await MasterDataService.getEwcHierarchies();
+                const hierarchy = hierarchies.find(h => h.activityId === transfer.ewc_activity_id);
 
                 tasks.transfers.push({
                     ewc: {
-                        chapterId: chapter.id,
-                        subChapterId: subChapter.id,
-                        activityId: activity.id
+                        chapterId: hierarchy.chapterId,
+                        subChapterId: hierarchy.subchapterId,
+                        activityId: hierarchy.activityId
                     },
                     wfd: {
                         disposalId: transfer.wfd_disposal_id ? transfer.wfd_disposal_id : null,
@@ -395,16 +335,18 @@ const internals = {
      * @return {Promise.<void>}
      */
     fetchSubmission: async (request) => {
-        const { submission } = await request.server.app.userCache.cache(cacheNames.SUBMISSION_CONTEXT).get(request);
+        const submissionContext = await request.server.app.userCache.cache(cacheNames.SUBMISSION_CONTEXT).get(request);
 
-        const result = Object.assign({}, submission);
+        const result = Object.assign({}, submissionContext);
 
         const fetches = [ 'releasesToAir', 'releasesToLand', 'releasesToWasteWater',
             'releasesToControlledWater', 'offsiteWasteTransfers' ];
 
         await Promise.all(fetches.map(async fetch => {
-            const response = await Api.request('SUB', 'GET', `submissions/${submission.id}/${fetch}`);
-            result[fetch] = response._embedded[fetch];
+            const response = await Api.request('SUB', 'GET', `submissions/${submissionContext.id}/${fetch}`);
+            result[fetch] = {
+                data: response._embedded[fetch]
+            };
         }));
 
         return result;
@@ -424,7 +366,10 @@ const internals = {
                 value: Number.parseFloat(task.releases[release].value),
                 unit_id: task.releases[release].unitId,
                 method: (await MasterDataService.getMethodById(task.releases[release].methodId)).name,
-                below_reporting_threshold: false
+                below_reporting_threshold: false,
+                notifiable_value: task.releases[release].notifiable ? task.releases[release].notifiable.value : null,
+                notifiable_unit_id: task.releases[release].notifiable ? task.releases[release].notifiable.unitId : null,
+                notifiable_reason: task.releases[release].notifiable ? task.releases[release].notifiable.reason : null
             };
         } else {
             throw new CacheKeyError('Malformed release object: ' + JSON.stringify(release));
@@ -466,8 +411,9 @@ const internals = {
 
                 // Call the function
                 if (task) {
-                    results[route.name] = await func[route.name](task, submission[route.message.fetch],
-                        route.message.fetch, submission._links.self.href);
+                    results[route.name] = await func[route.name](task, submission[route.message.fetch].data,
+                        route.message.fetch, `submissions/${submissionContext.id}`);
+
                 } else {
                     results[route.name] = null;
                 }
@@ -489,7 +435,7 @@ const internals = {
      */
     releaseRouteOperator: async (task, apiArr, name, uri) => {
         const releaseSchema = Joi.object({
-            submission: Joi.string().uri({ allowRelative: false }),
+            submission: Joi.string().uri({ allowRelative: true }),
             substance_id: Joi.number().integer().required(),
             below_reporting_threshold: Joi.boolean().required(),
             method: Joi.valid(['Measurement', 'Calculation', 'Estimation']),
@@ -498,7 +444,10 @@ const internals = {
             }),
             unit_id: Joi.alternatives().when('below_reporting_threshold', {
                 is: true, then: Joi.forbidden(), otherwise: Joi.number().integer().required()
-            })
+            }),
+            notifiable_value: [ Joi.allow(null), Joi.number() ],
+            notifiable_unit_id: [ Joi.allow(null), Joi.number() ],
+            notifiable_reason: [ Joi.allow(null), Joi.string() ]
         });
 
         // We need to sort our tasks into POST, PUT and DELETE
@@ -519,7 +468,6 @@ const internals = {
                     post.submission = uri;
                     posts.push(post);
                 }
-
             }
         }
 
@@ -543,7 +491,6 @@ const internals = {
         await Promise.all(puts.map(async put => {
             await Api.request('SUB', 'PUT', `${name}/${put.id}`, null, put.put);
         }));
-
     },
 
     /**
@@ -557,13 +504,13 @@ const internals = {
      */
     transferRouteOperator: async (task, apiArr, name, uri) => {
         const transferSchema = Joi.alternatives().try(Joi.object({
-            submission: Joi.string().uri({ allowRelative: false }),
+            submission: Joi.string().uri({ allowRelative: true }),
             ewc_activity_id: Joi.number().integer(),
             wfd_disposal_id: Joi.number().integer().required(),
             wfd_recovery_id: Joi.forbidden(),
             tonnage: Joi.number()
         }), Joi.object({
-            submission: Joi.string().uri({ allowRelative: false }),
+            submission: Joi.string().uri({ allowRelative: true }),
             ewc_activity_id: Joi.number().integer(),
             wfd_disposal_id: Joi.forbidden(),
             wfd_recovery_id: Joi.number().integer().required(),
@@ -630,6 +577,9 @@ const internals = {
             const submission = await internals.getSubmission(id);
             Hoek.assert(['Unsubmitted', 'Submitted', 'Approved'].includes(submission.status), `Cannot restore submission: ${id}`);
 
+            // Site codes
+            await internals.setSubmissionCache(request, submission);
+
             // Releases
             const releasesToAir = await internals.getReleasesToAir(id);
             const releasesToLand = await internals.getReleasesToLand(id);
@@ -654,13 +604,30 @@ const internals = {
                 setCompletedStatus(submissionContext, e);
             });
 
-            submissionContext.submission = submission;
-
             await request.server.app.userCache.cache(cacheNames.SUBMISSION_CONTEXT).set(request, submissionContext);
         } catch (err) {
             logger.error(err);
             throw err;
         }
+    },
+
+    // Prepare the submission data
+    prepareSubmission: async (request, submission) => {
+        // Initialize a new permit status
+        const submissionContext = await request.server.app.userCache.cache(cacheNames.SUBMISSION_CONTEXT).get(request);
+        submissionContext.currentTask = 'SITE_CODES';
+        await request.server.app.userCache.cache(cacheNames.SUBMISSION_CONTEXT).set(request, submissionContext);
+        const task = await request.server.app.userCache.cache(cacheNames.TASK_CONTEXT).get(request);
+        if (task.nace) {
+            submission.nace_id = task.nace.id;
+        }
+
+        if (task.nose.noseIds) {
+            submission.nose_ids = task.nose.noseIds;
+        }
+
+        submission.status = 'Submitted';
+        return submission;
     }
 
 };
@@ -677,9 +644,6 @@ module.exports = {
 
     // Expose redis cache restore
     restore: internals.restore,
-
-    // Expose the function for setting completed status - used by the task list
-    createSubmissionMessage: internals.createSubmissionMessage,
 
     // The submission status codes
     submissionStatusCodes: submissionStatusCodes,
@@ -715,21 +679,19 @@ module.exports = {
     submit: async (request) => {
 
         // In local test mode do nothing
-        if (process.env.NODE_ENV !== 'localtest') {
+        if (process.env.NODE_ENV !== 'local') {
 
             // Fetch submission with children from the PI submissions API
             const submission = await internals.fetchSubmission(request);
 
             // Submission context
             const submissionContext = await request.server.app.userCache.cache(cacheNames.SUBMISSION_CONTEXT).get(request);
-            const {challengeStatus, valid, completed} = statusHelper(submissionContext);
+            const { challengeStatus, invalid, completed } = statusHelper(submissionContext);
 
             // Get the required routes
-            const routes = required.filter(r => {
-                return challengeStatus.find(c => c === r.name) &&
-              valid.find(v => v === r.name) &&
-              completed.find(d => d === r.name);
-            });
+            const routes = required.filter(r => challengeStatus.find(c => c === r.name))
+                .filter(r => completed.find(c => c === r.name))
+                .filter(r => !invalid.find(c => c === r.name));
 
             const result = await internals.applyToRoutes(request, routes, submission, {
                 RELEASES_TO_LAND: internals.releaseRouteOperator,
@@ -739,12 +701,10 @@ module.exports = {
                 OFFSITE_WASTE_TRANSFERS: internals.transferRouteOperator
             });
 
-            logger.debug(JSON.stringify(result, null, 4));
-
             // Now change the status to submitted
             const newSubmission = await internals.getSubmission(submission.id);
-            newSubmission.status = 'Submitted';
-            await Api.request('SUB', 'PUT', `submissions/${submission.id}`, null, newSubmission);
+            const preparedSubmission = await internals.prepareSubmission(request, newSubmission);
+            await Api.request('SUB', 'PUT', `submissions/${submission.id}`, null, preparedSubmission);
 
             // Finally drop the submission context
             await request.server.app.userCache.cache(cacheNames.SUBMISSION_CONTEXT).drop(request);

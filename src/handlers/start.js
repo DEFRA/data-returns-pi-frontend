@@ -1,8 +1,8 @@
 'use strict';
 
-const logger = require('../lib/logging').logger;
 const MasterDataService = require('../service/master-data');
 const Submission = require('../lib/submission');
+const errHdlr = require('../lib/utils').generalErrorHandler;
 
 const SessionHelper = require('./session-helper');
 const cacheNames = require('../lib/user-cache-policies').names;
@@ -27,7 +27,11 @@ const internals = {
         if (!submission) {
             submission = await Submission.createSubmissionForEaIdAndYear(eaIdId, year);
             submissionContext = {};
-            submissionContext.submission = submission;
+            submissionContext.id = submission.id;
+            submissionContext.applicable_year = submission.applicable_year;
+            submissionContext.status = submission.status;
+            submissionContext._created = submission._created;
+            submissionContext._last_modifed = submission._last_modifed;
             submissionContext.confirmation = {};
             submissionContext.challengeStatus = {};
             submissionContext.valid = {};
@@ -80,8 +84,7 @@ module.exports = {
             return h.view('start', { user: session.user, eaIds: eaIds, is_operator: isOperator });
 
         } catch (err) {
-            logger.log('error', err);
-            return h.redirect('/logout');
+            return errHdlr(err, h);
         }
     },
 
@@ -117,28 +120,31 @@ module.exports = {
             });
 
             // Determine the submission status
-            let submission;
-            if (process.env.NODE_ENV === 'localtest') {
-                submission = {
-                    id: 1, status: Submission.submissionStatusCodes.UNSUBMITTED
-                };
-                const submissionContext = {};
-                submissionContext.submission = submission;
-                submissionContext.confirmation = {};
-                submissionContext.challengeStatus = {};
-                submissionContext.valid = {};
-                submissionContext.completed = {};
-                await request.server.app.userCache.cache(cacheNames.SUBMISSION_CONTEXT).set(request, submissionContext);
+            let submissionContext = null;
+
+            if (process.env.NODE_ENV === 'local') {
+                submissionContext = await request.server.app.userCache.cache(cacheNames.SUBMISSION_CONTEXT).get(request);
+                if (!submissionContext) {
+                    submissionContext = {};
+                    submissionContext.id = 1;
+                    submissionContext.applicable_year = 2017;
+                    submissionContext.status = Submission.submissionStatusCodes.UNSUBMITTED;
+                    submissionContext.confirmation = {};
+                    submissionContext.challengeStatus = {};
+                    submissionContext.valid = {};
+                    submissionContext.completed = {};
+                    await request.server.app.userCache.cache(cacheNames.SUBMISSION_CONTEXT).set(request, submissionContext);
+                }
             } else {
-                submission = await internals.cacheSynchronize(request, eaIdId, year);
+                submissionContext = await internals.cacheSynchronize(request, eaIdId, year);
             }
 
             if (isOperator) {
 
                 // Operator actions
                 if (action === 'View') {
-                    if (submission.status === Submission.submissionStatusCodes.SUBMITTED ||
-                        submission.status === Submission.submissionStatusCodes.APPROVED) {
+                    if (submissionContext.status === Submission.submissionStatusCodes.SUBMITTED ||
+                        submissionContext.status === Submission.submissionStatusCodes.APPROVED) {
 
                         return h.redirect('/review/confirm');
                     } else {
@@ -146,8 +152,8 @@ module.exports = {
                     }
 
                 } else if (action === 'Review') {
-                    if (submission.status === Submission.submissionStatusCodes.SUBMITTED ||
-                        submission.status === Submission.submissionStatusCodes.APPROVED) {
+                    if (submissionContext.status === Submission.submissionStatusCodes.SUBMITTED ||
+                      submissionContext.status === Submission.submissionStatusCodes.APPROVED) {
 
                         return h.redirect('/review/confirm');
                     } else {
@@ -155,7 +161,7 @@ module.exports = {
                     }
 
                 } else if (action === 'Open') {
-                    if (submission.status === Submission.submissionStatusCodes.UNSUBMITTED) {
+                    if (submissionContext.status === Submission.submissionStatusCodes.UNSUBMITTED) {
 
                         return h.redirect('/task-list');
                     } else {
@@ -177,8 +183,7 @@ module.exports = {
             }
 
         } catch (err) {
-            logger.log('error', err);
-            return h.redirect('/logout');
+            return errHdlr(err, h);
         }
     }
 };

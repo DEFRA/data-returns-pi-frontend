@@ -3,6 +3,7 @@
 {% block content %}
 
 <main id="content">
+    <label hidden id="page-name">submit</label>
     <form action="/submit/confirm" method="post" class="form">
         <div class="phase-banner">
             <p> <strong class="phase-tag">BETA</strong> <span>This is a new service – your <a target="blank" href="">feedback</a> will help us to improve it.</span> </p>
@@ -24,7 +25,7 @@
                 </div>
                 <h2 class="heading-medium">Declaration</h2>
                 <p>By submitting this report, I declare that as far as I know the information in it is true.</p>
-                <div class="form-group"> <input type="submit" class="button" value="Continue"> </div>
+                <div class="form-group"> <input type="submit" class="button" id="continueBtn" value="Continue"> </div>
             </div>
         </div>
         {% else %}

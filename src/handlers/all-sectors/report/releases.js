@@ -4,10 +4,11 @@
  * Common functions for route handlers for substance releases to
  * air, water, waste water and land
  */
-const logger = require('../../../lib/logging').logger;
 const MasterDataService = require('../../../service/master-data');
 const Validator = require('../../../lib/validator');
 const CacheKeyError = require('../../../lib/user-cache-policies').CacheKeyError;
+const errHdlr = require('../../../lib/utils').generalErrorHandler;
+
 const cacheHelper = require('../common').cacheHelper;
 const isNumeric = require('../../../lib/utils').isNumeric;
 const cacheNames = require('../../../lib/user-cache-policies').names;
@@ -157,12 +158,7 @@ module.exports = {
                 }
             }
         } catch (err) {
-            if (err instanceof CacheKeyError) {
-                return h.redirect('/');
-            } else {
-                logger.log('error', err);
-                return h.redirect('/logout');
-            }
+            return errHdlr(err, h);
         }
     },
 
@@ -213,12 +209,7 @@ module.exports = {
             }
 
         } catch (err) {
-            if (err instanceof CacheKeyError) {
-                return h.redirect('/');
-            } else {
-                logger.log('error', err);
-                return h.redirect('/logout');
-            }
+            return errHdlr(err, h);
         }
     },
 
@@ -284,12 +275,7 @@ module.exports = {
             }
 
         } catch (err) {
-            if (err instanceof CacheKeyError) {
-                return h.redirect('/');
-            } else {
-                logger.log('error', err);
-                return h.redirect('/logout');
-            }
+            return errHdlr(err, h);
         }
     },
 
@@ -326,13 +312,24 @@ module.exports = {
             } else {
 
                 // Set the task detail elements
-                const { unitId, methodId, value } = request.payload;
+                const { unitId, methodId, value, hasNotifiableRelease,
+                  notifiableUnitId, notifiableValue, notifiableReason } = request.payload;
+
                 const currentRelease = tasks.releases[tasks.currentSubstanceId];
 
                 // Set up the release object
                 currentRelease.unitId = Number.isNaN(Number.parseInt(unitId)) ? null : Number.parseInt(unitId);
                 currentRelease.methodId = Number.isNaN(Number.parseInt(methodId)) ? null : Number.parseInt(methodId);
                 currentRelease.value = Number.isNaN(Number.parseFloat(value)) ? value : Number.parseFloat(value);
+
+                if (hasNotifiableRelease === 'Yes') {
+                    currentRelease.notifiable = {};
+                    currentRelease.notifiable.unitId = Number.isNaN(Number.parseInt(notifiableUnitId)) ? null : Number.parseInt(notifiableUnitId);
+                    currentRelease.notifiable.value = Number.isNaN(Number.parseFloat(notifiableValue)) ? null : Number.parseFloat(notifiableValue);
+                    currentRelease.notifiable.reason = notifiableReason.substring(0, 500);
+                } else {
+                    delete currentRelease.notifiable;
+                }
 
                 delete currentRelease.errors;
 
@@ -357,13 +354,7 @@ module.exports = {
                 }
             }
         } catch (err) {
-            if (err instanceof CacheKeyError) {
-                logger.debug(err);
-                return h.redirect('/');
-            } else {
-                logger.log('error', err);
-                return h.redirect('/logout');
-            }
+            return errHdlr(err, h);
         }
     },
 
@@ -399,12 +390,7 @@ module.exports = {
                 }
             }
         } catch (err) {
-            if (err instanceof CacheKeyError) {
-                return h.redirect('/');
-            } else {
-                logger.log('error', err);
-                return h.redirect('/logout');
-            }
+            return errHdlr(err, h);
         }
     },
 
@@ -489,12 +475,7 @@ module.exports = {
 
             }
         } catch (err) {
-            if (err instanceof CacheKeyError) {
-                return h.redirect('/');
-            } else {
-                logger.log('error', err);
-                return h.redirect('/logout');
-            }
+            return errHdlr(err, h);
         }
     }
 };

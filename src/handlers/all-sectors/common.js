@@ -100,7 +100,7 @@ module.exports = {
     },
 
     /**
-     * Calculate teh TASK completed status - the status required to make the submission for a given route
+     * Calculate the TASK completed status - the status required to make the submission for a given route
      * @param submissionContext
      * @param name
      */
@@ -132,7 +132,7 @@ module.exports = {
     statusHelper: (submissionContext) => {
         const result = {};
         result.challengeStatus = Object.keys(submissionContext.challengeStatus).filter(p => submissionContext.challengeStatus[p]);
-        result.valid = Object.keys(submissionContext.valid).filter(p => submissionContext.valid[p]);
+        result.invalid = Object.keys(submissionContext.valid).filter(p => !submissionContext.valid[p]);
         result.completed = Object.keys(submissionContext.completed).filter(p => submissionContext.completed[p]);
         return result;
     }

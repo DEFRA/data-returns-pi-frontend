@@ -12,6 +12,7 @@ const Overseas = require('./handlers/all-sectors/report/overseas');
 const Review = require('./handlers/all-sectors/submit/review');
 const Submit = require('./handlers/all-sectors/submit/submit');
 const Permissions = require('./handlers/permissions');
+const SiteCodes = require('./handlers/all-sectors/check/site-codes');
 
 /**
  * Returns routes for the static assets
@@ -68,7 +69,7 @@ const staticHandlers = [
 const dynamicHandlers = [
 
     // Catch all handler
-    { method: '*', path: '/{p*}', handler: function (request, h) { return h.redirect('/'); } },
+    { method: '*', path: '/{p*}', options: { handler: function (request, h) { return h.redirect('/'); } } },
 
     // Authentication and start pages
     { method: ['GET', 'POST'], path: '/login', options: { handler: Authentication.login, auth: { mode: 'try' }, plugins: { 'hapi-auth-cookie': { redirectTo: false }, crumb: {} } } },
@@ -78,6 +79,12 @@ const dynamicHandlers = [
     // Handlers for the all sectors journey - select permit and tasks list
     { method: 'POST', path: '/select-permit', options: { handler: Start.select } },
     { method: 'GET', path: '/task-list', options: { handler: AllSectors.taskList } },
+
+    // Handlers for the check phase
+    { method: ['GET', 'POST'], path: '/check/site-codes/confirm', options: { handler: SiteCodes.confirm } },
+    { method: ['GET', 'POST'], path: '/check/site-codes/nace', options: { handler: SiteCodes.nace } },
+    { method: ['GET', 'POST'], path: '/check/site-codes/nose', options: { handler: SiteCodes.nose } },
+    { method: ['GET', 'POST'], path: '/check/site-codes/nose/remove', options: { handler: SiteCodes.remove } },
 
     // Releases to air, land, controlled waters and in waste-water
     { method: ['GET', 'POST'], path: '/releases/{route}/confirm', options: { handler: Releases.confirm } },
@@ -109,8 +116,10 @@ const dynamicHandlers = [
 
     // Completion
     { method: ['GET', 'POST'], path: '/review/confirm', options: { handler: Review.review } },
-    { method: ['GET', 'POST'], path: '/submit/confirm', options: { handler: Submit.submit } }
+    { method: ['GET', 'POST'], path: '/submit/confirm', options: { handler: Submit.submit } },
 
+    // Service Error
+    { method: 'GET', path: '/service-error', options: { handler: function (request, h) { return h.view('service-error'); } } }
 ];
 
 module.exports = {

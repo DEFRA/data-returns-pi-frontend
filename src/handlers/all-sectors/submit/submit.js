@@ -3,12 +3,11 @@
 /**
  * Route handlers for submit your report
  */
-const logger = require('../../../lib/logging').logger;
 const Submission = require('../../../lib/submission');
-const CacheKeyError = require('../../../lib/user-cache-policies').CacheKeyError;
 const allSectorsTaskList = require('../../../model/all-sectors/task-list');
 const required = require('../../../service/task-list').required(allSectorsTaskList).map(n => n.name);
 const cacheHelper = require('../common').cacheHelper;
+const errHdlr = require('../../../lib/utils').generalErrorHandler;
 
 module.exports = {
     /**
@@ -32,13 +31,7 @@ module.exports = {
                 return h.redirect('/');
             }
         } catch (err) {
-            if (err instanceof CacheKeyError) {
-                logger.debug(err);
-                return h.redirect('/');
-            } else {
-                logger.error(err);
-                return h.redirect('/logout');
-            }
+            return errHdlr(err, h);
         }
     }
 };

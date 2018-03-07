@@ -4,9 +4,10 @@
  * Route handlers for reporting overseas waste transfers
  */
 
-const logger = require('../../../lib/logging').logger;
 const MasterDataService = require('../../../service/master-data');
 const CacheKeyError = require('../../../lib/user-cache-policies').CacheKeyError;
+const errHdlr = require('../../../lib/utils').generalErrorHandler;
+
 const sortSubstances = require('./releases').sortSubstances;
 const cacheHelper = require('../common').cacheHelper;
 const overseasValidator = require('../../../lib/validator').overseas;
@@ -134,13 +135,7 @@ const internals = {
                 }
             }
         } catch (err) {
-            if (err instanceof CacheKeyError) {
-                logger.debug(err);
-                return h.redirect('/');
-            } else {
-                logger.log('error', err);
-                return h.redirect('/logout');
-            }
+            return errHdlr(err, h);
         }
     },
 
@@ -200,13 +195,7 @@ module.exports = {
             }
 
         } catch (err) {
-            if (err instanceof CacheKeyError) {
-                logger.debug(err);
-                return h.redirect('/');
-            } else {
-                logger.log('error', err);
-                return h.redirect('/logout');
-            }
+            return errHdlr(err, h);
         }
     },
 
@@ -232,15 +221,10 @@ module.exports = {
                     return h.view('all-sectors/report/overseas', { transfers: enrichedTransfers });
                 }
             } else {
-              return h.redirect('/transfers/overseas');
+                return h.redirect('/transfers/overseas');
             }
         } catch (err) {
-            if (err instanceof CacheKeyError) {
-                return h.redirect('/');
-            } else {
-                logger.log('error', err);
-                return h.redirect('/logout');
-            }
+            return errHdlr(err, h);
         }
     },
 
@@ -257,13 +241,7 @@ module.exports = {
             await internals.addNewOverseasWasteTransfer(request, tasks);
             return h.redirect('/transfers/overseas/add-substance');
         } catch (err) {
-            if (err instanceof CacheKeyError) {
-                logger.debug(err);
-                return h.redirect('/');
-            } else {
-                logger.log('error', err);
-                return h.redirect('/logout');
-            }
+            return errHdlr(err, h);
         }
     },
 
@@ -443,13 +421,7 @@ module.exports = {
             }
 
         } catch (err) {
-            if (err instanceof CacheKeyError) {
-                logger.debug(err);
-                return h.redirect('/');
-            } else {
-                logger.log('error', err);
-                return h.redirect('/logout');
-            }
+            return errHdlr(err, h);
         }
     },
 
@@ -494,12 +466,7 @@ module.exports = {
             }
 
         } catch (err) {
-            if (err instanceof CacheKeyError) {
-                return h.redirect('/');
-            } else {
-                logger.log('error', err);
-                return h.redirect('/logout');
-            }
+            return errHdlr(err, h);
         }
     },
 
@@ -535,13 +502,7 @@ module.exports = {
             }
 
         } catch (err) {
-            if (err instanceof CacheKeyError) {
-                logger.debug(err);
-                return h.redirect('/');
-            } else {
-                logger.log('error', err);
-                return h.redirect('/logout');
-            }
+            return errHdlr(err, h);
         }
     }
 };

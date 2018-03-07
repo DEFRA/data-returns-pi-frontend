@@ -49,7 +49,7 @@ internals.initialize = async () => {
      * Register the logging plugin to allow Hapi to log using Winston - this is not reusable so don't use for
      * integration testing
      */
-    if (process.env.NODE_ENV !== 'localtest') {
+    if (process.env.NODE_ENV !== 'local') {
         logger.info('Server plugin registration: good');
         await internals.server.register({
             plugin: require('good'),
@@ -79,14 +79,6 @@ internals.initialize = async () => {
         plugin: require('hapi-auth-cookie')
     });
 
-    /*
-     * Register Crumb - looks like this is broken with the current
-     * version of hapi
-     * await server.register({
-     *    register: require('crumb')
-     * });
-     * Configure nunjucks
-     */
     internals.server.views({
         engines: {
             html: {
@@ -99,7 +91,7 @@ internals.initialize = async () => {
 
                 prepare: function (options, next) {
                     options.compileOptions.environment = Nunjucks.configure(options.path,
-                        { watch: process.env.NODE_ENV !== 'production' });
+                        { watch: process.env.NODE_ENV !== 'api' });
 
                     // Add in additional nunjunks filter functions
                     for (const filter of AdditionalFilters) {
@@ -143,7 +135,7 @@ internals.initialize = async () => {
     // Set up the authorization strategy
     logger.info('Set authorization strategy: cookie');
     internals.server.auth.strategy('session', 'cookie', {
-        password: srvcfg.authorization.cookie.ironCookiePassword,
+        password: process.env.COOKIE_PW,
         cookie: 'sid',
         redirectTo: '/login',
         isSecure: false,

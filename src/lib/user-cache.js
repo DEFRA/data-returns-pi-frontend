@@ -37,9 +37,9 @@ internals.startCache = async (provider, policies) => {
             port: process.env.REDIS_PORT
         };
 
-        // Expire in 90 days
+        // Expire user cache objects in days
         const config = {
-            expiresIn: 1000 * 60 * 60 * 24 * 90
+            expiresIn: 1000 * 60 * 60 * 24 * 270
         };
 
         if (internals.client && internals.client.isReady()) {

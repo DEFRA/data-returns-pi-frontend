@@ -1,0 +1,56 @@
+{% extends 'layout/layout.html' %}
+
+{% block content %}
+
+<main id="content">
+    <label id="page-name" hidden>site</label>
+    <form action="/check/site-codes/confirm" method="post" class="form">
+        <a href="/task-list" class="link-back">Back to sections you must complete</a>
+        <h1 class="heading-large">Check your site codes</h1>
+        <div class="form-group">
+            <table class="codes table-control">
+                <thead>
+                <tr>
+                    <th class="name">Name</th>
+                    <th class="code-name">Code</th>
+                    <th class="description">Description</th>
+                    <th class="action"><span class="visually-hidden">Action</span></th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr>
+                    <td class="name">NACE</td>
+                    <td>{{ nace.naceClass.code }}</td>
+                    <td>
+                        <span class="visuallyhidden">Class</span>{{ nace.naceClass.description }}
+                    </td>
+                    <td class="change-nace">
+                        <a href="/check/site-codes/nace">Change <span class="visuallyhidden">NACE code</span></a>
+                    </td>
+                </tr>
+                {% for nose in noses %}
+                <tr>
+                    <td class="name">NOSE-P</td>
+                    <td>{{ nose.code }}</td>
+                    <td><span class="visuallyhidden">Process</span>{{ nose.description }}</td>
+                    <td class="delete-nose">
+                        <input class="link delete" type="submit" id="delete-{{ nose.id }}" name="delete-{{ nose.id }}" value="Delete"/>
+                    </td>
+                </tr>
+                {% endfor %}
+                </tbody>
+            </table>
+        </div>
+
+        <a href="/check/site-codes/nose">Add another NOSE-P code</a>
+
+        <div class="form-group">
+            <input id="continueBtn" class="button" type="submit" value="Continue">
+        </div>
+
+
+
+    </form>
+</main>
+
+{% endblock %}}

@@ -124,6 +124,33 @@ module.exports = internals = {
     },
 
     /**
+     * Get the EWC chapters
+     * @param id
+     * @return {Promise.<Array>}
+     */
+    getEwcChapters: async () => {
+        return internals.listEntity(internals._entities.ewcChapters);
+    },
+
+    /**
+     * Get a list of the EWC sub-chapters
+     * @param id
+     * @return {Promise.<Array>}
+     */
+    getEwcSubchapters: async () => {
+        return internals.listEntity(internals._entities.ewcSubchapters);
+    },
+
+    /**
+     * Get a list of the EWC activities
+     * @param id
+     * @return {Promise.<Array>}
+     */
+    getEwcActivities: async () => {
+        return internals.listEntity(internals._entities.ewcActivities);
+    },
+
+    /**
      * Get the EWC Activity code
      * @param id
      * @return {Promise.<V>}
@@ -151,6 +178,25 @@ module.exports = internals = {
     },
 
     /**
+     * Get ewc hierarchies
+     * @return {Promise.<*>}
+     */
+    getEwcHierarchies: async () => {
+        return internals.listRelation(internals._relations.ewcHierarchy);
+    },
+
+    /**
+     * Search the ewc hierarchy
+     * @param activityClassId
+     * @param activityId
+     * @param processId
+     * @return {Promise.<*>}
+     */
+    getEwcHierarchyByKey: async (chapterId, subchapterId, activityId) => {
+        return internals.getRelationByKey(internals._relations.ewcHierarchy, { chapterId, subchapterId, activityId });
+    },
+
+    /**
      * Get a an object containing the id's of the activity, chapter and sub-chapter
      * from the three codes
      * @param activity
@@ -162,23 +208,15 @@ module.exports = internals = {
         const ewcActivity = await internals.getEntityByNamedMapper(internals._entities.ewcActivities, 'byName', `${chapter} ${subChapter} ${activity}`);
         const ewcSubchapter = await internals.getEntityByNamedMapper(internals._entities.ewcSubchapters, 'byName', `${chapter} ${subChapter}`);
         const ewcChapter = await internals.getEntityByNamedMapper(internals._entities.ewcChapters, 'byCode', chapter);
-        const result = {};
 
         if (ewcActivity && ewcChapter && ewcSubchapter) {
-            const _subChapter = await internals.getEwcSubChapterById(ewcActivity.ewc_subchapter);
-
-            if (_subChapter && _subChapter.id === ewcSubchapter.id) {
-
-                const _chapter = await internals.getEwcChapterById(_subChapter.ewc_chapter);
-                if (_chapter && _chapter.id === ewcChapter.id) {
-
-                    result.activityId = ewcActivity.id;
-                    result.chapterId = ewcChapter.id;
-                    result.subChapterId = ewcSubchapter.id;
-
-                    return result;
-
-                }
+            const ewcHierarchy = await internals.getEwcHierarchyByKey(ewcChapter.id, ewcSubchapter.id, ewcActivity.id);
+            if (ewcHierarchy) {
+                return {
+                    activityId: ewcHierarchy.activityId,
+                    subChapterId: ewcHierarchy.subchapterId,
+                    chapterId: ewcHierarchy.chapterId
+                };
             }
         }
 
@@ -219,8 +257,208 @@ module.exports = internals = {
      */
     getRecoveryById: async (id) => {
         return internals.getEntityById(internals._entities.recoveryCodes, id);
-    }
+    },
 
+    /**
+     * Get the first level nose-p codes
+     * @return {Promise.<void>}
+     */
+    getNoseActivityClasses: async () => {
+        return internals.listEntity(internals._entities.noseActivityClasses);
+    },
+
+    /**
+     * Get the a first level nose-p code by its Id
+     * @return {Promise.<void>}
+     */
+    getNoseActivityClassById: async (id) => {
+        return internals.getEntityById(internals._entities.noseActivityClasses, id);
+    },
+
+    /**
+     * Get the second level nose-p codes
+     * @return {Promise.<void>}
+     */
+    getNoseActivities: async () => {
+        return internals.listEntity(internals._entities.noseActivities);
+    },
+
+    /**
+     * Get the a second level nose-p code by its Id
+     * @return {Promise.<void>}
+     */
+    getNoseActivityById: async (id) => {
+        return internals.getEntityById(internals._entities.noseActivities, id);
+    },
+
+    /**
+     * Get the third level nose-p codes
+     * @return {Promise.<void>}
+     */
+    getNoseProcesses: async () => {
+        return internals.listEntity(internals._entities.noseProcesses);
+    },
+
+    /**
+     * Get the a third level nose-p code by its Id
+     * @return {Promise.<void>}
+     */
+    getNoseProcessById: async (id) => {
+        return internals.getEntityById(internals._entities.noseProcesses, id);
+    },
+
+    getNoseProcessByCode: async (code) => {
+        return internals.getEntityByNamedMapper(internals._entities.noseProcesses, 'byCode', code);
+    },
+
+    /**
+     * Get nose hierarchies
+     * @return {Promise.<*>}
+     */
+    getNoseHierarchies: async () => {
+        return internals.listRelation(internals._relations.noseHierarchy);
+    },
+
+    /**
+     * Search the nose hierarchy
+     * @param activityClassId
+     * @param activityId
+     * @param processId
+     * @return {Promise.<*>}
+     */
+    getNoseHierarchyByKey: async (activityClassId, activityId, processId) => {
+        return internals.getRelationByKey(internals._relations.noseHierarchy, { activityClassId, activityId, processId });
+    },
+
+    /**
+     * Get the first level eprtr codes
+     * @return {Promise.<void>}
+     */
+    getEprtrSectors: async () => {
+        return internals.listEntity(internals._entities.eprtrSectors);
+    },
+
+    /**
+     * Get the a first level eprtr code by its Id
+     * @return {Promise.<void>}
+     */
+    getEprtrSectorById: async (id) => {
+        return internals.getEntityById(internals._entities.eprtrSectors, id);
+    },
+
+    /**
+     * Get the second level eprtr codes
+     * @return {Promise.<void>}
+     */
+    getEprtrActivities: async () => {
+        return internals.listEntity(internals._entities.eprtrActivities);
+    },
+
+    /**
+     * Get the a second level eprtr code by its Id
+     * @return {Promise.<void>}
+     */
+    getEprtrActivityById: async (id) => {
+        return internals.getEntityById(internals._entities.eprtrActivities, id);
+    },
+
+    /**
+     * Get the E-PRTR hierarchy
+     * @return {Promise.<*>}
+     */
+    getEprtrHierarchy: async () => {
+        return internals.listRelation(internals._relations.eprtrHierarchy);
+    },
+
+    /**
+     * Search the eprtr hierarchy
+     * @param sectorId
+     * @param activityId
+     * @return {Promise.<*>}
+     */
+    getEprtrHierarchyByKey: async (sectorId, activityId) => {
+        return internals.getRelationByKey(internals._relations.eprtrHierarchy, { sectorId, activityId });
+    },
+
+    /**
+     * Get the first level nace codes
+     * @return {Promise.<void>}
+     */
+    getNaceSections: async () => {
+        return internals.listEntity(internals._entities.naceSections);
+    },
+
+    /**
+     * Get the first level nace code by its Id
+     * @return {Promise.<void>}
+     */
+    getNaceSectionById: async (id) => {
+        return internals.getEntityById(internals._entities.naceSections, id);
+    },
+
+    /**
+     * Get the first level nace codes
+     * @return {Promise.<void>}
+     */
+    getNaceDivisions: async () => {
+        return internals.listEntity(internals._entities.naceDivisions);
+    },
+
+    /**
+     * Get the first level nace code by its Id
+     * @return {Promise.<void>}
+     */
+    getNaceDivisionById: async (id) => {
+        return internals.getEntityById(internals._entities.naceDivisions, id);
+    },
+
+    /**
+     * Get the third level nace codes
+     * @return {Promise.<void>}
+     */
+    getNaceGroups: async () => {
+        return internals.listEntity(internals._entities.naceGroups);
+    },
+
+    /**
+     * Get the first level nace code by its Id
+     * @return {Promise.<void>}
+     */
+    getNaceGroupById: async (id) => {
+        return internals.getEntityById(internals._entities.naceGroups, id);
+    },
+
+    /**
+     * Get the fourth level nace codes
+     * @return {Promise.<void>}
+     */
+    getNaceClasses: async () => {
+        return internals.listEntity(internals._entities.naceClasses);
+    },
+
+    /**
+     * Get the first level nace code by its Id
+     * @return {Promise.<void>}
+     */
+    getNaceClassById: async (id) => {
+        return internals.getEntityById(internals._entities.naceClasses, id);
+    },
+
+    getNaceClassByCode: async (code) => {
+        return internals.getEntityByNamedMapper(internals._entities.naceClasses, 'byCode', code);
+    },
+
+    /**
+     * Get the nace code hierarchies
+     * @return {Promise.<*>}
+     */
+    getNaceHierarchy: async () => {
+        return internals.listRelation(internals._relations.naceHierarchy);
+    },
+
+    getNaceHierarchyByKey: async (sectionId, divisionId, groupId, classId) => {
+        return internals.getRelationByKey(internals._relations.naceHierarchy, { sectionId, divisionId, groupId, classId });
+    }
 };
 
 /**
@@ -236,6 +474,18 @@ internals.listEntity = async (entity) => {
 };
 
 /**
+ * List wrapper for a given relation
+ * @param entity
+ * @return {Promise.<*>}
+ */
+internals.listRelation = async (relation) => {
+    if (!relation.arr.length) {
+        await internals.relationFetch(relation);
+    }
+    return relation.arr;
+};
+
+/**
  * Get by Id wrapper for a given entity
  * @param entity
  * @return {Promise.<*>}
@@ -245,6 +495,13 @@ internals.getEntityById = async (entity, id) => {
         await internals.entityFetch(entity);
     }
     return entity.map.get(id);
+};
+
+internals.getRelationByKey = async (relation, key) => {
+    if (!relation.arr.length) {
+        await internals.relationFetch(relation);
+    }
+    return relation.map.get(relation.keyMap(key));
 };
 
 /**
@@ -336,6 +593,28 @@ internals.entityFetch = async (entity) => {
                 });
             });
         }
+    } catch (err) {
+        Logging.logger.error(err);
+        throw err;
+    }
+};
+
+/**
+ * Relations are different from entities - there is no single id
+ * @param relation
+ * @return {Promise.<void>}
+ */
+internals.relationFetch = async (relation) => {
+    try {
+        const result = await client.request(relation.request.api,
+            relation.request.method, relation.request.uri, relation.request.query);
+
+        relation.arr = relation.processor(result._embedded[relation.name]);
+
+        relation.arr.forEach((r) => {
+            relation.map.set(relation.keyMap(r), r);
+        });
+
     } catch (err) {
         Logging.logger.error(err);
         throw err;
@@ -505,6 +784,263 @@ internals._entities = {
             { name: 'byCode', keyFunc: (i) => i.code }
         ],
         sorter: (a, b) => internals.sortByProperty(a, b, 'code')
+    },
+
+    naceSections: {
+        name: 'naceSections',
+        map: new Map(),
+        arr: [],
+        request: {api: 'MD', uri: 'naceSections', method: 'GET'},
+        idMapper: (i) => {
+            return {
+                id: i.id,
+                code: i.nomenclature,
+                description: i.description,
+                details: i.details
+            };
+        },
+        sorter: (a, b) => internals.sortByProperty(a, b, 'code')
+    },
+
+    naceDivisions: {
+        name: 'naceDivisions',
+        map: new Map(),
+        arr: [],
+        request: {api: 'MD', uri: 'naceDivisions', method: 'GET'},
+        idMapper: (i) => {
+            return {
+                id: i.id,
+                code: i.nomenclature,
+                description: i.description,
+                details: i.details
+            };
+        },
+        sorter: (a, b) => internals.sortByProperty(a, b, 'code')
+    },
+
+    naceGroups: {
+        name: 'naceGroups',
+        map: new Map(),
+        arr: [],
+        request: {api: 'MD', uri: 'naceGroups', method: 'GET'},
+        idMapper: (i) => {
+            return {
+                id: i.id,
+                code: i.nomenclature,
+                description: i.description,
+                details: i.details
+            };
+        },
+        sorter: (a, b) => internals.sortByProperty(a, b, 'code')
+    },
+
+    naceClasses: {
+        name: 'naceClasses',
+        map: new Map(),
+        arr: [],
+        request: {api: 'MD', uri: 'naceClasses', method: 'GET'},
+        idMapper: (i) => {
+            return {
+                id: i.id,
+                code: i.nomenclature,
+                description: i.description,
+                details: i.details
+            };
+        },
+        sorter: (a, b) => internals.sortByProperty(a, b, 'code'),
+        namedMappers: [
+            { name: 'byCode', keyFunc: (i) => i.code }
+        ]
+    },
+
+    noseActivityClasses: {
+        name: 'noseActivityClasses',
+        map: new Map(),
+        arr: [],
+        request: {api: 'MD', uri: 'noseActivityClasses', method: 'GET'},
+        idMapper: (i) => {
+            return {
+                id: i.id,
+                name: i.nomenclature
+            };
+        },
+        sorter: (a, b) => internals.sortByProperty(a, b, 'name')
+    },
+
+    noseActivities: {
+        name: 'noseActivities',
+        map: new Map(),
+        arr: [],
+        request: {api: 'MD', uri: 'noseActivities', method: 'GET'},
+        idMapper: (i) => {
+            return {
+                id: i.id,
+                name: i.nomenclature
+            };
+        },
+        sorter: (a, b) => internals.sortByProperty(a, b, 'name')
+    },
+
+    noseProcesses: {
+        name: 'noseProcesses',
+        map: new Map(),
+        arr: [],
+        request: {api: 'MD', uri: 'noseProcesses', method: 'GET'},
+        idMapper: (i) => {
+            return {
+                id: i.id,
+                code: i.nomenclature,
+                description: i.description
+            };
+        },
+        namedMappers: [
+            { name: 'byCode', keyFunc: (i) => i.code }
+        ],
+        sorter: (a, b) => internals.sortByProperty(a, b, 'name')
+    },
+
+    eprtrSectors: {
+        name: 'eprtrSectors',
+        map: new Map(),
+        arr: [],
+        request: {api: 'MD', uri: 'eprtrSectors', method: 'GET'},
+        idMapper: (i) => {
+            return {
+                id: i.id,
+                code: i.nomenclature,
+                description: i.description
+            };
+        },
+        sorter: (a, b) => internals.sortByProperty(a, b, 'code')
+    },
+
+    eprtrActivities: {
+        name: 'eprtrActivities',
+        map: new Map(),
+        arr: [],
+        request: {api: 'MD', uri: 'eprtrActivities', method: 'GET'},
+        idMapper: (i) => {
+            return {
+                id: i.id,
+                code: i.nomenclature,
+                description: i.description,
+                threshold: i.threshold
+            };
+        },
+        sorter: (a, b) => internals.sortByProperty(a, b, 'code')
     }
 
+};
+
+/*
+ * Specifics for relations. These are somewhat different from entities
+ */
+internals._relations = {
+    naceHierarchy: {
+        name: 'naceSections',
+        map: new Map(),
+        arr: [],
+        request: { api: 'MD', uri: 'naceSections', method: 'GET', query: 'projection=hierarchy' },
+
+        processor: (results) => {
+            const hierarchy = [];
+            for (const section of results) {
+                for (const division of section.nace_divisions) {
+                    for (const group of division.nace_groups) {
+                        for (const naceClass of group.nace_classes) {
+                            hierarchy.push({
+                                sectionId: section.id,
+                                divisionId: division.id,
+                                groupId: group.id,
+                                classId: naceClass.id
+                            });
+                        }
+                    }
+                }
+            }
+            return hierarchy;
+        },
+
+        keyMap: (r) => {
+            return `${r.sectionId}-${r.divisionId}-${r.groupId}-${r.classId}`;
+        }
+    },
+
+    noseHierarchy: {
+        name: 'noseActivityClasses',
+        map: new Map(),
+        arr: [],
+        request: {api: 'MD', uri: 'noseActivityClasses', method: 'GET', query: 'projection=hierarchy'},
+
+        processor: (results) => {
+            const hierarchy = [];
+            for (const activityClass of results) {
+                for (const activity of activityClass.nose_activities) {
+                    for (const process of activity.nose_processes) {
+                        hierarchy.push({
+                            activityClassId: activityClass.id,
+                            activityId: activity.id,
+                            processId: process.id
+                        });
+                    }
+                }
+            }
+            return hierarchy;
+        },
+
+        keyMap: (r) => {
+            return `${r.activityClassId}-${r.activityId}-${r.processId}`;
+        }
+    },
+
+    eprtrHierarchy: {
+        name: 'eprtrSectors',
+        map: new Map(),
+        arr: [],
+        request: {api: 'MD', uri: 'eprtrSectors', method: 'GET', query: 'projection=hierarchy'},
+
+        processor: (results) => {
+            const hierarchy = [];
+            for (const eprtrSectors of results) {
+                for (const activity of eprtrSectors.eprtr_activities) {
+                    hierarchy.push({
+                        sectorId: eprtrSectors.id,
+                        activityId: activity.id
+                    });
+                }
+            }
+            return hierarchy;
+        },
+
+        keyMap: (r) => {
+            return `${r.sectorId}-${r.activityId}`;
+        }
+    },
+
+    ewcHierarchy: {
+        name: 'ewcChapters',
+        map: new Map(),
+        arr: [],
+        request: {api: 'MD', uri: 'ewcChapters', method: 'GET', query: 'projection=hierarchy'},
+
+        processor: (results) => {
+            const hierarchy = [];
+            for (const ewcChapter of results) {
+                for (const ewcSubchapter of ewcChapter.ewc_subchapters) {
+                    for (const ewcActivity of ewcSubchapter.ewc_activities) {
+                        hierarchy.push({
+                            chapterId: ewcChapter.id,
+                            subchapterId: ewcSubchapter.id,
+                            activityId: ewcActivity.id
+                        });
+                    }
+                }
+            }
+            return hierarchy;
+        },
+
+        keyMap: (r) => {
+            return `${r.chapterId}-${r.subchapterId}-${r.activityId}`;
+        }
+    }
 };
