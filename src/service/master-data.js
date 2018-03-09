@@ -12,6 +12,7 @@ module.exports = {
     authenticate: process.env.NODE_ENV === 'local' ? testService.authenticate : testService.authenticate,
     getUsers: process.env.NODE_ENV === 'local' ? testService.getUsers : testService.getUsers,
     getUser: process.env.NODE_ENV === 'local' ? testService.getUser : testService.getUser,
+    getRegimeTreeById: process.env.NODE_ENV === 'local' ? testService.getRegimeTreeById : apiService.getRegimeTreeById,
 
     getEaIds: process.env.NODE_ENV === 'local' ? testService.getEaIds : apiService.getEaIds,
     getEaIdsForUser: process.env.NODE_ENV === 'local' ? testService.getEaIdsForUser : apiService.getEaIdsForUser,

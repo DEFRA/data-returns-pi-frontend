@@ -34,7 +34,118 @@ module.exports = internals = {
      * @param eaIdId - the permit id
      */
     getEaIdFromEaIdId: async (eaIdId) => {
-        return internals.getEntityById(internals._entities.eaId, eaIdId);
+        const response = await client.request('MD', 'GET', `uniqueIdentifiers/${eaIdId}`);
+        const eaId = {};
+
+        eaId.id = response.id;
+        eaId.nomenclature = response.nomenclature;
+
+        const site = await client.requestLink(response._links.site);
+
+        if (site) {
+            eaId.site = {};
+            eaId.site.id = site.id;
+            eaId.site.nomenclature = site.nomenclature;
+        }
+
+        const area = await client.requestLink(response._links.area);
+
+        if (area) {
+            eaId.area = {};
+            eaId.area.id = area.id;
+            eaId.area.nomenclature = area.nomenclature;
+        }
+
+        const operator = await client.requestLink(response._links.operator);
+
+        if (operator) {
+            eaId.operator = {};
+            eaId.operator.id = operator.id;
+            eaId.operator.nomenclature = operator.nomenclature;
+        }
+
+        const regime = await client.requestLink(response._links.regime);
+
+        if (regime) {
+            eaId.regime = {};
+            eaId.regime.id = regime.content.PI.id;
+        }
+
+        return eaId;
+    },
+
+    // crawl: async (response) => {
+    //     return Promise.all(Object.keys(response._embedded).map(async e => {
+    //         const obj = {};
+    //         obj[e] = response._embedded[e].map(o => {
+    //             const obj2 = {};
+    //             obj2.id = o.id;
+    //             obj2.nomencature = o.nomencature;
+    //             o._links.map(async o2 => {
+    //                 const parameterGroups = await client.requestLink(o2._links);
+    //             });
+    //             return 'obj2';
+    //         });
+    //         return obj;
+    //     }));
+    // },
+
+    /**
+     * Get the entire regime tree by Id
+     * @param eaId
+     * @returns {Promise.<void>}
+     */
+    getRegimeTreeById: async (id) => {
+        if (internals._entities.regimeTree.arr.length) {
+            return internals._entities.regimeTree.map.get(id);
+        } else {
+            const response = await client.request('MD', 'GET', 'regimes');
+
+            // const result = internals.crawl(response);
+            //
+            internals._entities.regimeTree.arr = response._embedded.regimes.map(async r => {
+
+                const regime = {};
+                regime.id = r.id;
+                regime.nomenclature = r.nomenclature;
+
+                const obligations = await client.requestLink(r._links.regimeObligations);
+
+                if (obligations) {
+                    regime.obligations = obligations._embedded.regimeObligations.map(async o => {
+                        const obligation = {};
+                        obligation.id = o.id;
+                        obligation.nomenclature = o.nomenclature;
+
+                        const parameterGroups = await client.requestLink(o._links.parameterGroups);
+                        if (parameterGroups) {
+                            obligation.parameterGroups = parameterGroups._embedded.regimeObligations.map(async pg => {});
+                        }
+
+                        const route = await client.requestLink(o._links.route);
+                        if (route) {
+
+                        }
+
+                        const thresholds = await client.requestLink(o._links.thresholds);
+                        if (thresholds) {
+
+                        }
+
+                        const units = await client.requestLink(o._links.units);
+                        if (units) {
+
+                        }
+
+                        return obligation;
+                    });
+                }
+
+                console.log(JSON.stringify(regime));
+
+                return regime;
+            });
+        }
     },
 
     /**
@@ -569,11 +680,16 @@ internals.defaultMapper = (i) => {
  */
 internals.entityFetch = async (entity) => {
     try {
-        const result = await client.request(entity.request.api,
-            entity.request.method, entity.request.uri, entity.request.query);
 
-        // Set array
-        entity.arr = result._embedded[entity.name].map(entity.idMapper).sort(entity.sorter || internals.sortById);
+        if (Array.isArray(entity.request)) {
+            const results = await Promise.all(entity.request.map(async r => client.request(r.api, r.method, r.uri, r.query)));
+            entity.arr = [].concat([], ...results.map(r => r._embedded[entity.name]))
+                .map(entity.idMapper).sort(entity.sorter || internals.sortById);
+        } else {
+            const result = await client.request(entity.request.api, entity.request.method, entity.request.uri, entity.request.query);
+            // Set array
+            entity.arr = result._embedded[entity.name].map(entity.idMapper).sort(entity.sorter || internals.sortById);
+        }
 
         // Set map
         entity.arr.forEach((i) => {
@@ -626,7 +742,12 @@ internals._entities = {
         name: 'uniqueIdentifiers',
         map: new Map(),
         arr: [],
-        request: {api: 'MD', uri: 'uniqueIdentifierGroups/1/uniqueIdentifiers', query: 'projection=inlineSites', method: 'GET'},
+        request: [
+            { api: 'MD', uri: 'regimes/2/uniqueIdentifiers', query: 'projection=inlineSites&size=50', method: 'GET' },
+            { api: 'MD', uri: 'regimes/3/uniqueIdentifiers', query: 'projection=inlineSites&size=50', method: 'GET' },
+            { api: 'MD', uri: 'regimes/4/uniqueIdentifiers', query: 'projection=inlineSites&size=50', method: 'GET' },
+            { api: 'MD', uri: 'regimes/5/uniqueIdentifiers', query: 'projection=inlineSites&size=50', method: 'GET' }
+        ],
         idMapper: (i) => {
             return {
                 id: i.id,
@@ -638,6 +759,11 @@ internals._entities = {
             { name: 'byEaId', keyFunc: (i) => i.name }
         ],
         sorter: (a, b) => internals.sortByProperty(a, b, 'name')
+    },
+
+    regimeTree: {
+        arr: [],
+        map: new Map()
     },
 
     substances: {

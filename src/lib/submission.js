@@ -45,7 +45,7 @@ const internals = {
      * @return {Promise.<*>}
      */
     addStatusToEaIds: async (eaIds, year) => {
-        const submissionResponse = await internals.getSubmissionStatusForEaIdsAndYear(eaIds.map(e => e.id), year);
+        const submissionResponse = await internals.getSubmissionsForYear(year);
 
         if (submissionResponse) {
 
@@ -75,9 +75,9 @@ const internals = {
      * @param eaIdIds - an array of the permit id's
      * @return {Promise.<void>}
      */
-    getSubmissionStatusForEaIdsAndYear: async (eaIdIds, year) => {
-        const query = 'applicable_year=' + year.toString() + '&reporting_references=' + eaIdIds.join(',');
-        const response = await Api.request('SUB', 'GET', 'submissions/search/findByReportingReferenceInAndApplicableYear', query);
+    getSubmissionsForYear: async (year) => {
+        const query = 'applicable_year=' + year.toString();
+        const response = await Api.request('SUB', 'GET', 'submissions/search/findByApplicableYear', query);
         return response;
     },
 

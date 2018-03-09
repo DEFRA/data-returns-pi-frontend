@@ -100,5 +100,36 @@ module.exports = {
         return null;
     },
 
+    requestLink: async (link) => {
+        if (process.env.NODE_ENV !== 'local') {
+            try {
+                Logging.logger.debug(`API Call; GET:${link.href} `);
+
+                const result = await request({
+                    uri: link.href,
+                    method: 'GET',
+                    json: true,
+                    timeout: apicfg.requestTimeout,
+                    headers: {
+                        'Accept': 'application/json'
+                    },
+                    auth: {
+                        user: 'user',
+                        pass: 'password'
+                    }
+                });
+
+                return result;
+            } catch (err) {
+                // Not found is OK - its the empty object
+                if (err.statusCode === 404) {
+                    return null;
+                } else {
+                    throw new ServiceError(err.message);
+                }
+            }
+        }
+    },
+
     ServiceError: ServiceError
 };

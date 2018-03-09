@@ -20,6 +20,10 @@ module.exports = internals = {
         return Data.users;
     },
 
+    getRegimeTreeById: async () => {
+        return null;
+    },
+
     /**
      * Return the user object for a given username
      * @param username
