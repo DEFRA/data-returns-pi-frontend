@@ -110,8 +110,8 @@ module.exports = {
                 // Build the display objects
                 const reviewObject = {};
                 reviewObject.applicableYear = year;
-                reviewObject.permitNumber = eaId.name;
-                reviewObject.site = eaId.site.name;
+                reviewObject.permitNumber = eaId.nomenclature;
+                reviewObject.site = eaId.site.nomenclature;
 
                 for (const rte of routes) {
                     // We need to se the current task in the eaId
@@ -124,6 +124,13 @@ module.exports = {
                             if (task.nace && task.nace.id) {
                                 reviewObject.nace = await MasterDataService.getNaceClassById(task.nace.id);
                             }
+
+                            if (task.nose && task.nose.noseIds) {
+                                reviewObject.noses = await Promise.all(task.nose.noseIds.map(async p => {
+                                    return MasterDataService.getNoseProcessById(p);
+                                }));
+                            }
+
                             break;
 
                         case 'RELEASES_TO_AIR':
