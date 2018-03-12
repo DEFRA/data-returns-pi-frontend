@@ -74,36 +74,19 @@ module.exports = internals = {
         return eaId;
     },
 
-    // crawl: async (response) => {
-    //     return Promise.all(Object.keys(response._embedded).map(async e => {
-    //         const obj = {};
-    //         obj[e] = response._embedded[e].map(o => {
-    //             const obj2 = {};
-    //             obj2.id = o.id;
-    //             obj2.nomencature = o.nomencature;
-    //             o._links.map(async o2 => {
-    //                 const parameterGroups = await client.requestLink(o2._links);
-    //             });
-    //             return 'obj2';
-    //         });
-    //         return obj;
-    //     }));
-    // },
-
     /**
      * Get the entire regime tree by Id
      * @param eaId
      * @returns {Promise.<void>}
      */
     getRegimeTreeById: async (id) => {
-        if (internals._entities.regimeTree.arr.length) {
+        if (internals._entities.regimeTree.map.size) {
             return internals._entities.regimeTree.map.get(id);
         } else {
             const response = await client.request('MD', 'GET', 'regimes');
 
-            // const result = internals.crawl(response);
-            //
-            internals._entities.regimeTree.arr = response._embedded.regimes.map(async r => {
+            // Set up the obligations array
+            internals._entities.regimeTree.arr = await Promise.all(response._embedded.regimes.map(async r => {
 
                 const regime = {};
                 regime.id = r.id;
@@ -112,39 +95,104 @@ module.exports = internals = {
                 const obligations = await client.requestLink(r._links.regimeObligations);
 
                 if (obligations) {
-                    regime.obligations = obligations._embedded.regimeObligations.map(async o => {
+                    regime.obligations = await Promise.all(obligations._embedded.regimeObligations.map(async o => {
                         const obligation = {};
                         obligation.id = o.id;
                         obligation.nomenclature = o.nomenclature;
-
+                        obligation.description = o.description;
                         const parameterGroups = await client.requestLink(o._links.parameterGroups);
                         if (parameterGroups) {
-                            obligation.parameterGroups = parameterGroups._embedded.regimeObligations.map(async pg => {});
+                            obligation.parameterGroups = await Promise.all(parameterGroups._embedded.parameterGroups.map(async pg => {
+                                const parameterGroup = {};
+                                parameterGroup.id = pg.id;
+                                parameterGroup.nomenclature = pg.nomenclature;
+                                const parameters = await client.requestLink(pg._links.parameters);
+                                if (parameters) {
+                                    parameterGroup.parameters = await Promise.all(parameters._embedded.parameters.map(async p => {
+                                        const parameters = {};
+                                        parameters.id = p.id;
+                                        parameters.nomenclature = p.nomenclature;
+                                        return parameters;
+                                    }));
+                                }
+                                return parameterGroup;
+                            }));
                         }
 
                         const route = await client.requestLink(o._links.route);
                         if (route) {
-
+                            obligation.route = await (async r => {
+                                const route = {};
+                                route.id = r.id;
+                                route.nomenclature = r.nomenclature;
+                                const subroutes = await client.requestLink(r._links.subroutes);
+                                if (subroutes) {
+                                    route.subRoutes = await Promise.all(subroutes._embedded.subroutes.map(async sr => {
+                                        const subroute = {};
+                                        subroute.id = sr.id;
+                                        subroute.nomenclature = sr.nomenclature;
+                                        return subroute;
+                                    }));
+                                }
+                                return route;
+                            })(route);
                         }
 
                         const thresholds = await client.requestLink(o._links.thresholds);
                         if (thresholds) {
+                            obligation.thresholds = await Promise.all(thresholds._embedded.thresholds.map(async t => {
+                                const threshold = {};
+                                threshold.id = t.id;
+                                threshold.nomenclature = t.nomenclature;
 
+                                threshold.parameter = await (async p => {
+                                    const parameter = {};
+                                    parameter.d = p.id;
+                                    return parameter;
+                                })(await client.requestLink(t._links.parameter));
+
+                                threshold.unit = await (async u => {
+                                    const unit = {};
+                                    unit.d = u.id;
+                                    unit.nomenclature = u.nomenclature;
+                                    unit.description = u.description;
+                                    unit.long_name = u.long_name;
+                                    unit.conversion = u.conversion;
+                                    return unit;
+                                })(await client.requestLink(t._links.unit));
+
+                                return threshold;
+                            }));
                         }
 
                         const units = await client.requestLink(o._links.units);
                         if (units) {
-
+                            obligation.units = await Promise.all(units._embedded.units.map(async u => {
+                                const unit = {};
+                                unit.id = u.id;
+                                unit.nomenclature = u.nomenclature;
+                                unit.description = u.description;
+                                unit.long_name = u.long_name;
+                                unit.conversion = u.conversion;
+                                return unit;
+                            }));
                         }
 
                         return obligation;
-                    });
+                    }));
                 }
 
-                console.log(JSON.stringify(regime));
-
                 return regime;
-            });
+            }));
+
+            // Set up the map
+            internals._entities.regimeTree.map = new Map(internals._entities.regimeTree.arr.map((i) => [i.id, i]));
+
+            // Do not use the array
+            internals._entities.regimeTree.arr = [];
+
+            // Return the element
+            return internals._entities.regimeTree.map.get(id);
         }
     },
 
@@ -692,17 +740,12 @@ internals.entityFetch = async (entity) => {
         }
 
         // Set map
-        entity.arr.forEach((i) => {
-            entity.map.set(i.id, i);
-        });
+        entity.map = new Map(entity.arr.map((i) => [i.id, i]));
 
         // Set any additional named maps
         if (entity.namedMappers) {
             entity.namedMappers.forEach((mapper) => {
-                entity[mapper.name] = new Map();
-                entity.arr.forEach((i) => {
-                    entity[mapper.name].set(mapper.keyFunc(i), i);
-                });
+                entity[mapper.name] = new Map(entity.arr.map((i) => [mapper.keyFunc(i), i]));
             });
         }
     } catch (err) {
