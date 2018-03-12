@@ -90,8 +90,7 @@ internals.initialize = async () => {
                 },
 
                 prepare: function (options, next) {
-                    options.compileOptions.environment = Nunjucks.configure(options.path,
-                        { watch: process.env.NODE_ENV !== 'api' });
+                    options.compileOptions.environment = Nunjucks.configure(options.path, { watch: true });
 
                     // Add in additional nunjunks filter functions
                     for (const filter of AdditionalFilters) {

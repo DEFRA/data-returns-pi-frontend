@@ -7,8 +7,8 @@ const cacheNames = require('../../../lib/user-cache-policies').names;
 const CacheKeyError = require('../../../lib/user-cache-policies').CacheKeyError;
 const errHdlr = require('../../../lib/utils').generalErrorHandler;
 
+const TaskListService = require('../../../service/task-list');
 const allSectorsTaskList = require('../../../model/all-sectors/task-list');
-const required = require('../../../service/task-list').required(allSectorsTaskList).map(n => n.name);
 const isNumeric = require('../../../lib/utils').isNumeric;
 const isBrt = require('../../../lib/validator').isBrt;
 const setConfirmation = require('../common').setConfirmation;
@@ -71,6 +71,14 @@ module.exports = {
         try {
             const {route, submissionContext, eaId, year, isOperator} = await cacheHelper(request, 'review');
             const { challengeStatus, invalid, completed } = statusHelper(submissionContext);
+
+            const regimeTree = await MasterDataService.getRegimeTreeById(eaId.regime.id);
+
+            // Get appropriate the task list
+            const tasks = TaskListService.getTaskList(allSectorsTaskList, regimeTree);
+
+            // Everything except submit is required to be evaluated
+            const required = Object.keys(tasks).filter(k => !['SUBMIT'].includes(k));
 
             const routes = required.filter(r => challengeStatus.find(c => c === r))
                 .filter(r => completed.find(c => c === r))

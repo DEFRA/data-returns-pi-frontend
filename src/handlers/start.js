@@ -114,9 +114,6 @@ module.exports = {
             // Get the chosen permit
             const eaId = await MasterDataService.getEaIdFromEaIdId(eaIdId);
 
-            const regimeTree = await MasterDataService.getRegimeTreeById(eaId.regime.id);
-            // console.log(JSON.stringify(regimeTree, null, 4));
-
             // Set the current permit and the current year in the user context to the user context
             await request.server.app.userCache.cache(cacheNames.USER_CONTEXT).set(request, {
                 year: year, eaId: eaId, roles: session.user.roles

@@ -69,6 +69,7 @@ module.exports = internals = {
         if (regime) {
             eaId.regime = {};
             eaId.regime.id = regime.content.PI.id;
+            eaId.regime.nomenclature = regime.content.PI.nomenclature;
         }
 
         return eaId;

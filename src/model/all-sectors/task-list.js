@@ -7,113 +7,64 @@
  */
 module.exports = {
 
-    // The name of the task list
-    name: 'all-sectors',
+    SITE_CODES: {
+        name: 'SITE_CODES',
+        title: 'Check your site codes',
+        pathParam: 'site-codes',
+        page: '/check/site-codes',
+        message: { fetch: 'siteCodes' }
+    },
 
-    // Two stages
-    stages: [
+    REVIEW: {
+        name: 'REVIEW',
+        title: 'Check your data',
+        pathParam: 'review',
+        page: '/review'
+    },
 
-        {
-            heading: 'Check your details',
-            items: [
+    SUBMIT: {
+        name: 'SUBMIT',
+        title: 'Submit your data',
+        pathParam: 'submit',
+        page: '/submit'
+    },
 
-                {
-                    name: 'SITE_CODES',
-                    pathParam: 'site-codes',
-                    title: 'Check your site codes',
-                    page: '/check/site-codes',
-                    required: true,
-                    message: { fetch: 'siteCodes' }
-                }
+    RELEASES_TO_AIR: {
+        name: 'RELEASES_TO_AIR',
+        pathParam: 'air',
+        page: '/releases/air',
+        required: true,
+        message: { fetch: 'releasesToAir' }
+    },
 
-            ]
-        },
+    RELEASES_TO_LAND: {
+        name: 'RELEASES_TO_LAND',
+        pathParam: 'land',
+        page: '/releases/land',
+        required: true,
+        message: { fetch: 'releasesToLand' }
+    },
 
-        {
-            heading: 'Report your data',
-            items: [
+    RELEASES_TO_CONTROLLED_WATERS: {
+        name: 'RELEASES_TO_CONTROLLED_WATERS',
+        pathParam: 'water',
+        page: '/releases/water',
+        required: true,
+        message: { fetch: 'releasesToControlledWater' }
+    },
 
-                {
-                    name: 'RELEASES_TO_AIR',
-                    pathParam: 'air',
-                    title: 'Releases to air',
-                    page: '/releases/air',
-                    required: true,
-                    message: { fetch: 'releasesToAir' }
-                },
+    OFFSITE_TRANSFERS_IN_WASTE_WATER: {
+        name: 'OFFSITE_TRANSFERS_IN_WASTE_WATER',
+        pathParam: 'waste-water',
+        page: '/releases/waste-water',
+        required: true,
+        message: { fetch: 'releasesToWasteWater' }
+    },
 
-                {
-                    name: 'RELEASES_TO_LAND',
-                    pathParam: 'land',
-                    title: 'Releases to land',
-                    page: '/releases/land',
-                    required: true,
-                    message: { fetch: 'releasesToLand' }
-                },
-
-                {
-                    name: 'RELEASES_TO_CONTROLLED_WATERS',
-                    pathParam: 'water',
-                    title: 'Releases to controlled waters',
-                    page: '/releases/water',
-                    required: true,
-                    message: { fetch: 'releasesToControlledWater' }
-                },
-
-                {
-                    name: 'OFFSITE_TRANSFERS_IN_WASTE_WATER',
-                    pathParam: 'waste-water',
-                    title: 'Off-site transfers in waste water',
-                    page: '/releases/waste-water',
-                    required: true,
-                    message: { fetch: 'releasesToWasteWater' }
-                },
-
-                {
-                    name: 'OFFSITE_WASTE_TRANSFERS',
-                    pathParam: 'off-site',
-                    title: 'Off-site waste transfers',
-                    page: '/transfers/off-site',
-                    required: true,
-                    message: { fetch: 'offsiteWasteTransfers' }
-                }
-
-                /*
-                 *TODO - Removed until we know more
-                 * {
-                 *     name: 'OVERSEAS_WASTE_TRANSFERS',
-                 *     pathParam: 'overseas',
-                 *     title: 'Overseas waste transfers',
-                 *     page: '/transfers/overseas',
-                 *     required: false
-                 * }
-                 */
-
-            ]
-        },
-
-        {
-            heading: 'Check and submit your report',
-            items: [
-
-                {
-                    name: 'REVIEW',
-                    pathParam: 'review',
-                    title: 'Check your data',
-                    page: '/review',
-                    required: true
-                },
-
-                {
-                    name: 'SUBMIT',
-                    pathParam: 'submit',
-                    title: 'Submit your report',
-                    page: '/submit',
-                    required: false
-                }
-
-            ]
-        }
-    ]
+    OFFSITE_WASTE_TRANSFERS: {
+        name: 'OFFSITE_WASTE_TRANSFERS',
+        pathParam: 'off-site',
+        page: '/transfers/off-site'
+    }
 
 };

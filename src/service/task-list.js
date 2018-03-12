@@ -1,84 +1,68 @@
 'use strict';
 
+const _internals = {};
+
+// Map by parameter
+_internals.mapByPathParameter = (taskList) => {
+    if (!_internals.map) {
+        _internals.map = new Map(Object.values(taskList).map(t => [t.pathParam, t]));
+    }
+    return _internals.map;
+};
+
+// By route
+_internals.getRoute = (taskList, request) => {
+    const route = _internals.mapByPathParameter(taskList).get(request.params.route);
+    if (!route) {
+        throw new Error(`Request error: incorrect route specified: ${request.params.route}`);
+    }
+    return route;
+};
+
 /**
  * Module to manipulate the task list
  */
-const Hoek = require('hoek');
-const logger = require('../lib/logging').logger;
+module.exports = {
 
-function checkTaskListCorrectness (taskList) {
-    try {
-        Hoek.assert(taskList.name, 'Tasklist name must be set');
+    // Using the regime tree determine which tasks appear in the task list
+    getTaskList: (taskList, regimeTree) => {
+        const result = {};
 
-        // Perform some checking that the tasklist is well-formed
-        Hoek.assert(taskList.stages && Array.isArray(taskList.stages),
-            'The taskList object should contain a value "stages" which is an array');
+        // Add the tasks that are always required
+        const keys = Object.keys(taskList).filter(k => ['REVIEW', 'SUBMIT', 'SITE_CODES', 'OFFSITE_WASTE_TRANSFERS'].includes(k));
+        keys.forEach(k => {
+            result[k] = taskList[k];
+        });
 
-        Hoek.assert(taskList.stages.every((e) => {
-            return e.heading && e.items && Array.isArray(e.items);
-        }), 'Each taskList item should contain a heading and an array of items');
+        // Add in the obligation based release routes (with title)
+        regimeTree.obligations.forEach(o => {
+            switch (o.route.nomenclature) {
+                case 'Air':
+                    result.RELEASES_TO_AIR = Object.assign({}, taskList.RELEASES_TO_AIR);
+                    result.RELEASES_TO_AIR.title = o.description;
+                    break;
 
-    } catch (err) {
-        logger.error(err);
-        throw err;
-    }
-}
+                case 'Land':
+                    result.RELEASES_TO_LAND = Object.assign({}, taskList.RELEASES_TO_LAND);
+                    result.RELEASES_TO_LAND.title = o.description;
+                    break;
 
-let internals = {};
+                case 'Controlled waters':
+                    result.RELEASES_TO_CONTROLLED_WATERS = Object.assign({}, taskList.RELEASES_TO_CONTROLLED_WATERS);
+                    result.RELEASES_TO_CONTROLLED_WATERS.title = o.description;
+                    break;
 
-module.exports = internals = {
+                case 'Waste water':
+                    result.OFFSITE_TRANSFERS_IN_WASTE_WATER = Object.assign({}, taskList.OFFSITE_TRANSFERS_IN_WASTE_WATER);
+                    result.OFFSITE_TRANSFERS_IN_WASTE_WATER.title = o.description;
+                    break;
+            }
 
-    // Names - retrieves the list of names from a task list
-    names: (taskList) => {
-        checkTaskListCorrectness(taskList);
-        return ([].concat(...taskList.stages.map(i => i.items))).map(n => n.name);
+        });
+
+        return result;
     },
 
-    // The required tasks for submission
-    required: (taskList) => {
-        checkTaskListCorrectness(taskList);
-        return ([].concat(...taskList.stages.map(i => i.items))).filter(i => i.required);
-    },
-
-    // Map by parameter
-    mapByPathParameter: (taskList) => {
-        checkTaskListCorrectness(taskList);
-        if (!internals._mapByPathParameter[taskList.name]) {
-            internals._mapByPathParameter[taskList.name] = new Map();
-            taskList.stages.forEach(s => {
-                s.items.forEach(i => {
-                    internals._mapByPathParameter[taskList.name].set(i.pathParam, i);
-                });
-            });
-        }
-        return internals._mapByPathParameter[taskList.name];
-    },
-
-    // Map by name
-    mapByName: (taskList) => {
-        checkTaskListCorrectness(taskList);
-        if (!internals._mapByName[taskList.name]) {
-            internals._mapByName[taskList.name] = new Map();
-            taskList.stages.forEach(s => {
-                s.items.forEach(i => {
-                    internals._mapByName[taskList.name].set(i.name, i);
-                });
-            });
-        }
-        return internals._mapByName[taskList.name];
-    },
-
-    // Get the route from a tasklist
-    getRoute: (taskList, request) => {
-        const map = internals.mapByPathParameter(taskList);
-        const route = map.get(request.params.route);
-        if (!route) {
-            throw new Error(`Request error: incorrect route specified: ${request.params.route}`);
-        }
-        return route;
-    }
-
+    mapByPathParameter: _internals.mapByPathParameter,
+    getRoute: _internals.getRoute
 };
-
-internals._mapByPathParameter = {};
-internals._mapByName = {};

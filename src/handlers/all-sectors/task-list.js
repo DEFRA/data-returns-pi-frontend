@@ -1,8 +1,9 @@
 'use strict';
 
-// const journey = require('../../lib/task-list');
+const MasterDataService = require('../../service/master-data');
 const allSectorsTaskList = require('../../model/all-sectors/task-list');
-const taskListNames = require('../../service/task-list').names(allSectorsTaskList);
+const TaskListService = require('../../service/task-list');
+// const taskListNames = require('../../service/task-list').names(allSectorsTaskList);
 const setCompletedStatus = require('./common').setCompletedStatus;
 const errHdlr = require('../../lib/utils').generalErrorHandler;
 
@@ -30,17 +31,23 @@ module.exports = {
 
             const submissionContext = await request.server.app.userCache.cache(cacheNames.SUBMISSION_CONTEXT).get(request);
 
+            const regimeTree = await MasterDataService.getRegimeTreeById(userContext.eaId.regime.id);
+
+            // Get appropriate the task list
+            const tasks = TaskListService.getTaskList(allSectorsTaskList, regimeTree);
+
             // Always re-calculate the completed status
             submissionContext.completed = {};
-            for (const name of taskListNames) {
+            for (const name of Object.keys(tasks)) {
                 setCompletedStatus(submissionContext, name);
             }
 
             // Write the calculated status back to the cache
             await request.server.app.userCache.cache(cacheNames.SUBMISSION_CONTEXT).set(request, submissionContext);
 
-            return h.view('all-sectors/task-list', { eaId: userContext.eaId.name,
-                taskList: allSectorsTaskList,
+            return h.view('all-sectors/task-list', {
+                eaId: userContext.eaId,
+                tasks: tasks,
                 submissionContext: submissionContext
             });
 

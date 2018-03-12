@@ -12,8 +12,8 @@ const MasterDataService = require('../service/master-data');
 const cacheNames = require('./user-cache-policies').names;
 const CacheKeyError = require('./user-cache-policies').CacheKeyError;
 const Api = require('./api-client');
+const TaskListService = require('../service/task-list');
 const allSectorsTaskList = require('../model/all-sectors/task-list');
-const required = require('../service/task-list').required(allSectorsTaskList);
 const setCompletedStatus = require('../handlers/all-sectors/common').setCompletedStatus;
 const statusHelper = require('../handlers/all-sectors/common').statusHelper;
 const isNumeric = require('./utils').isNumeric;
@@ -126,8 +126,15 @@ const internals = {
      */
     remove: async (request) => {
         const submissionContext = await request.server.app.userCache.cache(cacheNames.SUBMISSION_CONTEXT).get(request);
-
+        const userContext = await request.server.app.userCache.cache(cacheNames.USER_CONTEXT).get(request);
         const { challengeStatus, valid, completed } = statusHelper(submissionContext);
+        const regimeTree = await MasterDataService.getRegimeTreeById(userContext.eaId.regime.id);
+
+        // Get appropriate the task list
+        const tasks = TaskListService.getTaskList(allSectorsTaskList, regimeTree);
+
+        // Everything except submit is required to be evaluated
+        const required = Object.keys(tasks).filter(k => !['SUBMIT'].includes(k));
 
         const routes = required.filter(r => {
             return challengeStatus.find(c => c === r) &&
@@ -673,13 +680,20 @@ module.exports = {
 
         // In local test mode do nothing
         if (process.env.NODE_ENV !== 'local') {
-
-            // Fetch submission with children from the PI submissions API
-            const submission = await internals.fetchSubmission(request);
-
             // Submission context
             const submissionContext = await request.server.app.userCache.cache(cacheNames.SUBMISSION_CONTEXT).get(request);
             const { challengeStatus, invalid, completed } = statusHelper(submissionContext);
+
+            // Fetch submission with children from the PI submissions API
+            const submission = await internals.fetchSubmission(request);
+            const userContext = await request.server.app.userCache.cache(cacheNames.USER_CONTEXT).get(request);
+            const regimeTree = await MasterDataService.getRegimeTreeById(userContext.eaId.regime.id);
+
+            // Get appropriate the task list
+            const tasks = TaskListService.getTaskList(allSectorsTaskList, regimeTree);
+
+            // Everything except submit is required to be evaluated
+            const required = Object.keys(tasks).filter(k => !['SUBMIT'].includes(k));
 
             // Get the required routes
             const routes = required.filter(r => challengeStatus.find(c => c === r.name))
