@@ -64,7 +64,8 @@ module.exports = {
     OFFSITE_WASTE_TRANSFERS: {
         name: 'OFFSITE_WASTE_TRANSFERS',
         pathParam: 'off-site',
-        page: '/transfers/off-site'
+        page: '/transfers/off-site',
+        message: { fetch: 'offsiteWasteTransfers' }
     }
 
 };

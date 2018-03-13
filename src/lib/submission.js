@@ -119,37 +119,6 @@ const internals = {
         });
     },
 
-    /**
-     * Remove the cache entries after a (successful) submission
-     * @param request
-     * @return {Promise.<void>}
-     */
-    remove: async (request) => {
-        const submissionContext = await request.server.app.userCache.cache(cacheNames.SUBMISSION_CONTEXT).get(request);
-        const userContext = await request.server.app.userCache.cache(cacheNames.USER_CONTEXT).get(request);
-        const { challengeStatus, valid, completed } = statusHelper(submissionContext);
-        const regimeTree = await MasterDataService.getRegimeTreeById(userContext.eaId.regime.id);
-
-        // Get appropriate the task list
-        const tasks = TaskListService.getTaskList(allSectorsTaskList, regimeTree);
-
-        // Everything except submit is required to be evaluated
-        const required = Object.keys(tasks).filter(k => !['SUBMIT'].includes(k));
-
-        const routes = required.filter(r => {
-            return challengeStatus.find(c => c === r) &&
-                valid.find(v => v === r) &&
-                completed.find(d => d === r);
-        });
-
-        for (const route of routes) {
-            submissionContext.currentTask = route;
-            await request.server.app.userCache.cache(cacheNames.SUBMISSION_CONTEXT).set(request, submissionContext);
-            await request.server.app.userCache.cache(cacheNames.TASK_CONTEXT).drop(request);
-        }
-        await request.server.app.userCache.cache(cacheNames.SUBMISSION_CONTEXT).drop(request);
-    },
-
     getReleasesToControlledWater: async (id) => {
         const result = await Api.request('SUB', 'GET', `submissions/${id}/releasesToControlledWater`);
         return result._embedded.releasesToControlledWater;
@@ -429,6 +398,8 @@ const internals = {
     },
 
     /**
+     * Write release to submissions API.
+     *
      * Release route function as in the func argument of applyToRoutes. It determines the set of API operations
      * required for a given route / task and applies them.
      * @param task - the cache task object
@@ -495,10 +466,11 @@ const internals = {
         await Promise.all(puts.map(async put => {
             await Api.request('SUB', 'PUT', `${name}/${put.id}`, null, put.put);
         }));
-
     },
 
     /**
+     * Write transfer object to submissions API
+     *
      * Release route function as in the func argument of applyToRoutes. It determines the set of API operations
      * required for a given route / task and applies them.
      * @param task - the cache task object
@@ -515,7 +487,7 @@ const internals = {
             wfd_recovery_id: Joi.forbidden(),
             tonnage: Joi.number()
         }), Joi.object({
-            submission: Joi.string().uri({ allowRelative: false }),
+            submission: Joi.string().uri({ allowRelative: true }),
             ewc_activity_id: Joi.number().integer(),
             wfd_disposal_id: Joi.forbidden(),
             wfd_recovery_id: Joi.number().integer().required(),
@@ -569,6 +541,34 @@ const internals = {
         await Promise.all(puts.map(async put => {
             await Api.request('SUB', 'PUT', `${name}/${put.id}`, null, put.put);
         }));
+    },
+
+    /**
+     * Remove the cache entries after a (successful) submission
+     * @param request
+     * @return {Promise.<void>}
+     */
+    remove: async (request) => {
+        const submissionContext = await request.server.app.userCache.cache(cacheNames.SUBMISSION_CONTEXT).get(request);
+        const userContext = await request.server.app.userCache.cache(cacheNames.USER_CONTEXT).get(request);
+        const { challengeStatus, invalid, completed } = statusHelper(submissionContext);
+        const regimeTree = await MasterDataService.getRegimeTreeById(userContext.eaId.regime.id);
+
+        // Get appropriate the task list
+        const tasks = TaskListService.getTaskList(allSectorsTaskList, regimeTree);
+
+        const routes = Object.keys(tasks).filter(c => challengeStatus.includes(c))
+            .filter(c => completed.includes(c))
+            .filter(c => !invalid.includes(c));
+
+        for (const route of routes) {
+            submissionContext.currentTask = route;
+            await request.server.app.userCache.cache(cacheNames.SUBMISSION_CONTEXT).set(request, submissionContext);
+            await request.server.app.userCache.cache(cacheNames.TASK_CONTEXT).drop(request);
+        }
+
+        // Remove the submission context
+        await request.server.app.userCache.cache(cacheNames.SUBMISSION_CONTEXT).drop(request);
     },
 
     /**
@@ -696,9 +696,9 @@ module.exports = {
             const required = Object.keys(tasks).filter(k => !['SUBMIT'].includes(k));
 
             // Get the required routes
-            const routes = required.filter(r => challengeStatus.find(c => c === r.name))
-                .filter(r => completed.find(c => c === r.name))
-                .filter(r => !invalid.find(c => c === r.name));
+            const routes = required.filter(c => challengeStatus.includes(c))
+                .filter(c => completed.includes(c))
+                .filter(c => !invalid.includes(c)).map(r => tasks[r]);
 
             const result = await internals.applyToRoutes(request, routes, submission, {
                 RELEASES_TO_LAND: internals.releaseRouteOperator,
@@ -715,8 +715,8 @@ module.exports = {
             const preparedSubmission = await internals.prepareSubmission(request, newSubmission);
             await Api.request('SUB', 'PUT', `submissions/${submission.id}`, null, preparedSubmission);
 
-            // Finally drop the submission context
-            await request.server.app.userCache.cache(cacheNames.SUBMISSION_CONTEXT).drop(request);
+            // Finally drop the contexts
+            await internals.remove(request);
         }
     }
 

@@ -22,7 +22,6 @@ module.exports = {
             logger.log('error', 'Service error:' + err);
             return h.redirect('/service-error');
         } else if (err instanceof cacheKeyError) {
-            // TODO - probably relegate to warning
             logger.error('Cache error:' + err);
             return h.redirect('/');
         } else {
