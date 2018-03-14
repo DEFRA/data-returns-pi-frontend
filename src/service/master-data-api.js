@@ -10,12 +10,65 @@ const Static = require('../../data/static-data');
 let internals = {};
 
 module.exports = internals = {
+
+    /**
+     * Get the list of PI regimes
+     */
+    getRegimes: async () => {
+        return internals.listEntity(internals._entities.regimes);
+    },
+
     /**
      * Return all the permits
      * @return {*} - The list of permits
      */
     getEaIds: async () => {
-        return internals.listEntity(internals._entities.eaId);
+        if (internals._entities.eaId.arr.length) {
+            return internals._entities.eaId.arr;
+        } else {
+
+            // return internals.listEntity(internals._entities.eaId);
+            const regimes = await internals.getRegimes();
+            internals._entities.eaId.byRegime = new Map();
+
+            internals._entities.eaId.arr = await regimes.reduce(async (accumulatorPromise, regime) => {
+                const eaIds = await client.requestLink(regime.uniqueIdentifierReference, 'projection=inlineSites');
+                const accumulator = await accumulatorPromise;
+
+                const eaIdSubArr = eaIds._embedded.uniqueIdentifiers.map(e => {
+                    return {
+                        id: e.id,
+                        nomenclature: e.nomenclature,
+                        regime: {
+                            id: regime.id,
+                            nomenclature: regime.nomenclature
+                        },
+                        site: {
+                            id: e.site.id,
+                            nomenclature: e.site.nomenclature
+                        }
+                    };
+                });
+
+                // We can build a map for free here
+                internals._entities.eaId.byRegime.set(regime.id, eaIdSubArr);
+                return accumulator.concat(eaIdSubArr);
+            }, []);
+
+            return internals._entities.eaId.arr;
+        }
+    },
+
+    /**
+     * Return an array of EaId's for a given regime
+     * @param regimeId
+     * @return {Promise.<void>}
+     */
+    getEaIdsByRegimeId: async (regimeId) => {
+        if (!internals._entities.eaId.byRegime) {
+            await internals.getEaIds();
+        }
+        return internals._entities.eaId.byRegime.get(regimeId);
     },
 
     /**
@@ -26,7 +79,7 @@ module.exports = internals = {
      * TODO There is no way to currently do this so for now we just get all the permits
      */
     getEaIdsForUser: async (id) => {
-        return internals.listEntity(internals._entities.eaId);
+        return internals.getEaIds();
     },
 
     /**
@@ -107,12 +160,13 @@ module.exports = internals = {
                                 const parameterGroup = {};
                                 parameterGroup.id = pg.id;
                                 parameterGroup.nomenclature = pg.nomenclature;
-                                const parameters = await client.requestLink(pg._links.parameters);
+                                const parameters = await client.requestLink(pg._links.parameters, 'projection=inlineParameterData');
                                 if (parameters) {
                                     parameterGroup.parameters = await Promise.all(parameters._embedded.parameters.map(async p => {
                                         const parameters = {};
                                         parameters.id = p.id;
                                         parameters.nomenclature = p.nomenclature;
+                                        parameters.cas = p.cas;
                                         return parameters;
                                     }));
                                 }
@@ -139,22 +193,23 @@ module.exports = internals = {
                             })(route);
                         }
 
+                        // Roll the thresholds into the parameters
                         const thresholds = await client.requestLink(o._links.thresholds);
                         if (thresholds) {
-                            obligation.thresholds = await Promise.all(thresholds._embedded.thresholds.map(async t => {
+                            const th = await Promise.all(thresholds._embedded.thresholds.map(async t => {
                                 const threshold = {};
-                                threshold.id = t.id;
-                                threshold.nomenclature = t.nomenclature;
+                                threshold.type = t.type;
+                                threshold.value = t.value;
 
                                 threshold.parameter = await (async p => {
                                     const parameter = {};
-                                    parameter.d = p.id;
+                                    parameter.id = p.id;
                                     return parameter;
                                 })(await client.requestLink(t._links.parameter));
 
                                 threshold.unit = await (async u => {
                                     const unit = {};
-                                    unit.d = u.id;
+                                    unit.id = u.id;
                                     unit.nomenclature = u.nomenclature;
                                     unit.description = u.description;
                                     unit.long_name = u.long_name;
@@ -164,6 +219,17 @@ module.exports = internals = {
 
                                 return threshold;
                             }));
+
+                            const thMap = new Map(th.map(t => [t.parameter.id, t]));
+                            obligation.parameterGroups.forEach(g => {
+                                g.parameters = g.parameters.map(p => {
+                                    p.threshold = thMap.get(p.id);
+                                    if (p.threshold) {
+                                        delete p.threshold.parameter;
+                                    }
+                                    return p;
+                                });
+                            });
                         }
 
                         const units = await client.requestLink(o._links.units);
@@ -198,6 +264,37 @@ module.exports = internals = {
     },
 
     /**
+     * Turn the regime id and task-list route into an obligation
+     * @param regimeId
+     * @param route
+     */
+    getReleaseObligation: async (regimeId, route) => {
+        let obligation;
+        const regimeTree = await internals.getRegimeTreeById(regimeId);
+        switch (route.name) {
+            case 'RELEASES_TO_AIR':
+                obligation = regimeTree.obligations.find(o => o.route.nomenclature === 'Air');
+                break;
+
+            case 'RELEASES_TO_LAND':
+                obligation = regimeTree.obligations.find(o => o.route.nomenclature === 'Land');
+                break;
+
+            case 'RELEASES_TO_CONTROLLED_WATERS':
+                obligation = regimeTree.obligations.find(o => o.route.nomenclature === 'Controlled waters');
+                break;
+
+            case 'OFFSITE_TRANSFERS_IN_WASTE_WATER':
+                obligation = regimeTree.obligations.find(o => o.route.nomenclature === 'Waste water');
+                break;
+
+            default:
+                obligation = null;
+        }
+        return obligation;
+    },
+
+    /**
      * Get the disposal code by the code
      * @param code
      * @return {Promise.<*|null>}
@@ -207,40 +304,16 @@ module.exports = internals = {
     },
 
     /**
-     * Return an array of all the substances
-     * @returns {Promise.<Array>}
-     */
-
-    /**
-     * Return an array of all the substances
-     * @returns {Promise.<Array>}
-     */
-    getSubstances: async (route) => {
-        switch (route) {
-            case 'RELEASES_TO_AIR':
-                return internals.listEntity(internals._entities.substancesAir);
-            case 'RELEASES_TO_LAND':
-                return internals.listEntity(internals._entities.substancesLand);
-            case 'RELEASES_TO_CONTROLLED_WATERS':
-                return internals.listEntity(internals._entities.substancesWater);
-            case 'OFFSITE_TRANSFERS_IN_WASTE_WATER':
-                return internals.listEntity(internals._entities.substancesWasteWater);
-            default:
-                return internals.listEntity(internals._entities.substances);
-        }
-    },
-
-    /**
      * Return a substance object from its id
      * @param id
      * @returns {Promise.<*>}
      */
-    getSubstanceById: async (id) => {
-        return internals.getEntityById(internals._entities.substances, id);
+    getParameterById: async (id) => {
+        return internals.getEntityById(internals._entities.parameters, id);
     },
 
     /**
-     * Return an array of all the substances
+     * Return an array of all the units
      * @returns {Promise.<Array>}
      */
     getUnits: async () => {
@@ -722,7 +795,7 @@ internals.sortByProperty = (a, b, property) => {
 internals.defaultMapper = (i) => {
     return {
         id: i.id,
-        name: i.nomenclature
+        nomenclature: i.nomenclature
     };
 };
 
@@ -734,20 +807,21 @@ internals.defaultMapper = (i) => {
 internals.entityFetch = async (entity) => {
     try {
 
-        if (Array.isArray(entity.request)) {
-            const results = await Promise.all(entity.request.map(async r => client.request(r.api, r.method, r.uri, r.query)));
-            entity.arr = [].concat([], ...results.map(r => r._embedded[entity.name]))
-                .map(entity.idMapper).sort(entity.sorter || internals.sortById);
+        const result = await client.request(entity.request.api, entity.request.method, entity.request.uri, entity.request.query);
+
+        if (entity.filter) {
+            entity.arr = result._embedded[entity.name]
+                .map(entity.idMapper)
+                .filter(entity.filter)
+                .sort(entity.sorter || internals.sortById);
         } else {
-            const result = await client.request(entity.request.api, entity.request.method, entity.request.uri, entity.request.query);
-            // Set array
-            entity.arr = result._embedded[entity.name].map(entity.idMapper).sort(entity.sorter || internals.sortById);
+            entity.arr = result._embedded[entity.name]
+                .map(entity.idMapper)
+                .sort(entity.sorter || internals.sortById);
         }
 
-        // Set map
         entity.map = new Map(entity.arr.map((i) => [i.id, i]));
 
-        // Set any additional named maps
         if (entity.namedMappers) {
             entity.namedMappers.forEach((mapper) => {
                 entity[mapper.name] = new Map(entity.arr.map((i) => [mapper.keyFunc(i), i]));
@@ -787,26 +861,23 @@ internals.relationFetch = async (relation) => {
 internals._entities = {
 
     eaId: {
-        name: 'uniqueIdentifiers',
+        arr: []
+    },
+
+    regimes: {
+        name: 'regimes',
         map: new Map(),
         arr: [],
-        request: [
-            { api: 'MD', uri: 'regimes/2/uniqueIdentifiers', query: 'projection=inlineSites&size=50', method: 'GET' },
-            { api: 'MD', uri: 'regimes/3/uniqueIdentifiers', query: 'projection=inlineSites&size=50', method: 'GET' },
-            { api: 'MD', uri: 'regimes/4/uniqueIdentifiers', query: 'projection=inlineSites&size=50', method: 'GET' },
-            { api: 'MD', uri: 'regimes/5/uniqueIdentifiers', query: 'projection=inlineSites&size=50', method: 'GET' }
-        ],
+        request: { api: 'MD', uri: 'regimes', method: 'GET' },
         idMapper: (i) => {
             return {
                 id: i.id,
-                name: i.nomenclature,
-                site: { id: i.site.id, name: i.site.nomenclature }
+                nomenclature: i.nomenclature,
+                uniqueIdentifierReference: i._links.uniqueIdentifiers
             };
         },
-        namedMappers: [
-            { name: 'byEaId', keyFunc: (i) => i.name }
-        ],
-        sorter: (a, b) => internals.sortByProperty(a, b, 'name')
+        filter: (i) => i.id !== 1,
+        sorter: (a, b) => internals.sortByProperty(a, b, 'nomenclature')
     },
 
     regimeTree: {
@@ -814,47 +885,11 @@ internals._entities = {
         map: new Map()
     },
 
-    substances: {
+    parameters: {
         name: 'parameters',
         map: new Map(),
         arr: [],
         request: {api: 'MD', uri: 'parameters', method: 'GET'},
-        idMapper: (i) => internals.defaultMapper(i),
-        sorter: (a, b) => internals.sortByProperty(a, b, 'name')
-    },
-
-    substancesAir: {
-        name: 'parameters',
-        map: new Map(),
-        arr: [],
-        request: { api: 'MD', uri: 'parameterGroups/3/parameters', method: 'GET' },
-        idMapper: (i) => internals.defaultMapper(i),
-        sorter: (a, b) => internals.sortByProperty(a, b, 'name')
-    },
-
-    substancesLand: {
-        name: 'parameters',
-        map: new Map(),
-        arr: [],
-        request: { api: 'MD', uri: 'parameterGroups/4/parameters', method: 'GET' },
-        idMapper: (i) => internals.defaultMapper(i),
-        sorter: (a, b) => internals.sortByProperty(a, b, 'name')
-    },
-
-    substancesWater: {
-        name: 'parameters',
-        map: new Map(),
-        arr: [],
-        request: { api: 'MD', uri: 'parameterGroups/5/parameters', method: 'GET' },
-        idMapper: (i) => internals.defaultMapper(i),
-        sorter: (a, b) => internals.sortByProperty(a, b, 'name')
-    },
-
-    substancesWasteWater: {
-        name: 'parameters',
-        map: new Map(),
-        arr: [],
-        request: { api: 'MD', uri: 'parameterGroups/2/parameters', method: 'GET' },
         idMapper: (i) => internals.defaultMapper(i),
         sorter: (a, b) => internals.sortByProperty(a, b, 'name')
     },

@@ -65,7 +65,7 @@ experiment('Master data service (API)', async () => {
 
         test('getSubstanceById(id)', async () => {
             const substances = await MasterDataService.getSubstances();
-            const substance = await MasterDataService.getSubstanceById(substances[0].id);
+            const substance = await MasterDataService.getParameterById(substances[0].id);
             expect(substance).to.equal(substances[0]);
         });
 

@@ -10,7 +10,7 @@
 
 <form id="main-form" action="{{ action }}" method="post" class="form">
     <a href="/task-list" class="link-back">Back to sections you must complete</a>
-    <h1 class="heading-large">Your release of {{ release.substance.name }} {{ description }}</h1>
+    <h1 class="heading-large">Your release of {{ release.parameter.name }} {{ description }}</h1>
 
     {% if release.errors %}
     <div class="error-summary" role="alert" aria-labelledby="check-your-report" tabindex="-1">
@@ -75,6 +75,11 @@
                 </tr>
 
                 <tr>
+                    <td>Threshold</td>
+                    <td>{{ release.parameter.threshold.value }} {{ release.parameter.threshold.unit.nomenclature }}</td>
+                </tr>
+
+                <tr>
                     <th id="unit-check">Unit of measurement</th>
                     <td class="td-unit">
                         {%if unit_error %}
@@ -89,9 +94,9 @@
                                 <option>--</option>
                                 {% for unit in units %}
                                     {% if release.unitId === unit.id %}
-                                    <option selected value="{{ unit.id }}">{{ unit.name }}</option>
+                                    <option selected value="{{ unit.id }}">{{ unit.nomenclature }}</option>
                                     {% else %}
-                                    <option value="{{ unit.id }}">{{ unit.name }}</option>
+                                    <option value="{{ unit.id }}">{{ unit.nomenclature }}</option>
                                     {% endif %}
                                 {% endfor %}
                             </select>
@@ -102,9 +107,9 @@
                             <option>--</option>
                             {% for unit in units %}
                                 {% if release.unitId === unit.id %}
-                                <option selected value="{{ unit.id }}">{{ unit.name }}</option>
+                                <option selected value="{{ unit.id }}">{{ unit.nomenclature }}</option>
                                 {% else %}
-                                <option value="{{ unit.id }}">{{ unit.name }}</option>
+                                <option value="{{ unit.id }}">{{ unit.nomenclature }}</option>
                                 {% endif %}
                             {% endfor %}
                         </select>

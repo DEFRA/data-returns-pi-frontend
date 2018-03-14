@@ -15,7 +15,7 @@
 {% macro form(header, errorheader, release) %}
 <form id="main-form" action="{{ release }}/action" method="post" class="form">
 
-    {% if (releases | substancesWithErrors | length) === 0 %}
+    {% if (releases | parametersWithErrors | length) === 0 %}
     <h1 class="heading-large">{{ header }}</h1>
     {% else %}
     <div class="error-summary" role="alert" aria-labelledby="check-your-report" tabindex="-1">
@@ -23,8 +23,8 @@
             {{ errorheader }}
         </h2>
         <ul class="error-summary-list">
-            {% for substance in releases | substancesWithErrors %}
-            <li><a href="#substance-{{ substance.id }}">Check your {{ substance.name }} report</a></li>
+            {% for parameter in releases | parametersWithErrors %}
+            <li><a href="#parameter-{{ parameter.id }}">Check your {{ parameter.nomenclature }} report</a></li>
             {% endfor %}
         </ul>
     </div>
@@ -33,9 +33,9 @@
     <table class="summary-table table-control">
         <thead>
         <tr>
-            <th class="th-substance">Substance</th>
-            <th class="th-reporting-threshold numeric">2017 threshold</th>
-            <th class="th-release">2017 total</th>
+            <th class="th-parameter">Substance</th>
+            <th class="th-reporting-threshold numeric">Threshold</th>
+            <th class="th-release">Total</th>
             <th class="th-unit">Unit</th>
             <th class="th-more-detail"><span class="visually-hidden">More detail</span></th>
             <th class="th-delete"><span class="visually-hidden">Delete</span></th>
@@ -46,8 +46,10 @@
         {% for release in releases %}
         <tr>
 
-            <td class="td-substance"><div id="substance-{{ release.substance.id }}">{{ release.substance.name }}</div></td>
-            <td class="td-reporting-threshold numeric"/>
+            <td class="td-parameter"><div id="parameter-{{ release.parameter.id }}">{{ release.parameter.nomenclature }}</div></td>
+            <td class="td-reporting-threshold numeric">
+                {{ release.parameter.threshold.value }} {{ release.parameter.threshold.unit.nomenclature }}
+            </td>
 
             {% set value_error = (release.errors | selectattr2("key", "value"))  %}
             {% set unit_error = (release.errors | selectattr2("key", "unitId"))  %}
@@ -58,14 +60,14 @@
 					{% if value_error %}
 						{{ errtext(value_error.errno) }}
 					{% endif %}
-                    <label class="form-label visually-hidden" for="value-err{{ release.substance.id }}">Releases</label>
-                    <input class="form-control form-control-error" id="value-err{{ release.substance.id }}" name="value-{{ release.substance.id }}" value="{{ release.value }}">
+                    <label class="form-label visually-hidden" for="value-err{{ release.parameter.id }}">Releases</label>
+                    <input class="form-control form-control-error" id="value-err{{ release.parameter.id }}" name="value-{{ release.parameter.id }}" value="{{ release.value }}">
                 </div>
             </td>
             {% else %}
             <td class="td-release">
-                <label class="form-label visually-hidden" for="value-{{ release.substance.id }}">Releases</label>
-                <input class="form-control" id="value-{{ release.substance.id }}" name="value-{{ release.substance.id }}" value="{{ release.value }}">
+                <label class="form-label visually-hidden" for="value-{{ release.parameter.id }}">Releases</label>
+                <input class="form-control" id="value-{{ release.parameter.id }}" name="value-{{ release.parameter.id }}" value="{{ release.value }}">
             </td>
             {% endif %}
 
@@ -75,26 +77,26 @@
                     {% if unit_error %}
                         {{ errtext(unit_error.errno) }}
                     {% endif %}
-                    <label class="form-label visually-hidden" for="unit-err{{ release.substance.id }}">Unit</label>
-	                <select class="form-control form-control-error unit" id="unit-err{{ release.substance.id }}" name="unitId-{{ release.substance.id }}">
+                    <label class="form-label visually-hidden" for="unit-err{{ release.parameter.id }}">Unit</label>
+	                <select class="form-control form-control-error unit" id="unit-err{{ release.parameter.id }}" name="unitId-{{ release.parameter.id }}">
 	                    <option>--</option>
 	                    {% for unit in units %}
 	                    {% if release.unitId === unit.id %}
-	                    <option selected value="{{ unit.id }}">{{ unit.name }}</option>
+	                    <option selected value="{{ unit.id }}">{{ unit.nomenclature }}</option>
 	                    {% else %}
-	                    <option value="{{ unit.id }}">{{ unit.name }}</option>
+	                    <option value="{{ unit.id }}">{{ unit.nomenclature }}</option>
 	                    {% endif %}
 	                    {% endfor %}
 	                </select>
 	                {% else %}
-	                <label class="form-label visually-hidden" for="unit-{{ release.substance.id }}">Unit</label>
-	                <select class="form-control unit" id="unit-{{ release.substance.id }}" name="unitId-{{ release.substance.id }}">
+	                <label class="form-label visually-hidden" for="unit-{{ release.parameter.id }}">Unit</label>
+	                <select class="form-control unit" id="unit-{{ release.parameter.id }}" name="unitId-{{ release.parameter.id }}">
 	                    <option>--</option>
 	                    {% for unit in units %}
 	                    {% if release.unitId === unit.id %}
-	                    <option selected value="{{ unit.id }}">{{ unit.name }}</option>
+	                    <option selected value="{{ unit.id }}">{{ unit.nomenclature }}</option>
 	                    {% else %}
-	                    <option value="{{ unit.id }}">{{ unit.name }}</option>
+	                    <option value="{{ unit.id }}">{{ unit.nomenclature }}</option>
 	                    {% endif %}
 	                    {% endfor %}
 	                </select>
@@ -103,11 +105,11 @@
             </td>
 
             <td>
-                <input class="link" type="submit" id="detail-{{ release.substance.id }}" name="detail-{{ release.substance.id }}" value="More detail"/>
+                <input class="link" type="submit" id="detail-{{ release.parameter.id }}" name="detail-{{ release.parameter.id }}" value="More detail"/>
             </td>
 
             <td>
-                <input class="link delete" type="submit" id="delete-{{ release.substance.id }}" name="delete-{{ release.substance.id }}" value="Delete"/>
+                <input class="link delete" type="submit" id="delete-{{ release.parameter.id }}" name="delete-{{ release.parameter.id }}" value="Delete"/>
             </td>
 
         </tr>

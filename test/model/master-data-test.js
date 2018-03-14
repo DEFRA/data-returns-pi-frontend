@@ -78,7 +78,7 @@ experiment('Master data service (Test data)', function () {
         });
 
         test('getSubstanceById(id)', async () => {
-            const substance = await MasterDataService.getSubstanceById(504);
+            const substance = await MasterDataService.getParameterById(504);
             expect(substance).to.be.an.object();
             expect(substance.name).to.equal('Acrylic acid');
         });

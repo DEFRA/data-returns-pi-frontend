@@ -26,13 +26,13 @@ const internals = {
         try {
             if (isBrt(task.releases[release].value)) {
                 return {
-                    substance_name: (await MasterDataService.getSubstanceById(Number.parseInt(release))).name,
+                    substance_name: (await MasterDataService.getParameterById(Number.parseInt(release))).name,
                     method: (await MasterDataService.getMethodById(task.releases[release].methodId)).name,
                     below_reporting_threshold: true
                 };
             } else if (isNumeric(task.releases[release].value)) {
                 return {
-                    substance_name: (await MasterDataService.getSubstanceById(Number.parseInt(release))).name,
+                    substance_name: (await MasterDataService.getParameterById(Number.parseInt(release))).name,
                     value: Number.parseFloat(task.releases[release].value),
                     units: (await MasterDataService.getUnitById(task.releases[release].unitId)).name,
                     method: (await MasterDataService.getMethodById(task.releases[release].methodId)).name,

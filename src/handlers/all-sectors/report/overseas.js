@@ -8,7 +8,7 @@ const MasterDataService = require('../../../service/master-data');
 const CacheKeyError = require('../../../lib/user-cache-policies').CacheKeyError;
 const errHdlr = require('../../../lib/utils').generalErrorHandler;
 
-const sortSubstances = require('./releases').sortSubstances;
+const sortSubstances = require('./releases').sortParameters;
 const cacheHelper = require('../common').cacheHelper;
 const overseasValidator = require('../../../lib/validator').overseas;
 const cacheNames = require('../../../lib/user-cache-policies').names;
@@ -146,7 +146,7 @@ const internals = {
      */
     enrich: async (transfer) => {
         transfer.method = await MasterDataService.getMethodById(transfer.methodId);
-        transfer.substance = await MasterDataService.getSubstanceById(transfer.substanceId);
+        transfer.substance = await MasterDataService.getParameterById(transfer.substanceId);
         transfer.operation = await MasterDataService.getTransferOperationById(transfer.operationId);
         return transfer;
     }
@@ -268,12 +268,12 @@ module.exports = {
             // Immediately set the overall validation status to false
             await setValidationStatus(request, submissionContext, route);
 
-            return h.view('all-sectors/report/add-substance', { route: route, substances: substances, errors: substanceErrors });
+            return h.view('all-sectors/report/add-substance', { route: route, parameters: substances, errors: substanceErrors });
         }, async (submissionContext, route, tasks, transfer) => {
             transfer.substanceId = null;
             delete transfer.uninitialized.substance;
             if (request.payload.substanceId) {
-                const substance = await MasterDataService.getSubstanceById(Number.parseInt(request.payload['substanceId']));
+                const substance = await MasterDataService.getParameterById(Number.parseInt(request.payload['substanceId']));
 
                 // Add the selected substances to the task if it exists
                 if (substance) {

@@ -12,15 +12,17 @@ module.exports = {
     authenticate: process.env.NODE_ENV === 'local' ? testService.authenticate : testService.authenticate,
     getUsers: process.env.NODE_ENV === 'local' ? testService.getUsers : testService.getUsers,
     getUser: process.env.NODE_ENV === 'local' ? testService.getUser : testService.getUser,
+    getRegimes: apiService.getRegimes,
     getRegimeTreeById: process.env.NODE_ENV === 'local' ? testService.getRegimeTreeById : apiService.getRegimeTreeById,
+    getEaIdsByRegimeId: apiService.getEaIdsByRegimeId,
+    getReleaseObligation: apiService.getReleaseObligation,
 
     getEaIds: process.env.NODE_ENV === 'local' ? testService.getEaIds : apiService.getEaIds,
     getEaIdsForUser: process.env.NODE_ENV === 'local' ? testService.getEaIdsForUser : apiService.getEaIdsForUser,
     getEaIdFromEaId: process.env.NODE_ENV === 'local' ? testService.getEaIdFromEaId : apiService.getEaIdFromEaId,
     getEaIdFromEaIdId: process.env.NODE_ENV === 'local' ? testService.getEaIdFromEaIdId : apiService.getEaIdFromEaIdId,
 
-    getSubstances: process.env.NODE_ENV === 'local' ? testService.getSubstances : apiService.getSubstances,
-    getSubstanceById: process.env.NODE_ENV === 'local' ? testService.getSubstanceById : apiService.getSubstanceById,
+    getParameterById: process.env.NODE_ENV === 'local' ? testService.getParameterById : apiService.getParameterById,
     getUnits: process.env.NODE_ENV === 'local' ? testService.getUnits : apiService.getUnits,
     getUnitById: process.env.NODE_ENV === 'local' ? testService.getUnitById : apiService.getUnitById,
 

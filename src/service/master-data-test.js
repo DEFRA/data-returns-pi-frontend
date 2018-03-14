@@ -80,16 +80,16 @@ module.exports = internals = {
      * Return an array of all the substances
      * @returns {Promise.<Array>}
      */
-    getSubstances: async () => { return Data.substances; },
+    getSubstances: async () => { return Data.parameters; },
 
     /**
      * Return a substance object from its id
      * @param id
      * @returns {Promise.<*>}
      */
-    getSubstanceById: async (id) => {
+    getParameterById: async (id) => {
         if (!internals._substancesMap.size) {
-            Data.substances.forEach((s) => {
+            Data.parameters.forEach((s) => {
                 internals._substancesMap.set(s.id, s);
             });
         }

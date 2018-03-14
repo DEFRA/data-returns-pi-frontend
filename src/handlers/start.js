@@ -75,13 +75,23 @@ module.exports = {
             const isOperator = session.user.roles.includes('OPERATOR');
 
             // Get the permits for the user
-            let eaIds = await MasterDataService.getEaIdsForUser(session.user.id);
+            const regimes = await MasterDataService.getRegimes();
 
-            // We need to get the submission status for each permit and map it to the permit
-            eaIds = await Submission.addStatusToEaIds(eaIds, year);
+            const regimeEaIdArr = await Promise.all(regimes.map(async r => {
+                // Get the eaId array
+                let eaIds = await MasterDataService.getEaIdsByRegimeId(r.id);
+
+                // We need to get the submission status for each permit and map it to the permit
+                eaIds = await Submission.addStatusToEaIds(eaIds, year);
+
+                return {
+                    regime: r,
+                    eaIds: eaIds
+                };
+            }));
 
             // Return the start page
-            return h.view('start', { user: session.user, eaIds: eaIds, is_operator: isOperator });
+            return h.view('start', { user: session.user, regimes: regimeEaIdArr, is_operator: isOperator });
 
         } catch (err) {
             return errHdlr(err, h);

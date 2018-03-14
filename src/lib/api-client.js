@@ -100,12 +100,12 @@ module.exports = {
         return null;
     },
 
-    requestLink: async (link) => {
+    requestLink: async (link, query) => {
         if (process.env.NODE_ENV !== 'local') {
             try {
                 Logging.logger.debug(`API Call; GET:${link.href} `);
 
-                const result = await request({
+                const uriObj = {
                     uri: link.href,
                     method: 'GET',
                     json: true,
@@ -117,7 +117,13 @@ module.exports = {
                         user: 'user',
                         pass: 'password'
                     }
-                });
+                };
+
+                if (query) {
+                    uriObj.uri = uriObj.uri + '?' + query;
+                }
+
+                const result = await request(uriObj);
 
                 return result;
             } catch (err) {

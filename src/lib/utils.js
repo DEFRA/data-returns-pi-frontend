@@ -22,10 +22,10 @@ module.exports = {
             logger.log('error', 'Service error:' + err);
             return h.redirect('/service-error');
         } else if (err instanceof cacheKeyError) {
-            logger.error('Cache error:' + err);
+            logger.error('Cache error:' + err.stack);
             return h.redirect('/');
         } else {
-            logger.log('error', 'Unexpected error:' + err);
+            logger.log('error', 'Unexpected error:' + err.stack);
             return h.redirect('/logout');
         }
     }
