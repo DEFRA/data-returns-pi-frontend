@@ -40,21 +40,25 @@ module.exports = {
                 case 'Air':
                     result.RELEASES_TO_AIR = Object.assign({}, taskList.RELEASES_TO_AIR);
                     result.RELEASES_TO_AIR.title = o.description;
+                    result.RELEASES_TO_AIR.routeId = o.route.id;
                     break;
 
                 case 'Land':
                     result.RELEASES_TO_LAND = Object.assign({}, taskList.RELEASES_TO_LAND);
                     result.RELEASES_TO_LAND.title = o.description;
+                    result.RELEASES_TO_LAND.routeId = o.route.id;
                     break;
 
                 case 'Controlled waters':
                     result.RELEASES_TO_CONTROLLED_WATERS = Object.assign({}, taskList.RELEASES_TO_CONTROLLED_WATERS);
                     result.RELEASES_TO_CONTROLLED_WATERS.title = o.description;
+                    result.RELEASES_TO_CONTROLLED_WATERS.routeId = o.route.id;
                     break;
 
                 case 'Waste water':
                     result.OFFSITE_TRANSFERS_IN_WASTE_WATER = Object.assign({}, taskList.OFFSITE_TRANSFERS_IN_WASTE_WATER);
                     result.OFFSITE_TRANSFERS_IN_WASTE_WATER.title = o.description;
+                    result.OFFSITE_TRANSFERS_IN_WASTE_WATER.routeId = o.route.id;
                     break;
             }
 

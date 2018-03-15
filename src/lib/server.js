@@ -24,7 +24,7 @@ internals.initialize = async () => {
      * Create a Hapi server with a redis cache
      * as the default client cache
      */
-    logger.info('Hapi server initialization: ' + process.env.NODE_ENV);
+    logger.info('Hapi server initialization');
     internals.server = new Hapi.Server({
         host: process.env.HOSTNAME,
         port: process.env.PORT,
@@ -49,17 +49,15 @@ internals.initialize = async () => {
      * Register the logging plugin to allow Hapi to log using Winston - this is not reusable so don't use for
      * integration testing
      */
-    if (process.env.NODE_ENV !== 'local') {
-        logger.info('Server plugin registration: good');
-        await internals.server.register({
-            plugin: require('good'),
-            options: {
-                reporters: {
-                    winston: require('./logging').goodWinstonStream()
-                }
+    logger.info('Server plugin registration: good');
+    await internals.server.register({
+        plugin: require('good'),
+        options: {
+            reporters: {
+                winston: require('./logging').goodWinstonStream()
             }
-        });
-    }
+        }
+    });
 
     // Register the static data server
     logger.info('Server plugin registration: inert');

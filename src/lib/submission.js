@@ -119,29 +119,14 @@ const internals = {
         });
     },
 
-    getReleasesToControlledWater: async (id) => {
-        const result = await Api.request('SUB', 'GET', `submissions/${id}/releasesToControlledWater`);
-        return result._embedded.releasesToControlledWater;
-    },
-
-    getReleasesToWasteWater: async (id) => {
-        const result = await Api.request('SUB', 'GET', `submissions/${id}/releasesToWasteWater`);
-        return result._embedded.releasesToWasteWater;
+    getReleases: async (id) => {
+        const result = await Api.request('SUB', 'GET', `submissions/${id}/releases`);
+        return result._embedded.releases;
     },
 
     getOffsiteWasteTransfers: async (id) => {
         const result = await Api.request('SUB', 'GET', `submissions/${id}/offsiteWasteTransfers`);
         return result._embedded.offsiteWasteTransfers;
-    },
-
-    getReleasesToAir: async (id) => {
-        const result = await Api.request('SUB', 'GET', `submissions/${id}/releasesToAir`);
-        return result._embedded.releasesToAir;
-    },
-
-    getReleasesToLand: async (id) => {
-        const result = await Api.request('SUB', 'GET', `submissions/${id}/releasesToLand`);
-        return result._embedded.releasesToLand;
     },
 
     /**
@@ -173,7 +158,9 @@ const internals = {
         setCompletedStatus(submissionContext, submissionContext.currentTask);
 
         const tasks = {};
-        tasks.nace = { id: submission.nace_code };
+        tasks.nace = { id: submission.nace_id };
+        tasks.nose = { noseIds: submission.nose_ids };
+
         await request.server.app.userCache.cache(cacheNames.SUBMISSION_CONTEXT).set(request, submissionContext);
 
         await request.server.app.userCache.cache(cacheNames.TASK_CONTEXT).set(request, tasks);
@@ -184,8 +171,9 @@ const internals = {
      * @param id
      * @return {Promise.<void>}
      */
-    setReleasesCache: async (request, releases, releaseType) => {
+    setReleasesCache: async (request, releases) => {
         // Initialize a new permit status
+      //TODO - fix this
         let submissionContext = await request.server.app.userCache.cache(cacheNames.SUBMISSION_CONTEXT).get(request);
 
         if (!submissionContext) {
@@ -197,16 +185,34 @@ const internals = {
         }
 
         const methods = await MasterDataService.getMethods();
+        const userContext = await request.server.app.userCache.cache(cacheNames.USER_CONTEXT).get(request);
+        const regimeTree = await MasterDataService.getRegimeTreeById(userContext.eaId.regime.id);
+        const tasksList = TaskListService.getTaskList(allSectorsTaskList, regimeTree);
+
+        Object.keys(tasksList).forEach(t => {
+            submissionContext.currentTask = t;
+            submissionContext.confirmation[t] = true;
+            submissionContext.challengeStatus[t] = true;
+            submissionContext.valid[t] = true;
+            setCompletedStatus(submissionContext, t);
+        });
 
         if (releases.length) {
             const tasks = {};
             tasks.releases = {};
 
-            submissionContext.currentTask = releaseType;
-            submissionContext.confirmation[releaseType] = true;
-            submissionContext.challengeStatus[releaseType] = true;
-            submissionContext.valid[releaseType] = true;
-            setCompletedStatus(submissionContext, releaseType);
+            releases.map(r => r.route_id).reduce((accumulator, currentValue) => {
+                if (!accumulator.includes(currentValue)) {
+                    accumulator.push(currentValue);
+                }
+                return accumulator;
+            }, []).map(r => Object.keys(tasksList).find(k => tasksList[k].routeId === r)).forEach(t => {
+                submissionContext.currentTask = t;
+                submissionContext.confirmation[t] = true;
+                submissionContext.challengeStatus[t] = true;
+                submissionContext.valid[t] = true;
+                setCompletedStatus(submissionContext, t);
+            });
 
             for (const release of releases) {
                 if (release.below_reporting_threshold) {
@@ -231,17 +237,13 @@ const internals = {
                 }
             }
 
-            // Set the caches
-            await request.server.app.userCache.cache(cacheNames.SUBMISSION_CONTEXT).set(request, submissionContext);
             await request.server.app.userCache.cache(cacheNames.TASK_CONTEXT).set(request, tasks);
-        } else {
-            submissionContext.currentTask = releaseType;
-            submissionContext.confirmation[releaseType] = true;
-            submissionContext.challengeStatus[releaseType] = false;
-            setCompletedStatus(submissionContext, releaseType);
 
-            await request.server.app.userCache.cache(cacheNames.SUBMISSION_CONTEXT).set(request, submissionContext);
         }
+
+        // Set the caches
+        await request.server.app.userCache.cache(cacheNames.SUBMISSION_CONTEXT).set(request, submissionContext);
+
     },
 
     /**
@@ -313,8 +315,7 @@ const internals = {
 
         const result = Object.assign({}, submissionContext);
 
-        const fetches = [ 'releasesToAir', 'releasesToLand', 'releasesToWasteWater',
-            'releasesToControlledWater', 'offsiteWasteTransfers' ];
+        const fetches = [ 'releases', 'offsiteWasteTransfers' ];
 
         await Promise.all(fetches.map(async fetch => {
             const response = await Api.request('SUB', 'GET', `submissions/${submissionContext.id}/${fetch}`);
@@ -327,15 +328,17 @@ const internals = {
     },
 
     // Create release element of message
-    releasesObj: async (task, release) => {
+    releasesObj: async (route, task, release) => {
         if (isBrt(task.releases[release].value)) {
             return {
+                route_id: route.routeId,
                 substance_id: Number.parseInt(release),
                 method: (await MasterDataService.getMethodById(task.releases[release].methodId)).name,
                 below_reporting_threshold: true
             };
         } else if (isNumeric(task.releases[release].value)) {
             return {
+                route_id: route.routeId,
                 substance_id: Number.parseInt(release),
                 value: Number.parseFloat(task.releases[release].value),
                 unit_id: task.releases[release].unitId,
@@ -386,7 +389,7 @@ const internals = {
                 // Call the function
                 if (task) {
                     results[route.name] = await func[route.name](task, submission[route.message.fetch].data,
-                        route.message.fetch, `submissions/${submissionContext.id}`);
+                        route, `submissions/${submissionContext.id}`);
                 } else {
                     results[route.name] = null;
                 }
@@ -408,10 +411,11 @@ const internals = {
      * @param uri - the URI of the parent submission
      * @return {Promise.<void>}
      */
-    releaseRouteOperator: async (task, apiArr, name, uri) => {
+    releaseRouteOperator: async (task, apiArr, route, uri) => {
         const releaseSchema = Joi.object({
             submission: Joi.string().uri({ allowRelative: true }),
             substance_id: Joi.number().integer().required(),
+            route_id: Joi.number().integer().required(),
             below_reporting_threshold: Joi.boolean().required(),
             method: Joi.valid(['Measurement', 'Calculation', 'Estimation']),
             value: Joi.alternatives().when('below_reporting_threshold', {
@@ -434,12 +438,12 @@ const internals = {
                 const apiObj = apiArr.find(a => a.substance_id === Number.parseInt(release));
                 if (apiObj) {
                     // Updating PUT
-                    const put = await internals.releasesObj(task, release);
+                    const put = await internals.releasesObj(route, task, release);
                     put.submission = uri;
                     puts.push({ id: apiObj.id, put: put });
                 } else {
                     // Creating POST
-                    const post = await internals.releasesObj(task, release);
+                    const post = await internals.releasesObj(route, task, release);
                     post.submission = uri;
                     posts.push(post);
                 }
@@ -455,21 +459,21 @@ const internals = {
         const deletes = apiArr.filter(a => !Object.keys(task.releases)
             .map(r => Number.parseInt(r)).includes(a.substance_id));
 
-        logger.debug('route: ' + name);
+        logger.debug('route: ' + route.name);
         logger.debug('Deletes: ' + JSON.stringify(deletes, null, 4));
         logger.debug('Posts: ' + JSON.stringify(posts, null, 4));
         logger.debug('Puts: ' + JSON.stringify(puts, null, 4));
 
         await Promise.all(deletes.map(async del => {
-            await Api.request('SUB', 'DELETE', `${name}/${del.id}`, null);
+            await Api.request('SUB', 'DELETE', `releases/${del.id}`, null);
         }));
 
         await Promise.all(posts.map(async post => {
-            await Api.request('SUB', 'POST', name, null, post);
+            await Api.request('SUB', 'POST', 'releases', null, post);
         }));
 
         await Promise.all(puts.map(async put => {
-            await Api.request('SUB', 'PUT', `${name}/${put.id}`, null, put.put);
+            await Api.request('SUB', 'PUT', `releases/${put.id}`, null, put.put);
         }));
     },
 
@@ -484,7 +488,7 @@ const internals = {
      * @param uri - the URI of the parent submission
      * @return {Promise.<void>}
      */
-    transferRouteOperator: async (task, apiArr, name, uri) => {
+    transferRouteOperator: async (task, apiArr, route, uri) => {
         const transferSchema = Joi.alternatives().try(Joi.object({
             submission: Joi.string().uri({ allowRelative: true }),
             ewc_activity_id: Joi.number().integer(),
@@ -535,21 +539,21 @@ const internals = {
 
         const deletes = apiArr.filter(a => !tasks.find(t => transferEquals(a, t)));
 
-        logger.debug('route: ' + name);
+        logger.debug('route: ' + route.name);
         logger.debug('Deletes: ' + JSON.stringify(deletes, null, 4));
         logger.debug('Posts: ' + JSON.stringify(posts, null, 4));
         logger.debug('Puts: ' + JSON.stringify(puts, null, 4));
 
         await Promise.all(deletes.map(async del => {
-            await Api.request('SUB', 'DELETE', `${name}/${del.id}`, null);
+            await Api.request('SUB', 'DELETE', `${route.message.fetch}/${del.id}`, null);
         }));
 
         await Promise.all(posts.map(async post => {
-            await Api.request('SUB', 'POST', name, null, post);
+            await Api.request('SUB', 'POST', route.message.fetch, null, post);
         }));
 
         await Promise.all(puts.map(async put => {
-            await Api.request('SUB', 'PUT', `${name}/${put.id}`, null, put.put);
+            await Api.request('SUB', 'PUT', `${route.message.fetch}/${put.id}`, null, put.put);
         }));
     },
 
@@ -596,15 +600,8 @@ const internals = {
             await internals.setSubmissionCache(request, submission);
 
             // Releases
-            const releasesToAir = await internals.getReleasesToAir(id);
-            const releasesToLand = await internals.getReleasesToLand(id);
-            const releasesToControlledWater = await internals.getReleasesToControlledWater(id);
-            const releasesToWasteWater = await internals.getReleasesToWasteWater(id);
-
-            await internals.setReleasesCache(request, releasesToAir, 'RELEASES_TO_AIR');
-            await internals.setReleasesCache(request, releasesToLand, 'RELEASES_TO_LAND');
-            await internals.setReleasesCache(request, releasesToControlledWater, 'RELEASES_TO_CONTROLLED_WATERS');
-            await internals.setReleasesCache(request, releasesToWasteWater, 'OFFSITE_TRANSFERS_IN_WASTE_WATER');
+            const releases = await internals.getReleases(id);
+            await internals.setReleasesCache(request, releases);
 
             // Transfers
             const offsiteWasteTransfers = await internals.getOffsiteWasteTransfers(id);
@@ -636,6 +633,11 @@ const internals = {
         if (task.nace) {
             submission.nace_code = task.nace.id;
         }
+
+        if (task.nose.noseIds) {
+            submission.nose_ids = task.nose.noseIds;
+        }
+
         submission.status = 'Submitted';
         return submission;
     }
@@ -688,49 +690,46 @@ module.exports = {
      */
     submit: async (request) => {
 
-        // In local test mode do nothing
-        if (process.env.NODE_ENV !== 'local') {
-            // Submission context
-            const submissionContext = await request.server.app.userCache.cache(cacheNames.SUBMISSION_CONTEXT).get(request);
-            const { challengeStatus, invalid, completed } = statusHelper(submissionContext);
+        // Submission context
+        const submissionContext = await request.server.app.userCache.cache(cacheNames.SUBMISSION_CONTEXT).get(request);
+        const { challengeStatus, invalid, completed } = statusHelper(submissionContext);
 
-            // Fetch submission with children from the PI submissions API
-            const submission = await internals.fetchSubmission(request);
-            const userContext = await request.server.app.userCache.cache(cacheNames.USER_CONTEXT).get(request);
-            const regimeTree = await MasterDataService.getRegimeTreeById(userContext.eaId.regime.id);
+        // Fetch submission with children from the PI submissions API
+        const submission = await internals.fetchSubmission(request);
+        const userContext = await request.server.app.userCache.cache(cacheNames.USER_CONTEXT).get(request);
+        const regimeTree = await MasterDataService.getRegimeTreeById(userContext.eaId.regime.id);
 
-            // Get appropriate the task list
-            const tasks = TaskListService.getTaskList(allSectorsTaskList, regimeTree);
+        // Get appropriate the task list
+        const tasks = TaskListService.getTaskList(allSectorsTaskList, regimeTree);
 
-            // Everything except submit is required to be evaluated
-            const required = Object.keys(tasks).filter(k => !['SUBMIT'].includes(k));
+        // Everything except submit is required to be evaluated
+        const required = Object.keys(tasks).filter(k => !['SUBMIT'].includes(k));
 
-            // Get the required routes
-            const routes = required.filter(c => challengeStatus.includes(c))
-                .filter(c => completed.includes(c))
-                .filter(c => !invalid.includes(c)).map(r => tasks[r]);
+        // Get the required routes
+        const routes = required.filter(c => challengeStatus.includes(c))
+            .filter(c => completed.includes(c))
+            .filter(c => !invalid.includes(c)).map(r => tasks[r]);
 
-            const result = await internals.applyToRoutes(request, routes, submission, {
-                RELEASES_TO_LAND: internals.releaseRouteOperator,
-                RELEASES_TO_AIR: internals.releaseRouteOperator,
-                RELEASES_TO_CONTROLLED_WATERS: internals.releaseRouteOperator,
-                OFFSITE_TRANSFERS_IN_WASTE_WATER: internals.releaseRouteOperator,
-                OFFSITE_WASTE_TRANSFERS: internals.transferRouteOperator
-            });
+        const result = await internals.applyToRoutes(request, routes, submission, {
+            RELEASES_TO_LAND: internals.releaseRouteOperator,
+            RELEASES_TO_AIR: internals.releaseRouteOperator,
+            RELEASES_TO_CONTROLLED_WATERS: internals.releaseRouteOperator,
+            OFFSITE_TRANSFERS_IN_WASTE_WATER: internals.releaseRouteOperator,
+            OFFSITE_WASTE_TRANSFERS: internals.transferRouteOperator
+        });
 
-            logger.debug(JSON.stringify(result, null, 4));
+        logger.debug(JSON.stringify(result, null, 4));
 
-            // Now change the status to submitted
-            const newSubmission = await internals.getSubmission(submission.id);
-            const preparedSubmission = await internals.prepareSubmission(request, newSubmission);
+        // Now change the status to submitted
+        const newSubmission = await internals.getSubmission(submission.id);
+        const preparedSubmission = await internals.prepareSubmission(request, newSubmission);
 
-            logger.debug('Submission: ' + JSON.stringify(preparedSubmission, null, 4));
+        logger.debug('Submission: ' + JSON.stringify(preparedSubmission, null, 4));
 
-            await Api.request('SUB', 'PUT', `submissions/${submission.id}`, null, preparedSubmission);
+        await Api.request('SUB', 'PUT', `submissions/${submission.id}`, null, preparedSubmission);
 
-            // Finally drop the contexts
-            await internals.remove(request);
-        }
+        // Finally drop the contexts
+        await internals.remove(request);
     }
 
 };

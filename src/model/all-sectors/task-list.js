@@ -33,32 +33,28 @@ module.exports = {
         name: 'RELEASES_TO_AIR',
         pathParam: 'air',
         page: '/releases/air',
-        required: true,
-        message: { fetch: 'releasesToAir' }
+        message: { fetch: 'releases' }
     },
 
     RELEASES_TO_LAND: {
         name: 'RELEASES_TO_LAND',
         pathParam: 'land',
         page: '/releases/land',
-        required: true,
-        message: { fetch: 'releasesToLand' }
+        message: { fetch: 'releases' }
     },
 
     RELEASES_TO_CONTROLLED_WATERS: {
         name: 'RELEASES_TO_CONTROLLED_WATERS',
         pathParam: 'water',
         page: '/releases/water',
-        required: true,
-        message: { fetch: 'releasesToControlledWater' }
+        message: { fetch: 'releases' }
     },
 
     OFFSITE_TRANSFERS_IN_WASTE_WATER: {
         name: 'OFFSITE_TRANSFERS_IN_WASTE_WATER',
         pathParam: 'waste-water',
         page: '/releases/waste-water',
-        required: true,
-        message: { fetch: 'releasesToWasteWater' }
+        message: { fetch: 'releases' }
     },
 
     OFFSITE_WASTE_TRANSFERS: {

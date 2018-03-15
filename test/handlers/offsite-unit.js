@@ -4,7 +4,7 @@ const Lab = require('lab');
 const lab = exports.lab = Lab.script();
 const Code = require('code');
 
-const MasterDataService = require('../../src/service/master-data-test');
+const MasterDataService = require('../../src/service/master-data');
 const createOffSiteTransferCacheObject = require('../../src/handlers/all-sectors/report/off-site').createOffSiteTransferCacheObject;
 const sortOffSiteTransfer = require('../../src/handlers/all-sectors/report/off-site').sortOffSiteTransfer;
 const enrichOffSiteTransferObject = require('../../src/handlers/all-sectors/report/off-site').enrichOffSiteTransferObject;

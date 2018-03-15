@@ -1,7 +1,7 @@
 'use strict';
 
 const allSectorsTaskList = require('../../src/model/all-sectors/task-list');
-const required = require('../../src/service/task-list').required(allSectorsTaskList).map(n => n.name);
+const required = Object.keys(allSectorsTaskList).filter(k => !['SUBMIT'].includes(k));
 
 const Common = require('./common');
 

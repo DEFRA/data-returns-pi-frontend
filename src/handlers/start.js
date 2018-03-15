@@ -3,6 +3,7 @@
 const MasterDataService = require('../service/master-data');
 const Submission = require('../lib/submission');
 const errHdlr = require('../lib/utils').generalErrorHandler;
+const allSectorsTaskList = require('../model/all-sectors/task-list');
 
 const SessionHelper = require('./session-helper');
 const cacheNames = require('../lib/user-cache-policies').names;
@@ -23,7 +24,10 @@ const internals = {
         let submissionContext = await request.server.app.userCache.cache(cacheNames.SUBMISSION_CONTEXT).get(request);
         let submission = await Submission.getSubmissionForEaIdAndYear(eaIdId, year);
 
-        // if there is no submission then create one and create the cache with the same timestamp
+        /*
+         * if there is no submission in the database then create one and create the cache with the same timestamp
+         * Clear any old cache items (There should always be a db entry created when the permit-year is opened
+         */
         if (!submission) {
             submission = await Submission.createSubmissionForEaIdAndYear(eaIdId, year);
             submissionContext = {};
@@ -37,10 +41,18 @@ const internals = {
             submissionContext.valid = {};
             submissionContext.completed = {};
             await request.server.app.userCache.cache(cacheNames.SUBMISSION_CONTEXT).set(request, submissionContext);
+
+            // Here we also need to remove the task cache entries
+            for (const route of Object.keys(allSectorsTaskList)) {
+                submissionContext.currentTask = route;
+                await request.server.app.userCache.cache(cacheNames.SUBMISSION_CONTEXT).set(request, submissionContext);
+                await request.server.app.userCache.cache(cacheNames.TASK_CONTEXT).drop(request);
+            }
+
             return submission;
         }
 
-        // If there is no submission context then restore from the database
+        // If there is no submission context (cache) then restore from the database
         if (!submissionContext) {
             await Submission.restore(request, submission.id);
             return submission;
@@ -130,24 +142,7 @@ module.exports = {
             });
 
             // Determine the submission status
-            let submissionContext = null;
-
-            if (process.env.NODE_ENV === 'local') {
-                submissionContext = await request.server.app.userCache.cache(cacheNames.SUBMISSION_CONTEXT).get(request);
-                if (!submissionContext) {
-                    submissionContext = {};
-                    submissionContext.id = 1;
-                    submissionContext.applicable_year = 2017;
-                    submissionContext.status = Submission.submissionStatusCodes.UNSUBMITTED;
-                    submissionContext.confirmation = {};
-                    submissionContext.challengeStatus = {};
-                    submissionContext.valid = {};
-                    submissionContext.completed = {};
-                    await request.server.app.userCache.cache(cacheNames.SUBMISSION_CONTEXT).set(request, submissionContext);
-                }
-            } else {
-                submissionContext = await internals.cacheSynchronize(request, eaIdId, year);
-            }
+            const submissionContext = await internals.cacheSynchronize(request, eaIdId, year);
 
             if (isOperator) {
 

@@ -93,46 +93,40 @@ const internals = {
 
 module.exports = {
     request: async (client, method, command, query, body) => {
-        if (process.env.NODE_ENV !== 'local') {
-            return internals.makeRequest(internals.createRequest(client, command, query), method, body);
-        }
-
-        return null;
+        return internals.makeRequest(internals.createRequest(client, command, query), method, body);
     },
 
     requestLink: async (link, query) => {
-        if (process.env.NODE_ENV !== 'local') {
-            try {
-                Logging.logger.debug(`API Call; GET:${link.href} `);
+        try {
+            Logging.logger.debug(`API Call; GET:${link.href} `);
 
-                const uriObj = {
-                    uri: link.href,
-                    method: 'GET',
-                    json: true,
-                    timeout: apicfg.requestTimeout,
-                    headers: {
-                        'Accept': 'application/json'
-                    },
-                    auth: {
-                        user: 'user',
-                        pass: 'password'
-                    }
-                };
-
-                if (query) {
-                    uriObj.uri = uriObj.uri + '?' + query;
+            const uriObj = {
+                uri: link.href,
+                method: 'GET',
+                json: true,
+                timeout: apicfg.requestTimeout,
+                headers: {
+                    'Accept': 'application/json'
+                },
+                auth: {
+                    user: 'user',
+                    pass: 'password'
                 }
+            };
 
-                const result = await request(uriObj);
+            if (query) {
+                uriObj.uri = uriObj.uri + '?' + query;
+            }
 
-                return result;
-            } catch (err) {
-                // Not found is OK - its the empty object
-                if (err.statusCode === 404) {
-                    return null;
-                } else {
-                    throw new ServiceError(err);
-                }
+            const result = await request(uriObj);
+
+            return result;
+        } catch (err) {
+            // Not found is OK - its the empty object
+            if (err.statusCode === 404) {
+                return null;
+            } else {
+                throw new ServiceError(err);
             }
         }
     },

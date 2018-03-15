@@ -29,11 +29,11 @@ module.exports = {
                 return h.view('login');
             }
 
-            const authenticated = await MasterDataService.authenticate(request.payload.username, request.payload.password) || 'FAILED';
+            const authenticated = MasterDataService.authenticate(request.payload.username, request.payload.password);
 
             // Back to the login screen with an error if the wrong username or password is given
-            if (authenticated === 'FAILED') {
-                return h.view('login', {authenticated: authenticated});
+            if (!authenticated) {
+                return h.view('login', {authenticated: 'FAILED'});
             }
 
             // Generate a new session identifier
