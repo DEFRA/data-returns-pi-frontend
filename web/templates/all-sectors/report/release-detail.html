@@ -187,9 +187,9 @@
                                         <option>--</option>
                                         {% for unit in units %}
                                             {% if release.unitId === unit.id %}
-                                            <option selected value="{{ unit.id }}">{{ unit.name }}</option>
+                                            <option selected value="{{ unit.id }}">{{ unit.nomenclature }}</option>
                                             {% else %}
-                                            <option value="{{ unit.id }}">{{ unit.name }}</option>
+                                            <option value="{{ unit.id }}">{{ unit.nomenclature }}</option>
                                             {% endif %}
                                         {% endfor %}
                                     </select>
@@ -200,9 +200,9 @@
                                     <option>--</option>
                                     {% for unit in units %}
                                         {% if release.notifiable.unitId === unit.id %}
-                                        <option selected value="{{ unit.id }}">{{ unit.name }}</option>
+                                        <option selected value="{{ unit.id }}">{{ unit.nomenclature }}</option>
                                         {% else %}
-                                        <option value="{{ unit.id }}">{{ unit.name }}</option>
+                                        <option value="{{ unit.id }}">{{ unit.nomenclature }}</option>
                                         {% endif %}
                                     {% endfor %}
                                 </select>

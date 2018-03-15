@@ -455,6 +455,11 @@ const internals = {
         const deletes = apiArr.filter(a => !Object.keys(task.releases)
             .map(r => Number.parseInt(r)).includes(a.substance_id));
 
+        logger.debug('route: ' + name);
+        logger.debug('Deletes: ' + JSON.stringify(deletes, null, 4));
+        logger.debug('Posts: ' + JSON.stringify(posts, null, 4));
+        logger.debug('Puts: ' + JSON.stringify(puts, null, 4));
+
         await Promise.all(deletes.map(async del => {
             await Api.request('SUB', 'DELETE', `${name}/${del.id}`, null);
         }));
@@ -529,6 +534,11 @@ const internals = {
         const tasks = task.transfers.map(t => internals.transferObj(t));
 
         const deletes = apiArr.filter(a => !tasks.find(t => transferEquals(a, t)));
+
+        logger.debug('route: ' + name);
+        logger.debug('Deletes: ' + JSON.stringify(deletes, null, 4));
+        logger.debug('Posts: ' + JSON.stringify(posts, null, 4));
+        logger.debug('Puts: ' + JSON.stringify(puts, null, 4));
 
         await Promise.all(deletes.map(async del => {
             await Api.request('SUB', 'DELETE', `${name}/${del.id}`, null);
@@ -713,6 +723,9 @@ module.exports = {
             // Now change the status to submitted
             const newSubmission = await internals.getSubmission(submission.id);
             const preparedSubmission = await internals.prepareSubmission(request, newSubmission);
+
+            logger.debug('Submission: ' + JSON.stringify(preparedSubmission, null, 4));
+
             await Api.request('SUB', 'PUT', `submissions/${submission.id}`, null, preparedSubmission);
 
             // Finally drop the contexts

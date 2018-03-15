@@ -26,20 +26,20 @@ const internals = {
         try {
             if (isBrt(task.releases[release].value)) {
                 return {
-                    substance_name: (await MasterDataService.getParameterById(Number.parseInt(release))).name,
+                    substance_name: (await MasterDataService.getParameterById(Number.parseInt(release))).nomenclature,
                     method: (await MasterDataService.getMethodById(task.releases[release].methodId)).name,
                     below_reporting_threshold: true
                 };
             } else if (isNumeric(task.releases[release].value)) {
                 return {
-                    substance_name: (await MasterDataService.getParameterById(Number.parseInt(release))).name,
+                    substance_name: (await MasterDataService.getParameterById(Number.parseInt(release))).nomenclature,
                     value: Number.parseFloat(task.releases[release].value),
-                    units: (await MasterDataService.getUnitById(task.releases[release].unitId)).name,
+                    units: (await MasterDataService.getUnitById(task.releases[release].unitId)).nomenclature,
                     method: (await MasterDataService.getMethodById(task.releases[release].methodId)).name,
                     below_reporting_threshold: false,
                     notifiable: task.releases[release].notifiable ? {
                         value: task.releases[release].notifiable.value,
-                        units: (await MasterDataService.getUnitById(task.releases[release].notifiable.unitId)).name
+                        units: (await MasterDataService.getUnitById(task.releases[release].notifiable.unitId)).nomenclature
                     } : null
                 };
             } else {

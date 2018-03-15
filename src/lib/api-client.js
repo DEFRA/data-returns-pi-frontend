@@ -12,7 +12,7 @@ const apicfg = require('./system').configuration.api;
 
 class ServiceError extends Error {
     constructor (message) {
-        super(`Service error: ${message}`);
+        super(message);
         this.name = 'ServiceError';
     }
 };
@@ -86,7 +86,7 @@ const internals = {
 
             return result;
         } catch (err) {
-            throw new ServiceError(err.message);
+            throw new ServiceError(err);
         }
     }
 };
@@ -131,7 +131,7 @@ module.exports = {
                 if (err.statusCode === 404) {
                     return null;
                 } else {
-                    throw new ServiceError(err.message);
+                    throw new ServiceError(err);
                 }
             }
         }
