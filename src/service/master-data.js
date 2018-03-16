@@ -38,7 +38,7 @@ module.exports = internals = {
     authenticate: (username, password) => {
         const user = Data.users.find(e => e.username === username && e.password === password);
         if (user) {
-            return Object.assign(user);
+            return Object.assign({}, user);
         }
     },
 
@@ -929,7 +929,7 @@ internals._entities = {
         name: 'units',
         map: new Map(),
         arr: [],
-        request: { api: 'MD', uri: 'unitTypes/18/units', method: 'GET' },
+        request: { api: 'MD', uri: 'units', method: 'GET' },
         idMapper: (i) => internals.defaultMapper(i),
         sorter: (a, b) => internals.sortByProperty(a, b, 'name')
     },

@@ -12,6 +12,7 @@ module.exports = {
         title: 'Check your site codes',
         pathParam: 'site-codes',
         page: '/check/site-codes',
+        type: 'SUPPLEMENTARY',
         message: { fetch: 'siteCodes' }
     },
 
@@ -19,6 +20,7 @@ module.exports = {
         name: 'REVIEW',
         title: 'Check your data',
         pathParam: 'review',
+        type: 'PROCESS',
         page: '/review'
     },
 
@@ -26,6 +28,7 @@ module.exports = {
         name: 'SUBMIT',
         title: 'Submit your data',
         pathParam: 'submit',
+        type: 'PROCESS',
         page: '/submit'
     },
 
@@ -33,6 +36,7 @@ module.exports = {
         name: 'RELEASES_TO_AIR',
         pathParam: 'air',
         page: '/releases/air',
+        type: 'RELEASE',
         message: { fetch: 'releases' }
     },
 
@@ -40,6 +44,7 @@ module.exports = {
         name: 'RELEASES_TO_LAND',
         pathParam: 'land',
         page: '/releases/land',
+        type: 'RELEASE',
         message: { fetch: 'releases' }
     },
 
@@ -47,6 +52,7 @@ module.exports = {
         name: 'RELEASES_TO_CONTROLLED_WATERS',
         pathParam: 'water',
         page: '/releases/water',
+        type: 'RELEASE',
         message: { fetch: 'releases' }
     },
 
@@ -54,6 +60,7 @@ module.exports = {
         name: 'OFFSITE_TRANSFERS_IN_WASTE_WATER',
         pathParam: 'waste-water',
         page: '/releases/waste-water',
+        type: 'RELEASE',
         message: { fetch: 'releases' }
     },
 
@@ -61,6 +68,7 @@ module.exports = {
         name: 'OFFSITE_WASTE_TRANSFERS',
         pathParam: 'off-site',
         page: '/transfers/off-site',
+        type: 'TRANSFER',
         message: { fetch: 'offsiteWasteTransfers' }
     }
 
