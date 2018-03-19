@@ -48,6 +48,8 @@ module.exports = {
             // Set the get authorization cookie - it will encode the get id to identify the cache
             request.cookieAuth.set({ sid });
 
+            logger.debug(`Logged in: ${authenticated.username}`);
+
             // We are in - redirect to the start page
             return h.redirect('/');
 

@@ -246,18 +246,19 @@ const internals = {
                 await save(task);
             }
 
-            // We need to set the challenge status and the confirmation for any routes not found (ignore the SUBMIT and review)
-            const notSubmittedTasks = Object.keys(tasksList)
-                .filter(k => tasksList[k].type === 'RELEASE')
-                .filter(k => !releases.map(r => r.route_id).includes(tasksList[k].routeId));
+        }
 
-            for (const task of notSubmittedTasks) {
-                const submissionContext = await request.server.app.userCache.cache(cacheNames.SUBMISSION_CONTEXT).get(request);
-                submissionContext.confirmation[task] = true;
-                submissionContext.challengeStatus[task] = false;
-                setCompletedStatus(submissionContext, task);
-                await request.server.app.userCache.cache(cacheNames.SUBMISSION_CONTEXT).set(request, submissionContext);
-            }
+        // We need to set the challenge status and the confirmation for the routes not found (ignore the SUBMIT and review)
+        const notSubmittedTasks = Object.keys(tasksList)
+            .filter(k => tasksList[k].type === 'RELEASE')
+            .filter(k => !releases.map(r => r.route_id).includes(tasksList[k].routeId));
+
+        for (const task of notSubmittedTasks) {
+            const submissionContext = await request.server.app.userCache.cache(cacheNames.SUBMISSION_CONTEXT).get(request);
+            submissionContext.confirmation[task] = true;
+            submissionContext.challengeStatus[task] = false;
+            setCompletedStatus(submissionContext, task);
+            await request.server.app.userCache.cache(cacheNames.SUBMISSION_CONTEXT).set(request, submissionContext);
         }
     },
 
@@ -399,7 +400,7 @@ const internals = {
         const results = {};
         for (const route of routes) {
             if (func[route.name]) {
-                // We need to se the current task in the eaId
+                // We need to see the current task in the eaId
                 submissionContext.currentTask = route.name;
                 await request.server.app.userCache.cache(cacheNames.SUBMISSION_CONTEXT).set(request, submissionContext);
                 const task = await request.server.app.userCache.cache(cacheNames.TASK_CONTEXT).get(request);
@@ -487,7 +488,7 @@ const internals = {
                 .map(r => Number.parseInt(r)).includes(a.substance_id));
         }
 
-        logger.debug('route: ' + route.name);
+        logger.debug('Route: ' + route.name);
         logger.debug('Deletes: ' + JSON.stringify(deletes, null, 4));
         logger.debug('Posts: ' + JSON.stringify(posts, null, 4));
         logger.debug('Puts: ' + JSON.stringify(puts, null, 4));
@@ -593,20 +594,20 @@ const internals = {
     remove: async (request) => {
         const submissionContext = await request.server.app.userCache.cache(cacheNames.SUBMISSION_CONTEXT).get(request);
         const userContext = await request.server.app.userCache.cache(cacheNames.USER_CONTEXT).get(request);
-        const { challengeStatus, invalid, completed } = statusHelper(submissionContext);
+        const { challengeStatus } = statusHelper(submissionContext);
         const regimeTree = await MasterDataService.getRegimeTreeById(userContext.eaId.regime.id);
 
         // Get appropriate the task list
         const tasks = TaskListService.getTaskList(allSectorsTaskList, regimeTree);
 
-        const routes = Object.keys(tasks).filter(c => challengeStatus.includes(c))
-            .filter(c => completed.includes(c))
-            .filter(c => !invalid.includes(c));
+        const routes = Object.keys(tasks).filter(c => challengeStatus.includes(c));
 
         for (const route of routes) {
             submissionContext.currentTask = route;
             await request.server.app.userCache.cache(cacheNames.SUBMISSION_CONTEXT).set(request, submissionContext);
-            await request.server.app.userCache.cache(cacheNames.TASK_CONTEXT).drop(request);
+            if (await request.server.app.userCache.cache(cacheNames.TASK_CONTEXT).get(request)) {
+                await request.server.app.userCache.cache(cacheNames.TASK_CONTEXT).drop(request);
+            }
         }
 
         // Remove the submission context
@@ -704,7 +705,7 @@ module.exports = {
             await Api.request('SUB', 'PUT', `submissions/${submission.id}`, null, submission);
 
             // Drop the submission context
-            await request.server.app.userCache.cache(cacheNames.SUBMISSION_CONTEXT).drop(request);
+            internals.remove(request);
         } catch (err) {
             logger.error(err);
             throw err;
@@ -719,8 +720,6 @@ module.exports = {
     submit: async (request) => {
 
         // Submission context
-        const submissionContext = await request.server.app.userCache.cache(cacheNames.SUBMISSION_CONTEXT).get(request);
-        const { challengeStatus, invalid, completed } = statusHelper(submissionContext);
         const userContext = await request.server.app.userCache.cache(cacheNames.USER_CONTEXT).get(request);
 
         const regimeTree = await MasterDataService.getRegimeTreeById(userContext.eaId.regime.id);
@@ -731,13 +730,8 @@ module.exports = {
         // Fetch submission with children from the PI submissions API
         const submission = await internals.fetchSubmission(request, tasks);
 
-        // Everything except submit is required to be evaluated
-        const required = Object.keys(tasks).filter(k => !['SUBMIT'].includes(k));
-
-        // Get the required routes
-        const routes = required.filter(c => challengeStatus.includes(c))
-            .filter(c => completed.includes(c))
-            .filter(c => !invalid.includes(c)).map(r => tasks[r]);
+        // Everything except submit is required to be evaluated and review
+        const routes = Object.keys(tasks).filter(k => !['SUBMIT', 'REVIEW'].includes(k)).map(r => tasks[r]);
 
         const result = await internals.applyToRoutes(request, routes, submission, {
             RELEASES_TO_LAND: internals.releaseRouteOperator,
