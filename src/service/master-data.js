@@ -339,6 +339,15 @@ module.exports = internals = {
      * @param id
      * @returns {Promise.<*>}
      */
+    getParameters: async () => {
+        return internals.listEntity(internals._entities.parameters);
+    },
+
+    /**
+     * Return a substance object from its id
+     * @param id
+     * @returns {Promise.<*>}
+     */
     getParameterById: async (id) => {
         return internals.getEntityById(internals._entities.parameters, id);
     },

@@ -92,6 +92,9 @@ module.exports = {
             const session = await SessionHelper.get(request, request.auth.artifacts.sid);
             const isOperator = session.user.roles.includes('OPERATOR');
 
+            // If we have a user context remove it
+            await request.server.app.userCache.cache(cacheNames.USER_CONTEXT).drop(request);
+
             // Get the permits for the user
             const regimes = await MasterDataService.getRegimes();
 

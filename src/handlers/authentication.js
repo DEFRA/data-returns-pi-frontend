@@ -67,6 +67,7 @@ module.exports = {
     logout: async (request, h) => {
         // Remove the cache data for the user
         try {
+            logger.debug(`Logged out: ${request.auth.artifacts.sid}`);
             await SessionHelper.drop(request, request.auth.artifacts.sid);
             request.cookieAuth.clear();
             return h.redirect('/');

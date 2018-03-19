@@ -29,41 +29,8 @@ experiment('Master data service (API)', async () => {
         expect(eaId.siteId).to.be.not.null();
     });
 
-    test('getSubstances(\'RELEASES_TO_AIR\')', async () => {
-        const substances1 = await MasterDataService.getSubstances('RELEASES_TO_AIR');
-        expect(substances1).to.be.an.array();
-        const substances2 = await MasterDataService.getSubstances('RELEASES_TO_AIR');
-        expect(substances2).to.be.an.array();
-        expect(substances1.length).to.equal(substances2.length);
-        // console.log('Releases to air: ' + substances1.length);
-    });
-
-    test('getSubstances(\'RELEASES_TO_LAND\')', async () => {
-        const substances = await MasterDataService.getSubstances('RELEASES_TO_LAND');
-        expect(substances).to.be.an.array();
-        // console.log('Releases to land: ' + substances.length);
-    });
-
-    test('getSubstances(\'RELEASES_TO_CONTROLLED_WATERS\')', async () => {
-        const substances = await MasterDataService.getSubstances('RELEASES_TO_CONTROLLED_WATERS');
-        expect(substances).to.be.an.array();
-        // console.log('Releases to controlled waters: ' + substances.length);
-    });
-
-    test('getSubstances(\'OFFSITE_TRANSFERS_IN_WASTE_WATER\')', async () => {
-        const substances = await MasterDataService.getSubstances('OFFSITE_TRANSFERS_IN_WASTE_WATER');
-        expect(substances).to.be.an.array();
-        // console.log('Off-site transfers in waste water: ' + substances.length);
-    });
-
-    test('getSubstances() - routes differ', async () => {
-        const ww = await MasterDataService.getSubstances('OFFSITE_TRANSFERS_IN_WASTE_WATER');
-        const air = await MasterDataService.getSubstances('RELEASES_TO_AIR');
-        expect(ww).to.not.equal(air);
-    });
-
-    test('getSubstanceById(id)', async () => {
-        const substances = await MasterDataService.getSubstances();
+    test('getParameterById(id)', async () => {
+        const substances = await MasterDataService.getParameters();
         const substance = await MasterDataService.getParameterById(substances[0].id);
         expect(substance).to.equal(substances[0]);
     });

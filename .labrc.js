@@ -19,5 +19,6 @@ module.exports = {
     'reporter': Array.from(reporters.keys()),
     'output': Array.from(reporters.values()),
     'verbose': true,
-    'debug': true
+    'debug': true,
+    'timeout': 0
 };

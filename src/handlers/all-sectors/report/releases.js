@@ -185,7 +185,13 @@ module.exports = {
                 if (tasks.releases) {
                     releases = Object.keys(tasks.releases).filter(r => isNumeric(r)).map(id => {
                         return {
-                            parameter: parameterMap.get(Number.parseInt(id)),
+                            parameter: (() => {
+                                const foundParameter = parameterMap.get(Number.parseInt(id));
+                                if (!foundParameter) {
+                                    throw new Error(`Unexpected parameter id: ${id} for obligation ${obligation.nomenclature}`);
+                                }
+                                return foundParameter;
+                            })(),
                             value: tasks.releases[id].value,
                             unitId: tasks.releases[id].unitId,
                             errors: tasks.releases[id].errors
