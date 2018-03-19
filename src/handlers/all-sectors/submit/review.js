@@ -120,6 +120,7 @@ module.exports = {
                 reviewObject.applicableYear = year;
                 reviewObject.permitNumber = eaId.nomenclature;
                 reviewObject.site = eaId.site.nomenclature;
+                const routeObligations = {};
 
                 for (const rte of routes) {
                     // We need to se the current task in the eaId
@@ -127,7 +128,16 @@ module.exports = {
                     await request.server.app.userCache.cache(cacheNames.SUBMISSION_CONTEXT).set(request, submissionContext);
                     const task = await request.server.app.userCache.cache(cacheNames.TASK_CONTEXT).get(request);
 
+                    const obligation = regimeTree.obligations.find(o => o.route.id === tasks[rte].routeId);
+                    if (obligation) {
+                        routeObligations[rte] = {
+                            route: tasks[rte].name,
+                            description: obligation.description
+                        };
+                    }
+
                     switch (rte) {
+
                         case 'SITE_CODES':
                             if (task.nace && task.nace.id) {
                                 reviewObject.nace = await MasterDataService.getNaceClassById(task.nace.id);
@@ -218,7 +228,8 @@ module.exports = {
                     review: reviewObject,
                     review_mode: reviewMode,
                     is_operator: isOperator,
-                    submission_status: submissionContext.status
+                    submission_status: submissionContext.status,
+                    routeObligations: routeObligations
                 });
 
             } else {
