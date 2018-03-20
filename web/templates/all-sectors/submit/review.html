@@ -89,23 +89,23 @@
         {% endif %}
 
         {% if review.releases_to_air %}
-            {{ releasesTable(review.releases_to_air, 'Your releases to air') }}
+            {{ releasesTable(review.releases_to_air, routeObligations.RELEASES_TO_AIR.description) }}
         {% endif %}
 
         {% if review.releases_to_land %}
-            {{ releasesTable(review.releases_to_land, 'Your releases to land') }}
+            {{ releasesTable(review.releases_to_land, routeObligations.RELEASES_TO_LAND.description) }}
         {% endif %}
 
         {% if review.releases_to_controlled_water %}
-            {{ releasesTable(review.releases_to_controlled_water, 'Your releases to controlled water') }}
+            {{ releasesTable(review.releases_to_controlled_water, routeObligations.RELEASES_TO_CONTROLLED_WATERS.description) }}
         {% endif %}
 
         {% if review.releases_to_waste_water %}
-            {{ releasesTable(review.releases_to_waste_water, 'Your off-site transfers in waste water') }}
+            {{ releasesTable(review.releases_to_waste_water, routeObligations.OFFSITE_TRANSFERS_IN_WASTE_WATER.description) }}
         {% endif %}
 
         {% if review.offsite_waste_transfers %}
-            {{ transfersTable(review.offsite_waste_transfers, 'Your off-site waste transfers') }}
+            {{ transfersTable(review.offsite_waste_transfers, 'Off-site waste transfers') }}
         {% endif %}
 
         {% if review_mode %}

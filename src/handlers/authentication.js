@@ -29,11 +29,11 @@ module.exports = {
                 return h.view('login');
             }
 
-            const authenticated = await MasterDataService.authenticate(request.payload.username, request.payload.password) || 'FAILED';
+            const authenticated = MasterDataService.authenticate(request.payload.username, request.payload.password);
 
             // Back to the login screen with an error if the wrong username or password is given
-            if (authenticated === 'FAILED') {
-                return h.view('login', {authenticated: authenticated});
+            if (!authenticated) {
+                return h.view('login', {authenticated: 'FAILED'});
             }
 
             // Generate a new session identifier
@@ -47,6 +47,8 @@ module.exports = {
 
             // Set the get authorization cookie - it will encode the get id to identify the cache
             request.cookieAuth.set({ sid });
+
+            logger.debug(`Logged in: ${authenticated.username}`);
 
             // We are in - redirect to the start page
             return h.redirect('/');
@@ -65,6 +67,7 @@ module.exports = {
     logout: async (request, h) => {
         // Remove the cache data for the user
         try {
+            logger.debug(`Logged out: ${request.auth.artifacts.sid}`);
             await SessionHelper.drop(request, request.auth.artifacts.sid);
             request.cookieAuth.clear();
             return h.redirect('/');

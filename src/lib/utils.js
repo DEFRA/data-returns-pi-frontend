@@ -19,13 +19,13 @@ module.exports = {
 
     generalErrorHandler: (err, h) => {
         if (err instanceof serviceError) {
-            logger.log('error', 'Service error:' + err);
+            logger.log('error', 'Service error:' + err.stack);
             return h.redirect('/service-error');
         } else if (err instanceof cacheKeyError) {
-            logger.debug('Cache error:' + err);
+            logger.warn('Cache error:' + err.stack);
             return h.redirect('/');
         } else {
-            logger.log('error', 'Unexpected error:' + err);
+            logger.log('error', 'Unexpected error:' + err.stack);
             return h.redirect('/logout');
         }
     }

@@ -12,7 +12,7 @@ const apicfg = require('./system').configuration.api;
 
 class ServiceError extends Error {
     constructor (message) {
-        super(`Service error: ${message}`);
+        super(message);
         this.name = 'ServiceError';
     }
 };
@@ -86,18 +86,49 @@ const internals = {
 
             return result;
         } catch (err) {
-            throw new ServiceError(err.message);
+            throw new ServiceError(err);
         }
     }
 };
 
 module.exports = {
     request: async (client, method, command, query, body) => {
-        if (process.env.NODE_ENV !== 'local') {
-            return internals.makeRequest(internals.createRequest(client, command, query), method, body);
-        }
+        return internals.makeRequest(internals.createRequest(client, command, query), method, body);
+    },
 
-        return null;
+    requestLink: async (link, query) => {
+        try {
+            Logging.logger.debug(`API Call; GET:${link.href} `);
+
+            const uriObj = {
+                uri: link.href,
+                method: 'GET',
+                json: true,
+                timeout: apicfg.requestTimeout,
+                headers: {
+                    'Accept': 'application/json'
+                },
+                auth: {
+                    user: 'user',
+                    pass: 'password'
+                }
+            };
+
+            if (query) {
+                uriObj.uri = uriObj.uri + '?' + query;
+            }
+
+            const result = await request(uriObj);
+
+            return result;
+        } catch (err) {
+            // Not found is OK - its the empty object
+            if (err.statusCode === 404) {
+                return null;
+            } else {
+                throw new ServiceError(err);
+            }
+        }
     },
 
     ServiceError: ServiceError

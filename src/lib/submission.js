@@ -12,8 +12,8 @@ const MasterDataService = require('../service/master-data');
 const cacheNames = require('./user-cache-policies').names;
 const CacheKeyError = require('./user-cache-policies').CacheKeyError;
 const Api = require('./api-client');
+const TaskListService = require('../service/task-list');
 const allSectorsTaskList = require('../model/all-sectors/task-list');
-const required = require('../service/task-list').required(allSectorsTaskList);
 const setCompletedStatus = require('../handlers/all-sectors/common').setCompletedStatus;
 const statusHelper = require('../handlers/all-sectors/common').statusHelper;
 const isNumeric = require('./utils').isNumeric;
@@ -45,7 +45,7 @@ const internals = {
      * @return {Promise.<*>}
      */
     addStatusToEaIds: async (eaIds, year) => {
-        const submissionResponse = await internals.getSubmissionStatusForEaIdsAndYear(eaIds.map(e => e.id), year);
+        const submissionResponse = await internals.getSubmissionsForYear(year);
 
         if (submissionResponse) {
 
@@ -75,9 +75,9 @@ const internals = {
      * @param eaIdIds - an array of the permit id's
      * @return {Promise.<void>}
      */
-    getSubmissionStatusForEaIdsAndYear: async (eaIdIds, year) => {
-        const query = 'applicable_year=' + year.toString() + '&reporting_references=' + eaIdIds.join(',');
-        const response = await Api.request('SUB', 'GET', 'submissions/search/findByReportingReferenceInAndApplicableYear', query);
+    getSubmissionsForYear: async (year) => {
+        const query = 'applicable_year=' + year.toString();
+        const response = await Api.request('SUB', 'GET', 'submissions/search/findByApplicableYear', query);
         return response;
     },
 
@@ -119,53 +119,14 @@ const internals = {
         });
     },
 
-    /**
-     * Remove the cache entries after a (successful) submission
-     * @param request
-     * @return {Promise.<void>}
-     */
-    remove: async (request) => {
-        const submissionContext = await request.server.app.userCache.cache(cacheNames.SUBMISSION_CONTEXT).get(request);
-
-        const { challengeStatus, valid, completed } = statusHelper(submissionContext);
-
-        const routes = required.filter(r => {
-            return challengeStatus.find(c => c === r) &&
-                valid.find(v => v === r) &&
-                completed.find(d => d === r);
-        });
-
-        for (const route of routes) {
-            submissionContext.currentTask = route;
-            await request.server.app.userCache.cache(cacheNames.SUBMISSION_CONTEXT).set(request, submissionContext);
-            await request.server.app.userCache.cache(cacheNames.TASK_CONTEXT).drop(request);
-        }
-        await request.server.app.userCache.cache(cacheNames.SUBMISSION_CONTEXT).drop(request);
-    },
-
-    getReleasesToControlledWater: async (id) => {
-        const result = await Api.request('SUB', 'GET', `submissions/${id}/releasesToControlledWater`);
-        return result._embedded.releasesToControlledWater;
-    },
-
-    getReleasesToWasteWater: async (id) => {
-        const result = await Api.request('SUB', 'GET', `submissions/${id}/releasesToWasteWater`);
-        return result._embedded.releasesToWasteWater;
+    getReleases: async (id) => {
+        const result = await Api.request('SUB', 'GET', `submissions/${id}/releases`);
+        return result._embedded.releases;
     },
 
     getOffsiteWasteTransfers: async (id) => {
         const result = await Api.request('SUB', 'GET', `submissions/${id}/offsiteWasteTransfers`);
         return result._embedded.offsiteWasteTransfers;
-    },
-
-    getReleasesToAir: async (id) => {
-        const result = await Api.request('SUB', 'GET', `submissions/${id}/releasesToAir`);
-        return result._embedded.releasesToAir;
-    },
-
-    getReleasesToLand: async (id) => {
-        const result = await Api.request('SUB', 'GET', `submissions/${id}/releasesToLand`);
-        return result._embedded.releasesToLand;
     },
 
     /**
@@ -210,8 +171,7 @@ const internals = {
      * @param id
      * @return {Promise.<void>}
      */
-    setReleasesCache: async (request, releases, releaseType) => {
-        // Initialize a new permit status
+    setReleasesCache: async (request, releases) => {
         let submissionContext = await request.server.app.userCache.cache(cacheNames.SUBMISSION_CONTEXT).get(request);
 
         if (!submissionContext) {
@@ -223,49 +183,81 @@ const internals = {
         }
 
         const methods = await MasterDataService.getMethods();
+        const userContext = await request.server.app.userCache.cache(cacheNames.USER_CONTEXT).get(request);
+        const regimeTree = await MasterDataService.getRegimeTreeById(userContext.eaId.regime.id);
+        const tasksList = TaskListService.getTaskList(allSectorsTaskList, regimeTree);
+        await request.server.app.userCache.cache(cacheNames.SUBMISSION_CONTEXT).set(request, submissionContext);
 
         if (releases.length) {
-            const tasks = {};
-            tasks.releases = {};
+            const task = {};
+            task.releases = {};
 
-            submissionContext.currentTask = releaseType;
-            submissionContext.confirmation[releaseType] = true;
-            submissionContext.challengeStatus[releaseType] = true;
-            submissionContext.valid[releaseType] = true;
-            setCompletedStatus(submissionContext, releaseType);
-
-            for (const release of releases) {
-                if (release.below_reporting_threshold) {
-                    tasks.releases[release.substance_id] = {
-                        methodId: methods.find(m => m.name === release.method).id,
-                        value: 'BRT'
-                    };
-
-                } else {
-                    tasks.releases[release.substance_id] = {
-                        methodId: methods.find(m => m.name === release.method).id,
-                        value: release.value,
-                        unitId: release.unit_id
-                    };
-
-                    if (release.notifiable_value) {
-                        tasks.releases[release.substance_id].notifiable = {};
-                        tasks.releases[release.substance_id].notifiable.value = release.notifiable_value;
-                        tasks.releases[release.substance_id].notifiable.unitId = release.notifiable_unit_id;
-                        tasks.releases[release.substance_id].notifiable.reason = release.notifiable_reason;
-                    }
+            // Extract the set of tasks (routes) to act on
+            const taskArr = releases.map(r => r.route_id).reduce((acc, routeId) => {
+                if (!acc.includes(routeId)) {
+                    acc.push(routeId);
                 }
+                return acc;
+            }, []).map(r => Object.keys(tasksList).find(k => tasksList[k].routeId === r));
+
+            // Build a set of tasks to save
+            const tasks = taskArr.map(t => {
+                const task = {};
+                task.releases = releases.filter(r => r.route_id === tasksList[t].routeId).reduce((acc, release) => {
+                    if (release.below_reporting_threshold) {
+                        acc[release.substance_id] = {
+                            methodId: methods.find(m => m.name === release.method).id,
+                            value: 'BRT'
+                        };
+
+                    } else {
+                        acc[release.substance_id] = {
+                            methodId: methods.find(m => m.name === release.method).id,
+                            value: release.value.toString(),
+                            unitId: release.unit_id
+                        };
+
+                        if (release.notifiable_value) {
+                            acc[release.substance_id].notifiable = {};
+                            acc[release.substance_id].notifiable.value = release.notifiable_value.toString();
+                            acc[release.substance_id].notifiable.unitId = release.notifiable_unit_id;
+                            acc[release.substance_id].notifiable.reason = release.notifiable_reason;
+                        }
+                    }
+                    return acc;
+                }, {});
+
+                return {name: t, task: task};
+            });
+
+            // Async save function
+            const save = async (task) => {
+                const submissionContext = await request.server.app.userCache.cache(cacheNames.SUBMISSION_CONTEXT).get(request);
+                submissionContext.currentTask = task.name;
+                submissionContext.confirmation[task.name] = true;
+                submissionContext.challengeStatus[task.name] = true;
+                submissionContext.valid[task.name] = true;
+                setCompletedStatus(submissionContext, task.name);
+                await request.server.app.userCache.cache(cacheNames.SUBMISSION_CONTEXT).set(request, submissionContext);
+                await request.server.app.userCache.cache(cacheNames.TASK_CONTEXT).set(request, task.task);
+            };
+
+            for (const task of tasks) {
+                await save(task);
             }
 
-            // Set the caches
-            await request.server.app.userCache.cache(cacheNames.SUBMISSION_CONTEXT).set(request, submissionContext);
-            await request.server.app.userCache.cache(cacheNames.TASK_CONTEXT).set(request, tasks);
-        } else {
-            submissionContext.currentTask = releaseType;
-            submissionContext.confirmation[releaseType] = true;
-            submissionContext.challengeStatus[releaseType] = false;
-            setCompletedStatus(submissionContext, releaseType);
+        }
 
+        // We need to set the challenge status and the confirmation for the routes not found (ignore the SUBMIT and review)
+        const notSubmittedTasks = Object.keys(tasksList)
+            .filter(k => tasksList[k].type === 'RELEASE')
+            .filter(k => !releases.map(r => r.route_id).includes(tasksList[k].routeId));
+
+        for (const task of notSubmittedTasks) {
+            const submissionContext = await request.server.app.userCache.cache(cacheNames.SUBMISSION_CONTEXT).get(request);
+            submissionContext.confirmation[task] = true;
+            submissionContext.challengeStatus[task] = false;
+            setCompletedStatus(submissionContext, task);
             await request.server.app.userCache.cache(cacheNames.SUBMISSION_CONTEXT).set(request, submissionContext);
         }
     },
@@ -334,34 +326,38 @@ const internals = {
      * @param request
      * @return {Promise.<void>}
      */
-    fetchSubmission: async (request) => {
+    fetchSubmission: async (request, tasks) => {
         const submissionContext = await request.server.app.userCache.cache(cacheNames.SUBMISSION_CONTEXT).get(request);
-
         const result = Object.assign({}, submissionContext);
+        const releases = await Api.request('SUB', 'GET', `submissions/${submissionContext.id}/releases`);
 
-        const fetches = [ 'releasesToAir', 'releasesToLand', 'releasesToWasteWater',
-            'releasesToControlledWater', 'offsiteWasteTransfers' ];
+        Object.assign(result, releases._embedded.releases.reduce((accumulator, release) => {
+            const task = Object.keys(tasks).find(k => tasks[k].routeId === release.route_id);
+            if (!accumulator[task]) {
+                accumulator[task] = [];
+            }
+            accumulator[task].push(release);
+            return accumulator;
+        }, {}));
 
-        await Promise.all(fetches.map(async fetch => {
-            const response = await Api.request('SUB', 'GET', `submissions/${submissionContext.id}/${fetch}`);
-            result[fetch] = {
-                data: response._embedded[fetch]
-            };
-        }));
+        const transfers = await Api.request('SUB', 'GET', `submissions/${submissionContext.id}/offsiteWasteTransfers`);
+        result.OFFSITE_WASTE_TRANSFERS = transfers._embedded.offsiteWasteTransfers;
 
         return result;
     },
 
     // Create release element of message
-    releasesObj: async (task, release) => {
+    releasesObj: async (route, task, release) => {
         if (isBrt(task.releases[release].value)) {
             return {
+                route_id: route.routeId,
                 substance_id: Number.parseInt(release),
                 method: (await MasterDataService.getMethodById(task.releases[release].methodId)).name,
                 below_reporting_threshold: true
             };
         } else if (isNumeric(task.releases[release].value)) {
             return {
+                route_id: route.routeId,
                 substance_id: Number.parseInt(release),
                 value: Number.parseFloat(task.releases[release].value),
                 unit_id: task.releases[release].unitId,
@@ -404,16 +400,15 @@ const internals = {
         const results = {};
         for (const route of routes) {
             if (func[route.name]) {
-                // We need to se the current task in the eaId
+                // We need to see the current task in the eaId
                 submissionContext.currentTask = route.name;
                 await request.server.app.userCache.cache(cacheNames.SUBMISSION_CONTEXT).set(request, submissionContext);
                 const task = await request.server.app.userCache.cache(cacheNames.TASK_CONTEXT).get(request);
 
                 // Call the function
                 if (task) {
-                    results[route.name] = await func[route.name](task, submission[route.message.fetch].data,
-                        route.message.fetch, `submissions/${submissionContext.id}`);
-
+                    results[route.name] = await func[route.name](task, submission[route.name],
+                        route, `submissions/${submissionContext.id}`);
                 } else {
                     results[route.name] = null;
                 }
@@ -425,6 +420,8 @@ const internals = {
     },
 
     /**
+     * Write release to submissions API.
+     *
      * Release route function as in the func argument of applyToRoutes. It determines the set of API operations
      * required for a given route / task and applies them.
      * @param task - the cache task object
@@ -433,10 +430,11 @@ const internals = {
      * @param uri - the URI of the parent submission
      * @return {Promise.<void>}
      */
-    releaseRouteOperator: async (task, apiArr, name, uri) => {
+    releaseRouteOperator: async (task, apiArr, route, uri) => {
         const releaseSchema = Joi.object({
             submission: Joi.string().uri({ allowRelative: true }),
             substance_id: Joi.number().integer().required(),
+            route_id: Joi.number().integer().required(),
             below_reporting_threshold: Joi.boolean().required(),
             method: Joi.valid(['Measurement', 'Calculation', 'Estimation']),
             value: Joi.alternatives().when('below_reporting_threshold', {
@@ -456,15 +454,22 @@ const internals = {
 
         if (task.releases) {
             for (const release of Object.keys(task.releases)) {
-                const apiObj = apiArr.find(a => a.substance_id === Number.parseInt(release));
-                if (apiObj) {
-                    // Updating PUT
-                    const put = await internals.releasesObj(task, release);
-                    put.submission = uri;
-                    puts.push({ id: apiObj.id, put: put });
+                if (apiArr) {
+                    const apiObj = apiArr.find(a => a.substance_id === Number.parseInt(release));
+                    if (apiObj) {
+                        // Updating PUT
+                        const put = await internals.releasesObj(route, task, release);
+                        put.submission = uri;
+                        puts.push({ id: apiObj.id, put: put });
+                    } else {
+                        // Creating POST
+                        const post = await internals.releasesObj(route, task, release);
+                        post.submission = uri;
+                        posts.push(post);
+                    }
                 } else {
                     // Creating POST
-                    const post = await internals.releasesObj(task, release);
+                    const post = await internals.releasesObj(route, task, release);
                     post.submission = uri;
                     posts.push(post);
                 }
@@ -477,23 +482,33 @@ const internals = {
         });
 
         // Objects existing in the api but not in the task cache are removed
-        const deletes = apiArr.filter(a => !Object.keys(task.releases)
-            .map(r => Number.parseInt(r)).includes(a.substance_id));
+        let deletes = [];
+        if (apiArr) {
+            deletes = apiArr.filter(a => !Object.keys(task.releases)
+                .map(r => Number.parseInt(r)).includes(a.substance_id));
+        }
+
+        logger.debug('Route: ' + route.name);
+        logger.debug('Deletes: ' + JSON.stringify(deletes, null, 4));
+        logger.debug('Posts: ' + JSON.stringify(posts, null, 4));
+        logger.debug('Puts: ' + JSON.stringify(puts, null, 4));
 
         await Promise.all(deletes.map(async del => {
-            await Api.request('SUB', 'DELETE', `${name}/${del.id}`, null);
+            await Api.request('SUB', 'DELETE', `releases/${del.id}`, null);
         }));
 
         await Promise.all(posts.map(async post => {
-            await Api.request('SUB', 'POST', name, null, post);
+            await Api.request('SUB', 'POST', 'releases', null, post);
         }));
 
         await Promise.all(puts.map(async put => {
-            await Api.request('SUB', 'PUT', `${name}/${put.id}`, null, put.put);
+            await Api.request('SUB', 'PUT', `releases/${put.id}`, null, put.put);
         }));
     },
 
     /**
+     * Write transfer object to submissions API
+     *
      * Release route function as in the func argument of applyToRoutes. It determines the set of API operations
      * required for a given route / task and applies them.
      * @param task - the cache task object
@@ -502,7 +517,7 @@ const internals = {
      * @param uri - the URI of the parent submission
      * @return {Promise.<void>}
      */
-    transferRouteOperator: async (task, apiArr, name, uri) => {
+    transferRouteOperator: async (task, apiArr, route, uri) => {
         const transferSchema = Joi.alternatives().try(Joi.object({
             submission: Joi.string().uri({ allowRelative: true }),
             ewc_activity_id: Joi.number().integer(),
@@ -553,17 +568,50 @@ const internals = {
 
         const deletes = apiArr.filter(a => !tasks.find(t => transferEquals(a, t)));
 
+        logger.debug('route: ' + route.name);
+        logger.debug('Deletes: ' + JSON.stringify(deletes, null, 4));
+        logger.debug('Posts: ' + JSON.stringify(posts, null, 4));
+        logger.debug('Puts: ' + JSON.stringify(puts, null, 4));
+
         await Promise.all(deletes.map(async del => {
-            await Api.request('SUB', 'DELETE', `${name}/${del.id}`, null);
+            await Api.request('SUB', 'DELETE', `${route.message.fetch}/${del.id}`, null);
         }));
 
         await Promise.all(posts.map(async post => {
-            await Api.request('SUB', 'POST', name, null, post);
+            await Api.request('SUB', 'POST', route.message.fetch, null, post);
         }));
 
         await Promise.all(puts.map(async put => {
-            await Api.request('SUB', 'PUT', `${name}/${put.id}`, null, put.put);
+            await Api.request('SUB', 'PUT', `${route.message.fetch}/${put.id}`, null, put.put);
         }));
+    },
+
+    /**
+     * Remove the cache entries after a (successful) submission
+     * @param request
+     * @return {Promise.<void>}
+     */
+    remove: async (request) => {
+        const submissionContext = await request.server.app.userCache.cache(cacheNames.SUBMISSION_CONTEXT).get(request);
+        const userContext = await request.server.app.userCache.cache(cacheNames.USER_CONTEXT).get(request);
+        const { challengeStatus } = statusHelper(submissionContext);
+        const regimeTree = await MasterDataService.getRegimeTreeById(userContext.eaId.regime.id);
+
+        // Get appropriate the task list
+        const tasks = TaskListService.getTaskList(allSectorsTaskList, regimeTree);
+
+        const routes = Object.keys(tasks).filter(c => challengeStatus.includes(c));
+
+        for (const route of routes) {
+            submissionContext.currentTask = route;
+            await request.server.app.userCache.cache(cacheNames.SUBMISSION_CONTEXT).set(request, submissionContext);
+            if (await request.server.app.userCache.cache(cacheNames.TASK_CONTEXT).get(request)) {
+                await request.server.app.userCache.cache(cacheNames.TASK_CONTEXT).drop(request);
+            }
+        }
+
+        // Remove the submission context
+        await request.server.app.userCache.cache(cacheNames.SUBMISSION_CONTEXT).drop(request);
     },
 
     /**
@@ -581,15 +629,8 @@ const internals = {
             await internals.setSubmissionCache(request, submission);
 
             // Releases
-            const releasesToAir = await internals.getReleasesToAir(id);
-            const releasesToLand = await internals.getReleasesToLand(id);
-            const releasesToControlledWater = await internals.getReleasesToControlledWater(id);
-            const releasesToWasteWater = await internals.getReleasesToWasteWater(id);
-
-            await internals.setReleasesCache(request, releasesToAir, 'RELEASES_TO_AIR');
-            await internals.setReleasesCache(request, releasesToLand, 'RELEASES_TO_LAND');
-            await internals.setReleasesCache(request, releasesToControlledWater, 'RELEASES_TO_CONTROLLED_WATERS');
-            await internals.setReleasesCache(request, releasesToWasteWater, 'OFFSITE_TRANSFERS_IN_WASTE_WATER');
+            const releases = await internals.getReleases(id);
+            await internals.setReleasesCache(request, releases);
 
             // Transfers
             const offsiteWasteTransfers = await internals.getOffsiteWasteTransfers(id);
@@ -619,7 +660,7 @@ const internals = {
         await request.server.app.userCache.cache(cacheNames.SUBMISSION_CONTEXT).set(request, submissionContext);
         const task = await request.server.app.userCache.cache(cacheNames.TASK_CONTEXT).get(request);
         if (task.nace) {
-            submission.nace_id = task.nace.id;
+            submission.nace_code = task.nace.id;
         }
 
         if (task.nose.noseIds) {
@@ -664,7 +705,7 @@ module.exports = {
             await Api.request('SUB', 'PUT', `submissions/${submission.id}`, null, submission);
 
             // Drop the submission context
-            await request.server.app.userCache.cache(cacheNames.SUBMISSION_CONTEXT).drop(request);
+            internals.remove(request);
         } catch (err) {
             logger.error(err);
             throw err;
@@ -678,37 +719,40 @@ module.exports = {
      */
     submit: async (request) => {
 
-        // In local test mode do nothing
-        if (process.env.NODE_ENV !== 'local') {
+        // Submission context
+        const userContext = await request.server.app.userCache.cache(cacheNames.USER_CONTEXT).get(request);
 
-            // Fetch submission with children from the PI submissions API
-            const submission = await internals.fetchSubmission(request);
+        const regimeTree = await MasterDataService.getRegimeTreeById(userContext.eaId.regime.id);
 
-            // Submission context
-            const submissionContext = await request.server.app.userCache.cache(cacheNames.SUBMISSION_CONTEXT).get(request);
-            const { challengeStatus, invalid, completed } = statusHelper(submissionContext);
+        // Get appropriate the task list
+        const tasks = TaskListService.getTaskList(allSectorsTaskList, regimeTree);
 
-            // Get the required routes
-            const routes = required.filter(r => challengeStatus.find(c => c === r.name))
-                .filter(r => completed.find(c => c === r.name))
-                .filter(r => !invalid.find(c => c === r.name));
+        // Fetch submission with children from the PI submissions API
+        const submission = await internals.fetchSubmission(request, tasks);
 
-            const result = await internals.applyToRoutes(request, routes, submission, {
-                RELEASES_TO_LAND: internals.releaseRouteOperator,
-                RELEASES_TO_AIR: internals.releaseRouteOperator,
-                RELEASES_TO_CONTROLLED_WATERS: internals.releaseRouteOperator,
-                OFFSITE_TRANSFERS_IN_WASTE_WATER: internals.releaseRouteOperator,
-                OFFSITE_WASTE_TRANSFERS: internals.transferRouteOperator
-            });
+        // Everything except submit is required to be evaluated and review
+        const routes = Object.keys(tasks).filter(k => !['SUBMIT', 'REVIEW'].includes(k)).map(r => tasks[r]);
 
-            // Now change the status to submitted
-            const newSubmission = await internals.getSubmission(submission.id);
-            const preparedSubmission = await internals.prepareSubmission(request, newSubmission);
-            await Api.request('SUB', 'PUT', `submissions/${submission.id}`, null, preparedSubmission);
+        const result = await internals.applyToRoutes(request, routes, submission, {
+            RELEASES_TO_LAND: internals.releaseRouteOperator,
+            RELEASES_TO_AIR: internals.releaseRouteOperator,
+            RELEASES_TO_CONTROLLED_WATERS: internals.releaseRouteOperator,
+            OFFSITE_TRANSFERS_IN_WASTE_WATER: internals.releaseRouteOperator,
+            OFFSITE_WASTE_TRANSFERS: internals.transferRouteOperator
+        });
 
-            // Finally drop the submission context
-            await request.server.app.userCache.cache(cacheNames.SUBMISSION_CONTEXT).drop(request);
-        }
+        logger.debug(JSON.stringify(result, null, 4));
+
+        // Now change the status to submitted
+        const newSubmission = await internals.getSubmission(submission.id);
+        const preparedSubmission = await internals.prepareSubmission(request, newSubmission);
+
+        logger.debug('Submission: ' + JSON.stringify(preparedSubmission, null, 4));
+
+        await Api.request('SUB', 'PUT', `submissions/${submission.id}`, null, preparedSubmission);
+
+        // Finally drop the contexts
+        await internals.remove(request);
     }
 
 };

@@ -18,69 +18,70 @@
 
         {% if errors and errors.length > 0 %}
             {% if route.name === 'RELEASES_TO_LAND'%}
-                {{ error('Do you need to report any releases to land?', 'Select the type of waste you released') }}
+                {{ error('Do you need to report any releases to land?', 'Select the substance you released') }}
             {% elif route.name === 'RELEASES_TO_AIR' %}
-                {{ error('Do you need to report any releases to air?', 'Select the type of waste you released') }}
+                {{ error('Do you need to report any releases to air?', 'Select the substance you released') }}
             {% elif route.name === 'RELEASES_TO_CONTROLLED_WATERS' %}
-                {{ error('Do you need to report any releases to controlled waters?', 'Select the type of waste you released') }}
+                {{ error('Do you need to report any releases to controlled waters?', 'Select the substance you released') }}
             {% elif route.name === 'OFFSITE_TRANSFERS_IN_WASTE_WATER' %}
                 {{ error('Do you need to report any substances transferred off site in wastewater? ', 'Select the type of substance you transferred off site') }}
-            {% elif route.name === 'OVERSEAS_WASTE_TRANSFERS' %}
-                {{ error('Do you need to report any overseas hazardous waste transfers?', 'Select the type of waste you transferred overseas') }}
             {% endif %}
         {% endif %}
 
         {% if route.name === 'RELEASES_TO_LAND'%}
-        <h1 class="heading-large">Add a release to land</h1>
-        <p>Select a substance you need to report</p>
+            <h1 class="heading-large">Add a release to land</h1>
+            <p>Select a substance you need to report</p>
         {% elif route.name === 'RELEASES_TO_AIR' %}
-        <h1 class="heading-large">Add a release to air</h1>
-        <p>Select a substance you need to report</p>
+            <h1 class="heading-large">Add a release to air</h1>
+            <p>Select a substance you need to report</p>
         {% elif route.name === 'RELEASES_TO_CONTROLLED_WATERS' %}
-        <h1 class="heading-large">Add a release to controlled waters</h1>
-        <p>Select a substance you need to report</p>
+            <h1 class="heading-large">Add a release to controlled waters</h1>
+            <p>Select a substance you need to report</p>
         {% elif route.name === 'OFFSITE_TRANSFERS_IN_WASTE_WATER' %}
-        <h1 class="heading-large">Add a substance transferred off site in wastewater</h1>
-        <p>Select a substance you need to report</p>
+            <h1 class="heading-large">Add a substance transferred off site in wastewater</h1>
+            <p>Select a substance you need to report</p>
         {% elif route.name === 'OVERSEAS_WASTE_TRANSFERS' %}
-
-        <h1 class="heading-large">
-            <span class="heading-secondary">Your overseas hazardous waste transfers</span>
-            What type of waste did you transfer?
-        </h1>
-
+            <h1 class="heading-large">
+                <span class="heading-secondary">Your overseas hazardous waste transfers</span>
+                What type of waste did you transfer?
+            </h1>
         {% endif %}
 
         {% if errors and errors.length > 0 %}
-        <div id="search-results-err" class="grid-row">
-            <div class="column-two-thirds">
-                <span class="error-message">
-					Select the type of waste you transferred
-                </span>
-                <div class="form-group list form-group-error ">
-                    {% for substance in substances %}
-                    <div class="multiple-choice">
-                        <input id="substance_{{ substance.id }}_err" name="substanceId" value="{{ substance.id }}" type="radio">
-                        <label for="substance_{{ substance.id }}_err"><span class="category"></span> <span class="name">{{ substance.name }}</span></label>
+            <span class="error-message">
+                Select the substance
+            </span>
+            <div id="search-results-err" class="grid-row">
+                {% for parameterGroup in parameterGroups %}
+                    <h2>{{ parameterGroup.nomenclature }}</h2>
+                    <div class="form-group list form-group-error">
+                        {% for parameter in parameterGroup.parameters %}
+                            <div class="multiple-choice">
+                                <input id="parameter_{{ parameter.id }}_err" name="parameterId" value="{{ parameter.id }}" type="radio">
+                                <label for="parameter_{{ parameter.id }}_err"><span class="category"></span> <span class="name">{{ parameter.nomenclature }}</span></label>
+                                <label><span class="cas">{{ parameter.cas }}</span></label>
+                            </div>
+                        {% endfor %}
                     </div>
-                    {% endfor %}
-                </div>
-            </div>
+                {% endfor %}
         </div>
         {% else %}
-        <div id="search-results" class="grid-row">
-            <div class="column-two-thirds">
-                <div class="form-group list">
-                    {% for substance in substances %}
-                    <div class="multiple-choice">
-                        <input id="substance_{{ substance.id }}" name="substanceId" value="{{ substance.id }}" type="radio">
-                        <label for="substance_{{ substance.id }}"><span class="category"></span> <span class="name">{{ substance.name }}</span></label>
+            <div id="search-results" class="grid-row">
+            {% for parameterGroup in parameterGroups %}
+                <h2>{{ parameterGroup.nomenclature }}</h2>
+                    <div class="form-group list">
+                        {% for parameter in parameterGroup.parameters %}
+                            <div class="multiple-choice">
+                                <input id="parameter_{{ parameter.id }}" name="parameterId" value="{{ parameter.id }}" type="radio">
+                                <label for="parameter_{{ parameter.id }}"><span class="category"></span> <span class="name">{{ parameter.nomenclature }}</span></label>
+                                <label><span class="cas">{{ parameter.cas }}</span></label>
+                            </div>
+                        {% endfor %}
                     </div>
-                    {% endfor %}
+                {% endfor %}
                 </div>
-            </div>
-        </div>
         {% endif %}
+
 
         <div class="form-group"><input id="continueBtn" type="submit" class="button" value="Continue"> </div>
     </form>

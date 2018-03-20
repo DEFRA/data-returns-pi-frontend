@@ -10,28 +10,28 @@
         <h1 class="heading-large">Your NOSE-P code(s)<span class="heading-secondary">Enter the code for your sites main activity</span></h1>
 
         {% if error %}
-             <div class="error-summary" role="alert" aria-labelledby="error-summary-heading" tabindex="-1">
-                <h2 class="heading-medium error-summary-heading" id="error-summary-heading">Check what you’re reporting</h2>
-                <ul class="error-summary-list">
-                    {% if error.error.errno === 'PI-5000' %}
-                    <li><a href="#ewc-code">Enter a correct NOSE-P code</a></li>
-                    {% else %}
-                    <li><a href="#ewc-code">Duplicate</a></li>
-                    {% endif %}
-                </ul>
-            </div>
-            <div class="form-group form-group-error">
-                <label class="form-label" for="nose-code">NOSE-P code</label>
-                <span class="form-hint">For example ‘105.09’.</span>
-                <span class="error-message">Enter a correct NOSE-P code</span>
-                <input class="form-control form-control-error nose-code" id="nose-code-err" name="nose" value="">
-            </div>
+        <div class="error-summary" role="alert" aria-labelledby="error-summary-heading" tabindex="-1">
+            <h2 class="heading-medium error-summary-heading" id="error-summary-heading">Check what you’re reporting</h2>
+            <ul class="error-summary-list">
+                {% if error.error.errno === 'PI-5000' %}
+                <li><a href="#ewc-code">Enter a correct NOSE-P code</a></li>
+                {% else %}
+                <li><a href="#ewc-code">Duplicate</a></li>
+                {% endif %}
+            </ul>
+        </div>
+        <div class="form-group form-group-error">
+            <label class="form-label" for="nose-code">NOSE-P code</label>
+            <span class="form-hint">For example ‘105.09’.</span>
+            <span class="error-message">Enter a correct NOSE-P code</span>
+            <input class="form-control form-control-error nose-code" id="nose-code-err" name="nose" value="">
+        </div>
         {% else %}
-            <div class="form-group">
-                <label class="form-label" for="nose-code">NOSE-P code</label>
-                <span class="form-hint">For example ‘105.09’.</span>
-                <input class="form-control nose-code" id="nose-code" name="nose" value="">
-            </div>
+        <div class="form-group">
+            <label class="form-label" for="nose-code">NOSE-P code</label>
+            <span class="form-hint">For example ‘105.09’.</span>
+            <input class="form-control nose-code" id="nose-code" name="nose" value="">
+        </div>
         {% endif %}
         <div class="form-group"><input type="submit" class="button" value="Continue"></div>
     </form>

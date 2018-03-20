@@ -18,7 +18,6 @@ Dotenv.config();
  * Validate the environment variables
  */
 const environmentSchema = Joi.object({
-    NODE_ENV: Joi.string().valid(['local', 'api']),
     CONFIG: Joi.string().required(),
     APP_ROOT: Joi.string().required(),
     HOSTNAME: Joi.string().required(),

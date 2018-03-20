@@ -19,37 +19,39 @@ module.exports = {
      */
     cacheHelper: async (request, routeParameter) => {
 
-        try {
+        const route = routeParameter ? TaskListService.mapByPathParameter(AllSectorsTaskList).get(routeParameter)
+            : TaskListService.getRoute(AllSectorsTaskList, request);
 
-            const route = routeParameter ? TaskListService.mapByPathParameter(AllSectorsTaskList).get(routeParameter)
-                : TaskListService.getRoute(AllSectorsTaskList, request);
+        const userContext = await request.server.app.userCache.cache(cacheNames.USER_CONTEXT).get(request);
 
-            const { eaId, year, roles } = await request.server.app.userCache.cache(cacheNames.USER_CONTEXT).get(request);
-            const submissionContext = await request.server.app.userCache.cache(cacheNames.SUBMISSION_CONTEXT).get(request);
-
-            Hoek.assert(route, 'Invalid cache state: route');
-            Hoek.assert(eaId, `Invalid cache state: ${cacheNames.USER_CONTEXT}`);
-            Hoek.assert(submissionContext, 'Invalid cache state: permit-status');
-
-            // We can always set the current route here
-            submissionContext.currentTask = route.name;
-            await request.server.app.userCache.cache(cacheNames.SUBMISSION_CONTEXT).set(request, submissionContext);
-
-            // Get the tasks object or create an empty new one
-            const tasks = await request.server.app.userCache.cache(cacheNames.TASK_CONTEXT).get(request) || {};
-
-            return {
-                route: route,
-                eaId: eaId,
-                year: year,
-                isOperator: roles.includes('OPERATOR'),
-                submissionContext: submissionContext,
-                tasks: tasks
-            };
-
-        } catch (err) {
-            throw new CacheKeyError(err.message);
+        if (!userContext) {
+            throw new CacheKeyError('Expected user cache missing: probable unexpected navigation: user id');
         }
+
+        const {eaId, year, roles} = userContext;
+
+        const submissionContext = await request.server.app.userCache.cache(cacheNames.SUBMISSION_CONTEXT).get(request);
+
+        Hoek.assert(route, 'Invalid cache state: route');
+        Hoek.assert(eaId, `Invalid cache state: ${cacheNames.USER_CONTEXT}`);
+        Hoek.assert(submissionContext, 'Invalid cache state: permit-status');
+
+        // We can always set the current route here
+        submissionContext.currentTask = route.name;
+        await request.server.app.userCache.cache(cacheNames.SUBMISSION_CONTEXT).set(request, submissionContext);
+
+        // Get the tasks object or create an empty new one
+        const tasks = await request.server.app.userCache.cache(cacheNames.TASK_CONTEXT).get(request) || {};
+
+        return {
+            route: route,
+            eaId: eaId,
+            year: year,
+            isOperator: roles.includes('OPERATOR'),
+            submissionContext: submissionContext,
+            tasks: tasks
+        };
+
     },
 
     /**

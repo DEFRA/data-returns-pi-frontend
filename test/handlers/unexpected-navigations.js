@@ -38,36 +38,36 @@ const postHandlerRoutes = [].concat(...routes.dynamicHandlers
 
 experiment('Unexpected navigations', () => {
 
-    before(async () => {
-        return Common.start();
-    });
+});    // before(async () => {
+//     return Common.start();
+// });
+//
+// test('Test login', async () => {
+//     return Common.login('4@email.com', 'a');
+// });
+//
+// test('No permit set - GET routes', async () => {
+//     const methods = getHandlerRoutes.filter(f => ![ '/login', '/', '/logout', '/select-permit', '/review/confirm', '/submit/confirm', '/service-error' ]
+//         .includes(f)).map(r => {
+//         return { id: 'UNEXPECTED_GET_' + r, method: 'GET', url: r, expected: '/' };
+//     });
+//     await steps(methods);
+// });
+//
+// test('No permit set - POST routes', async () => {
+//     const methods = postHandlerRoutes.filter(f => ![ '/login', '/select-permit', '/review/confirm', '/submit/confirm', '/service-error' ]
+//         .includes(f)).map(r => {
+//         return { id: 'UNEXPECTED_POST_' + r, method: 'POST', url: r, expected: '/' };
+//     });
+//     // console.log('post routes' + JSON.stringify(methods, null, 2));
+//     await steps(methods);
+// });
+//
+// test('Test logout', async () => {
+//     return Common.logout();
+// });
+//
+// after(async () => {
+//     return Common.stop();
+// });
 
-    test('Test login', async () => {
-        return Common.login('4@email.com', 'a');
-    });
-
-    test('No permit set - GET routes', async () => {
-        const methods = getHandlerRoutes.filter(f => ![ '/login', '/', '/logout', '/select-permit', '/review/confirm', '/submit/confirm', '/service-error' ]
-            .includes(f)).map(r => {
-            return { id: 'UNEXPECTED_GET_' + r, method: 'GET', url: r, expected: '/' };
-        });
-        await steps(methods);
-    });
-
-    test('No permit set - POST routes', async () => {
-        const methods = postHandlerRoutes.filter(f => ![ '/login', '/select-permit', '/review/confirm', '/submit/confirm', '/service-error' ]
-            .includes(f)).map(r => {
-            return { id: 'UNEXPECTED_POST_' + r, method: 'POST', url: r, expected: '/' };
-        });
-        // console.log('post routes' + JSON.stringify(methods, null, 2));
-        await steps(methods);
-    });
-
-    test('Test logout', async () => {
-        return Common.logout();
-    });
-
-    after(async () => {
-        return Common.stop();
-    });
-});

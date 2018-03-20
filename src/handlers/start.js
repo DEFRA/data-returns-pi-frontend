@@ -3,6 +3,8 @@
 const MasterDataService = require('../service/master-data');
 const Submission = require('../lib/submission');
 const errHdlr = require('../lib/utils').generalErrorHandler;
+const allSectorsTaskList = require('../model/all-sectors/task-list');
+const logger = require('../lib/logging').logger;
 
 const SessionHelper = require('./session-helper');
 const cacheNames = require('../lib/user-cache-policies').names;
@@ -23,8 +25,12 @@ const internals = {
         let submissionContext = await request.server.app.userCache.cache(cacheNames.SUBMISSION_CONTEXT).get(request);
         let submission = await Submission.getSubmissionForEaIdAndYear(eaIdId, year);
 
-        // if there is no submission then create one and create the cache with the same timestamp
+        /*
+         * if there is no submission in the database then create one and create the cache with the same timestamp
+         * Clear any old cache items (There should always be a db entry created when the permit-year is opened
+         */
         if (!submission) {
+            logger.debug(`Creating submission for eaId: ${eaIdId} and year ${year}...`);
             submission = await Submission.createSubmissionForEaIdAndYear(eaIdId, year);
             submissionContext = {};
             submissionContext.id = submission.id;
@@ -36,12 +42,22 @@ const internals = {
             submissionContext.challengeStatus = {};
             submissionContext.valid = {};
             submissionContext.completed = {};
+            logger.debug(`Creating submission cache context for submission: Id: ${submissionContext.id}`);
             await request.server.app.userCache.cache(cacheNames.SUBMISSION_CONTEXT).set(request, submissionContext);
+
+            // Here we also need to remove the task cache entries
+            for (const route of Object.keys(allSectorsTaskList)) {
+                submissionContext.currentTask = route;
+                await request.server.app.userCache.cache(cacheNames.SUBMISSION_CONTEXT).set(request, submissionContext);
+                await request.server.app.userCache.cache(cacheNames.TASK_CONTEXT).drop(request);
+            }
+
             return submission;
         }
 
-        // If there is no submission context then restore from the database
+        // If there is no submission context (cache) then restore from the database
         if (!submissionContext) {
+            logger.debug(`No submission context, restoring for submission id: ${submission.id}`);
             await Submission.restore(request, submission.id);
             return submission;
         }
@@ -51,11 +67,13 @@ const internals = {
 
         // If the submission is newer than the cache then restore the cache
         if (submissionDate > cacheDate) {
+            logger.debug(`Stale submission context, restoring for submission id: ${submission.id}`);
             await Submission.restore(request, submission.id);
             return submission;
         }
 
         // If the cache is newer then the submission then do nothing - we may be editing. We always reset current task
+        logger.debug(`Found submission context id: ${submission.id}`);
         delete submissionContext.currentTask;
         await request.server.app.userCache.cache(cacheNames.SUBMISSION_CONTEXT).set(request, submissionContext);
 
@@ -74,14 +92,27 @@ module.exports = {
             const session = await SessionHelper.get(request, request.auth.artifacts.sid);
             const isOperator = session.user.roles.includes('OPERATOR');
 
-            // Get the permits for the user
-            let eaIds = await MasterDataService.getEaIdsForUser(session.user.id);
+            // If we have a user context remove it
+            await request.server.app.userCache.cache(cacheNames.USER_CONTEXT).drop(request);
 
-            // We need to get the submission status for each permit and map it to the permit
-            eaIds = await Submission.addStatusToEaIds(eaIds, year);
+            // Get the permits for the user
+            const regimes = await MasterDataService.getRegimes();
+
+            const regimeEaIdArr = await Promise.all(regimes.map(async r => {
+                // Get the eaId array
+                let eaIds = await MasterDataService.getEaIdsByRegimeId(r.id);
+
+                // We need to get the submission status for each permit and map it to the permit
+                eaIds = await Submission.addStatusToEaIds(eaIds, year);
+
+                return {
+                    regime: r,
+                    eaIds: eaIds
+                };
+            }));
 
             // Return the start page
-            return h.view('start', { user: session.user, eaIds: eaIds, is_operator: isOperator });
+            return h.view('start', { user: session.user, regimes: regimeEaIdArr, is_operator: isOperator });
 
         } catch (err) {
             return errHdlr(err, h);
@@ -120,24 +151,7 @@ module.exports = {
             });
 
             // Determine the submission status
-            let submissionContext = null;
-
-            if (process.env.NODE_ENV === 'local') {
-                submissionContext = await request.server.app.userCache.cache(cacheNames.SUBMISSION_CONTEXT).get(request);
-                if (!submissionContext) {
-                    submissionContext = {};
-                    submissionContext.id = 1;
-                    submissionContext.applicable_year = 2017;
-                    submissionContext.status = Submission.submissionStatusCodes.UNSUBMITTED;
-                    submissionContext.confirmation = {};
-                    submissionContext.challengeStatus = {};
-                    submissionContext.valid = {};
-                    submissionContext.completed = {};
-                    await request.server.app.userCache.cache(cacheNames.SUBMISSION_CONTEXT).set(request, submissionContext);
-                }
-            } else {
-                submissionContext = await internals.cacheSynchronize(request, eaIdId, year);
-            }
+            const submissionContext = await internals.cacheSynchronize(request, eaIdId, year);
 
             if (isOperator) {
 

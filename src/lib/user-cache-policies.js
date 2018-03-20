@@ -4,7 +4,7 @@ const UserCache = require('./user-cache');
 
 class CacheKeyError extends Error {
     constructor (message) {
-        super(`User cache error: ${message}`);
+        super(message);
         this.name = 'UserCacheError';
     }
 };

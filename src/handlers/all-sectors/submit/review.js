@@ -7,8 +7,8 @@ const cacheNames = require('../../../lib/user-cache-policies').names;
 const CacheKeyError = require('../../../lib/user-cache-policies').CacheKeyError;
 const errHdlr = require('../../../lib/utils').generalErrorHandler;
 
+const TaskListService = require('../../../service/task-list');
 const allSectorsTaskList = require('../../../model/all-sectors/task-list');
-const required = require('../../../service/task-list').required(allSectorsTaskList).map(n => n.name);
 const isNumeric = require('../../../lib/utils').isNumeric;
 const isBrt = require('../../../lib/validator').isBrt;
 const setConfirmation = require('../common').setConfirmation;
@@ -26,20 +26,20 @@ const internals = {
         try {
             if (isBrt(task.releases[release].value)) {
                 return {
-                    substance_name: (await MasterDataService.getSubstanceById(Number.parseInt(release))).name,
+                    substance_name: (await MasterDataService.getParameterById(Number.parseInt(release))).nomenclature,
                     method: (await MasterDataService.getMethodById(task.releases[release].methodId)).name,
                     below_reporting_threshold: true
                 };
             } else if (isNumeric(task.releases[release].value)) {
                 return {
-                    substance_name: (await MasterDataService.getSubstanceById(Number.parseInt(release))).name,
+                    substance_name: (await MasterDataService.getParameterById(Number.parseInt(release))).nomenclature,
                     value: Number.parseFloat(task.releases[release].value),
-                    units: (await MasterDataService.getUnitById(task.releases[release].unitId)).name,
+                    units: (await MasterDataService.getUnitById(task.releases[release].unitId)).nomenclature,
                     method: (await MasterDataService.getMethodById(task.releases[release].methodId)).name,
                     below_reporting_threshold: false,
                     notifiable: task.releases[release].notifiable ? {
                         value: task.releases[release].notifiable.value,
-                        units: (await MasterDataService.getUnitById(task.releases[release].notifiable.unitId)).name
+                        units: (await MasterDataService.getUnitById(task.releases[release].notifiable.unitId)).nomenclature
                     } : null
                 };
             } else {
@@ -71,6 +71,14 @@ module.exports = {
         try {
             const {route, submissionContext, eaId, year, isOperator} = await cacheHelper(request, 'review');
             const { challengeStatus, invalid, completed } = statusHelper(submissionContext);
+
+            const regimeTree = await MasterDataService.getRegimeTreeById(eaId.regime.id);
+
+            // Get appropriate the task list
+            const tasks = TaskListService.getTaskList(allSectorsTaskList, regimeTree);
+
+            // Everything except submit is required to be evaluated
+            const required = Object.keys(tasks).filter(k => !['SUBMIT'].includes(k));
 
             const routes = required.filter(r => challengeStatus.find(c => c === r))
                 .filter(r => completed.find(c => c === r))
@@ -110,8 +118,9 @@ module.exports = {
                 // Build the display objects
                 const reviewObject = {};
                 reviewObject.applicableYear = year;
-                reviewObject.permitNumber = eaId.name;
-                reviewObject.site = eaId.site.name;
+                reviewObject.permitNumber = eaId.nomenclature;
+                reviewObject.site = eaId.site.nomenclature;
+                const routeObligations = {};
 
                 for (const rte of routes) {
                     // We need to se the current task in the eaId
@@ -119,7 +128,16 @@ module.exports = {
                     await request.server.app.userCache.cache(cacheNames.SUBMISSION_CONTEXT).set(request, submissionContext);
                     const task = await request.server.app.userCache.cache(cacheNames.TASK_CONTEXT).get(request);
 
+                    const obligation = regimeTree.obligations.find(o => o.route.id === tasks[rte].routeId);
+                    if (obligation) {
+                        routeObligations[rte] = {
+                            route: tasks[rte].name,
+                            description: obligation.description
+                        };
+                    }
+
                     switch (rte) {
+
                         case 'SITE_CODES':
                             if (task.nace && task.nace.id) {
                                 reviewObject.nace = await MasterDataService.getNaceClassById(task.nace.id);
@@ -210,7 +228,8 @@ module.exports = {
                     review: reviewObject,
                     review_mode: reviewMode,
                     is_operator: isOperator,
-                    submission_status: submissionContext.status
+                    submission_status: submissionContext.status,
+                    routeObligations: routeObligations
                 });
 
             } else {

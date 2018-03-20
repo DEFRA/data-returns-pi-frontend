@@ -45,7 +45,7 @@ module.exports = [
     },
 
     {
-        functionName: 'substancesWithErrors',
+        functionName: 'parametersWithErrors',
 
         /**
          * Process the releases object to filter only those substance names with errors
@@ -53,7 +53,7 @@ module.exports = [
          * @returns {*} - The substance name
          */
         filterFunction: (releases) => {
-            return releases.filter(r => r.errors).map(r => r.substance);
+            return releases.filter(r => r.errors).map(r => r.parameter);
         }
     },
 

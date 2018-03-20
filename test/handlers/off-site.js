@@ -13,7 +13,7 @@ const before = lab.before;
 const after = lab.after;
 
 const START_PAGE = { id: 'OFF-SITE_START_PAGE', method: 'GET', url: '/', expected: '/' };
-const CHOOSE_PERMIT = { id: 'OFF-SITE_CHOOSE_PERMIT', method: 'POST', url: '/select-permit', payload: { '1': 'Open' }, expected: '/task-list' };
+const CHOOSE_PERMIT = { id: 'OFF-SITE_CHOOSE_PERMIT', method: 'POST', url: '/select-permit', payload: { '255': 'Open' }, expected: '/task-list' };
 const TASK_LIST = { id: 'OFF-SITE_TASK_LIST', method: 'GET', url: '/task-list', expected: '/task-list' };
 const CONFIRM_PAGE = { id: 'OFF-SITE_CONFIRM_PAGE', method: 'GET', url: '/transfers/off-site/confirm', expected: '/transfers/off-site/confirm' };
 const CONFIRM_NO = { id: 'OFF-SITE_CONFIRM_NO', method: 'POST', url: '/transfers/off-site/confirm', payload: { confirmation: 'false' }, expected: '/task-list' };

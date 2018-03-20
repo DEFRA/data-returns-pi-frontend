@@ -64,14 +64,14 @@ const internals = {
     },
 
     /**
-     * Function to order the substances on the release screen
+     * Function to order the parameters on the release screen
      * @param a - first release
      * @param b - second release
      * @return {number}
      */
     sortReleases: (a, b) => {
-        const nameA = a.substance.name.toUpperCase();
-        const nameB = b.substance.name.toUpperCase();
+        const nameA = a.parameter.nomenclature.toUpperCase();
+        const nameB = b.parameter.nomenclature.toUpperCase();
 
         if (nameA < nameB) {
             return -1;
@@ -90,9 +90,9 @@ const internals = {
      * @param b
      * @return {number}
      */
-    sortSubstances: (a, b) => {
-        const nameA = a.name.toUpperCase();
-        const nameB = b.name.toUpperCase();
+    sortParameters: (a, b) => {
+        const nameA = a.nomenclature.toUpperCase();
+        const nameB = b.nomenclature.toUpperCase();
 
         if (nameA < nameB) {
             return -1;
@@ -115,7 +115,7 @@ module.exports = {
     validate: internals.validate,
 
     // The substances also need to be sorted in the overseas waste
-    sortSubstances: internals.sortSubstances,
+    sortParameters: internals.sortParameters,
 
     /**
      * Display the confirmation pages - skip if the release type is pre-populated
@@ -131,7 +131,6 @@ module.exports = {
             if (request.method === 'get') {
 
                 if (tasks && tasks.releases && Object.keys(tasks.releases).filter(r => isNumeric(r)).length > 0) {
-
                     // Redirect to main route page
                     return h.redirect(route.page);
 
@@ -177,16 +176,27 @@ module.exports = {
                 // Enrich the stored object for page presentation - add descriptions
                 let releases = [];
 
-                if (tasks.releases) {
+                // Calculate the obligation for this route
+                const obligation = await MasterDataService.getReleaseObligation(eaId.regime.id, route);
+                const parameterMap = new Map([].concat(...obligation.parameterGroups
+                    .map(g => g.parameters))
+                    .map(p => [p.id, p]));
 
-                    releases = await Promise.all(Object.keys(tasks.releases).filter(r => isNumeric(r)).map(async id => {
+                if (tasks.releases) {
+                    releases = Object.keys(tasks.releases).filter(r => isNumeric(r)).map(id => {
                         return {
-                            substance: await MasterDataService.getSubstanceById(Number.parseInt(id)),
+                            parameter: (() => {
+                                const foundParameter = parameterMap.get(Number.parseInt(id));
+                                if (!foundParameter) {
+                                    throw new Error(`Unexpected parameter id: ${id} for obligation ${obligation.nomenclature}`);
+                                }
+                                return foundParameter;
+                            })(),
                             value: tasks.releases[id].value,
                             unitId: tasks.releases[id].unitId,
                             errors: tasks.releases[id].errors
                         };
-                    }));
+                    });
 
                     // Sort the releases by substance name
                     releases.sort(internals.sortReleases);
@@ -197,9 +207,9 @@ module.exports = {
 
                 return h.view('all-sectors/report/releases', {
                     route: route,
-                    eaId: eaId.name,
+                    eaId: eaId.nomenclature,
                     releases: releases,
-                    units: await MasterDataService.getUnits()
+                    units: obligation.units
                 });
 
             } else {
@@ -251,20 +261,20 @@ module.exports = {
 
             } else if (Object.keys(request.payload).find(s => s.startsWith('detail'))) {
 
-                // Save the substance id and redirect to the release detail page
-                tasks.currentSubstanceId = Object.keys(request.payload)
+                // Save the parameter id and redirect to the release detail page
+                tasks.currentParameterId = Object.keys(request.payload)
                     .find(s => s.startsWith('detail')).substr(7);
 
                 await request.server.app.userCache.cache(cacheNames.TASK_CONTEXT).set(request, tasks);
                 return h.redirect(route.page + '/detail');
 
             } else if (Object.keys(request.payload).find(s => s.startsWith('delete'))) {
-                // Save the substance id and redirect to the delete confirmation page
-                const substanceId = Number.parseInt(Object.keys(request.payload)
+                // Save the parameter id and redirect to the delete confirmation page
+                const parameterId = Number.parseInt(Object.keys(request.payload)
                     .find(s => s.startsWith('delete')).substr(7));
 
                 // Send to the delete confirmation dialog
-                tasks.currentSubstanceId = substanceId;
+                tasks.currentParameterId = parameterId;
                 await request.server.app.userCache.cache(cacheNames.TASK_CONTEXT).set(request, tasks);
                 return h.redirect(route.page + '/remove');
 
@@ -285,9 +295,9 @@ module.exports = {
     detail: async (request, h) => {
         try {
             // Check the permit status has been set
-            const { submissionContext, route, tasks } = await cacheHelper(request);
+            const { submissionContext, route, tasks, eaId } = await cacheHelper(request);
 
-            if (!tasks.releases || !tasks.currentSubstanceId) {
+            if (!tasks.releases || !tasks.currentParameterId) {
                 throw new CacheKeyError('Cache read error');
             }
 
@@ -296,26 +306,31 @@ module.exports = {
                 await setConfirmation(request, submissionContext, route);
 
                 // Get the current release and enrich with the substance details
-                const release = tasks.releases[tasks.currentSubstanceId];
+                const release = tasks.releases[tasks.currentParameterId];
 
-                const substance = await MasterDataService.getSubstanceById(Number.parseInt(tasks.currentSubstanceId));
-                release.substance = substance;
+                // Calculate the obligation for this route
+                const obligation = await MasterDataService.getReleaseObligation(eaId.regime.id, route);
+
+                // Create parameter map
+                const parameterMap = new Map([].concat(...obligation.parameterGroups
+                    .map(g => g.parameters))
+                    .map(p => [p.id, p]));
+
+                const parameter = parameterMap.get(Number.parseInt(tasks.currentParameterId));
+                release.parameter = parameter;
 
                 // Get the methods list
                 const methods = await MasterDataService.getMethods();
 
-                // Get the units list
-                const units = await MasterDataService.getUnits();
-
                 // Display the detail page
-                return h.view('all-sectors/report/release-detail', { route: route, release: release, methods: methods, units: units });
+                return h.view('all-sectors/report/release-detail', { route: route, release: release, methods: methods, units: obligation.units });
             } else {
 
                 // Set the task detail elements
                 const { unitId, methodId, value, hasNotifiableRelease,
-                  notifiableUnitId, notifiableValue, notifiableReason } = request.payload;
+                    notifiableUnitId, notifiableValue, notifiableReason } = request.payload;
 
-                const currentRelease = tasks.releases[tasks.currentSubstanceId];
+                const currentRelease = tasks.releases[tasks.currentParameterId];
 
                 // Set up the release object
                 currentRelease.unitId = Number.isNaN(Number.parseInt(unitId)) ? null : Number.parseInt(unitId);
@@ -334,7 +349,7 @@ module.exports = {
                 delete currentRelease.errors;
 
                 // Validate the release object
-                const validation = Validator.release(tasks.releases[tasks.currentSubstanceId]);
+                const validation = Validator.release(tasks.releases[tasks.currentParameterId]);
 
                 if (validation) {
                     // Unset the overall validation status
@@ -367,14 +382,14 @@ module.exports = {
     remove: async (request, h) => {
         try {
             const { route, tasks, submissionContext } = await cacheHelper(request);
-            const release = tasks.releases[tasks.currentSubstanceId];
-            const substance = await MasterDataService.getSubstanceById(Number.parseInt(tasks.currentSubstanceId));
+            const release = tasks.releases[tasks.currentParameterId];
+            const parameter = await MasterDataService.getParameterById(Number.parseInt(tasks.currentParameterId));
 
             if (request.method === 'get') {
-                release.substance = substance;
+                release.parameter = parameter;
                 return h.view('all-sectors/report/confirm-delete', { route: route, release: release });
             } else {
-                delete tasks.releases[tasks.currentSubstanceId];
+                delete tasks.releases[tasks.currentParameterId];
                 await request.server.app.userCache.cache(cacheNames.TASK_CONTEXT).set(request, tasks);
 
                 // Recalculate the overall route validation status
@@ -403,33 +418,39 @@ module.exports = {
     add: async (request, h) => {
         try {
             // Get cache objects
-            const { route, tasks, submissionContext } = await cacheHelper(request);
+            const { route, tasks, submissionContext, eaId } = await cacheHelper(request);
 
             if (request.method === 'get') {
                 // Unset the confirmation status when viewing the page
                 await setConfirmation(request, submissionContext, route);
 
-                // Get a list of all of the substances from the master data service
-                let substances = await MasterDataService.getSubstances(route.name);
+                // Calculate the obligation for this route
+                const obligation = await MasterDataService.getReleaseObligation(eaId.regime.id, route);
 
-                // Remove any substances already reported
-                if (tasks.releases) {
-                    const substanceIds = Object.keys(tasks.releases).filter(r => isNumeric(r)).map(k => Number.parseInt(k));
-                    substances = substances.filter(s => !substanceIds.find(i => s.id === i));
-                }
+                // Remove any parameters already reported and sort the parameters and the groups
+                const parameterGroups = obligation.parameterGroups.map(g => {
+                    const group = {};
+                    group.id = g.id;
+                    group.nomenclature = g.nomenclature;
+                    if (tasks.releases) {
+                        group.parameters = g.parameters.filter(p => !Object.keys(tasks.releases).map(n => Number.parseInt(n))
+                            .includes(p.id)).sort(internals.sortParameters);
+                    } else {
+                        group.parameters = g.parameters.sort(internals.sortParameters);
+                    }
+                    return group;
+                });
 
-                substances = substances.sort(internals.sortSubstances);
-
-                if (tasks.releases && tasks.releases.substanceErrors) {
+                if (tasks.releases && tasks.releases.parameterErrors) {
                     return h.view('all-sectors/report/add-substance', {
                         route: route,
-                        substances: substances,
-                        errors: tasks.releases.substanceErrors
+                        parameterGroups: parameterGroups,
+                        errors: tasks.releases.parameterErrors
                     });
                 } else {
                     return h.view('all-sectors/report/add-substance', {
                         route: route,
-                        substances: substances
+                        parameterGroups: parameterGroups
                     });
                 }
 
@@ -441,26 +462,26 @@ module.exports = {
                     tasks.releases = {};
                 }
 
-                if (request.payload.substanceId) {
-                    const substance = await MasterDataService.getSubstanceById(Number.parseInt(request.payload['substanceId']));
+                if (request.payload.parameterId) {
+                    const parameter = await MasterDataService.getParameterById(Number.parseInt(request.payload['parameterId']));
 
-                    // Add the selected substances to the task if it exists
-                    if (substance) {
+                    // Add the selected parameters to the task if it exists
+                    if (parameter) {
 
-                        // Assign this substance to the transfer object
-                        if (!tasks.releases[substance.id]) {
-                            tasks.releases[substance.id] = NEW_RELEASE_OBJECT;
+                        // Assign this parameter to the transfer object
+                        if (!tasks.releases[parameter.id]) {
+                            tasks.releases[parameter.id] = NEW_RELEASE_OBJECT;
                         }
 
                         // Immediately set the overall validation status to false
                         await setValidationStatus(request, submissionContext, route);
 
                         // Set the current task to allow us to get directly to the detail page
-                        tasks.currentSubstanceId = substance.id;
-                        delete tasks.releases.substanceErrors;
+                        tasks.currentParameterId = parameter.id;
+                        delete tasks.releases.parameterErrors;
                         success = true;
 
-                        // If there is no substance then redirect back with an error Write the task object back to the cache
+                        // If there is no parameter then redirect back with an error write the task object back to the cache
                         await request.server.app.userCache.cache(cacheNames.TASK_CONTEXT).set(request, tasks);
 
                         return h.redirect(route.page + '/detail');
@@ -468,7 +489,7 @@ module.exports = {
                 }
 
                 if (!success) {
-                    tasks.releases.substanceErrors = [ { key: 'substance', errno: 'PI-1004' } ];
+                    tasks.releases.parameterErrors = [ { key: 'parameter', errno: 'PI-1004' } ];
                     await request.server.app.userCache.cache(cacheNames.TASK_CONTEXT).set(request, tasks);
                     return h.redirect(route.page + '/add-substance');
                 }

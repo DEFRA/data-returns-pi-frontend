@@ -24,7 +24,7 @@ internals.initialize = async () => {
      * Create a Hapi server with a redis cache
      * as the default client cache
      */
-    logger.info('Hapi server initialization: ' + process.env.NODE_ENV);
+    logger.info('Hapi server initialization');
     internals.server = new Hapi.Server({
         host: process.env.HOSTNAME,
         port: process.env.PORT,
@@ -49,7 +49,7 @@ internals.initialize = async () => {
      * Register the logging plugin to allow Hapi to log using Winston - this is not reusable so don't use for
      * integration testing
      */
-    if (process.env.NODE_ENV !== 'local') {
+    if (process.env.NODE_ENV !== 'test') {
         logger.info('Server plugin registration: good');
         await internals.server.register({
             plugin: require('good'),
@@ -90,8 +90,7 @@ internals.initialize = async () => {
                 },
 
                 prepare: function (options, next) {
-                    options.compileOptions.environment = Nunjucks.configure(options.path,
-                        { watch: process.env.NODE_ENV !== 'api' });
+                    options.compileOptions.environment = Nunjucks.configure(options.path, { watch: true });
 
                     // Add in additional nunjunks filter functions
                     for (const filter of AdditionalFilters) {
@@ -116,7 +115,7 @@ internals.initialize = async () => {
          * Cause the template rendering engine to reread the file on each invocation
          * in development to avoid restarts when changing templates
          */
-        isCached: process.env.NODE_ENV !== 'local'
+        isCached: false
     });
 
     /*
