@@ -10,7 +10,7 @@
 
 <form id="main-form" action="{{ action }}" method="post" class="form">
     <a href="/task-list" class="link-back">Back to sections you must complete</a>
-    <h1 class="heading-large">Your release of {{ release.parameter.name }} {{ description }}</h1>
+    <h1 class="heading-large">Your release of {{ release.parameter.nomenclature }} {{ description }}</h1>
 
     {% if release.errors %}
     <div class="error-summary" role="alert" aria-labelledby="check-your-report" tabindex="-1">
