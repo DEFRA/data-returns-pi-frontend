@@ -659,16 +659,25 @@ const internals = {
         submissionContext.currentTask = 'SITE_CODES';
         await request.server.app.userCache.cache(cacheNames.SUBMISSION_CONTEXT).set(request, submissionContext);
         const task = await request.server.app.userCache.cache(cacheNames.TASK_CONTEXT).get(request);
+
+        const newSubmission = ((s) => {
+            return Object.assign({}, {
+                applicable_year: s.applicable_year,
+                id: s.id,
+                reporting_reference: s.reporting_reference,
+                status: s.status });
+        })(submission);
+
         if (task.nace) {
-            submission.nace_code = task.nace.id;
+            newSubmission.nace_id = task.nace.id;
         }
 
         if (task.nose.noseIds) {
-            submission.nose_ids = task.nose.noseIds;
+            newSubmission.nose_ids = task.nose.noseIds;
         }
 
-        submission.status = 'Submitted';
-        return submission;
+        newSubmission.status = 'Submitted';
+        return newSubmission;
     }
 
 };
