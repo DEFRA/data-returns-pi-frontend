@@ -62,7 +62,7 @@
     "start": "node main.js",
     "proto": "node proto.js",
     "lint": "./node_modules/eslint/bin/eslint.js .",
-    "test": "redis-cli flushdb && ./node_modules/lab/bin/lab --assert code",
+    "test": "redis-cli flushdb && ./node_modules/lab/bin/lab --assert code -e test",
     "clear-cache": "redis-cli flushdb",
     "coverage": "nyc --all npm start",
     "coverage-unittest": "nyc --all npm test",
