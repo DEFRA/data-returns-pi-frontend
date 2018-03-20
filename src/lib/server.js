@@ -26,7 +26,6 @@ internals.initialize = async () => {
      */
     logger.info('Hapi server initialization');
     internals.server = new Hapi.Server({
-        host: process.env.HOSTNAME,
         port: process.env.PORT,
         routes: {
             cors: false,
