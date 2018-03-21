@@ -205,8 +205,6 @@ const internals = {
 
     // Prepare the submission data - data items at top level only
     prepareSubmission: async (request, submission) => {
-        // Initialize a new permit status
-        const submissionContext = await request.server.app.userCache.cache(cacheNames.SUBMISSION_CONTEXT).get(request);
 
         const newSubmission = ((s) => {
             return Object.assign({}, {
@@ -216,26 +214,28 @@ const internals = {
                 status: s.status });
         })(submission);
 
-        const setTask = async (submissionContext, currentTask, setter) => {
+        const setTask = async (currentTask, setter) => {
+            const submissionContext = await request.server.app.userCache.cache(cacheNames.SUBMISSION_CONTEXT).get(request);
             submissionContext.currentTask = currentTask;
             await request.server.app.userCache.cache(cacheNames.SUBMISSION_CONTEXT).set(request, submissionContext);
             const task = await request.server.app.userCache.cache(cacheNames.TASK_CONTEXT).get(request);
             return setter(task);
         };
 
-        Object.assign(newSubmission, await setTask(submissionContext, 'NACE_CODE', (task) => {
+        Object.assign(newSubmission, await setTask('NACE_CODE', (task) => {
             return {
                 nace_id: task.nace.id
             };
         }));
 
-        Object.assign(newSubmission, await setTask(submissionContext, 'NOSE_CODES', (task) => {
+        Object.assign(newSubmission, await setTask('NOSE_CODES', (task) => {
             return {
                 nose_ids: task.nose.noseIds || []
             };
         }));
 
         newSubmission.status = 'Submitted';
+
         return newSubmission;
     },
 
@@ -522,7 +522,6 @@ const internals = {
             // Fetch submission with children from the PI submissions API
             const submission = await internals.fetchSubmission(request, tasks, id);
             Hoek.assert(['Unsubmitted', 'Submitted', 'Approved'].includes(submission.status), `Cannot restore submission: ${id}`);
-            console.log(JSON.stringify(submission));
 
             // Site codes etc
             await internals.setSubmissionCache(request, submission);
@@ -580,7 +579,6 @@ const internals = {
             await request.server.app.userCache.cache(cacheNames.SUBMISSION_CONTEXT).set(request, submissionContext);
             const task = setter(submission);
             await request.server.app.userCache.cache(cacheNames.TASK_CONTEXT).set(request, task);
-            return setter(task);
         };
 
         await setTask(submissionContext, 'NACE_CODE', (submission) => {
@@ -592,8 +590,9 @@ const internals = {
 
         await setTask(submissionContext, 'NOSE_CODES', (submission) => {
             const result = {};
-            result.nose = {};
-            result.noseIds = submission.nose_ids;
+            result.nose = {
+                noseIds: submission.nose_ids
+            };
             return result;
         });
     },
@@ -759,13 +758,9 @@ module.exports = {
     // The submission status codes
     submissionStatusCodes: submissionStatusCodes,
 
-    /**
-     * Set the status on a given submission
-     * @param request
-     * @return {Promise.<void>}
-     */
+    // Set the status for a given submission
     setStatusForSubmission: internals.setStatusForSubmission,
 
-    // Submit to api
+    // Submit to the API
     submit: internals.submit
 };
