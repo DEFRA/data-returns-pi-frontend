@@ -7,12 +7,12 @@
 <main id="content">
     <label id="page-name" hidden>nose-code-confirm-delete</label>
     <h1 class="heading-large">Confirm removal {{ nose.code }} - {{ nose.description }}</h1>
-    <form action="/check/site-codes/nose/remove" method="post" class="form">
+    <form action="/check/nose-remove" method="post" class="form">
         <div class="form-group">
             <input id="removeBtn" class="button" type="submit" value="Remove">
         </div>
         <div class="form-group">
-            <a href="/check/site-codes/confirm">Cancel and go back</a>
+            <a href="/check/nose-summary">Cancel and go back</a>
         </div>
     </form>
 </main>

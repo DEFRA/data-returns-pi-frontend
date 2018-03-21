@@ -28,16 +28,16 @@
                 </thead>
                 <tbody>
 
-                    {% if tasks.SITE_CODES %}
+                    {% if tasks.NACE_CODE %}
                         <tr>
                             <td class="task">
-                                <a id="{{ tasks.SITE_CODES.page | replace('/', '') }}" href="{{ tasks.SITE_CODES.page }}/confirm">
-                                    <span class="task-name">Check your site codes</span>
+                                <a id="{{ tasks.SITE_CODES.page | replace('/', '') }}" href="{{ tasks.NACE_CODE.page }}">
+                                    <span class="task-name">NACE code</span>
                                 </a>
                             </td>
 
-                            <td class="numeric" id="site-codes-task-status">
-                                {% if submissionContext.completed.SITE_CODES %}
+                            <td class="numeric" id="nace-code-task-status">
+                                {% if submissionContext.completed.NACE_CODE %}
                                 <div class="task-status-banner">
                                     <strong class="task-finished">Completed</strong>
                                 </div>
@@ -48,6 +48,26 @@
                         </tr>
                     {% endif %}
 
+                    {% if tasks.NOSE_CODES %}
+                        <tr>
+                            <td class="task">
+                                <a id="{{ tasks.NOSE_CODES.page | replace('/', '') }}" href="{{ tasks.NOSE_CODES.page }}">
+                                    <span class="task-name">NOSE-P code(s)</span>
+                                </a>
+                            </td>
+
+                            <td class="numeric" id="nose-codes-task-status">
+                                {% if submissionContext.completed.NOSE_CODES %}
+                                <div class="task-status-banner">
+                                    <strong class="task-finished">Completed</strong>
+                                </div>
+                                {% else %}
+                                <div class="task-status-banner"/>
+                                {% endif %}
+                            </td>
+                        </tr>
+                    {% endif %}
+                
                 </tbody>
             </table>
 

@@ -7,13 +7,18 @@
  */
 module.exports = {
 
-    SITE_CODES: {
-        name: 'SITE_CODES',
-        title: 'Check your site codes',
-        pathParam: 'site-codes',
-        page: '/check/site-codes',
-        type: 'SUPPLEMENTARY',
-        message: { fetch: 'siteCodes' }
+    NACE_CODE: {
+        name: 'NACE_CODE',
+        pathParam: 'nace-code',
+        page: '/check/nace-code',
+        type: 'SUPPLEMENTARY'
+    },
+
+    NOSE_CODES: {
+        name: 'NOSE_CODES',
+        pathParam: 'nose-codes',
+        page: '/check/nose-code',
+        type: 'SUPPLEMENTARY'
     },
 
     REVIEW: {
@@ -36,40 +41,35 @@ module.exports = {
         name: 'RELEASES_TO_AIR',
         pathParam: 'air',
         page: '/releases/air',
-        type: 'RELEASE',
-        message: { fetch: 'releases' }
+        type: 'RELEASE'
     },
 
     RELEASES_TO_LAND: {
         name: 'RELEASES_TO_LAND',
         pathParam: 'land',
         page: '/releases/land',
-        type: 'RELEASE',
-        message: { fetch: 'releases' }
+        type: 'RELEASE'
     },
 
     RELEASES_TO_CONTROLLED_WATERS: {
         name: 'RELEASES_TO_CONTROLLED_WATERS',
         pathParam: 'water',
         page: '/releases/water',
-        type: 'RELEASE',
-        message: { fetch: 'releases' }
+        type: 'RELEASE'
     },
 
     OFFSITE_TRANSFERS_IN_WASTE_WATER: {
         name: 'OFFSITE_TRANSFERS_IN_WASTE_WATER',
         pathParam: 'waste-water',
         page: '/releases/waste-water',
-        type: 'RELEASE',
-        message: { fetch: 'releases' }
+        type: 'RELEASE'
     },
 
     OFFSITE_WASTE_TRANSFERS: {
         name: 'OFFSITE_WASTE_TRANSFERS',
         pathParam: 'off-site',
         page: '/transfers/off-site',
-        type: 'TRANSFER',
-        message: { fetch: 'offsiteWasteTransfers' }
+        type: 'TRANSFER'
     }
 
 };

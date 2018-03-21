@@ -53,7 +53,7 @@
             </span>
             <div id="search-results-err" class="grid-row">
                 {% for parameterGroup in parameterGroups %}
-                    <h2>{{ parameterGroup.nomenclature }}</h2>
+                    <!--<h2>{{ parameterGroup.nomenclature }}</h2>-->
                     <div class="form-group list form-group-error">
                         {% for parameter in parameterGroup.parameters %}
                             <div class="multiple-choice">
@@ -68,7 +68,7 @@
         {% else %}
             <div id="search-results" class="grid-row">
             {% for parameterGroup in parameterGroups %}
-                <h2>{{ parameterGroup.nomenclature }}</h2>
+                <!--<h2>{{ parameterGroup.nomenclature }}</h2>-->
                     <div class="form-group list">
                         {% for parameter in parameterGroup.parameters %}
                             <div class="multiple-choice">

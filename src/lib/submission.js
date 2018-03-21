@@ -152,11 +152,6 @@ const internals = {
         submissionContext._created = submission._created;
         submissionContext._last_modifed = submission._last_modifed;
 
-        submissionContext.currentTask = 'SITE_CODES';
-        submissionContext.confirmation[submissionContext.currentTask] = true;
-        submissionContext.challengeStatus[submissionContext.currentTask] = true;
-        setCompletedStatus(submissionContext, submissionContext.currentTask);
-
         const tasks = {};
         tasks.nace = { id: submission.nace_id };
         tasks.nose = { noseIds: submission.nose_ids };
@@ -574,15 +569,15 @@ const internals = {
         logger.debug('Puts: ' + JSON.stringify(puts, null, 4));
 
         await Promise.all(deletes.map(async del => {
-            await Api.request('SUB', 'DELETE', `${route.message.fetch}/${del.id}`, null);
+            await Api.request('SUB', 'DELETE', `offsiteWasteTransfers/${del.id}`, null);
         }));
 
         await Promise.all(posts.map(async post => {
-            await Api.request('SUB', 'POST', route.message.fetch, null, post);
+            await Api.request('SUB', 'POST', 'offsiteWasteTransfers', null, post);
         }));
 
         await Promise.all(puts.map(async put => {
-            await Api.request('SUB', 'PUT', `${route.message.fetch}/${put.id}`, null, put.put);
+            await Api.request('SUB', 'PUT', `offsiteWasteTransfers/${put.id}`, null, put.put);
         }));
     },
 

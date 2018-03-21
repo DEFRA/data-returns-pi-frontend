@@ -20,7 +20,6 @@ Dotenv.config();
 const environmentSchema = Joi.object({
     CONFIG: Joi.string().required(),
     APP_ROOT: Joi.string().required(),
-    HOSTNAME: Joi.string().optional(),
     PORT: Joi.number().optional(),
     MD_API_HOSTNAME: Joi.string().required(),
     MD_API_PORT: Joi.number().required(),

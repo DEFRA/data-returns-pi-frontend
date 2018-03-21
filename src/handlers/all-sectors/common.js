@@ -25,7 +25,7 @@ module.exports = {
         const userContext = await request.server.app.userCache.cache(cacheNames.USER_CONTEXT).get(request);
 
         if (!userContext) {
-            throw new CacheKeyError('Expected user cache missing: probable unexpected navigation: user id');
+            throw new CacheKeyError('Expected user cache missing: probable unexpected navigation');
         }
 
         const {eaId, year, roles} = userContext;
@@ -51,7 +51,6 @@ module.exports = {
             submissionContext: submissionContext,
             tasks: tasks
         };
-
     },
 
     /**
