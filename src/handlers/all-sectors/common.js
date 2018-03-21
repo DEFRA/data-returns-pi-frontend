@@ -28,13 +28,13 @@ module.exports = {
             throw new CacheKeyError('Expected user cache missing: probable unexpected navigation');
         }
 
-        const {eaId, year, roles} = userContext;
+        const { eaId, year, roles } = userContext;
 
         const submissionContext = await request.server.app.userCache.cache(cacheNames.SUBMISSION_CONTEXT).get(request);
 
         Hoek.assert(route, 'Invalid cache state: route');
         Hoek.assert(eaId, `Invalid cache state: ${cacheNames.USER_CONTEXT}`);
-        Hoek.assert(submissionContext, 'Invalid cache state: permit-status');
+        Hoek.assert(submissionContext, 'Invalid cache state: submission-context');
 
         // We can always set the current route here
         submissionContext.currentTask = route.name;
