@@ -138,11 +138,14 @@ module.exports = {
 
                     switch (rte) {
 
-                        case 'SITE_CODES':
+                        case 'NACE_CODE':
                             if (task.nace && task.nace.id) {
                                 reviewObject.nace = await MasterDataService.getNaceClassById(task.nace.id);
                             }
 
+                            break;
+
+                        case 'NOSE_CODES':
                             if (task.nose && task.nose.noseIds) {
                                 reviewObject.noses = await Promise.all(task.nose.noseIds.map(async p => {
                                     return MasterDataService.getNoseProcessById(p);

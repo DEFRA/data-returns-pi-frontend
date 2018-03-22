@@ -48,14 +48,16 @@ module.exports = {
 
     nace: async (request, h) => {
         try {
-            const { tasks } = await cacheHelper(request, 'site-codes');
+            const { tasks, submissionContext, route } = await cacheHelper(request, 'nace-code');
 
             if (request.method === 'get') {
 
-                if (tasks.nace && tasks.nace.error) {
-                    return h.view('all-sectors/check/nace-codes', { error: tasks.nace });
+                if (tasks.nace && !tasks.nace.error) {
+                    return h.redirect('/check/nace-summary');
+                } else if (tasks.nace && tasks.nace.error) {
+                    return h.view('all-sectors/check/nace-code', { error: tasks.nace });
                 } else {
-                    return h.view('all-sectors/check/nace-codes');
+                    return h.view('all-sectors/check/nace-code');
                 }
 
             } else {
@@ -63,28 +65,24 @@ module.exports = {
                 const nace = await MasterDataService.getNaceClassByCode(naceStr.trim());
 
                 if (nace) {
-                    // Set the identifier
+
                     tasks.nace = {
                         id: nace.id
                     };
 
+                    await setChallengeStatus(request, submissionContext, route, true);
                     await request.server.app.userCache.cache(cacheNames.TASK_CONTEXT).set(request, tasks);
-
-                    if (tasks.nose) {
-                        return h.redirect('/check/site-codes/confirm');
-                    } else {
-                        return h.redirect('/check/site-codes/nose');
-                    }
+                    return h.redirect('/check/nace-summary');
 
                 } else {
-                    // Set the error
+
                     tasks.nace = {
                         text: naceStr,
                         error: { key: 'nace', errno: 'PI-4000' }
                     };
 
                     await request.server.app.userCache.cache(cacheNames.TASK_CONTEXT).set(request, tasks);
-                    return h.redirect('/check/site-codes/nace');
+                    return h.redirect('/check/nace-code');
                 }
 
             }
@@ -93,17 +91,74 @@ module.exports = {
         }
     },
 
-    nose: async (request, h) => {
+    naceSummary: async (request, h) => {
         try {
-            const { tasks } = await cacheHelper(request, 'site-codes');
+            const { route, submissionContext, tasks } = await cacheHelper(request, 'nace-code');
 
             if (request.method === 'get') {
 
-                if (tasks.nose && tasks.nose.error) {
-                    return h.view('all-sectors/check/nose-codes', { error: tasks.nose.error });
-                } else {
-                    return h.view('all-sectors/check/nose-codes');
+                // Clear any left over errors
+                if (tasks.nace) {
+                    delete tasks.nace.error;
+                    delete tasks.nace.text;
                 }
+
+                await request.server.app.userCache.cache(cacheNames.TASK_CONTEXT).set(request, tasks);
+
+                if (!tasks.nace || !tasks.nace.id) {
+                    return h.redirect('/check/nace-code');
+                } else {
+                    await setConfirmation(request, submissionContext, route);
+                    const nace = await internals.getFullNaceHierarchy(tasks.nace.id);
+                    return h.view('all-sectors/check/nace-summary', { nace });
+                }
+
+            } else {
+
+                if (request.payload.change) {
+                    delete tasks.nace;
+                    await request.server.app.userCache.cache(cacheNames.TASK_CONTEXT).set(request, tasks);
+                    return h.redirect('/check/nace-code');
+                } else {
+                    // There is no challenge - so always yes
+                    await setChallengeStatus(request, submissionContext, route, true);
+                    await setConfirmation(request, submissionContext, route, true);
+                    return h.redirect('/task-list');
+                }
+            }
+
+        } catch (err) {
+            return errHdlr(err, h);
+        }
+
+    },
+
+    nose: async (request, h) => {
+        try {
+            const { tasks } = await cacheHelper(request, 'nose-codes');
+
+            if (request.method === 'get') {
+
+                if (tasks.nose) {
+
+                    // Adding subsequent
+                    if (tasks.nose.add) {
+                        delete tasks.nose.add;
+                        await request.server.app.userCache.cache(cacheNames.TASK_CONTEXT).set(request, tasks);
+                        return h.view('all-sectors/check/nose-code');
+                    }
+
+                    // Redirected with an error
+                    if (tasks.nose && tasks.nose.error) {
+                        return h.view('all-sectors/check/nose-code', { error: tasks.nose.error });
+                    }
+
+                    // Go to the summary
+                    return h.redirect('/check/nose-summary');
+                }
+
+                // Add first
+                return h.view('all-sectors/check/nose-code');
 
             } else {
                 const noseStr = request.payload.nose;
@@ -135,10 +190,10 @@ module.exports = {
                     tasks.nose.noseIds.push(nose.id);
                     delete tasks.nose.error;
                     await request.server.app.userCache.cache(cacheNames.TASK_CONTEXT).set(request, tasks);
-                    return h.redirect('/check/site-codes/confirm');
+                    return h.redirect('/check/nose-summary');
                 } else {
                     await request.server.app.userCache.cache(cacheNames.TASK_CONTEXT).set(request, tasks);
-                    return h.redirect('/check/site-codes/nose');
+                    return h.redirect('/check/nose-code');
                 }
 
             }
@@ -147,9 +202,9 @@ module.exports = {
         }
     },
 
-    confirm: async (request, h) => {
+    noseSummary: async (request, h) => {
         try {
-            const { route, submissionContext, tasks } = await cacheHelper(request, 'site-codes');
+            const { route, submissionContext, tasks } = await cacheHelper(request, 'nose-codes');
 
             if (request.method === 'get') {
 
@@ -158,36 +213,25 @@ module.exports = {
                     delete tasks.nose.error;
                 }
 
-                if (tasks.nace) {
-                    delete tasks.nace.error;
-                    delete tasks.nace.text;
-                }
-
                 await request.server.app.userCache.cache(cacheNames.TASK_CONTEXT).set(request, tasks);
 
-                if (!tasks.nace || !tasks.nace.id) {
-                    return h.redirect('/check/site-codes/nace');
-
-                } else if (!tasks.nose || !tasks.nose.noseIds) {
-                    return h.redirect('/check/site-codes/nose');
-
+                if (!tasks.nose || !tasks.nose.noseIds) {
+                    return h.redirect('/check/nose-code');
                 } else {
                     await setConfirmation(request, submissionContext, route);
-
-                    const nace = await internals.getFullNaceHierarchy(tasks.nace.id);
                     const noses = await internals.getNoseProcesses(tasks.nose.noseIds);
-
-                    return h.view('all-sectors/check/confirm-site-codes', { nace, noses });
+                    return h.view('all-sectors/check/nose-summary', { noses });
                 }
 
             } else {
-
-                if (request.payload.change) {
-                    return h.redirect('/check/site-codes/nace');
+                if (Object.keys(request.payload).includes('add')) {
+                    tasks.nose.add = {};
+                    await request.server.app.userCache.cache(cacheNames.TASK_CONTEXT).set(request, tasks);
+                    return h.redirect('/check/nose-code');
                 } else if (request.payload && Object.values(request.payload).includes('Delete')) {
                     tasks.nose.currentNoseId = Number.parseInt(Object.keys(request.payload)[0].substring(7));
                     await request.server.app.userCache.cache(cacheNames.TASK_CONTEXT).set(request, tasks);
-                    return h.redirect('/check/site-codes/nose/remove');
+                    return h.redirect('/check/nose-remove');
                 } else {
                     // There is no challenge - so always yes
                     await setChallengeStatus(request, submissionContext, route, true);
@@ -204,7 +248,7 @@ module.exports = {
 
     remove: async (request, h) => {
         try {
-            const { tasks } = await cacheHelper(request, 'site-codes');
+            const { tasks } = await cacheHelper(request, 'nose-codes');
             const nose = await MasterDataService.getNoseProcessById(tasks.nose.currentNoseId);
 
             if (request.method === 'get') {
@@ -214,9 +258,11 @@ module.exports = {
                 tasks.nose.noseIds.splice(idx, 1);
                 await request.server.app.userCache.cache(cacheNames.TASK_CONTEXT).set(request, tasks);
                 if (tasks.nose.noseIds.length === 0) {
-                    return h.redirect('/check/site-codes/nose');
+                    delete tasks.nose;
+                    await request.server.app.userCache.cache(cacheNames.TASK_CONTEXT).set(request, tasks);
+                    return h.redirect('/check/nose-code');
                 } else {
-                    return h.redirect('/check/site-codes/confirm');
+                    return h.redirect('/check/nose-summary');
                 }
             }
         } catch (err) {

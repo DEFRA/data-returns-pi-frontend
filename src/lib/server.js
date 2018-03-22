@@ -26,7 +26,7 @@ internals.initialize = async () => {
      */
     logger.info('Hapi server initialization');
     internals.server = new Hapi.Server({
-        port: process.env.PORT,
+        port: process.env.PORT || 3000,
         routes: {
             cors: false,
             timeout: { server: srvcfg.timeout }
