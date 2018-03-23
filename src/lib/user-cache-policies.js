@@ -59,7 +59,7 @@ const internals = {
                 if (userContext) {
                     return statusKey + '.' + userContext.year + '.' + userContext.eaId.id;
                 } else {
-                    throw new CacheKeyError('Cannot generate key for submission context cache');
+                    throw new CacheKeyError('Cannot generate key for submission context cache: ' + statusKey);
                 }
             } catch (err) {
                 throw new CacheKeyError(err);

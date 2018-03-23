@@ -485,7 +485,7 @@ const internals = {
      * @return {Promise.<void>}
      */
     remove: async (request) => {
-        const submissionContext = await request.server.app.userCache.cache(cacheNames.SUBMISSION_CONTEXT).get(request);
+        let submissionContext = await request.server.app.userCache.cache(cacheNames.SUBMISSION_CONTEXT).get(request);
         const userContext = await request.server.app.userCache.cache(cacheNames.USER_CONTEXT).get(request);
         const { challengeStatus } = statusHelper(submissionContext);
         const regimeTree = await MasterDataService.getRegimeTreeById(userContext.eaId.regime.id);
@@ -496,6 +496,7 @@ const internals = {
         const routes = Object.keys(tasks).filter(c => challengeStatus.includes(c));
 
         for (const route of routes) {
+            submissionContext = await request.server.app.userCache.cache(cacheNames.SUBMISSION_CONTEXT).get(request);
             submissionContext.currentTask = route;
             await request.server.app.userCache.cache(cacheNames.SUBMISSION_CONTEXT).set(request, submissionContext);
             if (await request.server.app.userCache.cache(cacheNames.TASK_CONTEXT).get(request)) {
@@ -571,6 +572,8 @@ const internals = {
         submissionContext._created = submission._created;
         submissionContext._last_modifed = submission._last_modifed;
 
+        await request.server.app.userCache.cache(cacheNames.SUBMISSION_CONTEXT).set(request, submissionContext);
+
         const setTask = async (submissionContext, currentTask, setter) => {
             submissionContext.currentTask = currentTask;
             submissionContext.confirmation[currentTask] = true;
@@ -581,20 +584,22 @@ const internals = {
             await request.server.app.userCache.cache(cacheNames.TASK_CONTEXT).set(request, task);
         };
 
-        await setTask(submissionContext, 'NACE_CODE', (submission) => {
-            const result = {};
-            result.nace = {};
-            result.nace.id = submission.nace_id;
-            return result;
-        });
+        if (submission.status !== submissionStatusCodes.UNSUBMITTED) {
+            await setTask(submissionContext, 'NACE_CODE', (submission) => {
+                const result = {};
+                result.nace = {};
+                result.nace.id = submission.nace_id;
+                return result;
+            });
 
-        await setTask(submissionContext, 'NOSE_CODES', (submission) => {
-            const result = {};
-            result.nose = {
-                noseIds: submission.nose_ids
-            };
-            return result;
-        });
+            await setTask(submissionContext, 'NOSE_CODES', (submission) => {
+                const result = {};
+                result.nose = {
+                    noseIds: submission.nose_ids
+                };
+                return result;
+            });
+        }
     },
 
     /**
@@ -653,9 +658,11 @@ const internals = {
                 await request.server.app.userCache.cache(cacheNames.SUBMISSION_CONTEXT).set(request, submissionContext);
                 await request.server.app.userCache.cache(cacheNames.TASK_CONTEXT).set(request, task);
             } else {
-                submissionContext.confirmation[taskName] = true;
-                submissionContext.challengeStatus[taskName] = false;
-                setCompletedStatus(submissionContext, taskName);
+                if (submission.status !== submissionStatusCodes.UNSUBMITTED) {
+                    submissionContext.confirmation[taskName] = true;
+                    submissionContext.challengeStatus[taskName] = false;
+                    setCompletedStatus(submissionContext, taskName);
+                }
                 await request.server.app.userCache.cache(cacheNames.SUBMISSION_CONTEXT).set(request, submissionContext);
             }
         }
@@ -714,10 +721,12 @@ const internals = {
             await request.server.app.userCache.cache(cacheNames.SUBMISSION_CONTEXT).set(request, submissionContext);
             await request.server.app.userCache.cache(cacheNames.TASK_CONTEXT).set(request, tasks);
         } else {
-            submissionContext.currentTask = transferType;
-            submissionContext.confirmation[transferType] = true;
-            submissionContext.challengeStatus[transferType] = false;
-            setCompletedStatus(submissionContext, transferType);
+            if (submission.status !== submissionStatusCodes.UNSUBMITTED) {
+                submissionContext.currentTask = transferType;
+                submissionContext.confirmation[transferType] = true;
+                submissionContext.challengeStatus[transferType] = false;
+                setCompletedStatus(submissionContext, transferType);
+            }
             await request.server.app.userCache.cache(cacheNames.SUBMISSION_CONTEXT).set(request, submissionContext);
         }
     },
@@ -733,7 +742,7 @@ const internals = {
             await Api.request('SUB', 'PUT', `submissions/${submission.id}`, null, submission);
 
             // Drop the submission context
-            internals.remove(request);
+            await internals.remove(request);
         } catch (err) {
             logger.error(err);
             throw err;
