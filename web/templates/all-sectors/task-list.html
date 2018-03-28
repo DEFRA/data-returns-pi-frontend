@@ -6,248 +6,126 @@
     <a href="/" class="link-back">Back to your permits</a>
     <div class="grid-row">
         <div class="column-two-thirds">
-			<h1 class="heading-medium">Sections you must complete</h1>
-            <p>
-                {{ eaId.regime.nomenclature }}<br/>
-                {{ eaId.nomenclature }} - {{ eaId.site.nomenclature }}<br/>
-            </p>
+      <h1 class="heading-large">
+                {{ eaId.regime.nomenclature }}
+                <span class="heading-secondary">{{ eaId.nomenclature }} - {{ eaId.site.nomenclature }}</span>
+            </h1>
 
-
-            <table>
-                <thead>
-                <tr>
-                    <th scope="col" id="details-task">
-                        <span class="task-group">
-                            <span class="group-number">1</span> Check your details
-                        </span>
-                    </th>
-                    <th>
-                        <span class="visually-hidden">Status</span>
-                    </th>
-                </tr>
-                </thead>
-                <tbody>
-
-                    {% if tasks.NACE_CODE %}
-                        <tr>
-                            <td class="task">
-                                <a id="{{ tasks.SITE_CODES.page | replace('/', '') }}" href="{{ tasks.NACE_CODE.page }}">
-                                    <span class="task-name">NACE code</span>
-                                </a>
-                            </td>
-
-                            <td class="numeric" id="nace-code-task-status">
-                                {% if submissionContext.completed.NACE_CODE %}
-                                <div class="task-status-banner">
-                                    <strong class="task-finished">Completed</strong>
-                                </div>
-                                {% else %}
-                                    <div class="task-status-banner"/>
-                                {% endif %}
-                            </td>
-                        </tr>
-                    {% endif %}
-
-                    {% if tasks.NOSE_CODES %}
-                        <tr>
-                            <td class="task">
-                                <a id="{{ tasks.NOSE_CODES.page | replace('/', '') }}" href="{{ tasks.NOSE_CODES.page }}">
-                                    <span class="task-name">NOSE-P code(s)</span>
-                                </a>
-                            </td>
-
-                            <td class="numeric" id="nose-codes-task-status">
-                                {% if submissionContext.completed.NOSE_CODES %}
-                                <div class="task-status-banner">
-                                    <strong class="task-finished">Completed</strong>
-                                </div>
-                                {% else %}
-                                <div class="task-status-banner"/>
-                                {% endif %}
-                            </td>
-                        </tr>
-                    {% endif %}
-                
-                </tbody>
-            </table>
-
-            <table>
-                <thead>
-                <tr>
-                    <th scope="col" id="report-your-data">
-                        <span class="task-group">
-                            <span class="group-number">2</span> Report your data
-                        </span>
-                    </th>
-                    <th>
-                        <span class="visually-hidden">Status</span>
-                    </th>
-                </tr>
-                </thead>
-                <tbody>
-
-                {% if tasks.RELEASES_TO_AIR %}
-                <tr>
-                    <td class="task">
-                        <a id="{{ tasks.RELEASES_TO_AIR.page | replace('/', '') }}" href="{{ tasks.RELEASES_TO_AIR.page }}/confirm">
-                            <span class="task-name">{{ tasks.RELEASES_TO_AIR.title }}</span>
-                        </a>
-                    </td>
-
-                    <td class="numeric" id="releases-to-air-status">
+            <ol class="task-list">
+                <li>
+                    <h2 class="task-list-section">
+                        <span class="task-list-section-number">1. </span> Check your details
+                    </h2>
+                    <ul class="task-list-items">
+                        {% if tasks.NACE_CODE %}
+                        <li class="task-list-item">
+                            <a id="{{ tasks.SITE_CODES.page | replace('/', '') }}" href="{{ tasks.NACE_CODE.page }}" aria-describedby="nace-completed">
+                            NACE code
+                            </a>
+                        {% if submissionContext.completed.NACE_CODE %}
+                            <strong class="task-completed" id="nace-completed">Completed</strong>
+                        {% endif %}
+                        </li>
+                        {% endif %}
+                        {% if tasks.NOSE_CODES %}
+                        <li class="task-list-item">
+                            <a id="{{ tasks.NOSE_CODES.page | replace('/', '') }}" href="{{ tasks.NOSE_CODES.page }}" aria-describedby="nose-p-completed">
+                            NOSE-P code(s)
+                            </a>
+                        {% if submissionContext.completed.NOSE_CODES %}
+                            <strong class="task-completed" id="nose-p-completed">Completed</strong>
+                        {% endif %}
+                        </li>
+                        {% endif %}
+                    </ul>
+                    
+                </li>
+                <li>
+                    <h2 class="task-list-section">
+                        <span class="task-list-section-number">2. </span> Report your data
+                    </h2>
+                    <ul class="task-list-items">
+                        {% if tasks.RELEASES_TO_AIR %}
+                        <li class="task-list-item">
+                            <a id="{{ tasks.RELEASES_TO_AIR.page | replace('/', '') }}" href="{{ tasks.RELEASES_TO_AIR.page }}/confirm" aria-describedby="air-completed">
+                            {{ tasks.RELEASES_TO_AIR.title }}
+                            </a>
                         {% if submissionContext.completed.RELEASES_TO_AIR %}
-                        <div class="task-status-banner">
-                            <strong class="task-finished">Completed</strong>
-                        </div>
-                        {% else %}
-                            <div class="task-status-banner"/>
+                            <strong class="task-completed" id="air-completed">Completed</strong>
                         {% endif %}
-                    </td>
-                </tr>
-                {% endif %}
-
-                {% if tasks.RELEASES_TO_LAND %}
-                <tr>
-                    <td class="task">
-                        <a id="{{ tasks.RELEASES_TO_LAND.page | replace('/', '') }}" href="{{ tasks.RELEASES_TO_LAND.page }}/confirm">
-                            <span class="task-name">{{ tasks.RELEASES_TO_LAND.title }}</span>
-                        </a>
-                    </td>
-
-                    <td class="numeric" id="releases-to-land-status">
+                        </li>
+                        {% endif %}
+                        {% if tasks.RELEASES_TO_LAND %}
+                        <li class="task-list-item">
+                            <a id="{{ tasks.RELEASES_TO_LAND.page | replace('/', '') }}" href="{{ tasks.RELEASES_TO_LAND.page }}/confirm" aria-describedby="land-completed">
+                            {{ tasks.RELEASES_TO_LAND.title }}
+                            </a>
                         {% if submissionContext.completed.RELEASES_TO_LAND %}
-                        <div class="task-status-banner">
-                            <strong class="task-finished">Completed</strong>
-                        </div>
-                        {% else %}
-                            <div class="task-status-banner"/>
+                            <strong class="task-completed" id="land-completed">Completed</strong>
                         {% endif %}
-                    </td>
-                </tr>
-                {% endif %}
+                        </li>
+                        {% endif %}
 
-                {% if tasks.RELEASES_TO_CONTROLLED_WATERS %}
-                <tr>
-                    <td class="task">
-                        <a id="{{ tasks.RELEASES_TO_CONTROLLED_WATERS.page | replace('/', '') }}" href="{{ tasks.RELEASES_TO_CONTROLLED_WATERS.page }}/confirm">
-                            <span class="task-name">{{ tasks.RELEASES_TO_CONTROLLED_WATERS.title }}</span>
-                        </a>
-                    </td>
-
-                    <td class="numeric" id="releases-to-controlled-water-status">
+                        {% if tasks.RELEASES_TO_CONTROLLED_WATERS %}
+                        <li class="task-list-item">
+                            <a id="{{ tasks.RELEASES_TO_CONTROLLED_WATERS.page | replace('/', '') }}" href="{{ tasks.RELEASES_TO_CONTROLLED_WATERS.page }}/confirm" aria-describedby="controlled-waters-completed">
+                            {{ tasks.RELEASES_TO_CONTROLLED_WATERS.title }}
+                            </a>
                         {% if submissionContext.completed.RELEASES_TO_CONTROLLED_WATERS %}
-                        <div class="task-status-banner">
-                            <strong class="task-finished">Completed</strong>
-                        </div>
-                        {% else %}
-                            <div class="task-status-banner"/>
+                            <strong class="task-completed" id="controlled-waters-completed">Completed</strong>
                         {% endif %}
-                    </td>
-                </tr>
-                {% endif %}
-
-                {% if tasks.OFFSITE_TRANSFERS_IN_WASTE_WATER %}
-                <tr>
-                    <td class="task">
-                        <a id="{{ tasks.OFFSITE_TRANSFERS_IN_WASTE_WATER.page | replace('/', '') }}" href="{{ tasks.OFFSITE_TRANSFERS_IN_WASTE_WATER.page }}/confirm">
-                            <span class="task-name">{{ tasks.OFFSITE_TRANSFERS_IN_WASTE_WATER.title }}</span>
-                        </a>
-                    </td>
-
-                    <td class="numeric" id="offsite-transfers-in-waste-water-status">
+                        </li>
+                        {% endif %}
+                        {% if tasks.OFFSITE_TRANSFERS_IN_WASTE_WATER %}
+                        <li class="task-list-item">
+                            <a id="{{ tasks.OFFSITE_TRANSFERS_IN_WASTE_WATER.page | replace('/', '') }}" href="{{ tasks.OFFSITE_TRANSFERS_IN_WASTE_WATER.page }}/confirm" aria-describedby="waste-water-completed">
+                            {{ tasks.OFFSITE_TRANSFERS_IN_WASTE_WATER.title }}
+                            </a>
                         {% if submissionContext.completed.OFFSITE_TRANSFERS_IN_WASTE_WATER %}
-                        <div class="task-status-banner">
-                            <strong class="task-finished">Completed</strong>
-                        </div>
-                        {% else %}
-                            <div class="task-status-banner"/>
+                            <strong class="task-completed" id="waste-water-completed">Completed</strong>
                         {% endif %}
-                    </td>
-                </tr>
-                {% endif %}
-
-                {% if tasks.OFFSITE_WASTE_TRANSFERS %}
-                <tr>
-                    <td class="task">
-                        <a id="{{ tasks.OFFSITE_WASTE_TRANSFERS.page | replace('/', '') }}" href="{{ tasks.OFFSITE_WASTE_TRANSFERS.page }}/confirm">
-                            <span class="task-name">Off-site waste transfers</span>
-                        </a>
-                    </td>
-
-                    <td class="numeric" id="offsite-task-status">
+                        </li>
+                        {% endif %}
+                        {% if tasks.OFFSITE_WASTE_TRANSFERS %}
+                        <li class="task-list-item">
+                            <a id="{{ tasks.OFFSITE_WASTE_TRANSFERS.page | replace('/', '') }}" href="{{ tasks.OFFSITE_WASTE_TRANSFERS.page }}/confirm" aria-describedby="offsite-transfers-completed">
+                            Off-site waste transfers
+                            </a>
                         {% if submissionContext.completed.OFFSITE_WASTE_TRANSFERS %}
-                        <div class="task-status-banner">
-                            <strong class="task-finished">Completed</strong>
-                        </div>
-                        {% else %}
-                            <div class="task-status-banner"/>
+                            <strong class="task-completed" id="offsite-transfers-completed">Completed</strong>
                         {% endif %}
-                    </td>
-                </tr>
-                {% endif %}
-
-                </tbody>
-            </table>
-
-            <table>
-                <thead>
-                <tr>
-                    <th scope="col" id="check-and-submit">
-                        <span class="task-group">
-                            <span class="group-number">3</span> Check and submit your report
-                        </span>
-                    </th>
-                    <th>
-                        <span class="visually-hidden">Status</span>
-                    </th>
-                </tr>
-                </thead>
-                <tbody>
-
-                {% if tasks.REVIEW %}
-                <tr>
-                    <td class="task">
-                        <a id="{{ tasks.REVIEW.page | replace('/', '') }}" href="{{ tasks.REVIEW.page }}/confirm">
-                            <span class="task-name">Check your data</span>
-                        </a>
-                    </td>
-
-                    <td class="numeric" id="review-task-status">
+                        </li>
+                        {% endif %}
+                    </ul>
+                </li>
+                <li>
+                    <h2 class="task-list-section">
+                        <span class="task-list-section-number">3. </span> Check and submit your report
+                    </h2>
+                    <ul class="task-list-items">
+                        {% if tasks.REVIEW %}
+                        <li class="task-list-item">
+                            <a id="{{ tasks.REVIEW.page | replace('/', '') }}" href="{{ tasks.REVIEW.page }}/confirm" aria-describedby="check-completed">
+                            Check your data
+                            </a>
                         {% if submissionContext.completed.REVIEW %}
-                        <div class="task-status-banner">
-                            <strong class="task-finished">Completed</strong>
-                        </div>
-                        {% else %}
-                            <div class="task-status-banner"/>
+                            <strong class="task-completed" id="check-completed">Completed</strong>
                         {% endif %}
-                    </td>
-                </tr>
-                {% endif %}
-
-                {% if tasks.SUBMIT %}
-                <tr>
-                    <td class="task">
-                        <a id="{{ tasks.SUBMIT.page | replace('/', '') }}" href="{{ tasks.SUBMIT.page }}/confirm">
-                            <span class="task-name">Submit your data</span>
-                        </a>
-                    </td>
-
-                    <td class="numeric" id="submit-task-status">
+                        </li>
+                        {% endif %}
+                        {% if tasks.SUBMIT %}
+                        <li class="task-list-item">
+                            <a id="{{ tasks.SUBMIT.page | replace('/', '') }}" href="{{ tasks.SUBMIT.page }}/confirm" aria-describedby="submit-completed">
+                            Submit your data
+                            </a>
                         {% if submissionContext.completed.SUBMIT %}
-                        <div class="task-status-banner">
-                            <strong class="task-finished">Completed</strong>
-                        </div>
-                        {% else %}
-                            <div class="task-status-banner"/>
+                            <strong class="task-completed" id="submit-completed">Completed</strong>
                         {% endif %}
-                    </td>
-                </tr>
-                {% endif %}
-
-                </tbody>
-            </table>
-
-
+                        </li>
+                        {% endif %}
+                    </ul>  
+                </li>
+            </ol>
         </div>
     </div>
 </main>
