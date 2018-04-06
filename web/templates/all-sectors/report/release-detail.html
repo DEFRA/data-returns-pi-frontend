@@ -1,6 +1,6 @@
 {% extends 'layout/layout.html' %}
 
-{% macro form(description, action) %}
+{% macro form(heading, action) %}
 
 {% set value_error = (release.errors | selectattr2("key", "value"))  %}
 {% set unit_error = (release.errors | selectattr2("key", "unitId"))  %}
@@ -10,7 +10,7 @@
 
 <form id="main-form" action="{{ action }}" method="post" class="form">
     <a href="/task-list" class="link-back">Back to sections you must complete</a>
-    <h1 class="heading-large">Your release of {{ release.parameter.nomenclature }} {{ description }}</h1>
+    <h1 class="heading-large">{{ heading }}</h1>
 
     {% if release.errors %}
     <div class="error-summary" role="alert" aria-labelledby="check-your-report" tabindex="-1">
@@ -243,13 +243,13 @@
     <label id="page-name" hidden>releases-detail-{{ route.pathParam }}</label>
 
     {% if route.name === 'RELEASES_TO_LAND' %}
-    {{ form('to land', '/releases/land/detail') }}
+        {{ form('Your releases of ' + release.parameter.nomenclature + ' to land', '/releases/land/detail') }}
     {% elif route.name === 'RELEASES_TO_AIR' %}
-    {{ form('to air', '/releases/air/detail') }}
+        {{ form('Your releases of ' + release.parameter.nomenclature + ' to air', '/releases/air/detail') }}
     {% elif route.name === 'RELEASES_TO_CONTROLLED_WATERS' %}
-    {{ form('to controlled waters', '/releases/water/detail') }}
+        {{ form('Your releases of ' + release.parameter.nomenclature + ' to controlled waters', '/releases/water/detail') }}
     {% elif route.name === 'OFFSITE_TRANSFERS_IN_WASTE_WATER' %}
-    {{ form('in waste water', '/releases/waste-water/detail') }}
+        {{ form('Your transfers of ' + release.parameter.nomenclature + ' off site in waste water', '/releases/waste-water/detail') }}
     {% endif %}
 </main>
 
