@@ -6,14 +6,35 @@
 {% block content %}
 <main id="content">
     <label id="page-name" hidden>nose-code-confirm-delete</label>
-    <h1 class="heading-large">Confirm removal {{ nose.code }} - {{ nose.description }}</h1>
-    <form action="/check/nose-remove" method="post" class="form">
-        <div class="form-group">
-            <input id="removeBtn" class="button" type="submit" value="Remove">
+    <div class="grid-row">
+        <div class="column-two-thirds">
+            <h1 class="heading-xlarge">
+                <span class="heading-secondary">Check your activity codes</span>
+                Are you sure you want to remove this code?
+            </h1>
+            <form action="/check/nose-remove" method="post" class="form">
+                <table class="codes table-control">
+                    <thead>
+                    <tr>
+                        <th class="code-name">Code</th>
+                        <th class="description">Description</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>{{ nose.code }}</td>
+                            <td><span class="visuallyhidden">Process</span>{{ nose.description }}</td>
+                        </tr>
+                    </tbody>
+                </table>
+                <div class="form-group">
+                    <input id="removeBtn" class="button" type="submit" value="Remove">
+                </div>
+                <div class="form-group">
+                    <a href="/check/nose-summary">Cancel and go back</a>
+                </div>
+            </form>
         </div>
-        <div class="form-group">
-            <a href="/check/nose-summary">Cancel and go back</a>
-        </div>
-    </form>
+    </div>
 </main>
 {% endblock %}
