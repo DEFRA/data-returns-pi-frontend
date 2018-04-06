@@ -1,100 +1,77 @@
-// task list styling
+// Task list pattern
 
-#table-of-tasks td {
-  border-bottom: 1px solid #bfc1c3;
-}
-
-.task-group {
-  font-size: 30px;
-  font-weight: 700;
-}
-
-@media only screen and (max-width: 768px) {
-  .task-group {
-    font-size: 24px;
-    font-weight: 700;
+// Override column width for tablet and up
+.column-minimum {
+  @include media(tablet) {
+    min-width: 600px;
   }
 }
 
-.task {
-  font-size: 19px;
-  font-weight: 700;
-  color: $link-colour;
+// Spacing to the left of the task list
+$task-list-indent: 35px;
+
+.task-list {
+  margin-top: $gutter;
+  @include media(tablet) {
+    margin-top: ($gutter * 2);
+  }
 }
+
+
+.task-list-section {
+  display: table;
+
+  @include bold-24;
+  padding-bottom: ($gutter / 6);
+}
+
+.task-list-section-number {
+  display: table-cell;
+  padding-right: ($gutter / 6);
+
+  @include media(tablet) {
+    min-width: $task-list-indent;
+    padding-right: 0;
+  }
+}
+
+
+.task-list-items {
+  margin-bottom: $gutter;
+  @include media(tablet) {
+    margin-bottom: ($gutter * 2);
+  }
+
+  @include media(tablet) {
+    padding-left: $task-list-indent;
+  }
+}
+
+.task-list-item {
+  border-bottom: 1px solid $border-colour;
+  padding-top: $gutter-one-third;
+  padding-bottom: $gutter-one-third;
+  @extend %contain-floats;
+}
+
+.task-list-item:first-child {
+  border-top: 1px solid $border-colour;
+}
+
 
 .task-name {
-  font-size: 19px;
-  font-weight: 400;
-  margin-left: 65px;
+  width: $two-thirds;
+  float: left;
 }
 
-.group-number {
-  margin-right: 32px;
+.task-completed {
+  @include phase-tag;
+
+  float: right;
+  margin-right: 0;
+  padding-top: 3px;
 }
 
-.task-name:hover {
-    text-decoration: underline;
-}
-
-.task-description {
-  font-size: 16px;
-  font-weight: 400;
-}
-
-.task-tag {
-    display: inline-block;
-    vertical-align: top;
-    margin: 0 0 0 0;
-    padding: 3px 6px 0;
-    font-family: "nta", Arial, sans-serif;
-    font-size: 16px;
-    line-height: 1.25;
-    font-weight: 700;
-    text-transform: none;
-    text-transform: uppercase;
-    letter-spacing: 1px;
-    text-decoration: none;
-    color: #fff;
-    background-color: $black;
-}
-
-.task-finished {
-    display: inline-block;
-    vertical-align: top;
-    margin: 0 0 0 0;
-    padding: 3px 6px 0;
-    font-family: "nta", Arial, sans-serif;
-    font-size: 16px;
-    line-height: 1.25;
-    font-weight: 700;
-    text-transform: none;
-//  text-transform: uppercase;
-    letter-spacing: 1px;
-    text-decoration: none;
-    color: #FFFFFF;
-    background-color: #005ea5;
-//  border: 3px solid #0B0C0C;
-}
-
-// .task-started {
-//     display: inline-block;
-//     vertical-align: top;
-//     margin: 0 0 0 0;
-//     padding: 2px 5px 0;
-//     font-family: "nta", Arial, sans-serif;
-//     font-size: 16px;
-//     line-height: 1.25;
-//     font-weight: 700;
-//     text-transform: none;
-//     text-transform: uppercase;
-//     letter-spacing: 1px;
-//     text-decoration: none;
-//     color: #005EA5;
-//     background-color: #FFFFFF;
-//     border: 3px solid #005EA5;
-// }
-
-.task-name-no-margin {
-  font-size: 19px;
-  font-weight: 400;
+.task-demo {
+  display:none;
 }
