@@ -53,6 +53,9 @@ module.exports = {
 
             if (request.method === 'get') {
 
+                await setConfirmation(request, submissionContext, route, false);
+                await setChallengeStatus(request, submissionContext, route, false);
+
                 // If we come from the task list start again
                 if (request.info.referrer.includes('task-list')) {
                     if (tasks.nace) {
@@ -86,8 +89,6 @@ module.exports = {
                         id: nace.id
                     };
 
-                    await setConfirmation(request, submissionContext, route, true);
-                    await setChallengeStatus(request, submissionContext, route, true);
                     await request.server.app.userCache.cache(cacheNames.TASK_CONTEXT).set(request, tasks);
                     return h.redirect('/check/nace-summary');
 
@@ -96,11 +97,6 @@ module.exports = {
                     tasks.nace = tasks.nace || {};
                     tasks.nace.text = naceStr;
                     tasks.nace.error = { key: 'nace', errno: 'PI-4000' };
-
-                    if (!tasks.nace.id) {
-                        await setConfirmation(request, submissionContext, route, false);
-                        await setChallengeStatus(request, submissionContext, route, false);
-                    }
 
                     await request.server.app.userCache.cache(cacheNames.TASK_CONTEXT).set(request, tasks);
                     return h.redirect('/check/nace-code');
@@ -114,7 +110,7 @@ module.exports = {
 
     naceSummary: async (request, h) => {
         try {
-            const { tasks } = await cacheHelper(request, 'nace-code');
+            const { tasks, route, submissionContext } = await cacheHelper(request, 'nace-code');
 
             if (request.method === 'get') {
 
@@ -133,6 +129,9 @@ module.exports = {
                     await request.server.app.userCache.cache(cacheNames.TASK_CONTEXT).set(request, tasks);
                     return h.redirect('/check/nace-code');
                 } else {
+                    await setConfirmation(request, submissionContext, route, true);
+                    await setChallengeStatus(request, submissionContext, route, true);
+                    await request.server.app.userCache.cache(cacheNames.TASK_CONTEXT).set(request, tasks);
                     return h.redirect('/task-list');
                 }
             }
@@ -149,6 +148,13 @@ module.exports = {
 
             if (request.method === 'get') {
 
+                if (request.info.referrer.includes('task-list')) {
+                    if (tasks.nose) {
+                        delete tasks.nose.error;
+                        await request.server.app.userCache.cache(cacheNames.TASK_CONTEXT).set(request, tasks);
+                    }
+                }
+
                 if (tasks.nose) {
 
                     // Adding subsequent
@@ -163,8 +169,12 @@ module.exports = {
                         return h.view('all-sectors/check/nose-code', { error: tasks.nose.error });
                     }
 
+                    if (tasks.nose && tasks.nose.noseIds && tasks.nose.noseIds.length) {
+                        return h.redirect('/check/nose-summary');
+                    }
+
                     // Go to the summary
-                    return h.redirect('/check/nose-summary');
+                    return h.view('all-sectors/check/nose-code');
                 }
 
                 // Add first
