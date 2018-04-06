@@ -37,6 +37,7 @@ const internals = {
             return MasterDataService.getNoseProcessById(p);
         }));
     }
+
 };
 
 module.exports = {
@@ -52,10 +53,25 @@ module.exports = {
 
             if (request.method === 'get') {
 
-                if (tasks.nace && !tasks.nace.error) {
-                    return h.redirect('/check/nace-summary');
-                } else if (tasks.nace && tasks.nace.error) {
-                    return h.view('all-sectors/check/nace-code', { error: tasks.nace });
+                // If we come from the task list start again
+                if (request.info.referrer.includes('task-list')) {
+                    if (tasks.nace) {
+                        delete tasks.nace.text;
+                        delete tasks.nace.error;
+                        await request.server.app.userCache.cache(cacheNames.TASK_CONTEXT).set(request, tasks);
+                    }
+                }
+
+                if (tasks.nace) {
+                    if (tasks.nace.error) {
+                        return h.view('all-sectors/check/nace-code', { error: tasks.nace });
+                    } else if (tasks.nace.text) {
+                        return h.view('all-sectors/check/nace-code', { naceStr: tasks.nace.text });
+                    } else if (tasks.nace.id) {
+                        return h.redirect('/check/nace-summary');
+                    } else {
+                        return h.view('all-sectors/check/nace-code');
+                    }
                 } else {
                     return h.view('all-sectors/check/nace-code');
                 }
@@ -70,16 +86,21 @@ module.exports = {
                         id: nace.id
                     };
 
+                    await setConfirmation(request, submissionContext, route, true);
                     await setChallengeStatus(request, submissionContext, route, true);
                     await request.server.app.userCache.cache(cacheNames.TASK_CONTEXT).set(request, tasks);
                     return h.redirect('/check/nace-summary');
 
                 } else {
 
-                    tasks.nace = {
-                        text: naceStr,
-                        error: { key: 'nace', errno: 'PI-4000' }
-                    };
+                    tasks.nace = tasks.nace || {};
+                    tasks.nace.text = naceStr;
+                    tasks.nace.error = { key: 'nace', errno: 'PI-4000' };
+
+                    if (!tasks.nace.id) {
+                        await setConfirmation(request, submissionContext, route, false);
+                        await setChallengeStatus(request, submissionContext, route, false);
+                    }
 
                     await request.server.app.userCache.cache(cacheNames.TASK_CONTEXT).set(request, tasks);
                     return h.redirect('/check/nace-code');
@@ -93,22 +114,13 @@ module.exports = {
 
     naceSummary: async (request, h) => {
         try {
-            const { route, submissionContext, tasks } = await cacheHelper(request, 'nace-code');
+            const { tasks } = await cacheHelper(request, 'nace-code');
 
             if (request.method === 'get') {
-
-                // Clear any left over errors
-                if (tasks.nace) {
-                    delete tasks.nace.error;
-                    delete tasks.nace.text;
-                }
-
-                await request.server.app.userCache.cache(cacheNames.TASK_CONTEXT).set(request, tasks);
 
                 if (!tasks.nace || !tasks.nace.id) {
                     return h.redirect('/check/nace-code');
                 } else {
-                    await setConfirmation(request, submissionContext, route);
                     const nace = await internals.getFullNaceHierarchy(tasks.nace.id);
                     return h.view('all-sectors/check/nace-summary', { nace });
                 }
@@ -116,13 +128,11 @@ module.exports = {
             } else {
 
                 if (request.payload.change) {
-                    delete tasks.nace;
+                    const nace = await MasterDataService.getNaceClassById(tasks.nace.id);
+                    tasks.nace.text = nace.code;
                     await request.server.app.userCache.cache(cacheNames.TASK_CONTEXT).set(request, tasks);
                     return h.redirect('/check/nace-code');
                 } else {
-                    // There is no challenge - so always yes
-                    await setChallengeStatus(request, submissionContext, route, true);
-                    await setConfirmation(request, submissionContext, route, true);
                     return h.redirect('/task-list');
                 }
             }
