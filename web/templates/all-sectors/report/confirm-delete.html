@@ -27,13 +27,9 @@
     {% elif route.name === 'OFFSITE_TRANSFERS_IN_WASTE_WATER' %}
         {% set hdr = 'Are you sure you don’t need to report any ' +  release.parameter.nomenclature + ' transferred off site in wastewater?' %}
         {{ form(hdr, '/releases/waste-water') }}
-    {% elif route.name === 'OFFSITE_WASTE_TRANSFERS' %}
-        {% set hdr = 'Are you sure you don’t need to report this off-site waste transfer of ' +  transfer | transferShortDesc + '?' %}
-        {{ form(hdr, '/transfers/off-site') }}
-    {% elif route.name === 'OVERSEAS_WASTE_TRANSFERS' %}
-        {% set hdr = 'Are you sure you don’t need to report an overseas hazardous waste transfer for ' +  transfer.substance.name + ' to '
-    + transfer.destinationAddress.businessName %}
-        {{ form(hdr, '/transfers/overseas') }}
+    {% elif route.name === 'WASTE_TRANSFERS' %}
+        {% set hdr = 'Are you sure you don’t need to report this waste transfer of ' +  transfer | transferShortDesc + '?' %}
+        {{ form(hdr, '/transfers/waste') }}
     {% endif %}
 </main>
 {% endblock %}

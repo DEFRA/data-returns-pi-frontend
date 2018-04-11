@@ -86,13 +86,13 @@
                         {% endif %}
                         </li>
                         {% endif %}
-                        {% if tasks.OFFSITE_WASTE_TRANSFERS %}
+                        {% if tasks.WASTE_TRANSFERS %}
                         <li class="task-list-item">
-                            <a id="{{ tasks.OFFSITE_WASTE_TRANSFERS.page | replace('/', '') }}" href="{{ tasks.OFFSITE_WASTE_TRANSFERS.page }}/confirm" aria-describedby="offsite-transfers-completed">
-                            Off-site waste transfers
+                            <a id="{{ tasks.WASTE_TRANSFERS.page | replace('/', '') }}" href="{{ tasks.WASTE_TRANSFERS.page }}/confirm" aria-describedby="transfers-completed">
+                            Waste transfers
                             </a>
-                        {% if submissionContext.completed.OFFSITE_WASTE_TRANSFERS %}
-                            <strong class="task-completed" id="offsite-transfers-completed">Completed</strong>
+                        {% if submissionContext.completed.WASTE_TRANSFERS %}
+                            <strong class="task-completed" id="transfers-completed">Completed</strong>
                         {% endif %}
                         </li>
                         {% endif %}

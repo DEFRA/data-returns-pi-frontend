@@ -1,0 +1,43 @@
+{% extends 'layout/layout.html' %}
+
+{% block content %}
+
+{% macro displayTransfer(transfer) %}
+<table class="check-data table-control">
+    <tbody>
+        <tr><th style="width: 30%">EWC code</th><td>{{ transfer.ewc.chapter.code }} {{ transfer.ewc.subChapter.code }} {{ transfer.ewc.activity.code }}</td></tr>
+        <tr><th>Activity</th><td>{{ transfer.ewc.activity.description }}</td></tr>
+        <tr><th>Hazardous</th><td>{% if transfer.ewc.activity.hazardous %}Yes{% else %}No{% endif %}</td></tr>
+        <tr><th>Disposal or Recovery Code</th><td class="td-wfd-code">{% if transfer.wfd.disposal %}{{ transfer.wfd.disposal.code }}{% elif transfer.wfd.recovery %}{{ transfer.wfd.recovery.code }}{% endif %}</td></tr>
+        <tr><th>Disposal or Recovery Description</th><td class="td-wfd-code">{% if transfer.wfd.disposal %}{{ transfer.wfd.disposal.description }}{% elif transfer.wfd.recovery %}{{ transfer.wfd.recovery.description }}{% endif %}</td></tr>
+        <tr><th>Quantity</th><td><label class="form-label">{% if transfer.brt %}BRT{% else %}{{ transfer.value }} tonnes{% endif %}</label></td></tr>
+        <tr><th>Method</th><td>{{ transfer.method }}</td></tr>
+        <tr><td></td><td><input class="link" type="submit" id="delete" name="delete-{{ transfer.ewc.chapter.id }}-{{ transfer.ewc.subChapter.id }}-{{ transfer.ewc.activity.id }}-{% if transfer.wfd.disposal %}{{ transfer.wfd.disposal.id }}-{% elif transfer.wfd.recovery %}-{{ transfer.wfd.recovery.id }}{% endif %}" value="Delete"/></td></tr>
+    </tbody>
+</table>
+{% endmacro %}
+
+<main id="content">
+    <label id="page-name" hidden>off-site</label>
+    <a href="/task-list" class="link-back">Back to sections you must complete</a>
+
+    <h1 class="heading-large">Your waste transfers</h1>
+
+    <form action="/transfers/waste" method="post" class="form">
+        <table class="check-data table-control">
+            {% for transfer in transfers %}
+                <div class="form-group">
+                    {{ displayTransfer(transfer) }}
+                </div>
+            {% endfor %}
+        <div class="form-group">
+            <input class="link" type="submit" id="add" name="add" value="Add a new waste transfer"/>
+        </div>
+
+        <div class="form-group">
+            <input class="button" type="submit" id="continueBtn" name="continue" value="Continue"/>
+        </div>
+    </form>
+</main>
+
+{% endblock %}

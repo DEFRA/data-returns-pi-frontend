@@ -8,7 +8,7 @@ const Start = require('./handlers/start.js');
 const AllSectors = require('./handlers/all-sectors/task-list');
 const Releases = require('./handlers/all-sectors/report/releases');
 const OffSite = require('./handlers/all-sectors/report/off-site');
-const Overseas = require('./handlers/all-sectors/report/overseas');
+const Waste = require('./handlers/all-sectors/report/waste');
 const Review = require('./handlers/all-sectors/submit/review');
 const Submit = require('./handlers/all-sectors/submit/submit');
 const Permissions = require('./handlers/permissions');
@@ -95,25 +95,13 @@ const dynamicHandlers = [
     { method: ['GET', 'POST'], path: '/releases/{route}/detail', options: { handler: Releases.detail } },
     { method: ['GET', 'POST'], path: '/releases/{route}/remove', options: { handler: Releases.remove } },
 
-    // Transfers off-site
-    { method: ['GET', 'POST'], path: '/transfers/off-site', options: { handler: OffSite.offSite } },
-    { method: ['GET', 'POST'], path: '/transfers/off-site/confirm', options: { handler: OffSite.confirm } },
-    { method: ['GET', 'POST'], path: '/transfers/off-site/add', options: { handler: OffSite.add } },
-    { method: ['GET', 'POST'], path: '/transfers/off-site/remove', options: { handler: OffSite.remove } },
-    { method: ['GET', 'POST'], path: '/transfers/off-site/detail', options: { handler: OffSite.detail } },
-    { method: 'POST', path: '/transfers/off-site/action', options: { handler: OffSite.action } },
+    // Waste Transfers
+    { method: ['GET', 'POST'], path: '/transfers/waste/confirm', options: { handler: Waste.confirm } },
+    { method: ['GET', 'POST'], path: '/transfers/waste', options: { handler: Waste.waste } },
+    { method: ['GET', 'POST'], path: '/transfers/waste/codes', options: { handler: Waste.codes } },
+    { method: ['GET', 'POST'], path: '/transfers/waste/remove', options: { handler: Waste.remove } },
+    { method: ['GET', 'POST'], path: '/transfers/waste/confirm-overseas', options: { handler: Waste.confirmOverseas } },
 
-    // Transfers overseas
-    { method: ['GET', 'POST'], path: '/transfers/overseas/confirm', options: { handler: Overseas.confirm } },
-    { method: 'GET', path: '/transfers/overseas/add', options: { handler: Overseas.add } },
-    { method: ['GET', 'POST'], path: '/transfers/overseas/add-substance', options: { handler: Overseas.substance } },
-    { method: ['GET', 'POST'], path: '/transfers/overseas/detail', options: { handler: Overseas.detail } },
-    { method: ['GET', 'POST'], path: '/transfers/overseas/transportation-co-address', options: { handler: Overseas.transportationCompanyAddress } },
-    { method: ['GET', 'POST'], path: '/transfers/overseas/destination-address', options: { handler: Overseas.destinationAddress } },
-    { method: ['GET', 'POST'], path: '/transfers/overseas/check', options: { handler: Overseas.review } },
-    { method: ['GET', 'POST'], path: '/transfers/overseas', options: { handler: Overseas.overseas } },
-    { method: 'POST', path: '/transfers/overseas/action', options: { handler: Overseas.action } },
-    { method: ['GET', 'POST'], path: '/transfers/overseas/remove', options: { handler: Overseas.remove } },
 
     // Completion
     { method: ['GET', 'POST'], path: '/review/confirm', options: { handler: Review.review } },
