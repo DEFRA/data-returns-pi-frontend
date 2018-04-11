@@ -1,0 +1,34 @@
+{% extends 'layout/layout.html' %}
+
+{% block content %}
+
+
+<main id="content">
+    <label id="page-name" hidden>address-chooser</label>
+
+    <form action="{{ action }}" method="post" class="form">
+        <div class="form-group">
+            <fieldset>
+                <div class="multiple-choice">
+                    <input id="address1" name=address" value="uid1" type="radio">
+                    <label for="address1"><span class="category"></span> <span class="name">Addr</span></label>
+                    <label><span class="">Detail</span></label>
+
+                    <input id="address2" name=address" value="uid2" type="radio">
+                    <label for="address2"><span class="category"></span> <span class="name">Addr</span></label>
+                    <label><span class="">Detail</span></label>
+                </div>
+            </fieldset>
+        </div>
+
+        <div class="form-group">
+            <input class="link" type="submit" id="add" name="add" value="Add a new address"/>
+        </div>
+
+        <div class="form-group">
+            <input type="submit" class="button" value="Continue">
+        </div>
+    </form>
+</main>
+
+{% endblock %}
