@@ -105,8 +105,8 @@ const dynamicHandlers = [
     { method: ['GET', 'POST'], path: '/transfers/waste/addBusinessAddress', options: { handler: Waste.addBusinessAddress } },
     { method: ['GET', 'POST'], path: '/transfers/waste/selectSiteAddress', options: { handler: Waste.selectSiteAddress } },
     { method: ['GET', 'POST'], path: '/transfers/waste/addSiteAddress', options: { handler: Waste.addSiteAddress } },
-    { method: ['GET', 'POST'], path: '/transfers/waste/overseas-detail', options: { handler: Waste.overseasDetail } },
-
+    { method: ['GET', 'POST'], path: '/transfers/waste/overseas/detail', options: { handler: Waste.overseasDetail } },
+    { method: ['GET', 'POST'], path: '/transfers/waste/overseas/remove', options: { handler: Waste.overseasRemove } },
 
     // Completion
     { method: ['GET', 'POST'], path: '/review/confirm', options: { handler: Review.review } },

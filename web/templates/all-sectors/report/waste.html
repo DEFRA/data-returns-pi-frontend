@@ -1,26 +1,19 @@
 {% extends 'layout/layout.html' %}
+{% import 'includes/macros.html' as macros %}
 
 {% block content %}
 
 {% macro encodeTransfer(transfer) %}{{ transfer.ewc.chapter.id }}-{{ transfer.ewc.subChapter.id }}-{{ transfer.ewc.activity.id }}-{% if transfer.wfd.disposal %}{{ transfer.wfd.disposal.id }}-{% elif transfer.wfd.recovery %}-{{ transfer.wfd.recovery.id }}{% endif %}{% endmacro %}
 
-{% macro printAddr(address) %}
-{% if address.businessName %}{{ address.businessName }}, {% endif %}
-{{ address.addressLine1 }},
-{% if address.addressLine2 %}{{ address.addressLine2 }},  {% endif %}
-{{ address.townOrCity }},
-{{ address.country }}
-{% endmacro %}
-
-{% macro displayOverseas(overseas) %}
-    {% for key, detail in overseas %}
+{% macro displayOverseas(transfer) %}
+    {% for key, detail in transfer.overseas %}
         <table class="check-data table-control">
             <tbody>
-                <tr><th style="width: 30%">Business Address</th><td>{{ printAddr(detail.businessAddress) }}</td></tr>
-                <tr><th>Site Address</th><td>{{ printAddr(detail.siteAddress) }}</td></tr>
+                <tr><th style="width: 30%">Business Address</th><td>{{ macros.printAddr(detail.businessAddress) }}</td></tr>
+                <tr><th>Site Address</th><td>{{ macros.printAddr(detail.siteAddress) }}</td></tr>
                 <tr><th>Quantity</th><td>{{ detail.value }}</td></tr>
                 <tr><th>Method</th><td>{{ detail.method }}</td></tr>
-                <tr><td></td><td><input class="link" type="submit" id="overseas-delete" name="overseas-delete-{{ key }}" value="Delete"/></td></tr>
+                <tr><td></td><td><input class="link" type="submit" id="overseas-delete" name="overseas-delete-{{ encodeTransfer(transfer) }}::{{ key }}" value="Delete"/></td></tr>
             </tbody>
         </table>
     {% endfor %}
@@ -38,11 +31,11 @@
         <tr><th>Method</th><td>{{ transfer.method }}</td></tr>
 
         {% if transfer.overseas.size !== 0 %}
-            <tr><th>Overseas</th><td>{{ displayOverseas(transfer.overseas) }}</td></tr>
+            <tr><th>Overseas</th><td>{{ displayOverseas(transfer) }}</td></tr>
         {% endif %}
 
         {% if transfer.ewc.activity.hazardous and transfer.wfd.recovery %}
-            <tr><td></td><td><input class="link" type="submit" id="overseas" name="overseas-{{ encodeTransfer(transfer) }}" value="Add overseas transfer"/></td></tr>
+            <tr><td></td><td><input class="link" type="submit" id="overseas" name="overseas-add-{{ encodeTransfer(transfer) }}" value="Add overseas transfer"/></td></tr>
         {% endif %}
 
         <tr><td></td><td><input class="link" type="submit" id="delete" name="delete-{{ encodeTransfer(transfer) }}" value="Delete the entire waste transfer"/></td></tr>

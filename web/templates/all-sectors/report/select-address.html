@@ -1,14 +1,7 @@
 {% extends 'layout/layout.html' %}
+{% import 'includes/macros.html' as macros %}
 
 {% block content %}
-
-{% macro printAddr(address) %}
-{% if address.businessName %}{{ address.businessName }}, {% endif %}
-{{ address.addressLine1 }},
-{% if address.addressLine2 %}{{ address.addressLine2 }},  {% endif %}
-{{ address.townOrCity }},
-{{ address.country }}
-{% endmacro %}
 
 <main id="content">
     <label id="page-name" hidden>address-chooser-{{ type }}</label>
@@ -30,7 +23,7 @@
             {% for key, address in addresses %}
                 <div class="multiple-choice">
                     <input type="radio" id="_{{ key }}" {% if first %}checked{% endif %} name="address" value="{{ key }}" />
-                    <label for="_{{ key }}">{{ printAddr(address) }}</label><br>
+                    <label for="_{{ key }}">{{ macros.printAddr(address) }}</label><br>
                     {% set first = false %}
                 </div>
             {% endfor %}
