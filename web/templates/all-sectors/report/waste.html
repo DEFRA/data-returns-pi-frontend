@@ -2,6 +2,30 @@
 
 {% block content %}
 
+{% macro encodeTransfer(transfer) %}{{ transfer.ewc.chapter.id }}-{{ transfer.ewc.subChapter.id }}-{{ transfer.ewc.activity.id }}-{% if transfer.wfd.disposal %}{{ transfer.wfd.disposal.id }}-{% elif transfer.wfd.recovery %}-{{ transfer.wfd.recovery.id }}{% endif %}{% endmacro %}
+
+{% macro printAddr(address) %}
+{% if address.businessName %}{{ address.businessName }}, {% endif %}
+{{ address.addressLine1 }},
+{% if address.addressLine2 %}{{ address.addressLine2 }},  {% endif %}
+{{ address.townOrCity }},
+{{ address.country }}
+{% endmacro %}
+
+{% macro displayOverseas(overseas) %}
+    {% for key, detail in overseas %}
+        <table class="check-data table-control">
+            <tbody>
+                <tr><th style="width: 30%">Business Address</th><td>{{ printAddr(detail.businessAddress) }}</td></tr>
+                <tr><th>Site Address</th><td>{{ printAddr(detail.siteAddress) }}</td></tr>
+                <tr><th>Quantity</th><td>{{ detail.value }}</td></tr>
+                <tr><th>Method</th><td>{{ detail.method }}</td></tr>
+                <tr><td></td><td><input class="link" type="submit" id="overseas-delete" name="overseas-delete-{{ key }}" value="Delete"/></td></tr>
+            </tbody>
+        </table>
+    {% endfor %}
+{% endmacro %}
+
 {% macro displayTransfer(transfer) %}
 <table class="check-data table-control">
     <tbody>
@@ -12,7 +36,16 @@
         <tr><th>Disposal or Recovery Description</th><td class="td-wfd-code">{% if transfer.wfd.disposal %}{{ transfer.wfd.disposal.description }}{% elif transfer.wfd.recovery %}{{ transfer.wfd.recovery.description }}{% endif %}</td></tr>
         <tr><th>Quantity</th><td><label class="form-label">{% if transfer.brt %}BRT{% else %}{{ transfer.value }} tonnes{% endif %}</label></td></tr>
         <tr><th>Method</th><td>{{ transfer.method }}</td></tr>
-        <tr><td></td><td><input class="link" type="submit" id="delete" name="delete-{{ transfer.ewc.chapter.id }}-{{ transfer.ewc.subChapter.id }}-{{ transfer.ewc.activity.id }}-{% if transfer.wfd.disposal %}{{ transfer.wfd.disposal.id }}-{% elif transfer.wfd.recovery %}-{{ transfer.wfd.recovery.id }}{% endif %}" value="Delete"/></td></tr>
+
+        {% if transfer.overseas.size !== 0 %}
+            <tr><th>Overseas</th><td>{{ displayOverseas(transfer.overseas) }}</td></tr>
+        {% endif %}
+
+        {% if transfer.ewc.activity.hazardous and transfer.wfd.recovery %}
+            <tr><td></td><td><input class="link" type="submit" id="overseas" name="overseas-{{ encodeTransfer(transfer) }}" value="Add overseas transfer"/></td></tr>
+        {% endif %}
+
+        <tr><td></td><td><input class="link" type="submit" id="delete" name="delete-{{ encodeTransfer(transfer) }}" value="Delete the entire waste transfer"/></td></tr>
     </tbody>
 </table>
 {% endmacro %}
@@ -24,12 +57,12 @@
     <h1 class="heading-large">Your waste transfers</h1>
 
     <form action="/transfers/waste" method="post" class="form">
-        <table class="check-data table-control">
-            {% for transfer in transfers %}
-                <div class="form-group">
-                    {{ displayTransfer(transfer) }}
-                </div>
-            {% endfor %}
+        {% for transfer in transfers %}
+            <div class="form-group">
+                {{ displayTransfer(transfer) }}
+            </div>
+        {% endfor %}
+
         <div class="form-group">
             <input class="link" type="submit" id="add" name="add" value="Add a new waste transfer"/>
         </div>

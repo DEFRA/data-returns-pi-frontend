@@ -2,23 +2,38 @@
 
 {% block content %}
 
+{% macro printAddr(address) %}
+{% if address.businessName %}{{ address.businessName }}, {% endif %}
+{{ address.addressLine1 }},
+{% if address.addressLine2 %}{{ address.addressLine2 }},  {% endif %}
+{{ address.townOrCity }},
+{{ address.country }}
+{% endmacro %}
 
 <main id="content">
-    <label id="page-name" hidden>address-chooser</label>
+    <label id="page-name" hidden>address-chooser-{{ type }}</label>
 
-    <form action="{{ action }}" method="post" class="form">
-        <div class="form-group">
-            <fieldset>
+    <form action="{{ path }}" method="post" class="form">
+        <a href="/task-list" class="link-back">Back to sections you must complete</a>
+
+        <h1 class="heading-large">
+            <span class="heading-secondary">Your overseas hazardous waste transfers</span>
+            {% if type === 'BUSINESS' %}
+                Which company carried out the disposal or recovery of this waste?
+            {% else %}
+                What address did you send this waste to?
+            {% endif %}
+        </h1>
+
+        {% set first = true %}
+        <div class="form-group list">
+            {% for key, address in addresses %}
                 <div class="multiple-choice">
-                    <input id="address1" name=address" value="uid1" type="radio">
-                    <label for="address1"><span class="category"></span> <span class="name">Addr</span></label>
-                    <label><span class="">Detail</span></label>
-
-                    <input id="address2" name=address" value="uid2" type="radio">
-                    <label for="address2"><span class="category"></span> <span class="name">Addr</span></label>
-                    <label><span class="">Detail</span></label>
+                    <input type="radio" id="_{{ key }}" {% if first %}checked{% endif %} name="address" value="{{ key }}" />
+                    <label for="_{{ key }}">{{ printAddr(address) }}</label><br>
+                    {% set first = false %}
                 </div>
-            </fieldset>
+            {% endfor %}
         </div>
 
         <div class="form-group">

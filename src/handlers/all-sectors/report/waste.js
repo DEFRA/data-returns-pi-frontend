@@ -1,5 +1,7 @@
 'use strict';
 
+const Countries = require('i18n-iso-countries');
+const uuid = require('uuid');
 const MasterDataService = require('../../../service/master-data');
 
 const cacheHelper = require('../common').cacheHelper;
@@ -18,7 +20,7 @@ const internals = {};
  * @param obj - transfer object
  * @return {Promise.<{ewc: {activity: *, chapter: *, subChapter: *}, wfd: {disposal: *, recovery: *}, value}>}
  */
-internals.enrichWasteTransferObject = async (obj) => {
+internals.enrichWasteTransferObject = async (userContext, obj) => {
     const result = {
         ewc: {
             activity: await MasterDataService.getEwcActivityById(obj.ewc.activityId),
@@ -38,6 +40,20 @@ internals.enrichWasteTransferObject = async (obj) => {
         result.brt = true;
     } else {
         result.value = obj.value;
+    }
+
+    result.overseas = {};
+
+    if (obj.overseas) {
+        const keys = Object.keys(obj.overseas).filter(k => k !== 'currentKey');
+        for (const key of keys) {
+            result.overseas[key] = {
+                method: obj.overseas[key].method,
+                value: obj.overseas[key].value,
+                businessAddress: userContext.addresses.business[obj.overseas[key].businessAddress],
+                siteAddress: userContext.addresses.site[obj.overseas[key].siteAddress]
+            };
+        }
     }
 
     return result;
@@ -172,6 +188,109 @@ internals.validateCode = async (payload, cacheState) => {
 };
 
 /**
+ * Validate the business address
+ * @param payload
+ * @returns {Promise<*>}
+ */
+internals.validateBusinessAddress = async (payload) => {
+
+    const result = [];
+
+    if (!payload.addressLine1) {
+        result.push({key: 'address-line-1', errno: 'PI-3010'});
+    }
+
+    if (!payload.businessName) {
+        result.push({key: 'business-name', errno: 'PI-3011'});
+    }
+
+    if (!payload.country) {
+        result.push({key: 'country', errno: 'PI-3012'});
+    }
+
+    if (!payload.townOrCity) {
+        result.push({key: 'town-or-city', errno: 'PI-3013'});
+    }
+
+    if (!payload.addressLine1) {
+        result.push({key: 'address-line-1', errno: 'PI-3020'});
+    }
+
+    if (payload.country === '--') {
+        result.push({key: 'country', errno: 'PI-3022'});
+    }
+
+    if (!payload.townOrCity) {
+        result.push({key: 'town-or-city', errno: 'PI-3023'});
+    }
+
+    return result.length > 0 ? result : null;
+};
+
+/**
+ * Validate the business address
+ * @param payload
+ * @returns {Promise<*>}
+ */
+internals.validateSiteAddress = async (payload) => {
+
+    const result = [];
+
+    if (!payload.addressLine1) {
+        result.push({key: 'address-line-1', errno: 'PI-3010'});
+    }
+
+    if (!payload.country) {
+        result.push({key: 'country', errno: 'PI-3012'});
+    }
+
+    if (!payload.townOrCity) {
+        result.push({key: 'town-or-city', errno: 'PI-3013'});
+    }
+
+    if (!payload.addressLine1) {
+        result.push({key: 'address-line-1', errno: 'PI-3020'});
+    }
+
+    if (payload.country === '--') {
+        result.push({key: 'country', errno: 'PI-3022'});
+    }
+
+    if (!payload.townOrCity) {
+        result.push({key: 'town-or-city', errno: 'PI-3023'});
+    }
+
+    return result.length > 0 ? result : null;
+};
+
+/**
+ * Validator for the code page
+ * @param payload
+ * @param cacheState
+ * @returns {Promise<*>}
+ */
+internals.validateOverseasDetail = async (payload, cacheState) => {
+    const transfer = cacheState.tasks.transfers[cacheState.tasks.currentTransferIdx];
+
+    const { value } = payload;
+    const result = [];
+
+    if (!isNumeric(value)) {
+        result.push({ key: 'value', errno: 'PI-2000' });
+    } else {
+        const overseasTotal = Object.values(transfer.overseas)
+            .map(o => o.value)
+            .filter(v => v)
+            .reduce((a, c) => a + c, 0);
+
+        if (overseasTotal + Number.parseFloat(payload.value) > transfer.value) {
+            result.push({key: 'value', errno: 'PI-2001'});
+        }
+    }
+    return result.length > 0 ? result : null;
+};
+
+/**
  * Creates an unvalidated off-site transfer cache object (ids only)
  * @param obj - the page object
  * @return {Promise.<{ewc: {activity: *, chapter: *, subChapter: *}, wfd: {disposal: *, recovery: *}, value}>}
@@ -207,6 +326,36 @@ internals.createWasteTransferCacheObject = async (payload) => {
     }
 
     return result;
+};
+
+/**
+ * Function to ensure a consistent cache object for both business and site addresses
+ * @param payload
+ */
+internals.createAddressCacheObject = (payload) => {
+    const obj = {};
+
+    if (payload.addressLine1) {
+        obj.addressLine1 = payload.addressLine1;
+    }
+
+    if (payload.addressLine2) {
+        obj.addressLine2 = payload.addressLine2;
+    }
+
+    if (payload.businessName) {
+        obj.businessName = payload.businessName;
+    }
+
+    if (payload.townOrCity) {
+        obj.townOrCity = payload.townOrCity;
+    }
+
+    if (payload.country) {
+        obj.country = payload.country;
+    }
+
+    return obj;
 };
 
 /**
@@ -284,7 +433,7 @@ class BaseStage {
     }
 }
 
-class CodesStage extends BaseStage {
+class Codes extends BaseStage {
     constructor (...args) {
         super(args);
     }
@@ -338,7 +487,7 @@ class CodesStage extends BaseStage {
     }
 }
 
-class ConfirmOverseasStage extends BaseStage {
+class ConfirmOverseas extends BaseStage {
     constructor (...args) {
         super(args);
     }
@@ -347,13 +496,234 @@ class ConfirmOverseasStage extends BaseStage {
         return h.view(this.path, { route: { name: 'OVERSEAS' } });
     }
 
-    async doPost (request, h, cacheState, errors) {
-        console.log();
+    async doPost (request, h, cacheState) {
+        if (request.payload.confirmation === 'true') {
+            const tasks = cacheState.tasks;
+            const overseasKey = uuid.v4();
+            const transfer = tasks.transfers[tasks.currentTransferIdx];
+            transfer.overseas = transfer.overseas || {};
+            transfer.overseas[overseasKey] = {};
+            transfer.overseas.currentKey = overseasKey;
+            await request.server.app.userCache.cache(cacheNames.TASK_CONTEXT).set(request, tasks);
+            return h.redirect('/transfers/waste/selectBusinessAddress');
+        }
+
+        return h.redirect('/transfers/waste');
     }
 }
 
-internals.codeStage = new CodesStage('all-sectors/report/waste-codes', internals.validateCode);
-internals.confirmOverseasStage = new ConfirmOverseasStage('all-sectors/report/confirm');
+class SelectBusinessAddress extends BaseStage {
+    constructor (...args) {
+        super(args);
+    }
+
+    async doGet (request, h) {
+        const userContext = await request.server.app.userCache.cache(cacheNames.USER_CONTEXT).get(request);
+
+        if (userContext.addresses && userContext.addresses.business) {
+            return h.view(this.path, {
+                path: '/transfers/waste/selectBusinessAddress',
+                type: 'BUSINESS',
+                addresses: userContext.addresses.business
+            });
+        } else {
+            return h.redirect('/transfers/waste/addBusinessAddress');
+        }
+    }
+
+    async doPost (request, h, cacheState) {
+        if (Object.keys(request.payload).includes('add')) {
+            return h.redirect('/transfers/waste/addBusinessAddress');
+        } else {
+            if (request.payload.address) {
+                const tasks = cacheState.tasks;
+                const transfer = tasks.transfers[tasks.currentTransferIdx];
+                transfer.overseas[transfer.overseas.currentKey].businessAddress = request.payload.address;
+                await request.server.app.userCache.cache(cacheNames.TASK_CONTEXT).set(request, tasks);
+                return h.redirect('/transfers/waste/selectSiteAddress');
+            }
+            return h.redirect('/transfers/waste/addBusinessAddress');
+        }
+    }
+}
+
+class AddBusinessAddress extends BaseStage {
+    constructor (...args) {
+        super(args);
+    }
+
+    async doGet (request, h, cacheState) {
+        const tasks = cacheState.tasks;
+        const countries = Countries.getNames('en');
+        if (tasks.address && tasks.address.incomplete) {
+            return h.view(this.path, { type: 'BUSINESS', countries: countries, address: tasks.address.incomplete });
+        }
+
+        return h.view(this.path, {
+            path: '/transfers/waste/addBusinessAddress',
+            type: 'BUSINESS',
+            countries: countries });
+    }
+
+    async doPost (request, h, cacheState, errors) {
+        const tasks = cacheState.tasks;
+        if (errors) {
+            tasks.address = {
+                incomplete: {
+                    errors: errors,
+                    page: request.payload
+                }
+            };
+            await request.server.app.userCache.cache(cacheNames.TASK_CONTEXT).set(request, tasks);
+            return h.redirect('/transfers/waste/addBusinessAddress');
+        } else {
+            delete tasks.address;
+            const addressKey = uuid.v4();
+            const transfer = tasks.transfers[tasks.currentTransferIdx];
+            transfer.overseas[transfer.overseas.currentKey].businessAddress = addressKey;
+            await request.server.app.userCache.cache(cacheNames.TASK_CONTEXT).set(request, tasks);
+
+            const userContext = await request.server.app.userCache.cache(cacheNames.USER_CONTEXT).get(request);
+            userContext.addresses = userContext.addresses || {};
+            userContext.addresses.business = userContext.addresses.business || {};
+            const address = internals.createAddressCacheObject(request.payload);
+            userContext.addresses.business[addressKey] = address;
+            await request.server.app.userCache.cache(cacheNames.USER_CONTEXT).set(request, userContext);
+
+            return h.redirect('/transfers/waste/addSiteAddress');
+        }
+    }
+}
+
+class SelectSiteAddress extends BaseStage {
+    constructor (...args) {
+        super(args);
+    }
+
+    async doGet (request, h) {
+        const userContext = await request.server.app.userCache.cache(cacheNames.USER_CONTEXT).get(request);
+
+        if (userContext.addresses && userContext.addresses.site) {
+            return h.view(this.path, {
+                path: '/transfers/waste/selectSiteAddress',
+                type: 'SITE',
+                addresses: userContext.addresses.site
+            });
+        } else {
+            return h.redirect('/transfers/waste/addSiteAddress');
+        }
+    }
+
+    async doPost (request, h, cacheState) {
+        if (Object.keys(request.payload).includes('add')) {
+            return h.redirect('/transfers/waste/addSiteAddress');
+        } else {
+            if (request.payload.address) {
+                const tasks = cacheState.tasks;
+                const transfer = tasks.transfers[tasks.currentTransferIdx];
+                transfer.overseas[transfer.overseas.currentKey].siteAddress = request.payload.address;
+                await request.server.app.userCache.cache(cacheNames.TASK_CONTEXT).set(request, tasks);
+                return h.redirect('/transfers/waste/overseas-detail');
+            }
+            return h.redirect('/transfers/waste/addSiteAddress');
+        }
+    }
+}
+
+class AddSiteAddress extends BaseStage {
+    constructor (...args) {
+        super(args);
+    }
+
+    async doGet (request, h, cacheState) {
+        const tasks = cacheState.tasks;
+        const countries = Countries.getNames('en');
+        if (tasks.address && tasks.address.incomplete) {
+            return h.view(this.path, { type: 'SITE', countries: countries, address: tasks.address.incomplete });
+        }
+
+        return h.view(this.path, {
+            path: '/transfers/waste/addSiteAddress',
+            type: 'SITE',
+            countries: countries });
+    }
+
+    async doPost (request, h, cacheState, errors) {
+        const tasks = cacheState.tasks;
+        if (errors) {
+            tasks.address = {
+                incomplete: {
+                    errors: errors,
+                    page: request.payload
+                }
+            };
+            await request.server.app.userCache.cache(cacheNames.TASK_CONTEXT).set(request, tasks);
+            return h.redirect('/transfers/waste/addSiteAddress');
+        } else {
+            delete tasks.address;
+            const addressKey = uuid.v4();
+            const transfer = tasks.transfers[tasks.currentTransferIdx];
+            transfer.overseas[transfer.overseas.currentKey].siteAddress = addressKey;
+            await request.server.app.userCache.cache(cacheNames.TASK_CONTEXT).set(request, tasks);
+
+            const userContext = await request.server.app.userCache.cache(cacheNames.USER_CONTEXT).get(request);
+            userContext.addresses = userContext.addresses || {};
+            userContext.addresses.site = userContext.addresses.site || {};
+            const address = internals.createAddressCacheObject(request.payload);
+            userContext.addresses.site[addressKey] = address;
+            await request.server.app.userCache.cache(cacheNames.USER_CONTEXT).set(request, userContext);
+
+            return h.redirect('/transfers/waste/overseas-detail');
+        }
+    }
+}
+
+class OverseasDetail extends BaseStage {
+
+    constructor (...args) {
+        super(args);
+    }
+
+    async doGet (request, h, cacheState) {
+        const tasks = cacheState.tasks;
+        if (tasks.currentWasteTransfer) {
+            if (tasks.currentWasteTransfer.incomplete) {
+                return h.view(this.path, { transfer: tasks.currentWasteTransfer.incomplete });
+            }
+        }
+
+        return h.view(this.path);
+    }
+
+    async doPost (request, h, cacheState, errors) {
+        const tasks = cacheState.tasks;
+        if (errors) {
+            tasks.currentWasteTransfer = {
+                incomplete: {
+                    errors: errors,
+                    page: request.payload
+                }
+            };
+            await request.server.app.userCache.cache(cacheNames.TASK_CONTEXT).set(request, tasks);
+            return h.redirect('/transfers/waste/overseas-detail');
+        } else {
+            delete tasks.currentWasteTransfer;
+            const transfer = tasks.transfers[tasks.currentTransferIdx];
+            transfer.overseas[transfer.overseas.currentKey].value = Number.parseFloat(request.payload.value);
+            transfer.overseas[transfer.overseas.currentKey].method = request.payload.method;
+            await request.server.app.userCache.cache(cacheNames.TASK_CONTEXT).set(request, tasks);
+            return h.redirect('/transfers/waste');
+        }
+    }
+}
+
+internals.code = new Codes('all-sectors/report/waste-codes', internals.validateCode);
+internals.confirmOverseas = new ConfirmOverseas('all-sectors/report/confirm');
+internals.selectBusinessAddress = new SelectBusinessAddress('all-sectors/report/select-address');
+internals.addbusinessAddress = new AddBusinessAddress('all-sectors/report/add-address', internals.validateBusinessAddress);
+internals.selectSiteAddress = new SelectSiteAddress('all-sectors/report/select-address');
+internals.addSiteAddress = new AddSiteAddress('all-sectors/report/add-address', internals.validateSiteAddress);
+internals.overseasDetail = new OverseasDetail('all-sectors/report/overseas-waste-detail', internals.validateOverseasDetail);
 
 module.exports = {
     /**
@@ -419,8 +789,9 @@ module.exports = {
                     return h.redirect('/transfers/waste/codes');
                 } else {
                     // Enrich the waste objects from the master data
+                    const userContext = await request.server.app.userCache.cache(cacheNames.USER_CONTEXT).get(request);
                     const transfers = await Promise.all(tasks.transfers.map(async t => {
-                        return internals.enrichWasteTransferObject(t);
+                        return internals.enrichWasteTransferObject(userContext, t);
                     }));
 
                     // Unset the confirmation status when viewing the page
@@ -430,15 +801,29 @@ module.exports = {
 
             } else {
                 if (request.payload.add) {
+                    // Add another transfer
                     delete tasks.currentWasteTransfer;
                     await request.server.app.userCache.cache(cacheNames.TASK_CONTEXT).set(request, tasks);
                     return h.redirect('/transfers/waste/codes');
-                } else if (Object.values(request.payload).includes('Delete')) {
-                    const currentTransferIdx = internals.findTransferFromPayloadString(tasks, Object.keys(request.payload).find(e => request.payload[e] === 'Delete'));
+                } else if (Object.keys(request.payload).find(k => k.startsWith('delete'))) {
+                    // Delete transfer
+                    const currentTransferIdx = internals.findTransferFromPayloadString(tasks, Object.keys(request.payload).find(k => k.startsWith('delete')));
                     tasks.currentTransferIdx = currentTransferIdx;
                     await request.server.app.userCache.cache(cacheNames.TASK_CONTEXT).set(request, tasks);
                     return h.redirect('/transfers/waste/remove');
+                } else if (Object.keys(request.payload).find(k => k.startsWith('overseas'))) {
+                    // Add (more) overseas transfers
+                    const currentTransferIdx = internals.findTransferFromPayloadString(tasks, Object.keys(request.payload).find(k => k.startsWith('overseas')));
+                    tasks.currentTransferIdx = currentTransferIdx;
+                    const overseasKey = uuid.v4();
+                    const transfer = tasks.transfers[tasks.currentTransferIdx];
+                    transfer.overseas = transfer.overseas || {};
+                    transfer.overseas[overseasKey] = {};
+                    transfer.overseas.currentKey = overseasKey;
+                    await request.server.app.userCache.cache(cacheNames.TASK_CONTEXT).set(request, tasks);
+                    return h.redirect('/transfers/waste/selectBusinessAddress');
                 } else if (request.payload.continue) {
+                    // Confirm
                     await setConfirmation(request, submissionContext, route, true);
                     await setValidationStatus(request, submissionContext, route, true);
                     await request.server.app.userCache.cache(cacheNames.TASK_CONTEXT).set(request, tasks);
@@ -464,7 +849,9 @@ module.exports = {
             if (request.method === 'get') {
                 return h.view('all-sectors/report/confirm-delete', {
                     route: route,
-                    transfer: await internals.enrichWasteTransferObject(tasks.transfers[tasks.currentTransferIdx])
+                    transfer: await internals.enrichWasteTransferObject(
+                        await request.server.app.userCache.cache(cacheNames.USER_CONTEXT).get(request),
+                        tasks.transfers[tasks.currentTransferIdx])
                 });
             } else {
                 tasks.transfers.splice(tasks.currentTransferIdx, 1);
@@ -490,10 +877,30 @@ module.exports = {
      * @returns {Promise<*>}
      */
     codes: async (request, h) => {
-        return internals.codeStage.handler(request, h);
+        return internals.code.handler(request, h);
     },
 
     confirmOverseas: async (request, h) => {
-        return internals.confirmOverseasStage.handler(request, h);
+        return internals.confirmOverseas.handler(request, h);
+    },
+
+    selectBusinessAddress: async (request, h) => {
+        return internals.selectBusinessAddress.handler(request, h);
+    },
+
+    addBusinessAddress: async (request, h) => {
+        return internals.addbusinessAddress.handler(request, h);
+    },
+
+    selectSiteAddress: async (request, h) => {
+        return internals.selectSiteAddress.handler(request, h);
+    },
+
+    addSiteAddress: async (request, h) => {
+        return internals.addSiteAddress.handler(request, h);
+    },
+
+    overseasDetail: async (request, h) => {
+        return internals.overseasDetail.handler(request, h);
     }
 };
