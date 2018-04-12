@@ -14,6 +14,7 @@
                 <tr><th>Quantity</th><td>{{ detail.value }}</td></tr>
                 <tr><th>Method</th><td>{{ detail.method }}</td></tr>
                 <tr><td></td><td><input class="link" type="submit" id="overseas-delete" name="overseas-delete-{{ encodeTransfer(transfer) }}::{{ key }}" value="Delete"/></td></tr>
+                <tr><td></td><td><input class="link" type="submit" id="overseas-change" name="overseas-change-{{ encodeTransfer(transfer) }}::{{ key }}" value="Change"/></td></tr>
             </tbody>
         </table>
     {% endfor %}
@@ -38,7 +39,9 @@
             <tr><td></td><td><input class="link" type="submit" id="overseas" name="overseas-add-{{ encodeTransfer(transfer) }}" value="Add overseas transfer"/></td></tr>
         {% endif %}
 
-        <tr><td></td><td><input class="link" type="submit" id="delete" name="delete-{{ encodeTransfer(transfer) }}" value="Delete the entire waste transfer"/></td></tr>
+        <tr><td></td><td><input class="link" type="submit" id="change" name="change-{{ encodeTransfer(transfer) }}" value="Change the waste transfer"/></td></tr>
+        <tr><td></td><td><input class="link" type="submit" id="delete" name="delete-{{ encodeTransfer(transfer) }}" value="Delete the transfer"/></td></tr>
+
     </tbody>
 </table>
 {% endmacro %}

@@ -862,7 +862,7 @@ module.exports = {
             const { submissionContext, route, tasks } = await cacheHelper(request, 'waste');
 
             if (request.method === 'get') {
-                return h.view('all-sectors/report/confirm-delete    ', {
+                return h.view('all-sectors/report/confirm-delete', {
                     route: route,
                     transfer: await internals.enrichWasteTransferObject(
                         await request.server.app.userCache.cache(cacheNames.USER_CONTEXT).get(request),
