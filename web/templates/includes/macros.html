@@ -1,0 +1,7 @@
+{% macro printAddr(address) %}
+{% if address.businessName %}{{ address.businessName }}, {% endif %}
+{{ address.addressLine1 }},
+{% if address.addressLine2 %}{{ address.addressLine2 }},  {% endif %}
+{{ address.townOrCity }},
+{{ address.country }}
+{% endmacro %}
