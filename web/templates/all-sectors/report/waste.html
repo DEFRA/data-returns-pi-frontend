@@ -31,7 +31,7 @@
         <tr><th>Quantity</th><td><label class="form-label">{% if transfer.brt %}BRT{% else %}{{ transfer.value }} tonnes{% endif %}</label></td></tr>
         <tr><th>Method</th><td>{{ transfer.method }}</td></tr>
 
-        {% if transfer.overseas.size !== 0 %}
+        {% if transfer.overseas | length %}
             <tr><th>Overseas</th><td>{{ displayOverseas(transfer) }}</td></tr>
         {% endif %}
 

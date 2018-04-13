@@ -190,7 +190,7 @@ module.exports = {
                             }
                             break;
 
-                        case 'OFFSITE_WASTE_TRANSFERS':
+                        case 'WASTE_TRANSFERS':
                             if (task.transfers) {
                                 reviewObject.offsite_waste_transfers = reviewObject.offsite_waste_transfers || [];
                                 for (const transfer of task.transfers) {
@@ -217,9 +217,6 @@ module.exports = {
                                     }
                                 }
                             }
-                            break;
-
-                        case 'OVERSEAS_WASTE_TRANSFERS':
                             break;
 
                         default:

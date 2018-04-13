@@ -12,7 +12,7 @@
 	<label id="page-name" hidden>off-site-add</label>
 	<a href="/task-list" class="link-back">Back to sections you must complete</a>
 
-	<form action="/transfers/waste/codes" method="post" class="form">
+	<form action="{{ action }}" method="post" class="form">
 
 		<h1 class="heading-large">
 			Tell us about your transfer of waste off site
@@ -24,16 +24,22 @@
 				Check what you’re reporting
 			</h2>
 			<ul class="error-summary-list">
-				{% if ewc_error %}
+				{% if ewc_error and ewc_error.errno === 'PI-2001' %}
 					<li><a href=""><span class="error-message">Enter a correct EWC code</span></a>
+				{% elif ewc_error and ewc_error.errno === 'PI-2008' %}
+					<li><a href=""><span class="error-message">You selected a non-hazardous EWC code with overseas shipments</span></a>
 				{% endif %}
 
-				{% if wfd_error %}
+				{% if wfd_error and wfd_error.errno === 'PI-2002' %}
 					<li><a href=""><span class="error-message">Enter a correct WFD code</span></a>
+				{% elif wfd_error and wfd_error.errno === 'PI-2009' %}
+					<li><a href=""><span class="error-message">You have selected a disposal code where you have overseas waste transfers. Select a recovery code instead.</span></a>
 				{% endif %}
 
-				{% if value_error %}
+				{% if value_error and value_error.errno === 'PI-2000' %}
 					<li><a href=""><span class="error-message">Enter a tonnage</span></a>
+				{% elif value_error and value_error.errno === 'PI-2007' %}
+					<li><a href=""><span class="error-message">The amount is less than the total for the overseas transfers. Give a larger total.</span></a>
 				{% endif %}
 
 				{% if brt_error %}
@@ -49,9 +55,12 @@
 
 		{% if ewc_error or dupe_error %}
 		<div class="form-group form-group-error">
-			{% if ewc_error %}
+			{% if ewc_error and ewc_error.errno === 'PI-2001' %}
 			<span class="error-message">Enter a correct EWC code</span>
 			<span class="form-hint">For example, ‘01 01 01’.</span>
+			{% elif ewc_error and ewc_error.errno === 'PI-2008' %}
+			<span class="error-message">Enter a hazardous EWC code</span>
+			<span class="form-hint">For example, ‘01 03 05’.</span>
 			{% elseif dupe_error %}
 			<span class="error-message">Enter a correct EWC code</span>
 			{% endif %}
@@ -68,9 +77,12 @@
 
 		{% if wfd_error or dupe_error %}
 		<div class="form-group form-group-error wfd_error">
-			{% if wfd_error %}
+			{% if wfd_error and wfd_error.errno === 'PI-2002' %}
 			<span class="error-message">Enter a correct WFD code</span>
 			<span class="form-hint">For example, ‘D5’ or ‘R13’.</span>
+			{% elif wfd_error and wfd_error.errno === 'PI-2009' %}
+			<span class="error-message">Enter a recovery code</span>
+			<span class="form-hint">For example, ‘R13’.</span>
 			{% elseif dupe_error %}
 			<span class="error-message">Or enter a correct WFD code</span>
 			{% endif %}
@@ -110,6 +122,12 @@
                     <span class="error-message">Enter a total in digits</span>
                     <input novalidate class="form-control form-control-error total" id="value-err" name="value" value="{{ transfer.page.value }}"> tonnes
                 </div>
+			{% elif value_error.errno === 'PI-2007' %}
+				<div class="form-group form-group-error">
+					<label class="form-label" for="value-err">Total</label>
+					<span class="error-message">Enter an amount greater than the sum over the overseas transfer ammount</span>
+					<input novalidate class="form-control form-control-error total" id="value-err3" name="value" value="{{ transfer.page.value }}"> tonnes
+				</div>
 			{% else %}
 				<div class="form-group form-group-error">
                     <label class="form-label" for="value-err2">Total</label>

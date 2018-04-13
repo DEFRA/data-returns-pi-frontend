@@ -7,7 +7,6 @@ const Authentication = require('./handlers/authentication.js');
 const Start = require('./handlers/start.js');
 const AllSectors = require('./handlers/all-sectors/task-list');
 const Releases = require('./handlers/all-sectors/report/releases');
-const OffSite = require('./handlers/all-sectors/report/off-site');
 const Waste = require('./handlers/all-sectors/report/waste');
 const Review = require('./handlers/all-sectors/submit/review');
 const Submit = require('./handlers/all-sectors/submit/submit');
@@ -99,6 +98,7 @@ const dynamicHandlers = [
     { method: ['GET', 'POST'], path: '/transfers/waste/confirm', options: { handler: Waste.confirm } },
     { method: ['GET', 'POST'], path: '/transfers/waste', options: { handler: Waste.waste } },
     { method: ['GET', 'POST'], path: '/transfers/waste/codes', options: { handler: Waste.codes } },
+    { method: ['GET', 'POST'], path: '/transfers/waste/change', options: { handler: Waste.changeCode } },
     { method: ['GET', 'POST'], path: '/transfers/waste/remove', options: { handler: Waste.remove } },
     { method: ['GET', 'POST'], path: '/transfers/waste/confirm-overseas', options: { handler: Waste.confirmOverseas } },
     { method: ['GET', 'POST'], path: '/transfers/waste/selectBusinessAddress', options: { handler: Waste.selectBusinessAddress } },

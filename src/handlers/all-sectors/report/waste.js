@@ -188,6 +188,83 @@ internals.validateCode = async (payload, cacheState) => {
 };
 
 /**
+ * Validator for the change code page - like the change validator except that
+ * we allow a duplicate if the current key already exists.
+ * There is duplicate code in these validators but for readability and clarity
+ * I want one validator one validation.
+ * @param payload
+ * @param cacheState
+ * @returns {Promise<*>}
+ */
+internals.validateCodeChange = async (payload, cacheState) => {
+    const { ewc, value, wfd, brt } = payload;
+    const transfer = cacheState.tasks.transfers[cacheState.tasks.currentTransferIdx];
+    const result = [];
+    let overseasTotal = 0;
+
+    if (transfer.overseas && Object.values(transfer.overseas)) {
+        overseasTotal = Object.values(transfer.overseas)
+            .map(o => o.value)
+            .filter(v => v)
+            .reduce((a, c) => a + c, 0);
+    }
+
+    if (brt) {
+        if (value.trim()) {
+            result.push({ key: 'value', errno: 'PI-2003' });
+        }
+    } else {
+        if (!isNumeric(value)) {
+            result.push({ key: 'value', errno: 'PI-2000' });
+        } else {
+
+            if (overseasTotal > Number.parseFloat(payload.value)) {
+                result.push({key: 'value', errno: 'PI-2007'});
+            }
+        }
+    }
+
+    const { disposal, recovery } = await internals.disposalOrRecoveryFromStr(wfd);
+
+    if (!disposal && !recovery) {
+        result.push({ key: 'wfd', errno: 'PI-2002' });
+    }
+
+    const ewcObj = await internals.ewcFromStr(ewc);
+
+    if (ewcObj) {
+        const activity = await MasterDataService.getEwcActivityById(ewcObj.activityId);
+        if (activity.hazardous && brt) {
+            result.push({ key: 'brt', errno: 'PI-2005' });
+        }
+
+        // Check for any overseas waste when changing to non-hazardous
+        if (overseasTotal > 0 && !activity.hazardous) {
+            result.push({ key: 'ewc', errno: 'PI-2008' });
+        }
+
+        // Check for a disposal code used with overseas transfers
+        if (overseasTotal > 0 && activity.hazardous && disposal) {
+            result.push({ key: 'wfd', errno: 'PI-2009' });
+        }
+    }
+
+    if (!ewcObj) {
+        result.push({ key: 'ewc', errno: 'PI-2001' });
+    }
+
+    // If the user has entered legit codes check for a duplicate
+    if (ewcObj && (disposal || recovery)) {
+        const cacheObject = await internals.createWasteTransferCacheObject(payload);
+        if (![cacheState.tasks.currentTransferIdx, -1].includes(internals.findTransfer(cacheState.tasks, cacheObject))) {
+            result.push({ key: 'waste', errno: 'PI-2004' });
+        }
+    }
+
+    return result.length > 0 ? result : null;
+};
+
+/**
  * Validate the business address
  * @param payload
  * @returns {Promise<*>}
@@ -442,7 +519,7 @@ class Codes extends BaseStage {
         const tasks = cacheState.tasks;
         if (tasks.currentWasteTransfer) {
             if (tasks.currentWasteTransfer.incomplete) {
-                return h.view(this.path, { transfer: tasks.currentWasteTransfer.incomplete });
+                return h.view(this.path, { action: '/transfers/waste/codes', transfer: tasks.currentWasteTransfer.incomplete });
             }
         }
 
@@ -479,6 +556,87 @@ class Codes extends BaseStage {
 
             // Hazardous waste for recovery can be sent overseas otherwise redirect to the summary page
             if (cacheObject.hazardous && cacheObject.wfd.recoveryId) {
+                return h.redirect('/transfers/waste/confirm-overseas');
+            } else {
+                return h.redirect('/transfers/waste');
+            }
+        }
+    }
+}
+
+class ChangeCodes extends BaseStage {
+
+    constructor (...args) {
+        super(args);
+    }
+
+    async doGet (request, h, cacheState) {
+        const tasks = cacheState.tasks;
+
+        if (tasks.currentWasteTransfer) {
+            if (tasks.currentWasteTransfer.incomplete) {
+                return h.view(this.path, { action: '/transfers/waste/change', transfer: tasks.currentWasteTransfer.incomplete });
+            }
+        }
+
+        const currentWasteTransfer = tasks.transfers[tasks.currentTransferIdx];
+        const userContext = await request.server.app.userCache.cache(cacheNames.USER_CONTEXT).get(request);
+        const obj = await internals.enrichWasteTransferObject(userContext, currentWasteTransfer);
+
+        const incomplete = {
+            page: {
+                ewc: obj.ewc.activity.name,
+                wfd: obj.wfd.disposal ? obj.wfd.disposal.code : obj.wfd.recovery.code,
+                method: obj.method,
+                value: obj.value,
+                brt: obj.brt ? 'true' : 'false'
+            }
+        };
+
+        return h.view(this.path, { action: '/transfers/waste/change', transfer: incomplete });
+    }
+
+    async doPost (request, h, cacheState, errors) {
+        const tasks = cacheState.tasks;
+        if (errors) {
+            tasks.currentWasteTransfer = {
+                incomplete: {
+                    errors: errors,
+                    page: request.payload
+                }
+            };
+            await request.server.app.userCache.cache(cacheNames.TASK_CONTEXT).set(request, tasks);
+            return h.redirect('/transfers/waste/change');
+        } else {
+            const cacheObject = await internals.createWasteTransferCacheObject(request.payload);
+            delete tasks.currentWasteTransfer;
+            const foundinCacheIdx = internals.findTransfer(tasks, cacheObject);
+
+            if (foundinCacheIdx === -1) {
+                // Key has changed remove the old transfer object
+                if (tasks.transfers[tasks.currentTransferIdx].overseas) {
+                    const overseas = Object.assign(tasks.transfers[tasks.currentTransferIdx].overseas);
+                    cacheObject.overseas = overseas;
+                }
+                tasks.transfers.splice(tasks.currentTransferIdx, 1);
+                tasks.transfers.push(cacheObject);
+            } else {
+                // On key modification so merge the object
+                tasks.transfers[foundinCacheIdx] = Object.assign(tasks.transfers[foundinCacheIdx], cacheObject);
+            }
+
+            // We need to address this by the array index so we need a deterministic sort
+            tasks.transfers.sort(internals.sortTransfer);
+
+            // Set up the index pointer
+            const currentTransferIdx = internals.findTransfer(tasks, cacheObject);
+            tasks.currentTransferIdx = currentTransferIdx;
+
+            // Save the task
+            await request.server.app.userCache.cache(cacheNames.TASK_CONTEXT).set(request, tasks);
+
+            // Hazardous waste for recovery can be sent overseas otherwise redirect to the summary page
+            if (cacheObject.hazardous && cacheObject.wfd.recoveryId && !tasks.transfers[currentTransferIdx].overseas) {
                 return h.redirect('/transfers/waste/confirm-overseas');
             } else {
                 return h.redirect('/transfers/waste');
@@ -711,6 +869,7 @@ class OverseasDetail extends BaseStage {
             const transfer = tasks.transfers[tasks.currentTransferIdx];
             transfer.overseas[transfer.overseas.currentKey].value = Number.parseFloat(request.payload.value);
             transfer.overseas[transfer.overseas.currentKey].method = request.payload.method;
+            transfer.overseas[transfer.overseas.currentKey].complete = true;
             await request.server.app.userCache.cache(cacheNames.TASK_CONTEXT).set(request, tasks);
             return h.redirect('/transfers/waste');
         }
@@ -718,6 +877,7 @@ class OverseasDetail extends BaseStage {
 }
 
 internals.code = new Codes('all-sectors/report/waste-codes', internals.validateCode);
+internals.changeCode = new ChangeCodes('all-sectors/report/waste-codes', internals.validateCodeChange);
 internals.confirmOverseas = new ConfirmOverseas('all-sectors/report/confirm');
 internals.selectBusinessAddress = new SelectBusinessAddress('all-sectors/report/select-address');
 internals.addbusinessAddress = new AddBusinessAddress('all-sectors/report/add-address', internals.validateBusinessAddress);
@@ -788,6 +948,17 @@ module.exports = {
                     }
                     return h.redirect('/transfers/waste/codes');
                 } else {
+                    // Remove any incomplete overseas transfers created by the back button usage
+                    tasks.transfers.map(t => {
+                        if (t.overseas) {
+                            const incompletes = Object.keys(t.overseas).filter(k => k !== 'currentKey').filter(os => !t.overseas[os].complete);
+                            for (const incomplete of incompletes) {
+                                delete t.overseas[incomplete];
+                            }
+                        }
+                    });
+                    await request.server.app.userCache.cache(cacheNames.TASK_CONTEXT).set(request, tasks);
+
                     // Enrich the waste objects from the master data
                     const userContext = await request.server.app.userCache.cache(cacheNames.USER_CONTEXT).get(request);
                     const transfers = await Promise.all(tasks.transfers.map(async t => {
@@ -814,6 +985,14 @@ module.exports = {
                     await request.server.app.userCache.cache(cacheNames.TASK_CONTEXT).set(request, tasks);
                     return h.redirect('/transfers/waste/remove');
 
+                } else if (Object.keys(request.payload).find(k => k.startsWith('change'))) {
+                    // Change the transfer
+                    const transferKey = Object.keys(request.payload).find(k => k.startsWith('change')).replace('change-', '');
+                    const currentTransferIdx = internals.findTransferFromPayloadString(tasks, transferKey);
+                    tasks.currentTransferIdx = currentTransferIdx;
+                    await request.server.app.userCache.cache(cacheNames.TASK_CONTEXT).set(request, tasks);
+                    return h.redirect('/transfers/waste/change');
+
                 } else if (Object.keys(request.payload).find(k => k.startsWith('overseas-add'))) {
                     // Add (more) overseas transfers
                     const transferKey = Object.keys(request.payload).find(k => k.startsWith('overseas-add')).replace('overseas-add-', '');
@@ -836,6 +1015,14 @@ module.exports = {
                     await request.server.app.userCache.cache(cacheNames.TASK_CONTEXT).set(request, tasks);
                     return h.redirect('/transfers/waste/overseas/remove');
 
+                } else if (Object.keys(request.payload).find(k => k.startsWith('overseas-change'))) {
+                    const compoundKey = Object.keys(request.payload).find(k => k.startsWith('overseas-change')).replace('overseas-change-', '');
+                    const currentTransferIdx = internals.findTransferFromPayloadString(tasks, compoundKey.split('::')[0]);
+                    tasks.currentTransferIdx = currentTransferIdx;
+                    const transfer = tasks.transfers[tasks.currentTransferIdx];
+                    transfer.overseas.currentKey = compoundKey.split('::')[1];
+                    await request.server.app.userCache.cache(cacheNames.TASK_CONTEXT).set(request, tasks);
+                    return h.redirect('/transfers/waste/overseas/detail');
                 } else if (request.payload.continue) {
                     // Confirm
                     await setConfirmation(request, submissionContext, route, true);
@@ -916,6 +1103,11 @@ module.exports = {
      */
     codes: async (request, h) => {
         return internals.code.handler(request, h);
+    },
+
+    /** To change the waste code quantity etc */
+    changeCode: async (request, h) => {
+        return internals.changeCode.handler(request, h);
     },
 
     confirmOverseas: async (request, h) => {
