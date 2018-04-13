@@ -37,7 +37,7 @@
 				{% endif %}
 
 				{% if value_error and value_error.errno === 'PI-2000' %}
-					<li><a href=""><span class="error-message">Enter a tonnage</span></a>
+					<li><a href=""><span class="error-message">Enter a (positive) tonnage</span></a>
 				{% elif value_error and value_error.errno === 'PI-2007' %}
 					<li><a href=""><span class="error-message">The amount is less than the total for the overseas transfers. Give a larger total.</span></a>
 				{% endif %}
@@ -119,7 +119,7 @@
 			{% if value_error.errno === 'PI-2000' %}
 				<div class="form-group form-group-error">
                     <label class="form-label" for="value-err">Total</label>
-                    <span class="error-message">Enter a total in digits</span>
+                    <span class="error-message">Enter a positive total in digits</span>
                     <input novalidate class="form-control form-control-error total" id="value-err" name="value" value="{{ transfer.page.value }}"> tonnes
                 </div>
 			{% elif value_error.errno === 'PI-2007' %}

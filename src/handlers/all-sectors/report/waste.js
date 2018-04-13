@@ -154,6 +154,8 @@ internals.validateCode = async (payload, cacheState) => {
     } else {
         if (!isNumeric(value)) {
             result.push({ key: 'value', errno: 'PI-2000' });
+        } else if (value < 0) {
+            result.push({ key: 'value', errno: 'PI-2000' });
         }
     }
 
@@ -217,6 +219,9 @@ internals.validateCodeChange = async (payload, cacheState) => {
         if (!isNumeric(value)) {
             result.push({ key: 'value', errno: 'PI-2000' });
         } else {
+            if (value < 0) {
+                result.push({ key: 'value', errno: 'PI-2000' });
+            }
 
             if (overseasTotal > Number.parseFloat(payload.value)) {
                 result.push({key: 'value', errno: 'PI-2007'});
@@ -355,10 +360,16 @@ internals.validateOverseasDetail = async (payload, cacheState) => {
     if (!isNumeric(value)) {
         result.push({ key: 'value', errno: 'PI-2000' });
     } else {
-        const overseasTotal = Object.values(transfer.overseas)
-            .map(o => o.value)
-            .filter(v => v)
-            .reduce((a, c) => a + c, 0);
+
+        if (value < 0) {
+            result.push({ key: 'value', errno: 'PI-2000' });
+        }
+
+        const overseasTotal = Object.keys(transfer.overseas)
+            .filter(k => k !== transfer.overseas.currentKey)
+            .filter(k => k !== 'currentKey').map(k => {
+                return transfer.overseas[k].value;
+            }).reduce((a, c) => a + c, 0);
 
         if (overseasTotal + Number.parseFloat(payload.value) > transfer.value) {
             result.push({key: 'value', errno: 'PI-2001'});
@@ -941,11 +952,13 @@ module.exports = {
             const { submissionContext, route, tasks } = await cacheHelper(request, 'waste');
 
             if (request.method === 'get') {
+
+                if (tasks.currentWasteTransfer) {
+                    delete tasks.currentWasteTransfer;
+                    await request.server.app.userCache.cache(cacheNames.TASK_CONTEXT).set(request, tasks);
+                }
+
                 if (!tasks.transfers || tasks.transfers.length === 0) {
-                    if (tasks.currentWasteTransfer) {
-                        delete tasks.currentWasteTransfer;
-                        await request.server.app.userCache.cache(cacheNames.TASK_CONTEXT).set(request, tasks);
-                    }
                     return h.redirect('/transfers/waste/codes');
                 } else {
                     // Remove any incomplete overseas transfers created by the back button usage
@@ -1021,14 +1034,14 @@ module.exports = {
                     tasks.currentTransferIdx = currentTransferIdx;
                     const transfer = tasks.transfers[tasks.currentTransferIdx];
                     transfer.overseas.currentKey = compoundKey.split('::')[1];
-                    //tasks.currentWasteTransfer = {
-                    //    incomplete: {
-                    //        page: {
-                    //            method: transfer.overseas[transfer.overseas.currentKey].method,
-                    //            value: transfer.overseas[transfer.overseas.currentKey].value
-                    //        }
-                    //    }
-                    //};
+                    tasks.currentWasteTransfer = {
+                        incomplete: {
+                            page: {
+                                method: transfer.overseas[transfer.overseas.currentKey].method,
+                                value: transfer.overseas[transfer.overseas.currentKey].value
+                            }
+                        }
+                    };
                     await request.server.app.userCache.cache(cacheNames.TASK_CONTEXT).set(request, tasks);
                     return h.redirect('/transfers/waste/overseas/detail');
                 } else if (request.payload.continue) {

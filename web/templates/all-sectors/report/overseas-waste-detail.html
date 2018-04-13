@@ -21,7 +21,7 @@
 				</h2>
 				<ul class="error-summary-list">
 					{% if value_error and value_error.errno === 'PI-2000' %}
-						<li><a href=""><span class="error-message">Enter a tonnage</span></a>
+						<li><a href=""><span class="error-message">Enter a (positive) tonnage</span></a>
 					{% else %}
 						<li><a href=""><span class="error-message">Your total shipped overseas exceeds your off site transfer total. This is not allowed.</span></a>
 					{% endif %}
@@ -50,7 +50,7 @@
 			{% if value_error.errno === 'PI-2000' %}
 				<div class="form-group form-group-error">
                     <label class="form-label" for="value-err">Total</label>
-                    <span class="error-message">Enter a total in digits</span>
+                    <span class="error-message">Enter a positive total in digits</span>
                     <input novalidate class="form-control form-control-error total" id="value-err" name="value" value="{{ transfer.page.value }}"> tonnes
                 </div>
 			{% else %}
