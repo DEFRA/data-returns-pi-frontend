@@ -1021,6 +1021,14 @@ module.exports = {
                     tasks.currentTransferIdx = currentTransferIdx;
                     const transfer = tasks.transfers[tasks.currentTransferIdx];
                     transfer.overseas.currentKey = compoundKey.split('::')[1];
+                    //tasks.currentWasteTransfer = {
+                    //    incomplete: {
+                    //        page: {
+                    //            method: transfer.overseas[transfer.overseas.currentKey].method,
+                    //            value: transfer.overseas[transfer.overseas.currentKey].value
+                    //        }
+                    //    }
+                    //};
                     await request.server.app.userCache.cache(cacheNames.TASK_CONTEXT).set(request, tasks);
                     return h.redirect('/transfers/waste/overseas/detail');
                 } else if (request.payload.continue) {
