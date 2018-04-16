@@ -48,12 +48,12 @@
                         <div class="form-group form-group-error">
                             <label class="form-label" for="business-name-err">Business name</label>
                             <span class="error-message">You must include a business name</span>
-                            <input class="form-control form-control-error" id="business-name-err" type="text" name="businessName" value="{{ address.page.businessName }}">
+                            <input class="form-control form-control-error" id="business-name-err" type="text" name="businessName" maxlength="255" value="{{ address.page.businessName }}">
                         </div>
                     {% else %}
                         <div class="form-group">
                             <label class="form-label" for="business-name">Business name</label>
-                            <input class="form-control" id="business-name" type="text" name="businessName" value="{{ address.page.businessName }}">
+                            <input class="form-control" id="business-name" type="text" name="businessName" maxlength="255" value="{{ address.page.businessName }}">
                         </div>
                     {% endif %}
                 {% endif %}
@@ -62,43 +62,43 @@
                     <div class="form-group form-group-error">
                         <label class="form-label" for="address-line-1-err">Address line 1</label>
                         <span class="error-message">You must include an address</span>
-                        <input class="form-control form-control-error" id="address-line-1-err" type="text" name="addressLine1" value="{{ address.page.addressLine1 }}">
+                        <input class="form-control form-control-error" id="address-line-1-err" type="text" name="addressLine1" maxlength="255" value="{{ address.page.addressLine1 }}">
                     </div>
                 {% else %}
                     <div class="form-group">
                         <label class="form-label" for="address-line-1">Address line 1</label>
-                        <input class="form-control" id="address-line-1" type="text" name="addressLine1" value="{{ address.page.addressLine1 }}">
+                        <input class="form-control" id="address-line-1" type="text" name="addressLine1" maxlength="255" value="{{ address.page.addressLine1 }}">
                     </div>
                 {% endif %}
 
                 <div class="form-group">
                     <label class="form-label" for="address-line-2">Address line 2 (optional)</label>
-                    <input class="form-control" id="address-line-2" type="text" name="addressLine2" value="{{ address.page.addressLine2 }}">
+                    <input class="form-control" id="address-line-2" type="text" name="addressLine2" maxlength="255" value="{{ address.page.addressLine2 }}">
                 </div>
 
                 {% if town_or_city_error %}
                     <div class="form-group form-group-error">
                         <label class="form-label" for="town-or-city-err">Town or city</label>
                         <span class="error-message">You must include a town or city</span>
-                        <input class="form-control form-control-error" id="town-or-city-err" type="text" name="townOrCity" value="{{ address.page.townOrCity }}">
+                        <input class="form-control form-control-error" id="town-or-city-err" type="text" maxlength="100" name="townOrCity" value="{{ address.page.townOrCity }}">
                     </div>
                 {% else %}
                     <div class="form-group">
                         <label class="form-label" for="town-or-city">Town or city</label>
-                        <input class="form-control" id="town-or-city" type="text" name="townOrCity" value="{{ address.page.townOrCity }}">
+                        <input class="form-control" id="town-or-city" type="text" name="townOrCity" maxlength="100" value="{{ address.page.townOrCity }}">
                     </div>
                 {% endif %}
 
                 {% if postal_code_error %}
                 <div class="form-group form-group-error">
                     <label class="form-label" for="postal-code-err">Postal Code</label>
-                    <span class="error-message">You must include a town or city</span>
-                    <input class="form-control form-control-error" id="postal-code-err" type="text" name="postalCode" value="{{ address.page.postalCode }}">
+                    <span class="error-message">You must include a postal code</span>
+                    <input class="form-control form-control-error" id="postal-code-err" type="text" name="postalCode" maxlength="20" value="{{ address.page.postalCode }}">
                 </div>
                 {% else %}
                 <div class="form-group">
                     <label class="form-label" for="postal-code">Postal Code</label>
-                    <input class="form-control" id="postal-code" type="text" name="postalCode" value="{{ address.page.postalCode }}">
+                    <input class="form-control" id="postal-code" type="text" name="postalCode" maxlength="20" value="{{ address.page.postalCode }}">
                 </div>
                 {% endif %}
                 

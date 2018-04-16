@@ -11,6 +11,8 @@ module.exports = {
         {'id': 3, name: 'Calculation'}
     ],
 
+    transferMethods: ['Weighing', 'Calculation', 'Estimation'],
+
     transferOperations: [
         {'id': 1, name: 'Disposal'},
         {'id': 2, name: 'Recovery'}

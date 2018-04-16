@@ -3,7 +3,7 @@
 const Countries = require('i18n-iso-countries');
 const uuid = require('uuid');
 const MasterDataService = require('../../../service/master-data');
-
+const transferMethods = require('../../../../data/static-data').transferMethods;
 const cacheHelper = require('../common').cacheHelper;
 const cacheNames = require('../../../lib/user-cache-policies').names;
 
@@ -518,7 +518,12 @@ class Codes extends BaseStage {
         const tasks = cacheState.tasks;
         if (tasks.currentWasteTransfer) {
             if (tasks.currentWasteTransfer.incomplete) {
-                return h.view(this.path, { action: '/transfers/waste/codes', transfer: tasks.currentWasteTransfer.incomplete, count: (tasks.transfers || []).length });
+                return h.view(this.path, {
+                    action: '/transfers/waste/codes',
+                    transfer: tasks.currentWasteTransfer.incomplete,
+                    count: (tasks.transfers || []).length,
+                    transferMethods: transferMethods
+                });
             }
         }
 
@@ -574,7 +579,12 @@ class ChangeCodes extends BaseStage {
 
         if (tasks.currentWasteTransfer) {
             if (tasks.currentWasteTransfer.incomplete) {
-                return h.view(this.path, { action: '/transfers/waste/change', transfer: tasks.currentWasteTransfer.incomplete, count: (tasks.transfers || []).length });
+                return h.view(this.path, {
+                    action: '/transfers/waste/change',
+                    transfer: tasks.currentWasteTransfer.incomplete,
+                    count: (tasks.transfers || []).length,
+                    transferMethods: transferMethods
+                });
             }
         }
 
@@ -592,7 +602,12 @@ class ChangeCodes extends BaseStage {
             }
         };
 
-        return h.view(this.path, { action: '/transfers/waste/change', transfer: incomplete, count: (tasks.transfers || []).length });
+        return h.view(this.path, {
+            action: '/transfers/waste/change',
+            transfer: incomplete,
+            count: (tasks.transfers || []).length,
+            transferMethods: transferMethods
+        });
     }
 
     async doPost (request, h, cacheState, errors) {
@@ -845,11 +860,14 @@ class OverseasDetail extends BaseStage {
         const tasks = cacheState.tasks;
         if (tasks.currentWasteTransfer) {
             if (tasks.currentWasteTransfer.incomplete) {
-                return h.view(this.path, { transfer: tasks.currentWasteTransfer.incomplete });
+                return h.view(this.path, {
+                    transfer: tasks.currentWasteTransfer.incomplete,
+                    transferMethods: transferMethods
+                });
             }
         }
 
-        return h.view(this.path);
+        return h.view(this.path, { transferMethods: transferMethods });
     }
 
     async doPost (request, h, cacheState, errors) {

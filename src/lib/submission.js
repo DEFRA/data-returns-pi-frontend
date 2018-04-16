@@ -9,6 +9,7 @@ const Hoek = require('hoek');
 
 const MasterDataService = require('../service/master-data');
 
+const transferMethods = require('../../data/static-data').transferMethods;
 const cacheNames = require('./user-cache-policies').names;
 const CacheKeyError = require('./user-cache-policies').CacheKeyError;
 const Api = require('./api-client');
@@ -78,11 +79,11 @@ const internals = {
         }, {}));
 
         // Get the transfers
-        const transfers = await Api.request('SUB', 'GET', `submissions/${id}/offsiteWasteTransfers`);
+        const transfers = await Api.request('SUB', 'GET', `submissions/${id}/transfers`);
 
         // Assign the transfers to the result
-        if (transfers._embedded.offsiteWasteTransfers.length) {
-            result.OFFSITE_WASTE_TRANSFERS = transfers._embedded.offsiteWasteTransfers;
+        if (transfers._embedded.transfers.length) {
+            result.WASTE_TRANSFERS = transfers._embedded.transfers;
         }
 
         return result;
@@ -191,7 +192,7 @@ const internals = {
             RELEASES_TO_AIR: internals.releaseRouteOperator,
             RELEASES_TO_CONTROLLED_WATERS: internals.releaseRouteOperator,
             OFFSITE_TRANSFERS_IN_WASTE_WATER: internals.releaseRouteOperator,
-            OFFSITE_WASTE_TRANSFERS: internals.transferRouteOperator
+            WASTE_TRANSFERS: internals.transferRouteOperator
         });
 
         // Prepare the submission and send the submission
@@ -265,20 +266,57 @@ const internals = {
         }
     },
 
-    transferObj: (transfer) => {
+    transferObj: (userContext, transfer) => {
+        const result = {};
+        result.ewc_activity_id = transfer.ewc.activityId;
+
         if (transfer.wfd.disposalId) {
-            return {
-                ewc_activity_id: transfer.ewc.activityId,
-                wfd_disposal_id: transfer.wfd.disposalId,
-                tonnage: transfer.value
-            };
-        } else if (transfer.wfd.recoveryId) {
-            return {
-                ewc_activity_id: transfer.ewc.activityId,
-                wfd_recovery_id: transfer.wfd.recoveryId,
-                tonnage: transfer.value
-            };
+            result.wfd_disposal_id = transfer.wfd.disposalId;
+        } else {
+            result.wfd_recovery_id = transfer.wfd.recoveryId;
         }
+
+        result.tonnage = transfer.value;
+        result.method = transfer.method;
+
+        if (transfer.brt) {
+            result.below_reporting_threshold = true;
+        }
+
+        if (transfer.overseas) {
+            result.overseas = Object.keys(transfer.overseas)
+                .filter(k => k !== 'currentKey')
+                .map(k => transfer.overseas[k])
+                .map(o => {
+                    const result = {};
+                    const businessAddress = userContext.addresses.business[o.businessAddress];
+                    const siteAddress = userContext.addresses.site[o.siteAddress];
+
+                    result.tonnage = o.value;
+                    result.method = o.method;
+                    result.responsible_company_name = businessAddress.businessName;
+
+                    result.responsible_company_address = {
+                        line1: businessAddress.addressLine1,
+                        line2: businessAddress.addressLine2,
+                        town_or_city: businessAddress.townOrCity,
+                        post_code: businessAddress.postalCode,
+                        country: businessAddress.country
+                    };
+
+                    result.destination_address = {
+                        line1: siteAddress.addressLine1,
+                        line2: siteAddress.addressLine2,
+                        town_or_city: siteAddress.townOrCity,
+                        post_code: siteAddress.postalCode,
+                        country: siteAddress.country
+                    };
+
+                    return result;
+                });
+        }
+
+        return result;
     },
 
     /**
@@ -297,10 +335,11 @@ const internals = {
                 submissionContext.currentTask = route.name;
                 await request.server.app.userCache.cache(cacheNames.SUBMISSION_CONTEXT).set(request, submissionContext);
                 const task = await request.server.app.userCache.cache(cacheNames.TASK_CONTEXT).get(request);
+                const userContext = await request.server.app.userCache.cache(cacheNames.USER_CONTEXT).get(request);
 
                 // Call the function
                 if (task) {
-                    results[route.name] = await func[route.name](task, submission[route.name] || [],
+                    results[route.name] = await func[route.name](userContext, task, submission[route.name] || [],
                         route, `submissions/${submissionContext.id}`);
                 } else {
                     results[route.name] = null;
@@ -323,7 +362,7 @@ const internals = {
      * @param uri - the URI of the parent submission
      * @return {Promise.<void>}
      */
-    releaseRouteOperator: async (task, apiArr, route, uri) => {
+    releaseRouteOperator: async (userContext, task, apiArr, route, uri) => {
         const releaseSchema = Joi.object({
             submission: Joi.string().uri({ allowRelative: true }),
             substance_id: Joi.number().integer().required(),
@@ -410,21 +449,36 @@ const internals = {
      * @param uri - the URI of the parent submission
      * @return {Promise.<void>}
      */
-    transferRouteOperator: async (task, apiArr, route, uri) => {
-        const transferSchema = Joi.alternatives().try(Joi.object({
+    transferRouteOperator: async (userContext, task, apiArr, route, uri) => {
+
+        const address = {
+            line1: Joi.string().required(),
+            line2: Joi.string().optional(),
+            town_or_city: Joi.string().required(),
+            post_code: Joi.string().required(),
+            country: Joi.string().required()
+        };
+
+        const overseasSchema = {
+            responsible_company_name: Joi.string().required(),
+            responsible_company_address: Joi.object(address).required(),
+            destination_address: Joi.object(address).required(),
+            tonnage: Joi.number().required(),
+            method: Joi.string().valid(transferMethods).required()
+        };
+
+        const transferSchema = Joi.object({
             submission: Joi.string().uri({ allowRelative: true }),
             ewc_activity_id: Joi.number().integer(),
-            wfd_disposal_id: Joi.number().integer().required(),
-            wfd_recovery_id: Joi.forbidden(),
-            tonnage: Joi.number()
-        }), Joi.object({
-            submission: Joi.string().uri({ allowRelative: true }),
-            ewc_activity_id: Joi.number().integer(),
-            wfd_disposal_id: Joi.forbidden(),
-            wfd_recovery_id: Joi.number().integer().required(),
-            tonnage: Joi.number()
-        })
-        ).optional();
+            wfd_disposal_id: Joi.number().integer().optional(),
+            wfd_recovery_id: Joi.number().integer().optional(),
+            method: Joi.string().valid(transferMethods).required(),
+            below_reporting_threshold: Joi.boolean().optional(),
+            tonnage: Joi.alternatives().when('below_reporting_threshold', {
+                is: true, then: Joi.forbidden(), otherwise: Joi.number().required()
+            }),
+            overseas: Joi.array().items(overseasSchema)
+        });
 
         // We need to sort our tasks into POST, PUT and DELETE
         const posts = [];
@@ -437,7 +491,7 @@ const internals = {
 
         if (task.transfers) {
             for (const transfer of task.transfers) {
-                const apiObj = await internals.transferObj(transfer);
+                const apiObj = await internals.transferObj(userContext, transfer);
                 const transferObj = apiArr.find(a => transferEquals(a, apiObj));
 
                 if (transferObj) {
@@ -457,7 +511,7 @@ const internals = {
             Joi.assert(r, transferSchema, 'Badly formed releases message: ' + JSON.stringify(r));
         });
 
-        const tasks = task.transfers.map(t => internals.transferObj(t));
+        const tasks = task.transfers.map(t => internals.transferObj(userContext, t));
 
         const deletes = apiArr.filter(a => !tasks.find(t => transferEquals(a, t)));
 
@@ -467,15 +521,15 @@ const internals = {
         logger.debug('Puts: ' + JSON.stringify(puts, null, 4));
 
         await Promise.all(deletes.map(async del => {
-            await Api.request('SUB', 'DELETE', `offsiteWasteTransfers/${del.id}`, null);
+            await Api.request('SUB', 'DELETE', `transfers/${del.id}`, null);
         }));
 
         await Promise.all(posts.map(async post => {
-            await Api.request('SUB', 'POST', 'offsiteWasteTransfers', null, post);
+            await Api.request('SUB', 'POST', 'transfers', null, post);
         }));
 
         await Promise.all(puts.map(async put => {
-            await Api.request('SUB', 'PUT', `offsiteWasteTransfers/${put.id}`, null, put.put);
+            await Api.request('SUB', 'PUT', `transfers/${put.id}`, null, put.put);
         }));
     },
 
@@ -761,7 +815,7 @@ module.exports = {
     // Create a new submission
     createSubmissionForEaIdAndYear: internals.createSubmissionForEaIdAndYear,
 
-    // Expose redis cache restore
+    // Restore the redis cache submission from the submissions API
     restore: internals.restore,
 
     // The submission status codes
