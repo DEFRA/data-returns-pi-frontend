@@ -10,7 +10,12 @@
 
 <main id="content">
 	<label id="page-name" hidden>off-site-add</label>
-	<a href="/task-list" class="link-back">Back to sections you must complete</a>
+
+	{% if count > 0 %}
+		<a href="/transfers/waste" class="link-back">Back to transfers</a>
+	{% else %}
+		<a href="/task-list" class="link-back">Back to sections you must complete</a>
+	{% endif %}
 
 	<form action="{{ action }}" method="post" class="form">
 
@@ -37,9 +42,11 @@
 				{% endif %}
 
 				{% if value_error and value_error.errno === 'PI-2000' %}
-					<li><a href=""><span class="error-message">Enter a (positive) tonnage</span></a>
+					<li><a href=""><span class="error-message">Enter a (positive) tonnage (or select BRT)</span></a>
 				{% elif value_error and value_error.errno === 'PI-2007' %}
 					<li><a href=""><span class="error-message">The amount is less than the total for the overseas transfers. Give a larger total.</span></a>
+				{% elif value_error and value_error.errno === 'PI-2003' %}
+					<li><a href=""><span class="error-message">Either enter a number of select BRT</span></a>
 				{% endif %}
 
 				{% if brt_error %}

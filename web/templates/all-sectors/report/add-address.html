@@ -6,6 +6,7 @@
 {% set business_name_error = (address.errors | selectattr2("key", "business-name"))  %}
 {% set town_or_city_error = (address.errors | selectattr2("key", "town-or-city"))  %}
 {% set country_error = (address.errors | selectattr2("key", "country"))  %}
+{% set postal_code_error = (address.errors | selectattr2("key", "postal-code"))  %}
 
 <main id="content">
     <label id="page-name" hidden>address-add-{{ type }}</label>
@@ -25,6 +26,7 @@
                     {% if address_line_1_error %}<li><a href="">You must include an address</a></li>{% endif %}
                     {% if town_or_city_error %}<li><a href="">You must include a town or city</a></li>{% endif %}
                     {% if country_error %}<li><a href="">You must include a country</a></li>{% endif %}
+                    {% if postal_code_error %}<li><a href="">You must include a postal code</a></li>{% endif %}
                 </ul>
             </div>
         {% else %}
@@ -87,6 +89,19 @@
                     </div>
                 {% endif %}
 
+                {% if postal_code_error %}
+                <div class="form-group form-group-error">
+                    <label class="form-label" for="postal-code-err">Postal Code</label>
+                    <span class="error-message">You must include a town or city</span>
+                    <input class="form-control form-control-error" id="postal-code-err" type="text" name="postalCode" value="{{ address.page.postalCode }}">
+                </div>
+                {% else %}
+                <div class="form-group">
+                    <label class="form-label" for="postal-code">Postal Code</label>
+                    <input class="form-control" id="postal-code" type="text" name="postalCode" value="{{ address.page.postalCode }}">
+                </div>
+                {% endif %}
+                
                 {% if country_error %}
                     <div class="form-group form-group-error">
                         <label class="form-label" for="town-or-city-err">Country</label>

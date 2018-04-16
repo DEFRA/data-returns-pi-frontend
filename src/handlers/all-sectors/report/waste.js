@@ -278,32 +278,24 @@ internals.validateBusinessAddress = async (payload) => {
 
     const result = [];
 
-    if (!payload.addressLine1) {
-        result.push({key: 'address-line-1', errno: 'PI-3010'});
-    }
-
     if (!payload.businessName) {
-        result.push({key: 'business-name', errno: 'PI-3011'});
+        result.push({key: 'business-name', errno: 'PI-3010'});
     }
 
-    if (!payload.country) {
-        result.push({key: 'country', errno: 'PI-3012'});
+    if (!payload.addressLine1) {
+        result.push({key: 'address-line-1', errno: 'PI-3011'});
     }
 
     if (!payload.townOrCity) {
-        result.push({key: 'town-or-city', errno: 'PI-3013'});
-    }
-
-    if (!payload.addressLine1) {
-        result.push({key: 'address-line-1', errno: 'PI-3020'});
+        result.push({key: 'town-or-city', errno: 'PI-3012'});
     }
 
     if (payload.country === '--') {
-        result.push({key: 'country', errno: 'PI-3022'});
+        result.push({key: 'country', errno: 'PI-3013'});
     }
 
-    if (!payload.townOrCity) {
-        result.push({key: 'town-or-city', errno: 'PI-3023'});
+    if (!payload.postalCode) {
+        result.push({key: 'postal-code', errno: 'PI-3014'});
     }
 
     return result.length > 0 ? result : null;
@@ -319,27 +311,19 @@ internals.validateSiteAddress = async (payload) => {
     const result = [];
 
     if (!payload.addressLine1) {
-        result.push({key: 'address-line-1', errno: 'PI-3010'});
-    }
-
-    if (!payload.country) {
-        result.push({key: 'country', errno: 'PI-3012'});
+        result.push({key: 'address-line-1', errno: 'PI-3011'});
     }
 
     if (!payload.townOrCity) {
-        result.push({key: 'town-or-city', errno: 'PI-3013'});
-    }
-
-    if (!payload.addressLine1) {
-        result.push({key: 'address-line-1', errno: 'PI-3020'});
+        result.push({key: 'town-or-city', errno: 'PI-3012'});
     }
 
     if (payload.country === '--') {
-        result.push({key: 'country', errno: 'PI-3022'});
+        result.push({key: 'country', errno: 'PI-3013'});
     }
 
-    if (!payload.townOrCity) {
-        result.push({key: 'town-or-city', errno: 'PI-3023'});
+    if (!payload.postalCode) {
+        result.push({key: 'postal-code', errno: 'PI-3014'});
     }
 
     return result.length > 0 ? result : null;
@@ -439,6 +423,10 @@ internals.createAddressCacheObject = (payload) => {
         obj.townOrCity = payload.townOrCity;
     }
 
+    if (payload.postalCode) {
+        obj.postalCode = payload.postalCode;
+    }
+
     if (payload.country) {
         obj.country = payload.country;
     }
@@ -530,11 +518,11 @@ class Codes extends BaseStage {
         const tasks = cacheState.tasks;
         if (tasks.currentWasteTransfer) {
             if (tasks.currentWasteTransfer.incomplete) {
-                return h.view(this.path, { action: '/transfers/waste/codes', transfer: tasks.currentWasteTransfer.incomplete });
+                return h.view(this.path, { action: '/transfers/waste/codes', transfer: tasks.currentWasteTransfer.incomplete, count: (tasks.transfers || []).length });
             }
         }
 
-        return h.view(this.path);
+        return h.view(this.path, { count: (tasks.transfers || []).length });
     }
 
     async doPost (request, h, cacheState, errors) {
@@ -586,7 +574,7 @@ class ChangeCodes extends BaseStage {
 
         if (tasks.currentWasteTransfer) {
             if (tasks.currentWasteTransfer.incomplete) {
-                return h.view(this.path, { action: '/transfers/waste/change', transfer: tasks.currentWasteTransfer.incomplete });
+                return h.view(this.path, { action: '/transfers/waste/change', transfer: tasks.currentWasteTransfer.incomplete, count: (tasks.transfers || []).length });
             }
         }
 
@@ -604,7 +592,7 @@ class ChangeCodes extends BaseStage {
             }
         };
 
-        return h.view(this.path, { action: '/transfers/waste/change', transfer: incomplete });
+        return h.view(this.path, { action: '/transfers/waste/change', transfer: incomplete, count: (tasks.transfers || []).length });
     }
 
     async doPost (request, h, cacheState, errors) {
