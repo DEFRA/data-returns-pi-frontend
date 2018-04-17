@@ -527,7 +527,10 @@ class Codes extends BaseStage {
             }
         }
 
-        return h.view(this.path, { count: (tasks.transfers || []).length });
+        return h.view(this.path, {
+            count: (tasks.transfers || []).length,
+            transferMethods: transferMethods
+        });
     }
 
     async doPost (request, h, cacheState, errors) {
@@ -1159,5 +1162,8 @@ module.exports = {
 
     overseasDetail: async (request, h) => {
         return internals.overseasDetail.handler(request, h);
-    }
+    },
+
+    /** Needed for the submission restore */
+    findTransfer: internals.findTransfer
 };

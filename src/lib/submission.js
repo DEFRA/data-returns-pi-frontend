@@ -17,6 +17,7 @@ const TaskListService = require('../service/task-list');
 const allSectorsTaskList = require('../model/all-sectors/task-list');
 const setCompletedStatus = require('../handlers/all-sectors/common').setCompletedStatus;
 const statusHelper = require('../handlers/all-sectors/common').statusHelper;
+const findTransfer = require('../handlers/all-sectors/report/waste').findTransfer;
 const isNumeric = require('./utils').isNumeric;
 const isBrt = require('../lib/validator').isBrt;
 const logger = require('./logging').logger;
@@ -515,7 +516,7 @@ const internals = {
 
         const deletes = apiArr.filter(a => !tasks.find(t => transferEquals(a, t)));
 
-        logger.debug('route: ' + route.name);
+        logger.debug('Route: ' + route.name);
         logger.debug('Deletes: ' + JSON.stringify(deletes, null, 4));
         logger.debug('Posts: ' + JSON.stringify(posts, null, 4));
         logger.debug('Puts: ' + JSON.stringify(puts, null, 4));
@@ -733,7 +734,7 @@ const internals = {
         // Initialize a new permit status
         let submissionContext = await request.server.app.userCache.cache(cacheNames.SUBMISSION_CONTEXT).get(request);
 
-        const transferType = 'OFFSITE_WASTE_TRANSFERS';
+        const transferType = 'WASTE_TRANSFERS';
 
         if (!submissionContext) {
             submissionContext = {};
@@ -752,23 +753,38 @@ const internals = {
             submissionContext.challengeStatus[transferType] = true;
             submissionContext.valid[transferType] = true;
             setCompletedStatus(submissionContext, transferType);
+            const hierarchies = await MasterDataService.getEwcHierarchies();
 
             for (const transfer of submission[transferType]) {
-                const hierarchies = await MasterDataService.getEwcHierarchies();
                 const hierarchy = hierarchies.find(h => h.activityId === transfer.ewc_activity_id);
+                const ewcActivity = await MasterDataService.getEwcActivityById(hierarchy.activityId);
+                const result = {};
 
-                tasks.transfers.push({
-                    ewc: {
-                        chapterId: hierarchy.chapterId,
-                        subChapterId: hierarchy.subchapterId,
-                        activityId: hierarchy.activityId
-                    },
-                    wfd: {
-                        disposalId: transfer.wfd_disposal_id ? transfer.wfd_disposal_id : null,
-                        recoveryId: transfer.wfd_recovery_id ? transfer.wfd_recovery_id : null
-                    },
-                    value: Number.parseFloat(transfer.tonnage)
-                });
+                result.ewc = {
+                    chapterId: hierarchy.chapterId,
+                    subChapterId: hierarchy.subchapterId,
+                    activityId: hierarchy.activityId
+                };
+
+                result.wfd = {
+                    disposalId: transfer.wfd_disposal_id ? transfer.wfd_disposal_id : null,
+                    recoveryId: transfer.wfd_recovery_id ? transfer.wfd_recovery_id : null
+                };
+
+                if (findTransfer(tasks, result) !== -1) {
+                    throw new Error('Illegal Duplicate transfer returned from API: ' + JSON.stringify(result));
+                }
+
+                result.method = transfer.method;
+                result.hazardous = ewcActivity.hazardous;
+
+                if (transfer.below_reporting_threshold) {
+                    result.brt = true;
+                } else {
+                    result.value = Number.parseFloat(transfer.tonnage);
+                }
+
+                tasks.transfers.push(result);
             }
 
             // Set the caches
