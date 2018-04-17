@@ -514,7 +514,7 @@ const internals = {
 
         const tasks = task.transfers.map(t => internals.transferObj(userContext, t));
 
-        const deletes = apiArr.filter(a => !tasks.find(t => transferEquals(a, t)));
+        const deletes = apiArr.filter(a => !(tasks.transfers || []).find(t => transferEquals(a, t)));
 
         logger.debug('Route: ' + route.name);
         logger.debug('Deletes: ' + JSON.stringify(deletes, null, 4));
