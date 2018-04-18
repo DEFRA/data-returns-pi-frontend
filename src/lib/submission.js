@@ -1,3 +1,4 @@
+/* eslint-disable camelcase */
 'use strict';
 
 /*
@@ -6,8 +7,10 @@
  */
 const Joi = require('joi');
 const Hoek = require('hoek');
+const uuid = require('uuid');
 
 const MasterDataService = require('../service/master-data');
+const client = require('../lib/api-client');
 
 const transferMethods = require('../../data/static-data').transferMethods;
 const cacheNames = require('./user-cache-policies').names;
@@ -43,6 +46,8 @@ const internals = {
     /**
      * Eager fetch the current submission expanding out all of the children.
      * (The id is used if provided otherwise uses the submission cache context
+     * It sorts the submission routes so that they have the same name as the
+     * task cache key
      * @param request
      * @return {Promise.<void>}
      */
@@ -55,7 +60,7 @@ const internals = {
         const submission = await internals.getSubmission(id);
 
         if (!submission) {
-            throw new Error('Unexpected - no submission id: ' + id);
+            throw new Error('Unexpected - no submission: ' + id);
         }
 
         const result = {};
@@ -65,26 +70,60 @@ const internals = {
         result.reporting_reference = submission.reporting_reference;
         result.nace_id = submission.nace_id;
         result.nose_ids = submission.nose_ids;
+        result._created = submission._created;
+        result._last_modifed = submission._last_modifed;
 
-        // Get the releases
-        const releases = await Api.request('SUB', 'GET', `submissions/${id}/releases`);
+        const releasesResponse = await client.requestLink(submission._links.releases);
+        const transfersResponse = await client.requestLink(submission._links.transfers);
 
-        // Assigned the releases to the result - by route/task
-        Object.assign(result, releases._embedded.releases.reduce((accumulator, release) => {
-            const task = Object.keys(tasks).find(k => tasks[k].routeId === release.route_id);
-            if (!accumulator[task]) {
-                accumulator[task] = [];
-            }
-            accumulator[task].push(release);
-            return accumulator;
-        }, {}));
+        if (releasesResponse._embedded.releases.length) {
+            Object.assign(result, releasesResponse._embedded.releases.reduce((accumulator, release) => {
+                const task = Object.keys(tasks).find(k => tasks[k].routeId === release.route_id);
+                if (!accumulator[task]) {
+                    accumulator[task] = [];
+                }
+                accumulator[task].push(release);
+                return accumulator;
+            }, {}));
+        }
 
-        // Get the transfers
-        const transfers = await Api.request('SUB', 'GET', `submissions/${id}/transfers`);
+        if (transfersResponse._embedded.transfers.length) {
+            result.WASTE_TRANSFERS = await Promise.all(transfersResponse._embedded.transfers.map(async transfer => {
 
-        // Assign the transfers to the result
-        if (transfers._embedded.transfers.length) {
-            result.WASTE_TRANSFERS = transfers._embedded.transfers;
+                const result = (({ id,
+                    ewc_activity_id,
+                    wfd_recovery_id,
+                    tonnage,
+                    below_reporting_threshold,
+                    method }) =>
+                    ({ id,
+                        ewc_activity_id,
+                        wfd_recovery_id,
+                        tonnage,
+                        below_reporting_threshold,
+                        method }))(transfer);
+
+                const overseasTransfersResponse = await client.requestLink(transfer._links.overseasTransfers);
+
+                result.overseas = overseasTransfersResponse._embedded.overseasTransfers.map(overseasTransfer => {
+                    const result = (({ id,
+                        tonnage,
+                        method,
+                        destination_address,
+                        responsible_company_name,
+                        responsible_company_address }) =>
+                        ({ id,
+                            tonnage,
+                            method,
+                            destination_address,
+                            responsible_company_name,
+                            responsible_company_address }))(overseasTransfer);
+
+                    return result;
+                });
+
+                return result;
+            }));
         }
 
         return result;
@@ -267,59 +306,6 @@ const internals = {
         }
     },
 
-    transferObj: (userContext, transfer) => {
-        const result = {};
-        result.ewc_activity_id = transfer.ewc.activityId;
-
-        if (transfer.wfd.disposalId) {
-            result.wfd_disposal_id = transfer.wfd.disposalId;
-        } else {
-            result.wfd_recovery_id = transfer.wfd.recoveryId;
-        }
-
-        result.tonnage = transfer.value;
-        result.method = transfer.method;
-
-        if (transfer.brt) {
-            result.below_reporting_threshold = true;
-        }
-
-        if (transfer.overseas) {
-            result.overseas = Object.keys(transfer.overseas)
-                .filter(k => k !== 'currentKey')
-                .map(k => transfer.overseas[k])
-                .map(o => {
-                    const result = {};
-                    const businessAddress = userContext.addresses.business[o.businessAddress];
-                    const siteAddress = userContext.addresses.site[o.siteAddress];
-
-                    result.tonnage = o.value;
-                    result.method = o.method;
-                    result.responsible_company_name = businessAddress.businessName;
-
-                    result.responsible_company_address = {
-                        line1: businessAddress.addressLine1,
-                        line2: businessAddress.addressLine2,
-                        town_or_city: businessAddress.townOrCity,
-                        post_code: businessAddress.postalCode,
-                        country: businessAddress.country
-                    };
-
-                    result.destination_address = {
-                        line1: siteAddress.addressLine1,
-                        line2: siteAddress.addressLine2,
-                        town_or_city: siteAddress.townOrCity,
-                        post_code: siteAddress.postalCode,
-                        country: siteAddress.country
-                    };
-
-                    return result;
-                });
-        }
-
-        return result;
-    },
-
     /**
      * Applies an object of asynchronous functions to apply to each route
      * @param request
@@ -439,6 +425,54 @@ const internals = {
         }));
     },
 
+    transferPayload: (transfer) => {
+        const result = {};
+        result.ewc_activity_id = transfer.ewc.activityId;
+
+        if (transfer.wfd.disposalId) {
+            result.wfd_disposal_id = transfer.wfd.disposalId;
+        } else {
+            result.wfd_recovery_id = transfer.wfd.recoveryId;
+        }
+
+        result.tonnage = transfer.value;
+        result.method = transfer.method;
+
+        if (transfer.brt) {
+            result.below_reporting_threshold = true;
+        }
+
+        return result;
+    },
+
+    overseasPayload: (userContext, overseas) => {
+        const result = {};
+        const businessAddress = userContext.addresses.business[overseas.businessAddress];
+        const siteAddress = userContext.addresses.site[overseas.siteAddress];
+
+        result.tonnage = overseas.value;
+        result.method = overseas.method;
+        result.responsible_company_name = businessAddress.businessName;
+
+        result.responsible_company_address = {
+            line1: businessAddress.addressLine1,
+            line2: businessAddress.addressLine2,
+            town_or_city: businessAddress.townOrCity,
+            post_code: businessAddress.postalCode,
+            country: businessAddress.country
+        };
+
+        result.destination_address = {
+            line1: siteAddress.addressLine1,
+            line2: siteAddress.addressLine2,
+            town_or_city: siteAddress.townOrCity,
+            post_code: siteAddress.postalCode,
+            country: siteAddress.country
+        };
+
+        return result;
+    },
+
     /**
      * Write transfer object to submissions API
      *
@@ -452,7 +486,7 @@ const internals = {
      */
     transferRouteOperator: async (userContext, task, apiArr, route, uri) => {
 
-        const address = {
+        const addressSchema = {
             line1: Joi.string().required(),
             line2: Joi.string().optional(),
             town_or_city: Joi.string().required(),
@@ -461,9 +495,10 @@ const internals = {
         };
 
         const overseasSchema = {
+            transfer: Joi.string().uri({ allowRelative: true }),
             responsible_company_name: Joi.string().required(),
-            responsible_company_address: Joi.object(address).required(),
-            destination_address: Joi.object(address).required(),
+            responsible_company_address: Joi.object(addressSchema).required(),
+            destination_address: Joi.object(addressSchema).required(),
             tonnage: Joi.number().required(),
             method: Joi.string().valid(transferMethods).required()
         };
@@ -477,61 +512,71 @@ const internals = {
             below_reporting_threshold: Joi.boolean().optional(),
             tonnage: Joi.alternatives().when('below_reporting_threshold', {
                 is: true, then: Joi.forbidden(), otherwise: Joi.number().required()
-            }),
-            overseas: Joi.array().items(overseasSchema)
+            })
         });
-
-        // We need to sort our tasks into POST, PUT and DELETE
-        const posts = [];
-        const puts = [];
 
         const transferEquals = (a, b) => {
             return a.ewc_activity_id === b.ewc_activity_id && (a.wfd_recovery_id === b.wfd_recovery_id ||
                 a.wfd_disposal_id === b.wfd_disposal_id);
         };
 
+        // Determine the deletes first
+        const transfersTmp = task.transfers.map(t => internals.transferPayload(t));
+
+        if (transfersTmp.length) {
+            const requests = [];
+            const deletes = apiArr.filter(a => !transfersTmp.find(t => transferEquals(a, t)));
+            requests.concat(deletes.map(d => {
+                return {
+                    method: 'POST',
+                    url: `transfers/${d.id}`
+                };
+            }));
+
+            logger.debug('Delete transfers: ' + JSON.stringify(requests, null, 4));
+
+            // Run the requests
+            await Promise.all(requests.map(async request => {
+                await Api.request('SUB', request.method, request.url);
+            }));
+        }
+
         if (task.transfers) {
             for (const transfer of task.transfers) {
-                const apiObj = await internals.transferObj(userContext, transfer);
-                const transferObj = apiArr.find(a => transferEquals(a, apiObj));
+                const transferPayload = internals.transferPayload(transfer);
+                const exists = apiArr.find(a => transferEquals(a, transferPayload));
 
-                if (transferObj) {
+                if (exists) {
                     // Updating PUT
-                    apiObj.submission = uri;
-                    puts.push({ id: transferObj.id, put: apiObj });
+                    transferPayload.submission = uri;
+                    // puts.push({ id: transferPayload.id, put: transferPayload });
                 } else {
-                    // Creating POST
-                    apiObj.submission = uri;
-                    posts.push(apiObj);
+                    // The transfer is new. Create a single POST request for the transfer and the associated overseas
+                    transferPayload.submission = uri;
+                    Joi.assert(transferPayload, transferSchema, 'Badly formed transfer message: ' + JSON.stringify(transferPayload));
+                    const newTransferResponse = await Api.request('SUB', 'POST', 'transfers', null, transferPayload);
+                    logger.debug('New Transfer: ' + JSON.stringify(newTransferResponse, null, 4));
+
+                    // Any overseas transfers must also be new
+                    if (transfer.overseas) {
+                        transferPayload.overseas = [];
+                        Object.keys(transfer.overseas)
+                            .filter(k => k !== 'currentKey')
+                            .map(k => transfer.overseas[k])
+                            .forEach(async overseas => {
+                                // For each overseas transfer create the message, validate it and merge into the payload
+                                const overseasPayload = internals.overseasPayload(userContext, overseas);
+                                overseasPayload.transfer = `transfer/${newTransferResponse.id}`;
+                                Joi.assert(overseasPayload, overseasSchema, 'Badly formed overseas message: ' + JSON.stringify(overseasPayload));
+                                const newOverseasTransferResponse = await Api.request('SUB', 'POST', 'overseasTransfers', null, overseasPayload);
+                                logger.debug('New Overseas Transfer: ' + JSON.stringify(newOverseasTransferResponse, null, 4));
+                            });
+                    }
+
                 }
             }
         }
 
-        // Validate the objects to be sent to the API
-        posts.concat(puts.map(p => p.put)).forEach(r => {
-            Joi.assert(r, transferSchema, 'Badly formed releases message: ' + JSON.stringify(r));
-        });
-
-        const tasks = task.transfers.map(t => internals.transferObj(userContext, t));
-
-        const deletes = apiArr.filter(a => !(tasks.transfers || []).find(t => transferEquals(a, t)));
-
-        logger.debug('Route: ' + route.name);
-        logger.debug('Deletes: ' + JSON.stringify(deletes, null, 4));
-        logger.debug('Posts: ' + JSON.stringify(posts, null, 4));
-        logger.debug('Puts: ' + JSON.stringify(puts, null, 4));
-
-        await Promise.all(deletes.map(async del => {
-            await Api.request('SUB', 'DELETE', `transfers/${del.id}`, null);
-        }));
-
-        await Promise.all(posts.map(async post => {
-            await Api.request('SUB', 'POST', 'transfers', null, post);
-        }));
-
-        await Promise.all(puts.map(async put => {
-            await Api.request('SUB', 'PUT', `transfers/${put.id}`, null, put.put);
-        }));
     },
 
     /**
@@ -733,6 +778,62 @@ const internals = {
     setTransfersCache: async (request, submission) => {
         // Initialize a new permit status
         let submissionContext = await request.server.app.userCache.cache(cacheNames.SUBMISSION_CONTEXT).get(request);
+        const userContext = await request.server.app.userCache.cache(cacheNames.USER_CONTEXT).get(request);
+
+        // Find an address returned by the api in the cache
+        const findAddress = (addressCache, address) => {
+            for (const cacheKey of Object.keys(addressCache)) {
+                const cacheAddress = addressCache[cacheKey];
+
+                if (cacheAddress.businessName && address.responsible_company_name) {
+                    if (cacheAddress.businessName !== address.responsible_company_name) {
+                        continue;
+                    }
+                } else if (cacheAddress.businessName || address.responsible_company_name) {
+                    continue;
+                }
+
+                if (cacheAddress.addressLine2 !== address.line2) {
+                    continue;
+                }
+
+                if (cacheAddress.addressLine2 !== address.line2) {
+                    continue;
+                }
+
+                if (cacheAddress.townOrCity !== address.town_or_city) {
+                    continue;
+                }
+
+                if (cacheAddress.postalCode !== address.post_code) {
+                    continue;
+                }
+
+                if (cacheAddress.country !== address.country) {
+                    continue;
+                }
+
+                return cacheKey;
+            }
+
+            return false;
+        };
+
+        // Convert an API format address into a cache address
+        const mapAddress = (address) => {
+            const cacheAddress = {};
+            if (address.responsible_company_name) {
+                cacheAddress.businessName = address.responsible_company_name;
+            }
+            cacheAddress.addressLine1 = address.line1;
+            if (address.line2) {
+                cacheAddress.addressLine2 = address.line2;
+            }
+            cacheAddress.townOrCity = address.town_or_city;
+            cacheAddress.postalCode = address.post_code;
+            cacheAddress.country = address.country;
+            return cacheAddress;
+        };
 
         const transferType = 'WASTE_TRANSFERS';
 
@@ -784,10 +885,64 @@ const internals = {
                     result.value = Number.parseFloat(transfer.tonnage);
                 }
 
+                if (transfer.overseas) {
+                    result.overseas = result.overseas || {};
+                    for (const overseas of transfer.overseas) {
+                        const transfer = {};
+                        transfer.value = overseas.tonnage;
+                        transfer.method = overseas.method;
+                        transfer.complete = true;
+
+                        // Look for the address in the cache
+                        if (userContext.addresses && userContext.addresses.business) {
+
+                            const businessAddress = Object.assign(overseas.responsible_company_address, {
+                                responsible_company_name: overseas.responsible_company_name
+                            });
+
+                            const businessAddressKey = findAddress(userContext.addresses.business, businessAddress);
+
+                            if (businessAddressKey) {
+                                transfer.businessAddressKey = businessAddressKey;
+                            } else {
+                                transfer.businessAddressKey = uuid();
+                                userContext.addresses.business[transfer.businessAddressKey] = mapAddress(businessAddress);
+                            }
+                        } else {
+                            transfer.businessAddressKey = uuid();
+                            userContext.addresses = userContext.addresses || {};
+                            userContext.addresses.business = userContext.addresses.business || {};
+                            const businessAddress = Object.assign(overseas.responsible_company_address, {
+                                responsible_company_name: overseas.responsible_company_name
+                            });
+                            userContext.addresses.business[transfer.businessAddressKey] = mapAddress(businessAddress);
+                        }
+
+                        if (userContext.addresses && userContext.addresses.site) {
+                            const siteAddressKey = findAddress(userContext.addresses.site, overseas.destination_address);
+
+                            if (siteAddressKey) {
+                                transfer.siteAddressKey = siteAddressKey;
+                            } else {
+                                transfer.siteAddressKey = uuid();
+                                userContext.addresses.site[transfer.siteAddressKey] = mapAddress(overseas.destination_address);
+                            }
+                        } else {
+                            transfer.siteAddressKey = uuid();
+                            userContext.addresses = userContext.addresses || {};
+                            userContext.addresses.site = userContext.addresses.site || {};
+                            userContext.addresses.site[transfer.siteAddressKey] = mapAddress(overseas.destination_address);
+                        }
+
+                        result.overseas[String(overseas.id)] = transfer;
+                    }
+                }
+
                 tasks.transfers.push(result);
             }
 
             // Set the caches
+            await request.server.app.userCache.cache(cacheNames.USER_CONTEXT).set(request, userContext);
             await request.server.app.userCache.cache(cacheNames.SUBMISSION_CONTEXT).set(request, submissionContext);
             await request.server.app.userCache.cache(cacheNames.TASK_CONTEXT).set(request, tasks);
         } else {

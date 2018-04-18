@@ -50,8 +50,8 @@ internals.enrichWasteTransferObject = async (userContext, obj) => {
             result.overseas[key] = {
                 method: obj.overseas[key].method,
                 value: obj.overseas[key].value,
-                businessAddress: userContext.addresses.business[obj.overseas[key].businessAddress],
-                siteAddress: userContext.addresses.site[obj.overseas[key].siteAddress]
+                businessAddress: userContext.addresses.business[obj.overseas[key].businessAddressKey],
+                siteAddress: userContext.addresses.site[obj.overseas[key].siteAddressKey]
             };
         }
     }
@@ -713,7 +713,7 @@ class SelectBusinessAddress extends BaseStage {
             if (request.payload.address) {
                 const tasks = cacheState.tasks;
                 const transfer = tasks.transfers[tasks.currentTransferIdx];
-                transfer.overseas[transfer.overseas.currentKey].businessAddress = request.payload.address;
+                transfer.overseas[transfer.overseas.currentKey].businessAddressKey = request.payload.address;
                 await request.server.app.userCache.cache(cacheNames.TASK_CONTEXT).set(request, tasks);
                 return h.redirect('/transfers/waste/selectSiteAddress');
             }
@@ -755,7 +755,7 @@ class AddBusinessAddress extends BaseStage {
             delete tasks.address;
             const addressKey = uuid.v4();
             const transfer = tasks.transfers[tasks.currentTransferIdx];
-            transfer.overseas[transfer.overseas.currentKey].businessAddress = addressKey;
+            transfer.overseas[transfer.overseas.currentKey].businessAddressKey = addressKey;
             await request.server.app.userCache.cache(cacheNames.TASK_CONTEXT).set(request, tasks);
 
             const userContext = await request.server.app.userCache.cache(cacheNames.USER_CONTEXT).get(request);
@@ -796,7 +796,7 @@ class SelectSiteAddress extends BaseStage {
             if (request.payload.address) {
                 const tasks = cacheState.tasks;
                 const transfer = tasks.transfers[tasks.currentTransferIdx];
-                transfer.overseas[transfer.overseas.currentKey].siteAddress = request.payload.address;
+                transfer.overseas[transfer.overseas.currentKey].siteAddressKey = request.payload.address;
                 await request.server.app.userCache.cache(cacheNames.TASK_CONTEXT).set(request, tasks);
                 return h.redirect('/transfers/waste/overseas/detail');
             }
@@ -838,7 +838,7 @@ class AddSiteAddress extends BaseStage {
             delete tasks.address;
             const addressKey = uuid.v4();
             const transfer = tasks.transfers[tasks.currentTransferIdx];
-            transfer.overseas[transfer.overseas.currentKey].siteAddress = addressKey;
+            transfer.overseas[transfer.overseas.currentKey].siteAddressKey = addressKey;
             await request.server.app.userCache.cache(cacheNames.TASK_CONTEXT).set(request, tasks);
 
             const userContext = await request.server.app.userCache.cache(cacheNames.USER_CONTEXT).get(request);

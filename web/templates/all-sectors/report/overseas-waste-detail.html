@@ -31,11 +31,13 @@
 		<div class="form-group">
 			<fieldset class="inline">
 				<label class="form-label">How was the mass of waste transferred decided?</label>
+				{% set first = true %}
 				{% for transferMethod in transferMethods %}
 					<div class="multiple-choice">
-						<input id="radio-inline-hd-{{ transferMethod }}" type="radio" name="method" value="{{ transferMethod }}" {% if transfer.page.method === transferMethod or not transfer.page.method %} checked {% endif %}>
+						<input id="radio-inline-hd-{{ transferMethod }}" type="radio" name="method" value="{{ transferMethod }}" {% if transfer.page.method === transferMethod or (not transfer.page.method and first) %} checked {% endif %}>
 						<label for="radio-inline-hd-{{ transferMethod }}">{{ transferMethod }}</label>
 					</div>
+					{% set first = false %}
 				{% endfor %}
 			</fieldset>
 		</div>
