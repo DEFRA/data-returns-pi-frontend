@@ -152,7 +152,7 @@ const internals = {
                 const newObject = Object.assign({}, e);
                 const status = submissionStatus.find(s => s.eaIdId === e.id);
                 newObject.status = status ? status.status : null;
-                newObject.changed = status ? new Date().toLocaleString('en-GB') : null;
+                newObject.changed = status ? new Date(status.changed).toLocaleString('en-GB') : null;
 
                 return newObject;
             });
