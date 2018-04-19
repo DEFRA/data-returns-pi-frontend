@@ -94,6 +94,7 @@ module.exports = {
 
             // If we have an eaId remove it
             const userContext = await request.server.app.userCache.cache(cacheNames.USER_CONTEXT).get(request);
+
             if (userContext) {
                 delete userContext.eaId;
                 await request.server.app.userCache.cache(cacheNames.USER_CONTEXT).set(request, userContext);

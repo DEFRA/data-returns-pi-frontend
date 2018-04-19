@@ -93,12 +93,14 @@ const internals = {
                 const result = (({ id,
                     ewc_activity_id,
                     wfd_recovery_id,
+                    wfd_disposal_id,
                     tonnage,
                     below_reporting_threshold,
                     method }) =>
                     ({ id,
                         ewc_activity_id,
                         wfd_recovery_id,
+                        wfd_disposal_id,
                         tonnage,
                         below_reporting_threshold,
                         method }))(transfer);
@@ -275,7 +277,7 @@ const internals = {
             };
         }));
 
-        newSubmission.status = 'Submitted';
+        newSubmission.status = submissionStatusCodes.SUBMITTED;
 
         return newSubmission;
     },
@@ -425,6 +427,10 @@ const internals = {
         }));
     },
 
+    /**
+     * Used by the transferRouteOperator - creates a transfer payload
+     * @param transfer
+     */
     transferPayload: (transfer) => {
         const result = {};
         result.ewc_activity_id = transfer.ewc.activityId;
@@ -445,10 +451,14 @@ const internals = {
         return result;
     },
 
+    /**
+     * Used by the transferRouteOperator - creates a overseas payload
+     * @param transfer
+     */
     overseasPayload: (userContext, overseas) => {
         const result = {};
-        const businessAddress = userContext.addresses.business[overseas.businessAddress];
-        const siteAddress = userContext.addresses.site[overseas.siteAddress];
+        const businessAddress = userContext.addresses.business[overseas.businessAddressKey];
+        const siteAddress = userContext.addresses.site[overseas.siteAddressKey];
 
         result.tonnage = overseas.value;
         result.method = overseas.method;
@@ -486,6 +496,7 @@ const internals = {
      */
     transferRouteOperator: async (userContext, task, apiArr, route, uri) => {
 
+        // Joi validator for the address
         const addressSchema = {
             line1: Joi.string().required(),
             line2: Joi.string().optional(),
@@ -494,6 +505,7 @@ const internals = {
             country: Joi.string().required()
         };
 
+        // Joi validator for the overseas payload
         const overseasSchema = {
             transfer: Joi.string().uri({ allowRelative: true }),
             responsible_company_name: Joi.string().required(),
@@ -503,6 +515,7 @@ const internals = {
             method: Joi.string().valid(transferMethods).required()
         };
 
+        // Joi validator for the transfer payload
         const transferSchema = Joi.object({
             submission: Joi.string().uri({ allowRelative: true }),
             ewc_activity_id: Joi.number().integer(),
@@ -515,6 +528,7 @@ const internals = {
             })
         });
 
+        // Equality test for two (payload) transfers
         const transferEquals = (a, b) => {
             return a.ewc_activity_id === b.ewc_activity_id && (a.wfd_recovery_id === b.wfd_recovery_id ||
                 a.wfd_disposal_id === b.wfd_disposal_id);
@@ -523,41 +537,70 @@ const internals = {
         // Determine the deletes first
         const transfersTmp = task.transfers.map(t => internals.transferPayload(t));
 
-        if (transfersTmp.length) {
-            const requests = [];
+        if (transfersTmp) {
             const deletes = apiArr.filter(a => !transfersTmp.find(t => transferEquals(a, t)));
-            requests.concat(deletes.map(d => {
-                return {
-                    method: 'POST',
-                    url: `transfers/${d.id}`
-                };
-            }));
-
+            const requests = deletes.map(d => `transfers/${d.id}`);
             logger.debug('Delete transfers: ' + JSON.stringify(requests, null, 4));
 
             // Run the requests
             await Promise.all(requests.map(async request => {
-                await Api.request('SUB', request.method, request.url);
+                await Api.request('SUB', 'DELETE', request);
             }));
         }
 
+        // For each transfer in the cache determine if it is a new of changed item
         if (task.transfers) {
             for (const transfer of task.transfers) {
                 const transferPayload = internals.transferPayload(transfer);
                 const exists = apiArr.find(a => transferEquals(a, transferPayload));
+                transferPayload.submission = uri;
+                Joi.assert(transferPayload, transferSchema, 'Badly formed transfer message: ' + JSON.stringify(transferPayload));
 
                 if (exists) {
                     // Updating PUT
-                    transferPayload.submission = uri;
-                    // puts.push({ id: transferPayload.id, put: transferPayload });
+                    const newTransferResponse = await Api.request('SUB', 'PUT', `transfers/${exists.id}`, null, transferPayload);
+                    logger.debug('Existing Transfer: ' + JSON.stringify(newTransferResponse, null, 4));
+
+                    // Determine the overseas transfers DELETES
+                    if (exists.overseas && exists.overseas.length) {
+                        let deletes = [];
+
+                        if (!transfer.overseas) {
+                            deletes = exists.overseas.map(o => String(o.id));
+                        } else {
+                            deletes = exists.overseas.map(o => String(o.id)).filter(a => !Object.keys(transfer.overseas).includes(a));
+                        }
+
+                        await Promise.all(deletes.map(async id => {
+                            await Api.request('SUB', 'DELETE', `overseasTransfers/${id}`);
+                            logger.debug('Deleted overseas: ' + id);
+                        }));
+                    }
+
+                    if (transfer.overseas) {
+                        const response = await Promise.all(Object.keys(transfer.overseas)
+                            .filter(k => k !== 'currentKey')
+                            .map(async overseasTransferKey => {
+                                const overseasPayload = internals.overseasPayload(userContext, transfer.overseas[overseasTransferKey]);
+                                overseasPayload.transfer = `transfer/${exists.id}`;
+                                Joi.assert(overseasPayload, overseasSchema, 'Badly formed overseas message: ' + JSON.stringify(overseasPayload));
+                                if (exists.overseas.map(o => String(o.id)).includes(overseasTransferKey)) {
+                                    // PUT
+                                    return Api.request('SUB', 'PUT', `overseasTransfers/${overseasTransferKey}`, null, overseasPayload);
+                                } else {
+                                    // POST
+                                    return Api.request('SUB', 'POST', 'overseasTransfers', null, overseasPayload);
+                                }
+                            }));
+
+                        logger.debug('Overseas transfers: ' + JSON.stringify(response, null, 4));
+                    }
                 } else {
                     // The transfer is new. Create a single POST request for the transfer and the associated overseas
-                    transferPayload.submission = uri;
-                    Joi.assert(transferPayload, transferSchema, 'Badly formed transfer message: ' + JSON.stringify(transferPayload));
                     const newTransferResponse = await Api.request('SUB', 'POST', 'transfers', null, transferPayload);
                     logger.debug('New Transfer: ' + JSON.stringify(newTransferResponse, null, 4));
 
-                    // Any overseas transfers must also be new
+                    // Any overseas transfers must also be new. Create a POST request for each.
                     if (transfer.overseas) {
                         transferPayload.overseas = [];
                         Object.keys(transfer.overseas)
@@ -576,7 +619,6 @@ const internals = {
                 }
             }
         }
-
     },
 
     /**
@@ -684,22 +726,20 @@ const internals = {
             await request.server.app.userCache.cache(cacheNames.TASK_CONTEXT).set(request, task);
         };
 
-        if (submission.status !== submissionStatusCodes.UNSUBMITTED) {
-            await setTask(submissionContext, 'NACE_CODE', (submission) => {
-                const result = {};
-                result.nace = {};
-                result.nace.id = submission.nace_id;
-                return result;
-            });
+        await setTask(submissionContext, 'NACE_CODE', (submission) => {
+            const result = {};
+            result.nace = {};
+            result.nace.id = submission.nace_id;
+            return result;
+        });
 
-            await setTask(submissionContext, 'NOSE_CODES', (submission) => {
-                const result = {};
-                result.nose = {
-                    noseIds: submission.nose_ids
-                };
-                return result;
-            });
-        }
+        await setTask(submissionContext, 'NOSE_CODES', (submission) => {
+            const result = {};
+            result.nose = {
+                noseIds: submission.nose_ids
+            };
+            return result;
+        });
     },
 
     /**
@@ -758,18 +798,16 @@ const internals = {
                 await request.server.app.userCache.cache(cacheNames.SUBMISSION_CONTEXT).set(request, submissionContext);
                 await request.server.app.userCache.cache(cacheNames.TASK_CONTEXT).set(request, task);
             } else {
-                if (submission.status !== submissionStatusCodes.UNSUBMITTED) {
-                    submissionContext.confirmation[taskName] = true;
-                    submissionContext.challengeStatus[taskName] = false;
-                    setCompletedStatus(submissionContext, taskName);
-                }
+                submissionContext.confirmation[taskName] = true;
+                submissionContext.challengeStatus[taskName] = false;
+                setCompletedStatus(submissionContext, taskName);
                 await request.server.app.userCache.cache(cacheNames.SUBMISSION_CONTEXT).set(request, submissionContext);
             }
         }
     },
 
     /**
-     * Set the task and permit status caches for transfers
+     * Set the task and permit status caches for transfers from a submission
      * @param request
      * @param transfers
      * @param transferType
@@ -946,16 +984,15 @@ const internals = {
             await request.server.app.userCache.cache(cacheNames.SUBMISSION_CONTEXT).set(request, submissionContext);
             await request.server.app.userCache.cache(cacheNames.TASK_CONTEXT).set(request, tasks);
         } else {
-            if (submission.status !== submissionStatusCodes.UNSUBMITTED) {
-                submissionContext.currentTask = transferType;
-                submissionContext.confirmation[transferType] = true;
-                submissionContext.challengeStatus[transferType] = false;
-                setCompletedStatus(submissionContext, transferType);
-            }
+            submissionContext.currentTask = transferType;
+            submissionContext.confirmation[transferType] = true;
+            submissionContext.challengeStatus[transferType] = false;
+            setCompletedStatus(submissionContext, transferType);
             await request.server.app.userCache.cache(cacheNames.SUBMISSION_CONTEXT).set(request, submissionContext);
         }
     },
 
+    // Sets the status for a submission
     setStatusForSubmission: async (request, status) => {
         try {
 
