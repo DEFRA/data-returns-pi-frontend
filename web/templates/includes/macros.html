@@ -6,3 +6,5 @@
 {{ address.postalCode }},
 {{ address.country }}
 {% endmacro %}
+
+{% macro encodeTransfer(transfer) %}{{ transfer.ewc.chapter.id }}-{{ transfer.ewc.subChapter.id }}-{{ transfer.ewc.activity.id }}-{% if transfer.wfd.disposal %}{{ transfer.wfd.disposal.id }}-{% elif transfer.wfd.recovery %}-{{ transfer.wfd.recovery.id }}{% endif %}{% endmacro %}

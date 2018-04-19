@@ -486,15 +486,16 @@ internals.sortTransfer = (a, b) => {
 };
 
 class BaseStage {
-    constructor ([ viewpath, validator ]) {
+    constructor ([ viewpath, routeParameter, validator ]) {
         this.path = viewpath;
         this.validator = validator;
+        this.routeParameter = routeParameter;
     }
 
     async handler (request, h) {
         try {
             let errors;
-            const cacheState = await cacheHelper(request, 'waste');
+            const cacheState = await cacheHelper(request, this.routeParameter);
             if (request.method.toUpperCase() === 'GET') {
                 return this.doGet(request, h, cacheState);
             } else {
@@ -896,14 +897,14 @@ class OverseasDetail extends BaseStage {
     }
 }
 
-internals.code = new Codes('all-sectors/report/waste-codes', internals.validateCode);
-internals.changeCode = new ChangeCodes('all-sectors/report/waste-codes', internals.validateCodeChange);
-internals.confirmOverseas = new ConfirmOverseas('all-sectors/report/confirm');
-internals.selectBusinessAddress = new SelectBusinessAddress('all-sectors/report/select-address');
-internals.addbusinessAddress = new AddBusinessAddress('all-sectors/report/add-address', internals.validateBusinessAddress);
-internals.selectSiteAddress = new SelectSiteAddress('all-sectors/report/select-address');
-internals.addSiteAddress = new AddSiteAddress('all-sectors/report/add-address', internals.validateSiteAddress);
-internals.overseasDetail = new OverseasDetail('all-sectors/report/overseas-waste-detail', internals.validateOverseasDetail);
+internals.code = new Codes('all-sectors/report/waste-codes', 'waste', internals.validateCode);
+internals.changeCode = new ChangeCodes('all-sectors/report/waste-codes', 'waste', internals.validateCodeChange);
+internals.confirmOverseas = new ConfirmOverseas('all-sectors/report/confirm', 'waste');
+internals.selectBusinessAddress = new SelectBusinessAddress('all-sectors/report/select-address', 'waste');
+internals.addbusinessAddress = new AddBusinessAddress('all-sectors/report/add-address', 'waste', internals.validateBusinessAddress);
+internals.selectSiteAddress = new SelectSiteAddress('all-sectors/report/select-address', 'waste');
+internals.addSiteAddress = new AddSiteAddress('all-sectors/report/add-address', 'waste', internals.validateSiteAddress);
+internals.overseasDetail = new OverseasDetail('all-sectors/report/overseas-waste-detail', 'waste', internals.validateOverseasDetail);
 
 module.exports = {
     /**
@@ -1165,5 +1166,8 @@ module.exports = {
     },
 
     /** Needed for the submission restore */
-    findTransfer: internals.findTransfer
+    findTransfer: internals.findTransfer,
+
+    /** Used in the review */
+    enrichWasteTransferObject: internals.enrichWasteTransferObject
 };

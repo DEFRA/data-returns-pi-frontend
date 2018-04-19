@@ -13,6 +13,7 @@ const isNumeric = require('../../../lib/utils').isNumeric;
 const isBrt = require('../../../lib/validator').isBrt;
 const setConfirmation = require('../common').setConfirmation;
 const statusHelper = require('../common').statusHelper;
+const enrichWasteTransferObject = require('../report/waste').enrichWasteTransferObject;
 
 /**
  * Route handlers for check your submission
@@ -71,7 +72,7 @@ module.exports = {
         try {
             const {route, submissionContext, eaId, year, isOperator} = await cacheHelper(request, 'review');
             const { challengeStatus, invalid, completed } = statusHelper(submissionContext);
-
+            const userContext = await request.server.app.userCache.cache(cacheNames.USER_CONTEXT).get(request);
             const regimeTree = await MasterDataService.getRegimeTreeById(eaId.regime.id);
 
             // Get appropriate the task list
@@ -192,29 +193,9 @@ module.exports = {
 
                         case 'WASTE_TRANSFERS':
                             if (task.transfers) {
-                                reviewObject.offsite_waste_transfers = reviewObject.offsite_waste_transfers || [];
+                                reviewObject.transfers = reviewObject.transfers || [];
                                 for (const transfer of task.transfers) {
-                                    if (transfer.wfd.disposalId) {
-                                        reviewObject.offsite_waste_transfers.push({
-                                            ewc_chapter: (await MasterDataService.getEwcChapterById(Number.parseInt(transfer.ewc.chapterId))),
-                                            ewc_sub_chapter: (await MasterDataService.getEwcSubChapterById(Number.parseInt(transfer.ewc.subChapterId))),
-                                            ewc_activity: (await MasterDataService.getEwcActivityById(Number.parseInt(transfer.ewc.activityId))),
-                                            wfd_disposal: (await MasterDataService.getDisposalById(transfer.wfd.disposalId)).code,
-                                            tonnage: transfer.value
-                                        });
-
-                                    } else if (transfer.wfd.recoveryId) {
-                                        reviewObject.offsite_waste_transfers.push({
-                                            ewc_chapter: (await MasterDataService.getEwcChapterById(Number.parseInt(transfer.ewc.chapterId))),
-                                            ewc_sub_chapter: (await MasterDataService.getEwcSubChapterById(Number.parseInt(transfer.ewc.subChapterId))),
-                                            ewc_activity: (await MasterDataService.getEwcActivityById(Number.parseInt(transfer.ewc.activityId))),
-                                            wfd_recovery: (await MasterDataService.getRecoveryById(transfer.wfd.recoveryId)).code,
-                                            tonnage: transfer.value
-                                        });
-
-                                    } else {
-                                        throw new CacheKeyError('Malformed review object' + JSON.stringify(transfer, null, 2));
-                                    }
+                                    reviewObject.transfers.push(await enrichWasteTransferObject(userContext, transfer));
                                 }
                             }
                             break;
