@@ -1,0 +1,128 @@
+{% extends 'layout/layout.html' %}
+{% block content %}
+<main id="content" role="main">
+    <script>
+      function show1(){
+        document.getElementById('notifiable-release').style.display ='none';
+      }
+      function show2(){
+        document.getElementById('notifiable-release').style.display = 'block';
+      }
+      window.onload = () => {
+        show1()
+      }
+    </script>
+
+    <a href="/task-list" class="link-back">Back to sections you must complete</a>
+    <div class="grid-row">
+        <div class="column-two-thirds">
+            <h1 class="heading-xlarge">
+                <span class="heading-secondary">Report your data {{ obligation.description | lower }} of {{ release.parameter.nomenclature }}</span>
+            </h1>
+            <section>
+                <form action="/releases/{{route.pathParam}}/detail" method="post" class="form">
+                    <label id="page-name" hidden>releases-detail-{{ route.pathParam }}</label>
+                    <h2 class="heading-large">More about your release of {{ release.parameter.nomenclature }}</h2>
+
+                    <div class="form-group">
+                        <label>Threshold {{ release.parameter.threshold.value }} {{ release.parameter.threshold.unit.nomenclature }}</label>
+                    </div>
+
+                    <div class="form-group">
+                        <input type="checkbox" id="brt" name="brt" {% if release.page.brt === 'true' %}checked{% endif %} value="true">
+                        <label for="brt">Below reporting threshold?</label>
+                    </div>
+
+                    <h1 class="heading-small">Or amount...</h1>
+
+                    <!--{% if release.page and release.page.unit %}-->
+                        <!--{% set set-unit = release.page.unit.id %}-->
+                    <!--{% else %}-->
+                        <!--{% set set-unit = release.parameter.threshold.unit.id %}-->
+                    <!--{% endif %}-->
+
+                    <!--{{ set-unit }}-->
+
+                    {% if value_error %}
+                         <div class="form-group form-group-error">
+                            <span class="error-message">Enter a number</span>
+                            <label class="form-label visually-hidden" for="value-err">Amount</label>
+                            <input class="form-control form-control-error" id="value-err" name="value" value="{{ release.page.value }}">
+                        </div>
+                    {% else %}
+                        <div class="form-group">
+                            <label class="form-label visually-hidden" for="value">Amount</label>
+                            <input class="form-control" id="value" name="value" value="{{ release.page.value }}">
+                        </div>
+                    {% endif %}
+
+                    <h1 class="heading-small">Units</h1>
+                    <div class="form-group list">
+                        {% for unit in obligation.units %}
+                        <div class="multiple-choice">
+                            <input id="unit-{{ unit.id }}" name="unit-id" value="{{ unit.id }}" type="radio">
+                            <label for="unit-{{ unit.id }}"><span class="category"></span> <span class="name">{{ unit.long_name }} ({{ unit.nomenclature }})</span></label>
+                        </div>
+                        {% endfor %}
+                    </div>
+
+                    <h1 class="heading-small">Method</h1>
+
+                    <div class="form-group list">
+                        {% for method in methods %}
+                        <div class="multiple-choice">
+                            <input id="method-{{ method.id }}" name="method" value="{{ method.name }}" type="radio">
+                            <label for="method-{{ method.id }}"><span class="category"></span> <span class="name">{{ method.name }}</span></label>
+                        </div>
+                        {% endfor %}
+                    </div>
+
+                    <div class="form-group">
+                        <fieldset class="inline">
+                            <h1 class="heading-medium">
+                                Notifiable release?
+                            </h1>
+                            <div class="multiple-choice"> <input id="radio-inline-1" {% if release.notifiable %}checked{% endif %} type="radio" name="hasNotifiableRelease" value="Yes" onclick="show2();"> <label for="radio-inline-1">Yes</label> </div>
+                            <div class="multiple-choice"> <input id="radio-inline-2" {% if not release.notifiable %}checked{% endif %} type="radio" name="hasNotifiableRelease" value="No" onclick="show1();"> <label for="radio-inline-2">No</label> </div>
+                        </fieldset>
+                    </div>
+
+                    <div id="notifiable-release">
+                        <div class="form-group">
+                            <input type="checkbox" id="n-brt" name="notifiable-brt" {% if release.page.notifiable.brt === 'true' %}checked{% endif %} value="true">
+                            <label for="n-brt">Below reporting threshold?</label>
+                        </div>
+
+                        <h1 class="heading-small">Or</h1>
+
+                        <div class="form-group">
+                            <h1 class="heading-small">Notifiable amount</h1>
+                            <label class="form-label visually-hidden" for="notifiable-release-total">Notifiable release total</label>
+                            <input class="form-control" id="notifiable-release-total" name="notifiableValue" type="text" value="{{ release.page.notifiable.brt }}">
+                        </div>
+
+                        <div class="form-group list">
+                            {% for unit in obligation.units %}
+                            <div class="multiple-choice">
+                                <input id="unit-n-{{ unit.id }}" name="notifiable-unit-id" value="{{ unit.id }}" type="radio">
+                                <label for="unit-n-{{ unit.id }}"><span class="category"></span> <span class="name">{{ unit.long_name }} ({{ unit.nomenclature }})</span></label>
+                            </div>
+                            {% endfor %}
+                        </div>
+
+                        <h1 class="heading-small">Reason</h1>
+
+                        <div class="form-group">
+                            <textarea maxlength="500" name="notifiable-reason" style="height:150px; width:100%" >{{ release.notifiable.reason }}</textarea>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <input class="button" id="continueBtn" type="submit" value="Save and continue">
+                    </div>
+                </form>
+            </section>
+        </div>
+    </div>
+</main>
+{% endblock %}
