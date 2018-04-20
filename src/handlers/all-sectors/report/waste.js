@@ -814,14 +814,21 @@ class AddSiteAddress extends BaseStage {
     async doGet (request, h, cacheState) {
         const tasks = cacheState.tasks;
         const countries = Countries.getNames('en');
+
+        const countriesFiltered = Object.keys(countries).filter(k => k !== 'GB').reduce((accumulator, currentValue) => {
+            const e = {};
+            e[currentValue] = countries[currentValue];
+            return Object.assign(accumulator, e);
+        }, {});
+
         if (tasks.address && tasks.address.incomplete) {
-            return h.view(this.path, { type: 'SITE', countries: countries, address: tasks.address.incomplete });
+            return h.view(this.path, { type: 'SITE', countries: countriesFiltered, address: tasks.address.incomplete });
         }
 
         return h.view(this.path, {
             path: '/transfers/waste/addSiteAddress',
             type: 'SITE',
-            countries: countries });
+            countries: countriesFiltered });
     }
 
     async doPost (request, h, cacheState, errors) {
