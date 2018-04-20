@@ -1,4 +1,5 @@
 {% extends 'layout/layout.html' %}
+{% import 'includes/macros.html' as macros %}
 
 {% macro releasesTable(releases, desc) %}
     <table class="releases-to-air table-control mobile-format">
@@ -28,32 +29,36 @@
     </table>
 {% endmacro %}
 
-{% macro transfersTable(transfers, desc) %}
-    <table class="releases-to-air table-control mobile-format">
-        <thead>
-        <tr>
-            <th class="th-substance">Description</th>
-            <th class="th-action">EWC code</th>
-            <th class="th-release">WFD code</th>
-            <th class="th-release numeric">Total</th>
-        </tr>
-        </thead>
+{% macro displayOverseas(transfer) %}
+    {% for key, detail in transfer.overseas %}
+    <table class="check-data table-control">
         <tbody>
-        <h2 class="heading-medium">{{ desc }}</h2>
-        {% for transfer in transfers %}
-        <tr>
-            <td class="td-description">{{ transfer.ewc_activity.description }}</td>
-            <td class="td-ewc-code numeric">{{ transfer.ewc_chapter.code }} {{ transfer.ewc_sub_chapter.code }} {{ transfer.ewc_activity.code }}</td>
-            {% if transfer.wfd_disposal %}
-                <td class="td-wfd-code numeric">{{ transfer.wfd_disposal }}</td>
-            {% else %}
-                <td class="td-wfd-code numeric">{{ transfer.wfd_recovery }}</td>
-            {% endif %}
-            <td class="td-2016-total numeric">{{ transfer.tonnage }}</td>
-        </tr>
-        {% endfor %}
+        <tr><th style="width: 30%">Business Address</th><td>{{ macros.printAddr(detail.businessAddress) }}</td></tr>
+        <tr><th>Site Address</th><td>{{ macros.printAddr(detail.siteAddress) }}</td></tr>
+        <tr><th>Quantity</th><td>{{ detail.value }}</td></tr>
+        <tr><th>Method</th><td>{{ detail.method }}</td></tr>
         </tbody>
     </table>
+    {% endfor %}
+{% endmacro %}
+
+{% macro displayTransfer(transfer) %}
+<table class="check-data table-control">
+    <tbody>
+    <tr><th style="width: 30%">EWC code</th><td>{{ transfer.ewc.chapter.code }} {{ transfer.ewc.subChapter.code }} {{ transfer.ewc.activity.code }}</td></tr>
+    <tr><th>Activity</th><td>{{ transfer.ewc.activity.description }}</td></tr>
+    <tr><th>Hazardous</th><td>{% if transfer.ewc.activity.hazardous %}Yes{% else %}No{% endif %}</td></tr>
+    <tr><th>Disposal or Recovery Code</th><td class="td-wfd-code">{% if transfer.wfd.disposal %}{{ transfer.wfd.disposal.code }}{% elif transfer.wfd.recovery %}{{ transfer.wfd.recovery.code }}{% endif %}</td></tr>
+    <tr><th>Disposal or Recovery Description</th><td class="td-wfd-code">{% if transfer.wfd.disposal %}{{ transfer.wfd.disposal.description }}{% elif transfer.wfd.recovery %}{{ transfer.wfd.recovery.description }}{% endif %}</td></tr>
+    <tr><th>Quantity</th><td><label class="form-label">{% if transfer.brt %}BRT{% else %}{{ transfer.value }} tonnes{% endif %}</label></td></tr>
+    <tr><th>Method</th><td>{{ transfer.method }}</td></tr>
+
+    {% if transfer.overseas | length %}
+    <tr><th>Overseas</th><td>{{ displayOverseas(transfer) }}</td></tr>
+    {% endif %}
+
+    </tbody>
+</table>
 {% endmacro %}
 
 {% block content %}
@@ -104,8 +109,11 @@
             {{ releasesTable(review.releases_to_waste_water, routeObligations.OFFSITE_TRANSFERS_IN_WASTE_WATER.description) }}
         {% endif %}
 
-        {% if review.offsite_waste_transfers %}
-            {{ transfersTable(review.offsite_waste_transfers, 'Off-site waste transfers') }}
+        {% if review.transfers %}
+            <h2 class="heading-medium">Your transfers</h2>
+            {% for transfer in review.transfers %}
+                {{ displayTransfer(transfer) }}
+            {% endfor %}
         {% endif %}
 
         {% if review_mode %}

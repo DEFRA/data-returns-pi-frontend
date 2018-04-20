@@ -1,0 +1,10 @@
+{% macro printAddr(address) %}
+{% if address.businessName %}{{ address.businessName }}, {% endif %}
+{{ address.addressLine1 }},
+{% if address.addressLine2 %}{{ address.addressLine2 }},  {% endif %}
+{{ address.townOrCity }},
+{{ address.postalCode }},
+{{ address.country }}
+{% endmacro %}
+
+{% macro encodeTransfer(transfer) %}{{ transfer.ewc.chapter.id }}-{{ transfer.ewc.subChapter.id }}-{{ transfer.ewc.activity.id }}-{% if transfer.wfd.disposal %}{{ transfer.wfd.disposal.id }}-{% elif transfer.wfd.recovery %}-{{ transfer.wfd.recovery.id }}{% endif %}{% endmacro %}

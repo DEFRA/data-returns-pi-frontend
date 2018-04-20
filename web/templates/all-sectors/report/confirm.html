@@ -35,10 +35,10 @@
         {{ form('Did you release any substances to controlled waters?', route.page + '/confirm') }}
     {% elif route.name === 'OFFSITE_TRANSFERS_IN_WASTE_WATER' %}
         {{ form('Did you transfer any substances off site in wastewater?', route.page + '/confirm') }}
-    {% elif route.name === 'OFFSITE_WASTE_TRANSFERS' %}
-        {{ form('Did you transfer any waste off site?', route.page + '/confirm') }}
-    {% elif route.name === 'OVERSEAS_WASTE_TRANSFERS' %}
-        {{ form('Did you transfer any hazardous waste overseas?', route.page + '/confirm') }}
+    {% elif route.name === 'WASTE_TRANSFERS' %}
+        {{ form('Did you transfer any waste?', route.page + '/confirm') }}
+    {% elif route.name === 'OVERSEAS' %}
+        {{ form('Was this waste transferred overseas?', '/transfers/waste/confirm-overseas') }}
     {% endif %}
 </main>
 {% endblock %}

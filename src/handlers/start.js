@@ -92,8 +92,13 @@ module.exports = {
             const session = await SessionHelper.get(request, request.auth.artifacts.sid);
             const isOperator = session.user.roles.includes('OPERATOR');
 
-            // If we have a user context remove it
-            await request.server.app.userCache.cache(cacheNames.USER_CONTEXT).drop(request);
+            // If we have an eaId remove it
+            const userContext = await request.server.app.userCache.cache(cacheNames.USER_CONTEXT).get(request);
+
+            if (userContext) {
+                delete userContext.eaId;
+                await request.server.app.userCache.cache(cacheNames.USER_CONTEXT).set(request, userContext);
+            }
 
             // Get the permits for the user
             const regimes = await MasterDataService.getRegimes();
@@ -146,9 +151,11 @@ module.exports = {
             const eaId = await MasterDataService.getEaIdFromEaIdId(eaIdId);
 
             // Set the current permit and the current year in the user context to the user context
-            await request.server.app.userCache.cache(cacheNames.USER_CONTEXT).set(request, {
-                year: year, eaId: eaId, roles: session.user.roles
-            });
+            const userContext = await request.server.app.userCache.cache(cacheNames.USER_CONTEXT).get(request) || {};
+            userContext.year = year;
+            userContext.eaId = eaId;
+            userContext.roles = session.user.roles;
+            await request.server.app.userCache.cache(cacheNames.USER_CONTEXT).set(request, userContext);
 
             // Determine the submission status
             const submissionContext = await internals.cacheSynchronize(request, eaIdId, year);
