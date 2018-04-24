@@ -10,7 +10,6 @@ const errHdlr = require('../../../lib/utils').generalErrorHandler;
 const TaskListService = require('../../../service/task-list');
 const allSectorsTaskList = require('../../../model/all-sectors/task-list');
 const isNumeric = require('../../../lib/utils').isNumeric;
-const isBrt = require('../../../lib/validator').isBrt;
 const setConfirmation = require('../common').setConfirmation;
 const statusHelper = require('../common').statusHelper;
 const enrichWasteTransferObject = require('../report/waste').enrichWasteTransferObject;

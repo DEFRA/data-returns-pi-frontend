@@ -929,8 +929,8 @@ internals._entities = {
         name: 'parameters',
         map: new Map(),
         arr: [],
-        request: {api: 'MD', uri: 'parameters', method: 'GET'},
-        idMapper: (i) => internals.defaultMapper(i),
+        request: { api: 'MD', uri: 'parameters', method: 'GET' },
+        idMapper: internals.defaultMapper,
         sorter: (a, b) => internals.sortByProperty(a, b, 'name')
     },
 
@@ -939,7 +939,13 @@ internals._entities = {
         map: new Map(),
         arr: [],
         request: { api: 'MD', uri: 'units', method: 'GET' },
-        idMapper: (i) => internals.defaultMapper(i),
+        idMapper: (i) => {
+            return {
+                id: i.id,
+                name: i.nomenclature,
+                conversion: i.conversion
+            };
+        },
         sorter: (a, b) => internals.sortByProperty(a, b, 'name')
     },
 
@@ -999,7 +1005,7 @@ internals._entities = {
         name: 'disposalCodes',
         map: new Map(),
         arr: [],
-        request: {api: 'MD', uri: 'disposalCodes', method: 'GET'},
+        request: { api: 'MD', uri: 'disposalCodes', method: 'GET' },
         idMapper: (i) => {
             return {
                 id: i.id,
@@ -1017,7 +1023,7 @@ internals._entities = {
         name: 'recoveryCodes',
         map: new Map(),
         arr: [],
-        request: {api: 'MD', uri: 'recoveryCodes', method: 'GET'},
+        request: { api: 'MD', uri: 'recoveryCodes', method: 'GET' },
         idMapper: (i) => {
             return {
                 id: i.id,
@@ -1035,7 +1041,7 @@ internals._entities = {
         name: 'naceSections',
         map: new Map(),
         arr: [],
-        request: {api: 'MD', uri: 'naceSections', method: 'GET'},
+        request: { api: 'MD', uri: 'naceSections', method: 'GET' },
         idMapper: (i) => {
             return {
                 id: i.id,
@@ -1051,7 +1057,7 @@ internals._entities = {
         name: 'naceDivisions',
         map: new Map(),
         arr: [],
-        request: {api: 'MD', uri: 'naceDivisions', method: 'GET'},
+        request: { api: 'MD', uri: 'naceDivisions', method: 'GET' },
         idMapper: (i) => {
             return {
                 id: i.id,
@@ -1067,7 +1073,7 @@ internals._entities = {
         name: 'naceGroups',
         map: new Map(),
         arr: [],
-        request: {api: 'MD', uri: 'naceGroups', method: 'GET'},
+        request: { api: 'MD', uri: 'naceGroups', method: 'GET' },
         idMapper: (i) => {
             return {
                 id: i.id,
@@ -1083,7 +1089,7 @@ internals._entities = {
         name: 'naceClasses',
         map: new Map(),
         arr: [],
-        request: {api: 'MD', uri: 'naceClasses', method: 'GET'},
+        request: { api: 'MD', uri: 'naceClasses', method: 'GET' },
         idMapper: (i) => {
             return {
                 id: i.id,
@@ -1102,7 +1108,7 @@ internals._entities = {
         name: 'noseActivityClasses',
         map: new Map(),
         arr: [],
-        request: {api: 'MD', uri: 'noseActivityClasses', method: 'GET'},
+        request: { api: 'MD', uri: 'noseActivityClasses', method: 'GET' },
         idMapper: (i) => {
             return {
                 id: i.id,
@@ -1116,7 +1122,7 @@ internals._entities = {
         name: 'noseActivities',
         map: new Map(),
         arr: [],
-        request: {api: 'MD', uri: 'noseActivities', method: 'GET'},
+        request: { api: 'MD', uri: 'noseActivities', method: 'GET' },
         idMapper: (i) => {
             return {
                 id: i.id,
@@ -1130,7 +1136,7 @@ internals._entities = {
         name: 'noseProcesses',
         map: new Map(),
         arr: [],
-        request: {api: 'MD', uri: 'noseProcesses', method: 'GET'},
+        request: { api: 'MD', uri: 'noseProcesses', method: 'GET' },
         idMapper: (i) => {
             return {
                 id: i.id,
@@ -1148,7 +1154,7 @@ internals._entities = {
         name: 'eprtrSectors',
         map: new Map(),
         arr: [],
-        request: {api: 'MD', uri: 'eprtrSectors', method: 'GET'},
+        request: { api: 'MD', uri: 'eprtrSectors', method: 'GET' },
         idMapper: (i) => {
             return {
                 id: i.id,
@@ -1163,7 +1169,7 @@ internals._entities = {
         name: 'eprtrActivities',
         map: new Map(),
         arr: [],
-        request: {api: 'MD', uri: 'eprtrActivities', method: 'GET'},
+        request: { api: 'MD', uri: 'eprtrActivities', method: 'GET' },
         idMapper: (i) => {
             return {
                 id: i.id,
@@ -1215,7 +1221,7 @@ internals._relations = {
         name: 'noseActivityClasses',
         map: new Map(),
         arr: [],
-        request: {api: 'MD', uri: 'noseActivityClasses', method: 'GET', query: 'projection=hierarchy'},
+        request: { api: 'MD', uri: 'noseActivityClasses', method: 'GET', query: 'projection=hierarchy' },
 
         processor: (results) => {
             const hierarchy = [];
@@ -1242,7 +1248,7 @@ internals._relations = {
         name: 'eprtrSectors',
         map: new Map(),
         arr: [],
-        request: {api: 'MD', uri: 'eprtrSectors', method: 'GET', query: 'projection=hierarchy'},
+        request: { api: 'MD', uri: 'eprtrSectors', method: 'GET', query: 'projection=hierarchy' },
 
         processor: (results) => {
             const hierarchy = [];
@@ -1266,7 +1272,7 @@ internals._relations = {
         name: 'ewcChapters',
         map: new Map(),
         arr: [],
-        request: {api: 'MD', uri: 'ewcChapters', method: 'GET', query: 'projection=hierarchy'},
+        request: { api: 'MD', uri: 'ewcChapters', method: 'GET', query: 'projection=hierarchy' },
 
         processor: (results) => {
             const hierarchy = [];

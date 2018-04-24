@@ -6,7 +6,6 @@
 const Authentication = require('./handlers/authentication.js');
 const Start = require('./handlers/start.js');
 const AllSectors = require('./handlers/all-sectors/task-list');
-const ReleasesOld = require('./handlers/all-sectors/report/releases-old');
 const Releases = require('./handlers/all-sectors/report/releases');
 
 const Waste = require('./handlers/all-sectors/report/waste');
@@ -92,9 +91,8 @@ const dynamicHandlers = [
     { method: ['GET', 'POST'], path: '/releases/{route}/confirm', options: { handler: Releases.confirm } },
     { method: ['GET', 'POST'], path: '/releases/{route}/add-substance', options: { handler: Releases.substances } },
     { method: ['GET', 'POST'], path: '/releases/{route}/details', options: { handler: Releases.details } },
-    // { method: 'GET', path: '/releases/{route}', options: { handler: ReleasesOld.releases } },
-    // { method: 'POST', path: '/releases/{route}/action', options: { handler: ReleasesOld.action } },
-    // { method: ['GET', 'POST'], path: '/releases/{route}/remove', options: { handler: ReleasesOld.remove } },
+    { method: ['GET', 'POST'], path: '/releases/{route}', options: { handler: Releases.releases } },
+    // { method: ['GET', 'POST'], path: '/releases/{route}/remove', options: { handler: Releases.remove } },
 
     // Waste Transfers
     { method: ['GET', 'POST'], path: '/transfers/waste/confirm', options: { handler: Waste.confirm } },

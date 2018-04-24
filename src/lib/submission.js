@@ -22,7 +22,6 @@ const setCompletedStatus = require('../handlers/all-sectors/common').setComplete
 const statusHelper = require('../handlers/all-sectors/common').statusHelper;
 const findTransfer = require('../handlers/all-sectors/report/waste').findTransfer;
 const isNumeric = require('./utils').isNumeric;
-const isBrt = require('../lib/validator').isBrt;
 const logger = require('./logging').logger;
 
 // Allowable submission status codes
@@ -596,6 +595,7 @@ const internals = {
                         logger.debug('Overseas transfers: ' + JSON.stringify(response, null, 4));
                     }
                 } else {
+                    logger.debug('New Transfer: ' + JSON.stringify(transferPayload, null, 4));
                     // The transfer is new. Create a single POST request for the transfer and the associated overseas
                     const newTransferResponse = await Api.request('SUB', 'POST', 'transfers', null, transferPayload);
                     logger.debug('New Transfer: ' + JSON.stringify(newTransferResponse, null, 4));
