@@ -68,6 +68,25 @@
                     <label id="page-name" hidden>releases-detail-{{ route.pathParam }}</label>
                     <h2 class="heading-large">More about your release of {{ release.parameter.nomenclature }}</h2>
 
+                    {% if obligation.route.subRoutes %}
+
+                        {% if release.page and release.page.subroute_id %}
+                            {% set subRouteId = release.page.subroute_id %}
+                        {% else %}
+                            {% set subRouteId = obligation.route.subRoutes[0].id %}
+                        {% endif %}
+
+                        <h1 class="heading-small">Subroute</h1>
+                        <div class="form-group list">
+                            {% for subRoute in obligation.route.subRoutes %}
+                                <div class="multiple-choice">
+                                    <input id="subroute-{{ subRoute.id }}" {% if subRoute.id == subRouteId %}checked{% endif %} name="subroute_id" value="{{ subRoute.id }}" type="radio">
+                                    <label for="subroute-{{ subRoute.id }}"><span class="category"></span> <span class="name">{{ subRoute.nomenclature }}</span></label>
+                                </div>
+                            {% endfor %}
+                        </div>
+                    {% endif %}
+
                     <div class="form-group">
                         <label>Threshold {{ release.parameter.threshold.value }} {{ release.parameter.threshold.unit.nomenclature }}</label>
                     </div>
@@ -108,8 +127,10 @@
 
                     {% if release.page and release.page.unit %}
                         {% set unitId = release.page.unit %}
-                    {% else %}
+                    {% elif release.parameter.threshold %}
                         {% set unitId = release.parameter.threshold.unit.id %}
+                    {% else %}
+                        {% set unitId = obligation.units[0].id %}
                     {% endif %}
 
                     <h1 class="heading-small">Units</h1>
@@ -158,6 +179,13 @@
                                 <span class="error-message">Enter a number</span>
                                 <label class="form-label visually-hidden" for="notifiable-release-total-e">Notifiable release total</label>
                                 <input class="form-control" id="notifiable-release-total-e" name="notifiable_value" type="text" value="{{ release.page.notifiable_value }}">
+                            </div>
+                        {% elif value_error and value_error.errno === 'PI-1003' %}
+                            <div class="form-group form-group-error">
+                                <h1 class="heading-small">Notifiable amount</h1>
+                                <span class="error-message">Enter a smaller number</span>
+                                <label class="form-label visually-hidden" for="notifiable-release-total-e1">Notifiable release total</label>
+                                <input class="form-control" id="notifiable-release-total-e1" name="notifiable_value" type="text" value="{{ release.page.notifiable_value }}">
                             </div>
                         {% else %}
                             <div class="form-group">

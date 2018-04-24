@@ -7,7 +7,6 @@ const isNumeric = require('../../../lib/utils').isNumeric;
 const cacheNames = require('../../../lib/user-cache-policies').names;
 const BaseStage = require('../common').BaseStage;
 const setConfirmation = require('../common').setConfirmation;
-const setValidationStatus = require('../common').setValidationStatus;
 const setChallengeStatus = require('../common').setChallengeStatus;
 
 const internals = {};
@@ -211,7 +210,9 @@ class Details extends BaseStage {
         }
 
         // No errors so write the release into the cache
-        const { brt, method, unit, value, notifiable, notifiable_value, notifiable_reason, notifiable_unit } = request.payload;
+        const { brt, method, unit, value, notifiable, notifiable_value,
+            notifiable_reason, notifiable_unit, subroute_id } = request.payload;
+
         delete cacheState.tasks.currentRelease.incomplete;
 
         // Create a new release object
@@ -234,6 +235,10 @@ class Details extends BaseStage {
             tasks.releases[currentParameterId].notifiable.reason = notifiable_reason;
         }
 
+        if (subroute_id) {
+            tasks.releases[currentParameterId].subroute_id = subroute_id;
+        }
+
         await request.server.app.userCache.cache(cacheNames.TASK_CONTEXT).set(request, tasks);
 
         // If there are no queued entries go to the main route summary otherwise ask return to the detail
@@ -251,6 +256,9 @@ class Releases extends BaseStage {
     }
 
     async doGet (request, h, cacheState) {
+
+        // Always un-confirm when viewing summary
+        await setConfirmation(request, cacheState.submissionContext, cacheState.route, false);
 
         const obligation = await MasterDataService.getReleaseObligation(cacheState.eaId.regime.id, cacheState.route);
 
@@ -276,17 +284,29 @@ class Releases extends BaseStage {
                 result.notifiable.unit = await MasterDataService.getUnitById(cacheState.tasks.releases[parameterId].notifiable.unitId);
             }
 
+            if (cacheState.tasks.releases[parameterId].subroute_id) {
+                result.subroute = obligation.route.subRoutes
+                    .find(r => r.id === Number.parseInt(cacheState.tasks.releases[parameterId].subroute_id)).nomenclature;
+            }
+
             return result;
         }));
 
-        return h.view(this.path, { route: cacheState.route, releases: releasesEnriched });
+        return h.view(this.path, {
+            route: cacheState.route,
+            releases: releasesEnriched,
+            obligation: obligation
+        });
     }
 
     async doPost (request, h, cacheState) {
-        const { tasks, route } = cacheState;
+        const { tasks, route, submissionContext } = cacheState;
         if (request.payload.add) {
             // Add another release
             return h.redirect(route.page + '/add-substance');
+        } else if (request.payload.continue) {
+            await setConfirmation(request, submissionContext, route, true);
+            return h.redirect('/task-list');
         } else if (Object.keys(request.payload).find(k => k.startsWith('release-change'))) {
             // Change
             tasks.currentRelease = {};
@@ -323,10 +343,53 @@ class Releases extends BaseStage {
 
             await request.server.app.userCache.cache(cacheNames.TASK_CONTEXT).set(request, tasks);
             return h.redirect(route.page + '/details');
-
         } else if (Object.keys(request.payload).find(k => k.startsWith('release-delete'))) {
-
+            const parameterId = Object.keys(request.payload).find(k => k.startsWith('release-delete')).split(':')[1];
+            tasks.currentRelease = {
+                parameterIds: [parameterId]
+            };
+            await request.server.app.userCache.cache(cacheNames.TASK_CONTEXT).set(request, tasks);
+            return h.redirect(route.page + '/remove');
         }
+    }
+}
+
+class Remove extends BaseStage {
+    constructor (...args) {
+        super(args);
+    }
+
+    async doGet (request, h, cacheState) {
+        const { tasks, route } = cacheState;
+        const obligation = await MasterDataService.getReleaseObligation(cacheState.eaId.regime.id, cacheState.route);
+        const parameterMap = new Map([].concat(...obligation.parameterGroups
+            .map(g => g.parameters))
+            .map(p => [p.id, p]));
+
+        const parameter = parameterMap.get(Number.parseInt(tasks.currentRelease.parameterIds[0]));
+
+        return h.view(this.path, {
+            route: route,
+            parameter: parameter,
+            obligation: obligation
+        });
+    }
+
+    async doPost (request, h, cacheState) {
+        const { tasks, route, submissionContext } = cacheState;
+        const parameterId = tasks.currentRelease.parameterIds.shift();
+        delete tasks.releases[parameterId];
+        await request.server.app.userCache.cache(cacheNames.TASK_CONTEXT).set(request, tasks);
+
+        // If this is the last release redirect back to the task list
+        if (Object.keys(tasks.releases).filter(r => isNumeric(r)).length > 0) {
+            return h.redirect(route.page);
+        } else {
+            // Here we unset the challenge flag - the user must explicitly say no to the route
+            await setChallengeStatus(request, submissionContext, route);
+            return h.redirect('/task-list');
+        }
+
     }
 }
 
@@ -338,6 +401,7 @@ internals.substances = new Substances('all-sectors/report/add-substance', null, 
 });
 internals.details = new Details('all-sectors/report/release-details', null, internals.validateDetail);
 internals.releases = new Releases('all-sectors/report/releases');
+internals.remove = new Remove('all-sectors/report/confirm-delete');
 
 module.exports = {
     confirm: async (request, h) => {
@@ -354,5 +418,9 @@ module.exports = {
 
     releases: async (request, h) => {
         return internals.releases.handler(request, h);
+    },
+
+    remove: async (request, h) => {
+        return internals.remove.handler(request, h);
     }
 };

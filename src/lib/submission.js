@@ -283,28 +283,38 @@ const internals = {
 
     // Create release element of message
     releasesObj: async (route, task, release) => {
-        if (isBrt(task.releases[release].value)) {
-            return {
-                route_id: route.routeId,
-                substance_id: Number.parseInt(release),
-                method: (await MasterDataService.getMethodById(task.releases[release].methodId)).name,
-                below_reporting_threshold: true
-            };
-        } else if (isNumeric(task.releases[release].value)) {
-            return {
-                route_id: route.routeId,
-                substance_id: Number.parseInt(release),
-                value: Number.parseFloat(task.releases[release].value),
-                unit_id: task.releases[release].unitId,
-                method: (await MasterDataService.getMethodById(task.releases[release].methodId)).name,
-                below_reporting_threshold: false,
-                notifiable_value: task.releases[release].notifiable ? task.releases[release].notifiable.value : null,
-                notifiable_unit_id: task.releases[release].notifiable ? task.releases[release].notifiable.unitId : null,
-                notifiable_reason: task.releases[release].notifiable ? task.releases[release].notifiable.reason : null
-            };
+        let result = {};
+        const rel = task.releases[release];
+
+        result = {
+            route_id: route.routeId,
+            substance_id: Number.parseInt(release),
+            method: rel.method
+        };
+
+        if (rel.brt) {
+            result.below_reporting_threshold = true;
         } else {
-            throw new CacheKeyError('Malformed release object: ' + JSON.stringify(release));
+            result = Object.assign(result, {
+                value: Number.parseFloat(rel.value),
+                unit_id: rel.unitId,
+                below_reporting_threshold: false
+            });
+
+            if (rel.notifiable) {
+                result = Object.assign(result, {
+                    notifiable_value: rel.notifiable.value,
+                    notifiable_unit_id: rel.notifiable.unitId,
+                    notifiable_reason: rel.notifiable.reason
+                });
+            }
+
+            if (rel.subroute_id) {
+                result.subroute_id = rel.subroute_id;
+            }
         }
+
+        return result;
     },
 
     /**
@@ -355,6 +365,7 @@ const internals = {
             submission: Joi.string().uri({ allowRelative: true }),
             substance_id: Joi.number().integer().required(),
             route_id: Joi.number().integer().required(),
+            subroute_id: Joi.number().integer().optional(),
             below_reporting_threshold: Joi.boolean().required(),
             method: Joi.valid(['Measurement', 'Calculation', 'Estimation']),
             value: Joi.alternatives().when('below_reporting_threshold', {

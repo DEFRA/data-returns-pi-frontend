@@ -212,7 +212,7 @@ module.exports = internals = {
                                 route.id = r.id;
                                 route.nomenclature = r.nomenclature;
                                 const subroutes = await client.requestLink(r._links.subroutes);
-                                if (subroutes) {
+                                if (subroutes._embedded.subroutes.length) {
                                     route.subRoutes = await Promise.all(subroutes._embedded.subroutes.map(async sr => {
                                         const subroute = {};
                                         subroute.id = sr.id;

@@ -92,7 +92,7 @@ const dynamicHandlers = [
     { method: ['GET', 'POST'], path: '/releases/{route}/add-substance', options: { handler: Releases.substances } },
     { method: ['GET', 'POST'], path: '/releases/{route}/details', options: { handler: Releases.details } },
     { method: ['GET', 'POST'], path: '/releases/{route}', options: { handler: Releases.releases } },
-    // { method: ['GET', 'POST'], path: '/releases/{route}/remove', options: { handler: Releases.remove } },
+    { method: ['GET', 'POST'], path: '/releases/{route}/remove', options: { handler: Releases.remove } },
 
     // Waste Transfers
     { method: ['GET', 'POST'], path: '/transfers/waste/confirm', options: { handler: Waste.confirm } },

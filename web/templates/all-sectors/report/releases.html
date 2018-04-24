@@ -3,6 +3,11 @@
 {% macro detail(release) %}
 <table>
     <tbody>
+        {% if release.subroute %}
+        <tr>
+            <th>Subroute</th><td>{{ release.subroute }}</td>
+        </tr>
+        {% endif %}
         <tr><th>Amount</th>
         {% if release.brt !== true %}
             <td>{{ release.value }}{{ release.unit.name }}</td>
@@ -10,7 +15,9 @@
             <td>BRT</td>
         {% endif %}
         </tr>
-        <th>Threshold</th><td>{{ release.parameter.threshold.value }}{{ release.parameter.threshold.unit.nomenclature }}</td>
+        {% if release.parameter.threshold %}
+            <th>Threshold</th><td>{{ release.parameter.threshold.value }}{{ release.parameter.threshold.unit.nomenclature }}</td>
+        {% endif %}
         <tr><th>Method</th><td>{{ release.method }}</td></tr>
         {% if release.notifiable %}
         <th>Notifiable Release</th><td>{{ release.notifiable.value }}{{ release.notifiable.unit.name }}</td>
@@ -35,7 +42,7 @@
             <tbody>
                 {% for release in releases %}
                     <tr>
-                        <td rowspan="2">{{ release.parameter.nomenclature  }} ({{ release.parameter.cas }})</td>
+                        <td rowspan="2">{{ release.parameter.nomenclature  }} {{ release.parameter.cas }}</td>
                         <td rowspan="2">{{ detail(release) }}</td>
                         <td style="border-bottom:none;"><input class="link" type="submit" id="release-change" name="release-change:{{ release.parameter.id }}" value="Change"/></td>
                     </tr>
