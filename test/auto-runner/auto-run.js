@@ -10,7 +10,7 @@ const after = lab.after;
 
 const naceAndNose = require('./scripts/nace_and_nose');
 const releases = require('./scripts/releases');
-const transfers = require('./scripts/transfers');
+// const transfers = require('./scripts/transfers');
 
 const Runner = require('./runner');
 
@@ -28,9 +28,9 @@ experiment('Auto-tests', () => {
         await Runner.run(releases);
     });
 
-    test('Transfers', async () => {
-        await Runner.run(transfers);
-    });
+    // test('Transfers', async () => {
+    //     await Runner.run(transfers);
+    // });
 
     after(async () => {
         return Runner.stop();
