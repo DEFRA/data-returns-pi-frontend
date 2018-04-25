@@ -6,9 +6,9 @@ const CacheKeyError = require('../../lib/user-cache-policies').CacheKeyError;
 const TaskListService = require('../../service/task-list');
 const Hoek = require('hoek');
 const cacheNames = require('../../lib/user-cache-policies').names;
+const errHdlr = require('../../lib/utils').generalErrorHandler;
 
-module.exports = {
-
+const internals = {
     /**
      * Wrapper for the common cache get functions in handlers
      * which will throw CacheKeyError on an unexpected read. Some redundant reads
@@ -51,7 +51,38 @@ module.exports = {
             submissionContext: submissionContext,
             tasks: tasks
         };
-    },
+    }
+};
+
+class BaseStage {
+    constructor ([ viewpath, routeParameter, validator ]) {
+        this.path = viewpath;
+        this.validator = validator;
+        this.routeParameter = routeParameter;
+    }
+
+    async handler (request, h) {
+        try {
+            let errors;
+            const cacheState = await internals.cacheHelper(request, this.routeParameter);
+            if (request.method.toUpperCase() === 'GET') {
+                return this.doGet(request, h, cacheState);
+            } else {
+                if (this.validator) {
+                    errors = await this.validator(request.payload, cacheState);
+                }
+                return this.doPost(request, h, cacheState, errors);
+            }
+        } catch (err) {
+            return errHdlr(err, h);
+        }
+    }
+};
+
+module.exports = {
+    BaseStage: BaseStage,
+
+    cacheHelper: internals.cacheHelper,
 
     /**
      * Set or unset the confirmation flag for a given route - this is where the user

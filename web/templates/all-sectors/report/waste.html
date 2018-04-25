@@ -1,0 +1,72 @@
+{% extends 'layout/layout.html' %}
+{% import 'includes/macros.html' as macros %}
+
+{% block content %}
+
+{% macro encodeTransfer(transfer) %}{{ transfer.ewc.chapter.id }}-{{ transfer.ewc.subChapter.id }}-{{ transfer.ewc.activity.id }}-{% if transfer.wfd.disposal %}{{ transfer.wfd.disposal.id }}-{% elif transfer.wfd.recovery %}-{{ transfer.wfd.recovery.id }}{% endif %}{% endmacro %}
+
+{% macro displayOverseas(transfer) %}
+    {% for key, detail in transfer.overseas %}
+        <table class="check-data table-control">
+            <tbody>
+                <tr><th style="width: 30%">Business Address</th><td>{{ macros.printAddr(detail.businessAddress) }}</td></tr>
+                <tr><th>Site Address</th><td>{{ macros.printAddr(detail.siteAddress) }}</td></tr>
+                <tr><th>Quantity</th><td>{{ detail.value }}</td></tr>
+                <tr><th>Method</th><td>{{ detail.method }}</td></tr>
+                <tr><td></td><td><input class="link" type="submit" id="overseas-delete" name="overseas-delete-{{ encodeTransfer(transfer) }}::{{ key }}" value="Delete"/></td></tr>
+                <tr><td></td><td><input class="link" type="submit" id="overseas-change" name="overseas-change-{{ encodeTransfer(transfer) }}::{{ key }}" value="Change"/></td></tr>
+            </tbody>
+        </table>
+    {% endfor %}
+{% endmacro %}
+
+{% macro displayTransfer(transfer) %}
+<table class="check-data table-control">
+    <tbody>
+        <tr><th style="width: 30%">EWC code</th><td>{{ transfer.ewc.chapter.code }} {{ transfer.ewc.subChapter.code }} {{ transfer.ewc.activity.code }}</td></tr>
+        <tr><th>Activity</th><td>{{ transfer.ewc.activity.description }}</td></tr>
+        <tr><th>Hazardous</th><td>{% if transfer.ewc.activity.hazardous %}Yes{% else %}No{% endif %}</td></tr>
+        <tr><th>Disposal or Recovery Code</th><td class="td-wfd-code">{% if transfer.wfd.disposal %}{{ transfer.wfd.disposal.code }}{% elif transfer.wfd.recovery %}{{ transfer.wfd.recovery.code }}{% endif %}</td></tr>
+        <tr><th>Disposal or Recovery Description</th><td class="td-wfd-code">{% if transfer.wfd.disposal %}{{ transfer.wfd.disposal.description }}{% elif transfer.wfd.recovery %}{{ transfer.wfd.recovery.description }}{% endif %}</td></tr>
+        <tr><th>Quantity</th><td><label class="form-label">{% if transfer.brt %}BRT{% else %}{{ transfer.value }} tonnes{% endif %}</label></td></tr>
+        <tr><th>Method</th><td>{{ transfer.method }}</td></tr>
+
+        {% if transfer.overseas | length %}
+            <tr><th>Overseas</th><td>{{ displayOverseas(transfer) }}</td></tr>
+        {% endif %}
+
+        {% if transfer.ewc.activity.hazardous and transfer.wfd.recovery %}
+            <tr><td></td><td><input class="link" type="submit" id="overseas" name="overseas-add-{{ encodeTransfer(transfer) }}" value="Add overseas transfer"/></td></tr>
+        {% endif %}
+
+        <tr><td></td><td><input class="link" type="submit" id="change" name="change-{{ encodeTransfer(transfer) }}" value="Change the waste transfer"/></td></tr>
+        <tr><td></td><td><input class="link" type="submit" id="delete" name="delete-{{ encodeTransfer(transfer) }}" value="Delete the transfer"/></td></tr>
+
+    </tbody>
+</table>
+{% endmacro %}
+
+<main id="content">
+    <label id="page-name" hidden>off-site</label>
+    <a href="/task-list" class="link-back">Back to sections you must complete</a>
+
+    <h1 class="heading-large">Your waste transfers</h1>
+
+    <form action="/transfers/waste" method="post" class="form">
+        {% for transfer in transfers %}
+            <div class="form-group">
+                {{ displayTransfer(transfer) }}
+            </div>
+        {% endfor %}
+
+        <div class="form-group">
+            <input class="link" type="submit" id="add" name="add" value="Add a new waste transfer"/>
+        </div>
+
+        <div class="form-group">
+            <input class="button" type="submit" id="continueBtn" name="continue" value="Continue"/>
+        </div>
+    </form>
+</main>
+
+{% endblock %}

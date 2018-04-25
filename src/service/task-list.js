@@ -30,7 +30,7 @@ module.exports = {
 
         // Add the tasks that are always required
         const keys = Object.keys(taskList)
-            .filter(k => ['REVIEW', 'SUBMIT', 'NACE_CODE', 'NOSE_CODES', 'OFFSITE_WASTE_TRANSFERS'].includes(k));
+            .filter(k => ['REVIEW', 'SUBMIT', 'NACE_CODE', 'NOSE_CODES', 'WASTE_TRANSFERS'].includes(k));
 
         keys.forEach(k => {
             result[k] = taskList[k];

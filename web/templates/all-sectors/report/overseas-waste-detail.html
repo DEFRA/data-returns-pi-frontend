@@ -1,0 +1,73 @@
+{% extends 'layout/layout.html' %}
+
+{% set value_error = (transfer.errors | selectattr2("key", "value"))  %}
+
+{% block content %}
+
+<main id="content">
+	<label id="page-name" hidden>overseas-detail</label>
+	<a href="/transfers/waste" class="link-back">Back to waste transfers</a>
+
+	<form action="/transfers/waste/overseas/detail" method="post" class="form">
+
+		<h1 class="heading-large">
+			Tell us about your overseas transfer of hazardous waste
+		</h1>
+
+		{% if transfer.errors %}
+			<div class="error-summary" role="alert" aria-labelledby="check-your-report" tabindex="-1">
+				<h2 class="heading-medium error-summary-heading" id="check-your-report">
+					Check what you’re reporting
+				</h2>
+				<ul class="error-summary-list">
+					{% if value_error and value_error.errno === 'PI-2000' %}
+						<li><a href=""><span class="error-message">Enter a (positive) tonnage</span></a>
+					{% else %}
+						<li><a href=""><span class="error-message">Your total shipped overseas exceeds your off site transfer total. This is not allowed.</span></a>
+					{% endif %}
+				</ul>
+			</div>
+		{% endif %}
+		<div class="form-group">
+			<fieldset class="inline">
+				<label class="form-label">How was the mass of waste transferred decided?</label>
+				{% set first = true %}
+				{% for transferMethod in transferMethods %}
+					<div class="multiple-choice">
+						<input id="radio-inline-hd-{{ transferMethod }}" type="radio" name="method" value="{{ transferMethod }}" {% if transfer.page.method === transferMethod or (not transfer.page.method and first) %} checked {% endif %}>
+						<label for="radio-inline-hd-{{ transferMethod }}">{{ transferMethod }}</label>
+					</div>
+					{% set first = false %}
+				{% endfor %}
+			</fieldset>
+		</div>
+
+		{% if value_error %}
+			{% if value_error.errno === 'PI-2000' %}
+				<div class="form-group form-group-error">
+                    <label class="form-label" for="value-err">Total</label>
+                    <span class="error-message">Enter a positive total in digits</span>
+                    <input novalidate class="form-control form-control-error total" id="value-err" name="value" value="{{ transfer.page.value }}"> tonnes
+                </div>
+			{% else %}
+				<div class="form-group form-group-error">
+                    <label class="form-label" for="value-err2">Total</label>
+                    <span class="error-message">Enter a total which does not cause your total amount shipped overseas to exceed the amount transfered off site</span>
+                    <input novalidate class="form-control form-control-error total" id="value-err2" name="value" value="{{ transfer.page.value }}"> tonnes
+                </div>
+			{% endif %}
+		{% else %}
+            <div class="form-group">
+                <label class="form-label" for="value">Total</label>
+                <input novalidate class="form-control total" id="value" name="value" value="{{ transfer.page.value }}"> tonnes
+            </div>
+		{% endif %}
+
+		<div class="form-group">
+			<input id="continueBtn" type="submit" class="button" value="Continue">
+		</div>
+	</form>
+
+</main>
+
+{% endblock %}

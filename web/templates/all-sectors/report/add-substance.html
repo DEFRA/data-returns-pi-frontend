@@ -16,40 +16,16 @@
     <form action="{{ route.page }}/add-substance" method="post">
         <a href="/task-list" class="link-back">Back to sections you must complete</a>
 
-        {% if errors and errors.length > 0 %}
-            {% if route.name === 'RELEASES_TO_LAND'%}
-                {{ error('Do you need to report any releases to land?', 'Select the substance you released') }}
-            {% elif route.name === 'RELEASES_TO_AIR' %}
-                {{ error('Do you need to report any releases to air?', 'Select the substance you released') }}
-            {% elif route.name === 'RELEASES_TO_CONTROLLED_WATERS' %}
-                {{ error('Do you need to report any releases to controlled waters?', 'Select the substance you released') }}
-            {% elif route.name === 'OFFSITE_TRANSFERS_IN_WASTE_WATER' %}
-                {{ error('Do you need to report any substances transferred off site in wastewater? ', 'Select the type of substance you transferred off site') }}
-            {% endif %}
+        {% if release.errors and release.errors.length > 0 %}
+            {{ error('No substance selected?', 'Select the substances for ' + obligation.description | lower ) }}
         {% endif %}
 
-        {% if route.name === 'RELEASES_TO_LAND'%}
-            <h1 class="heading-large">Add a release to land</h1>
-            <p>Select a substance you need to report</p>
-        {% elif route.name === 'RELEASES_TO_AIR' %}
-            <h1 class="heading-large">Add a release to air</h1>
-            <p>Select a substance you need to report</p>
-        {% elif route.name === 'RELEASES_TO_CONTROLLED_WATERS' %}
-            <h1 class="heading-large">Add a release to controlled waters</h1>
-            <p>Select a substance you need to report</p>
-        {% elif route.name === 'OFFSITE_TRANSFERS_IN_WASTE_WATER' %}
-            <h1 class="heading-large">Add a substance transferred off site in wastewater</h1>
-            <p>Select a substance you need to report</p>
-        {% elif route.name === 'OVERSEAS_WASTE_TRANSFERS' %}
-            <h1 class="heading-large">
-                <span class="heading-secondary">Your overseas hazardous waste transfers</span>
-                What type of waste did you transfer?
-            </h1>
-        {% endif %}
-
-        {% if errors and errors.length > 0 %}
+        <h1 class="heading-large">{{ obligation.description }}
+            <span class="heading-secondary">Select the substances you need to report. You can add more later</span>
+        </h1>
+        {% if release.errors and release.errors.length > 0 %}
             <span class="error-message">
-                Select the substance
+                Select the substances
             </span>
             <div id="search-results-err" class="grid-row">
                 {% for parameterGroup in parameterGroups %}
@@ -57,7 +33,7 @@
                     <div class="form-group list form-group-error">
                         {% for parameter in parameterGroup.parameters %}
                             <div class="multiple-choice">
-                                <input id="parameter_{{ parameter.id }}_err" name="parameterId" value="{{ parameter.id }}" type="radio">
+                                <input id="parameter_{{ parameter.id }}_err" name="parameterId" value="{{ parameter.id }}" type="checkbox">
                                 <label for="parameter_{{ parameter.id }}_err"><span class="category"></span> <span class="name">{{ parameter.nomenclature }}</span></label>
                                 <label><span class="cas">{{ parameter.cas }}</span></label>
                             </div>
@@ -72,7 +48,7 @@
                     <div class="form-group list">
                         {% for parameter in parameterGroup.parameters %}
                             <div class="multiple-choice">
-                                <input id="parameter_{{ parameter.id }}" name="parameterId" value="{{ parameter.id }}" type="radio">
+                                <input id="parameter_{{ parameter.id }}" name="parameterId" value="{{ parameter.id }}" type="checkbox">
                                 <label for="parameter_{{ parameter.id }}"><span class="category"></span> <span class="name">{{ parameter.nomenclature }}</span></label>
                                 <label><span class="cas">{{ parameter.cas }}</span></label>
                             </div>

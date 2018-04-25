@@ -26,7 +26,7 @@ module.exports = [
 
         /**
          * Filters a sequence of objects by applying a test to the specified attribute of each object,
-         * and only selecting the objects with the test succeeding
+         * and selecting the first object with the test succeeding
          * @param seq
          * @param attr
          * @param val
@@ -74,7 +74,7 @@ module.exports = [
         functionName: 'transferShortDesc',
 
         /**
-         * Print out a humen readable short description for an off-site transfer
+         * Print out a human readable short description a transfer
          */
         filterFunction: (transfer) => {
             const dr = transfer.wfd.disposal ? transfer.wfd.disposal.code : transfer.wfd.recovery.code;

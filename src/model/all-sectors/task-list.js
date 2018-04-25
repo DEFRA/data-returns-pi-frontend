@@ -65,10 +65,10 @@ module.exports = {
         type: 'RELEASE'
     },
 
-    OFFSITE_WASTE_TRANSFERS: {
-        name: 'OFFSITE_WASTE_TRANSFERS',
-        pathParam: 'off-site',
-        page: '/transfers/off-site',
+    WASTE_TRANSFERS: {
+        name: 'WASTE_TRANSFERS',
+        pathParam: 'waste',
+        page: '/transfers/waste',
         type: 'TRANSFER'
     }
 

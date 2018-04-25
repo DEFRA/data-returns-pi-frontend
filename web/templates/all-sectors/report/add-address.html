@@ -1,0 +1,136 @@
+{% extends 'layout/layout.html' %}
+
+{% block content %}
+
+{% set address_line_1_error = (address.errors | selectattr2("key", "address-line-1"))  %}
+{% set business_name_error = (address.errors | selectattr2("key", "business-name"))  %}
+{% set town_or_city_error = (address.errors | selectattr2("key", "town-or-city"))  %}
+{% set country_error = (address.errors | selectattr2("key", "country"))  %}
+{% set postal_code_error = (address.errors | selectattr2("key", "postal-code"))  %}
+
+<main id="content">
+    <label id="page-name" hidden>address-add-{{ type }}</label>
+    <a href="/task-list" class="link-back">Back to sections you must complete</a>
+
+    <form action="{{ path }}" method="post" class="form">
+
+        {% if address.errors and address.errors.length > 0 %}
+		
+            <h1 class="heading-large">{{ header }}</h1>
+            <div class="error-summary" role="alert" aria-labelledby="check-your-report" tabindex="-1">
+                <h2 class="heading-large" id="check-your-report">
+                    Check what you’re reporting
+                </h2>
+                <ul class="error-summary-list">
+                    {% if business_name_error %}<li><a href="">You must include a business name</a></li>{% endif %}
+                    {% if address_line_1_error %}<li><a href="">You must include an address</a></li>{% endif %}
+                    {% if town_or_city_error %}<li><a href="">You must include a town or city</a></li>{% endif %}
+                    {% if country_error %}<li><a href="">You must include a country</a></li>{% endif %}
+                    {% if postal_code_error %}<li><a href="">You must include a postal code</a></li>{% endif %}
+                </ul>
+            </div>
+        {% else %}
+                <h1 class="heading-large">
+                    <span class="heading-secondary">Your overseas hazardous waste transfers</span>
+                    {% if type === 'BUSINESS' %}
+                        Enter the details of the company that carried out the recovery of this waste
+                    {% else %}
+                        Enter the address of the site where the waste was recovered
+                    {% endif %}
+                </h1>
+        {% endif %}
+
+        <div class="form-group">
+            <fieldset>
+
+                {% if type === 'BUSINESS' %}
+                    {% if business_name_error %}
+                        <div class="form-group form-group-error">
+                            <label class="form-label" for="business-name-err">Business name</label>
+                            <span class="error-message">You must include a business name</span>
+                            <input class="form-control form-control-error" id="business-name-err" type="text" name="businessName" maxlength="255" value="{{ address.page.businessName }}">
+                        </div>
+                    {% else %}
+                        <div class="form-group">
+                            <label class="form-label" for="business-name">Business name</label>
+                            <input class="form-control" id="business-name" type="text" name="businessName" maxlength="255" value="{{ address.page.businessName }}">
+                        </div>
+                    {% endif %}
+                {% endif %}
+
+                {% if address_line_1_error %}
+                    <div class="form-group form-group-error">
+                        <label class="form-label" for="address-line-1-err">Address line 1</label>
+                        <span class="error-message">You must include an address</span>
+                        <input class="form-control form-control-error" id="address-line-1-err" type="text" name="addressLine1" maxlength="255" value="{{ address.page.addressLine1 }}">
+                    </div>
+                {% else %}
+                    <div class="form-group">
+                        <label class="form-label" for="address-line-1">Address line 1</label>
+                        <input class="form-control" id="address-line-1" type="text" name="addressLine1" maxlength="255" value="{{ address.page.addressLine1 }}">
+                    </div>
+                {% endif %}
+
+                <div class="form-group">
+                    <label class="form-label" for="address-line-2">Address line 2 (optional)</label>
+                    <input class="form-control" id="address-line-2" type="text" name="addressLine2" maxlength="255" value="{{ address.page.addressLine2 }}">
+                </div>
+
+                {% if town_or_city_error %}
+                    <div class="form-group form-group-error">
+                        <label class="form-label" for="town-or-city-err">Town or city</label>
+                        <span class="error-message">You must include a town or city</span>
+                        <input class="form-control form-control-error" id="town-or-city-err" type="text" maxlength="100" name="townOrCity" value="{{ address.page.townOrCity }}">
+                    </div>
+                {% else %}
+                    <div class="form-group">
+                        <label class="form-label" for="town-or-city">Town or city</label>
+                        <input class="form-control" id="town-or-city" type="text" name="townOrCity" maxlength="100" value="{{ address.page.townOrCity }}">
+                    </div>
+                {% endif %}
+
+                {% if postal_code_error %}
+                <div class="form-group form-group-error">
+                    <label class="form-label" for="postal-code-err">Postal Code</label>
+                    <span class="error-message">You must include a postal code</span>
+                    <input class="form-control form-control-error" id="postal-code-err" type="text" name="postalCode" maxlength="20" value="{{ address.page.postalCode }}">
+                </div>
+                {% else %}
+                <div class="form-group">
+                    <label class="form-label" for="postal-code">Postal Code</label>
+                    <input class="form-control" id="postal-code" type="text" name="postalCode" maxlength="20" value="{{ address.page.postalCode }}">
+                </div>
+                {% endif %}
+                
+                {% if country_error %}
+                    <div class="form-group form-group-error">
+                        <label class="form-label" for="town-or-city-err">Country</label>
+                        <span class="error-message">You must select a country</span>
+                        <select class="form-control form-control-error" id="country-err" name="country">
+                            <option>--</option>
+                            {% for code, name in countries %}
+                            <option value="{{ code }}">{{ name }}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                {% else %}
+                    <div class="form-group">
+                        <label class="form-label" for="town-or-city-err">Country</label>
+                        <select class="form-control" id="country" name="country">
+                            <option>--</option>
+                            {% for code, name in countries %}
+                                <option {% if code === address.page.country %}selected{% endif %} value="{{ code }}">{{ name }}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                {% endif %}
+
+            </fieldset>
+        </div>
+        <div class="form-group">
+            <input type="submit" class="button" value="Continue">
+        </div>
+    </form>
+</main>
+
+{% endblock %}
