@@ -1,0 +1,234 @@
+{% extends 'layout/layout.html' %}
+
+{% set value_error = (release.errors | selectattr2("key", "value"))  %}
+{% set notifiable_value_error = (release.errors | selectattr2("key", "notifiable_value"))  %}
+{% set notifiable_reason_error = (release.errors | selectattr2("key", "notifiable_reason"))  %}
+
+{% block content %}
+<main id="content" role="main">
+    <script>
+      function show1(){
+        document.getElementById('notifiable-release').style.display ='none';
+      }
+      function show2(){
+        document.getElementById('notifiable-release').style.display = 'block';
+      }
+      window.onload = () => {
+        {% if release.page.notifiable === 'true' %}
+            show2();
+        {% else %}
+            show1();
+        {% endif %}
+      }
+    </script>
+
+    {% if count > 0 %}
+        <a href="{{ route.page }}" class="link-back">Back to releases</a>
+    {% else %}
+        <a href="/task-list" class="link-back">Back to sections you must complete</a>
+    {% endif %}
+
+    <div class="grid-row">
+        <div class="column-two-thirds">
+            <h1 class="heading-xlarge">
+                <span class="heading-secondary">Report your data {{ obligation.description | lower }} of {{ release.parameter.nomenclature }}</span>
+            </h1>
+            <section>
+                <form action="/releases/{{route.pathParam}}/details" method="post" class="form">
+
+                    {% if release.errors %}
+                    <div class="error-summary" role="alert" aria-labelledby="check-your-report" tabindex="-1">
+                        <h2 class="heading-medium error-summary-heading" id="check-your-report">
+                            Check what you’re reporting
+                        </h2>
+                        <ul class="error-summary-list">
+                            {% if value_error and value_error.errno === 'PI-1000' %}
+                                <li><a href="#value-check">Enter a total in digits or check BRT but don't do both</a>
+                            {% endif %}
+
+                            {% if value_error and value_error.errno === 'PI-1001' %}
+                                <li><a href="#value-check">Enter a total in digits</a>
+                            {% endif %}
+
+                            {% if value_error and value_error.errno === 'PI-1003' %}
+                                <li><a href="#value-check">Notifiable value must not exceed overall amount</a>
+                            {% endif %}
+
+                            {% if notifiable_value_error and notifiable_value_error.errno === 'PI-1001' %}
+                                <li><a href="#value-check">Enter a total in digits for your notifiable release</a>
+                            {% endif %}
+
+                            {% if notifiable_reason_error and notifiable_reason_error.errno === 'PI-1002' %}
+                                <li><a href="#value-check">You must tell us the cause your notifiable release</a>
+                            {% endif %}
+                        </ul>
+                    </div>
+                    {% endif %}
+
+                    <label id="page-name" hidden>releases-detail-{{ route.pathParam }}</label>
+                    <h2 class="heading-large">More about your release of {{ release.parameter.nomenclature }}</h2>
+
+                    {% if obligation.route.subRoutes %}
+
+                        {% if release.page and release.page.subroute_id %}
+                            {% set subRouteId = release.page.subroute_id %}
+                        {% else %}
+                            {% set subRouteId = obligation.route.subRoutes[0].id %}
+                        {% endif %}
+
+                        <h1 class="heading-small">Subroute</h1>
+                        <div class="form-group list">
+                            {% for subRoute in obligation.route.subRoutes %}
+                                <div class="multiple-choice">
+                                    <input id="subroute-{{ subRoute.id }}" {% if subRoute.id == subRouteId %}checked{% endif %} name="subroute_id" value="{{ subRoute.id }}" type="radio">
+                                    <label for="subroute-{{ subRoute.id }}"><span class="category"></span> <span class="name">{{ subRoute.nomenclature }}</span></label>
+                                </div>
+                            {% endfor %}
+                        </div>
+                    {% endif %}
+
+                    <div class="form-group">
+                        <label>Threshold {{ release.parameter.threshold.value }} {{ release.parameter.threshold.unit.nomenclature }}</label>
+                    </div>
+
+                    {% if value_error and value_error.errno === 'PI-1000' %}
+                        <div class="form-group form-group-error">
+                            <span class="error-message">Enter a number or select BRT not both</span>
+                            <input type="checkbox" id="brt-e" name="brt" {% if release.page.brt === 'true' %}checked{% endif %} value="true">
+                            <label for="brt-e">Below reporting threshold?</label>
+                        </div>
+                    {% else %}
+                        <div class="form-group">
+                            <input type="checkbox" id="brt" name="brt" {% if release.page.brt === 'true' %}checked{% endif %} value="true">
+                            <label for="brt">Below reporting threshold?</label>
+                        </div>
+                    {% endif %}
+
+                    <h1 class="heading-small">Or amount...</h1>
+
+                    {% if value_error and value_error.errno === 'PI-1000' %}
+                         <div class="form-group form-group-error">
+                            <span class="error-message">Enter a number or select BRT not both</span>
+                            <label class="form-label visually-hidden" for="value-err">Amount</label>
+                            <input class="form-control form-control-error" id="value-err" name="value" value="{{ release.page.value }}">
+                        </div>
+                    {% elif value_error and value_error.errno === 'PI-1001' %}
+                        <div class="form-group form-group-error">
+                            <span class="error-message">Enter a number</span>
+                            <label class="form-label visually-hidden" for="value-err1">Amount</label>
+                            <input class="form-control form-control-error" id="value-err1" name="value" value="{{ release.page.value }}">
+                        </div>
+                    {% else %}
+                        <div class="form-group">
+                            <label class="form-label visually-hidden" for="value">Amount</label>
+                            <input class="form-control" id="value" name="value" value="{{ release.page.value }}">
+                        </div>
+                    {% endif %}
+
+                    {% if release.page and release.page.unit %}
+                        {% set unitId = release.page.unit %}
+                    {% elif release.parameter.threshold %}
+                        {% set unitId = release.parameter.threshold.unit.id %}
+                    {% else %}
+                        {% set unitId = obligation.units[0].id %}
+                    {% endif %}
+
+                    <h1 class="heading-small">Units</h1>
+                    <div class="form-group list">
+                        {% for unit in obligation.units %}
+                        <div class="multiple-choice">
+                            <input id="unit-{{ unit.id }}" {% if unitId == unit.id %}checked{% endif %} name="unit" value="{{ unit.id }}" type="radio">
+                            <label for="unit-{{ unit.id }}"><span class="category"></span> <span class="name">{{ unit.long_name }} ({{ unit.nomenclature }})</span></label>
+                        </div>
+                        {% endfor %}
+                    </div>
+
+                    {% if release.page and release.page.method %}
+                        {% set methodName = release.page.method %}
+                    {% else %}
+                        {% set methodName = 'Measurement' %}
+                    {% endif %}
+
+                    {{methodId}}
+
+                    <h1 class="heading-small">Method</h1>
+
+                    <div class="form-group list">
+                        {% for method in methods %}
+                        <div class="multiple-choice">
+                            <input id="method-{{ method.id }}" {% if methodName == method.name %}checked{% endif %} name="method" value="{{ method.name }}" type="radio">
+                            <label for="method-{{ method.id }}"><span class="category"></span> <span class="name">{{ method.name }}</span></label>
+                        </div>
+                        {% endfor %}
+                    </div>
+
+                    <div class="form-group">
+                        <fieldset class="inline">
+                            <h1 class="heading-medium">
+                                Notifiable release?
+                            </h1>
+                            <div class="multiple-choice"> <input id="radio-inline-1" {% if release.page.notifiable %}checked{% endif %} type="radio" name="notifiable" value="true" onclick="show2();"> <label for="radio-inline-1">Yes</label> </div>
+                            <div class="multiple-choice"> <input id="radio-inline-2" {% if not release.page.notifiable %}checked{% endif %} type="radio" name="notifiable" value="false" onclick="show1();"> <label for="radio-inline-2">No</label> </div>
+                        </fieldset>
+                    </div>
+
+                    <div id="notifiable-release">
+                        {% if notifiable_value_error and notifiable_value_error.errno === 'PI-1001' %}
+                            <div class="form-group form-group-error">
+                                <h1 class="heading-small">Notifiable amount</h1>
+                                <span class="error-message">Enter a number</span>
+                                <label class="form-label visually-hidden" for="notifiable-release-total-e">Notifiable release total</label>
+                                <input class="form-control" id="notifiable-release-total-e" name="notifiable_value" type="text" value="{{ release.page.notifiable_value }}">
+                            </div>
+                        {% elif value_error and value_error.errno === 'PI-1003' %}
+                            <div class="form-group form-group-error">
+                                <h1 class="heading-small">Notifiable amount</h1>
+                                <span class="error-message">Enter a smaller number</span>
+                                <label class="form-label visually-hidden" for="notifiable-release-total-e1">Notifiable release total</label>
+                                <input class="form-control" id="notifiable-release-total-e1" name="notifiable_value" type="text" value="{{ release.page.notifiable_value }}">
+                            </div>
+                        {% else %}
+                            <div class="form-group">
+                                <h1 class="heading-small">Notifiable amount</h1>
+                                <label class="form-label visually-hidden" for="notifiable-release-total">Notifiable release total</label>
+                                <input class="form-control" id="notifiable-release-total" name="notifiable_value" type="text" value="{{ release.page.notifiable_value }}">
+                            </div>
+                        {% endif %}
+
+                        {% if release.page and release.page.notifiable_unit %}
+                            {% set nUnitId = release.page.notifiable_unit %}
+                        {% else %}
+                            {% set nUnitId = release.parameter.threshold.unit.id %}
+                        {% endif %}
+
+                        <div class="form-group list">
+                            {% for unit in obligation.units %}
+                            <div class="multiple-choice">
+                                <input id="unit-n-{{ unit.id }}" {% if nUnitId == unit.id %}checked{% endif %} name="notifiable_unit" value="{{ unit.id }}" type="radio">
+                                <label for="unit-n-{{ unit.id }}"><span class="category"></span> <span class="name">{{ unit.long_name }} ({{ unit.nomenclature }})</span></label>
+                            </div>
+                            {% endfor %}
+                        </div>
+
+                        <h1 class="heading-small">Cause</h1>
+                        {% if notifiable_reason_error and notifiable_reason_error.errno === 'PI-1002' %}
+                            <div class="form-group form-group-error">
+                                <span class="error-message">Enter a cause</span>
+                                <textarea maxlength="500" name="notifiable_reason" style="height:150px; width:100%" >{% if release.page %}{{ release.page.notifiable_reason }}{% endif %}</textarea>
+                            </div>
+                        {% else %}
+                            <div class="form-group">
+                                <textarea maxlength="500" name="notifiable_reason" style="height:150px; width:100%" >{% if release.page %}{{ release.page.notifiable_reason }}{% endif %}</textarea>
+                            </div>
+                        {% endif %}
+                    </div>
+
+                    <div class="form-group">
+                        <input class="button" id="continueBtn" type="submit" value="Save and continue">
+                    </div>
+                </form>
+            </section>
+        </div>
+    </div>
+</main>
+{% endblock %}

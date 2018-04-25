@@ -16,24 +16,15 @@
 {% block content %}
 <main id="content">
     <label id="page-name" hidden>confirm-delete-{{ route.pathParam }}</label>
-    {% if route.name === 'RELEASES_TO_LAND' %}
-        {% set hdr = 'Are you sure you don’t need to report any ' +  release.parameter.nomenclature + ' releases to land?' %}
-        {{ form(hdr, '/releases/land/remove', '/releases/land') }}
-    {% elif route.name === 'RELEASES_TO_AIR' %}
-        {% set hdr = 'Are you sure you don’t need to report any ' +  release.parameter.nomenclature + ' releases to air?' %}
-        {{ form(hdr, '/releases/air/remove', '/releases/air') }}
-    {% elif route.name === 'RELEASES_TO_CONTROLLED_WATERS' %}
-        {% set hdr = 'Are you sure you don’t need to report any ' +  release.parameter.nomenclature + ' releases to controlled waters?' %}
-        {{ form(hdr, '/releases/water/remove', '/releases/water') }}
-    {% elif route.name === 'OFFSITE_TRANSFERS_IN_WASTE_WATER' %}
-        {% set hdr = 'Are you sure you don’t need to report any ' +  release.parameter.nomenclature + ' transferred off site in wastewater?' %}
-        {{ form(hdr, '/releases/waste-water/remove', '/releases/waste-water') }}
-    {% elif route.name === 'WASTE_TRANSFERS' %}
+    {% if route.name === 'WASTE_TRANSFERS' %}
         {% set hdr = 'Are you sure you don’t need to report this waste transfer of ' +  transfer | transferShortDesc + '?' %}
         {{ form(hdr, '/transfers/waste/remove', '/transfers/waste') }}
     {% elif route.name === 'WASTE_TRANSFERS_OVERSEAS' %}
         {% set hdr = 'Are you sure you don’t need to report this overseas waste transfer to ' + macros.printAddr(overseas.siteAddress) + '?' %}
         {{ form(hdr, '/transfers/waste/overseas/remove', '/transfers/waste') }}
+    {% else %}
+        {% set hdr = 'Are you sure you don’t need to report the ' + obligation.description | lower + ' of ' + parameter.nomenclature + '?' %}
+        {{ form(hdr, route.page + '/remove', route.page) }}
     {% endif %}
 </main>
 {% endblock %}

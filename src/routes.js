@@ -7,6 +7,7 @@ const Authentication = require('./handlers/authentication.js');
 const Start = require('./handlers/start.js');
 const AllSectors = require('./handlers/all-sectors/task-list');
 const Releases = require('./handlers/all-sectors/report/releases');
+
 const Waste = require('./handlers/all-sectors/report/waste');
 const Review = require('./handlers/all-sectors/submit/review');
 const Submit = require('./handlers/all-sectors/submit/submit');
@@ -88,10 +89,9 @@ const dynamicHandlers = [
 
     // Releases to air, land, controlled waters and in waste-water
     { method: ['GET', 'POST'], path: '/releases/{route}/confirm', options: { handler: Releases.confirm } },
-    { method: 'GET', path: '/releases/{route}', options: { handler: Releases.releases } },
-    { method: 'POST', path: '/releases/{route}/action', options: { handler: Releases.action } },
-    { method: ['GET', 'POST'], path: '/releases/{route}/add-substance', options: { handler: Releases.add } },
-    { method: ['GET', 'POST'], path: '/releases/{route}/detail', options: { handler: Releases.detail } },
+    { method: ['GET', 'POST'], path: '/releases/{route}/add-substance', options: { handler: Releases.substances } },
+    { method: ['GET', 'POST'], path: '/releases/{route}/details', options: { handler: Releases.details } },
+    { method: ['GET', 'POST'], path: '/releases/{route}', options: { handler: Releases.releases } },
     { method: ['GET', 'POST'], path: '/releases/{route}/remove', options: { handler: Releases.remove } },
 
     // Waste Transfers

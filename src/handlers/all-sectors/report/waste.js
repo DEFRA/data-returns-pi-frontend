@@ -1,10 +1,13 @@
 'use strict';
 
 const Countries = require('i18n-iso-countries');
+
 const uuid = require('uuid');
 const MasterDataService = require('../../../service/master-data');
 const transferMethods = require('../../../../data/static-data').transferMethods;
 const cacheHelper = require('../common').cacheHelper;
+const BaseStage = require('../common').BaseStage;
+
 const cacheNames = require('../../../lib/user-cache-policies').names;
 
 const setConfirmation = require('../common').setConfirmation;
@@ -484,31 +487,6 @@ internals.sortTransfer = (a, b) => {
 
     return 0;
 };
-
-class BaseStage {
-    constructor ([ viewpath, routeParameter, validator ]) {
-        this.path = viewpath;
-        this.validator = validator;
-        this.routeParameter = routeParameter;
-    }
-
-    async handler (request, h) {
-        try {
-            let errors;
-            const cacheState = await cacheHelper(request, this.routeParameter);
-            if (request.method.toUpperCase() === 'GET') {
-                return this.doGet(request, h, cacheState);
-            } else {
-                if (this.validator) {
-                    errors = await this.validator(request.payload, cacheState);
-                }
-                return this.doPost(request, h, cacheState, errors);
-            }
-        } catch (err) {
-            return errHdlr(err, h);
-        }
-    }
-}
 
 class Codes extends BaseStage {
     constructor (...args) {

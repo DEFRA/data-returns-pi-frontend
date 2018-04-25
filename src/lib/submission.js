@@ -14,15 +14,12 @@ const client = require('../lib/api-client');
 
 const transferMethods = require('../../data/static-data').transferMethods;
 const cacheNames = require('./user-cache-policies').names;
-const CacheKeyError = require('./user-cache-policies').CacheKeyError;
 const Api = require('./api-client');
 const TaskListService = require('../service/task-list');
 const allSectorsTaskList = require('../model/all-sectors/task-list');
 const setCompletedStatus = require('../handlers/all-sectors/common').setCompletedStatus;
 const statusHelper = require('../handlers/all-sectors/common').statusHelper;
 const findTransfer = require('../handlers/all-sectors/report/waste').findTransfer;
-const isNumeric = require('./utils').isNumeric;
-const isBrt = require('../lib/validator').isBrt;
 const logger = require('./logging').logger;
 
 // Allowable submission status codes
@@ -284,28 +281,38 @@ const internals = {
 
     // Create release element of message
     releasesObj: async (route, task, release) => {
-        if (isBrt(task.releases[release].value)) {
-            return {
-                route_id: route.routeId,
-                substance_id: Number.parseInt(release),
-                method: (await MasterDataService.getMethodById(task.releases[release].methodId)).name,
-                below_reporting_threshold: true
-            };
-        } else if (isNumeric(task.releases[release].value)) {
-            return {
-                route_id: route.routeId,
-                substance_id: Number.parseInt(release),
-                value: Number.parseFloat(task.releases[release].value),
-                unit_id: task.releases[release].unitId,
-                method: (await MasterDataService.getMethodById(task.releases[release].methodId)).name,
-                below_reporting_threshold: false,
-                notifiable_value: task.releases[release].notifiable ? task.releases[release].notifiable.value : null,
-                notifiable_unit_id: task.releases[release].notifiable ? task.releases[release].notifiable.unitId : null,
-                notifiable_reason: task.releases[release].notifiable ? task.releases[release].notifiable.reason : null
-            };
+        let result = {};
+        const rel = task.releases[release];
+
+        result = {
+            route_id: route.routeId,
+            substance_id: Number.parseInt(release),
+            method: rel.method
+        };
+
+        if (rel.brt) {
+            result.below_reporting_threshold = true;
         } else {
-            throw new CacheKeyError('Malformed release object: ' + JSON.stringify(release));
+            result = Object.assign(result, {
+                value: Number.parseFloat(rel.value),
+                unit_id: rel.unitId,
+                below_reporting_threshold: false
+            });
         }
+
+        if (rel.notifiable) {
+            result = Object.assign(result, {
+                notifiable_value: rel.notifiable.value,
+                notifiable_unit_id: rel.notifiable.unitId,
+                notifiable_reason: rel.notifiable.reason
+            });
+        }
+
+        if (rel.subroute_id) {
+            result.subroute_id = rel.subroute_id;
+        }
+
+        return result;
     },
 
     /**
@@ -356,6 +363,7 @@ const internals = {
             submission: Joi.string().uri({ allowRelative: true }),
             substance_id: Joi.number().integer().required(),
             route_id: Joi.number().integer().required(),
+            subroute_id: Joi.number().integer().optional(),
             below_reporting_threshold: Joi.boolean().required(),
             method: Joi.valid(['Measurement', 'Calculation', 'Estimation']),
             value: Joi.alternatives().when('below_reporting_threshold', {
@@ -596,6 +604,7 @@ const internals = {
                         logger.debug('Overseas transfers: ' + JSON.stringify(response, null, 4));
                     }
                 } else {
+                    logger.debug('New Transfer: ' + JSON.stringify(transferPayload, null, 4));
                     // The transfer is new. Create a single POST request for the transfer and the associated overseas
                     const newTransferResponse = await Api.request('SUB', 'POST', 'transfers', null, transferPayload);
                     logger.debug('New Transfer: ' + JSON.stringify(newTransferResponse, null, 4));
@@ -759,7 +768,6 @@ const internals = {
         }
 
         const releaseTaskNames = Object.keys(tasks).filter(t => tasks[t].type === 'RELEASE');
-        const methods = await MasterDataService.getMethods();
 
         for (const taskName of releaseTaskNames) {
             if (submission[taskName]) {
@@ -768,25 +776,29 @@ const internals = {
 
                 for (const release of submission[taskName]) {
                     const result = {};
-                    if (release.below_reporting_threshold) {
-                        result[release.substance_id] = {
-                            methodId: methods.find(m => m.name === release.method).id,
-                            value: 'BRT'
-                        };
-                    } else {
-                        result[release.substance_id] = {
-                            methodId: methods.find(m => m.name === release.method).id,
-                            value: release.value.toString(),
-                            unitId: release.unit_id
-                        };
 
-                        if (release.notifiable_value) {
-                            result[release.substance_id].notifiable = {};
-                            result[release.substance_id].notifiable.value = release.notifiable_value.toString();
-                            result[release.substance_id].notifiable.unitId = release.notifiable_unit_id;
-                            result[release.substance_id].notifiable.reason = release.notifiable_reason;
-                        }
+                    result[release.substance_id] = {
+                        method: release.method
+                    };
+
+                    if (release.below_reporting_threshold) {
+                        result[release.substance_id].brt = true;
+                    } else {
+                        result[release.substance_id].value = release.value.toString();
+                        result[release.substance_id].unitId = release.unit_id;
                     }
+
+                    if (release.notifiable_value) {
+                        result[release.substance_id].notifiable = {};
+                        result[release.substance_id].notifiable.value = release.notifiable_value.toString();
+                        result[release.substance_id].notifiable.unitId = release.notifiable_unit_id;
+                        result[release.substance_id].notifiable.reason = release.notifiable_reason;
+                    }
+
+                    if (release.subroute_id) {
+                        result[release.substance_id].subroute_id = release.subroute_id;
+                    }
+
                     task.releases = Object.assign(task.releases, result);
                 }
 
@@ -795,6 +807,7 @@ const internals = {
                 submissionContext.challengeStatus[taskName] = true;
                 submissionContext.valid[taskName] = true;
                 setCompletedStatus(submissionContext, taskName);
+
                 await request.server.app.userCache.cache(cacheNames.SUBMISSION_CONTEXT).set(request, submissionContext);
                 await request.server.app.userCache.cache(cacheNames.TASK_CONTEXT).set(request, task);
             } else {

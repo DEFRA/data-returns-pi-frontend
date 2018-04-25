@@ -9,8 +9,6 @@ const errHdlr = require('../../../lib/utils').generalErrorHandler;
 
 const TaskListService = require('../../../service/task-list');
 const allSectorsTaskList = require('../../../model/all-sectors/task-list');
-const isNumeric = require('../../../lib/utils').isNumeric;
-const isBrt = require('../../../lib/validator').isBrt;
 const setConfirmation = require('../common').setConfirmation;
 const statusHelper = require('../common').statusHelper;
 const enrichWasteTransferObject = require('../report/waste').enrichWasteTransferObject;
@@ -25,27 +23,29 @@ const internals = {
     // Create release element of message
     releasesObj: async (task, release) => {
         try {
-            if (isBrt(task.releases[release].value)) {
-                return {
-                    substance_name: (await MasterDataService.getParameterById(Number.parseInt(release))).nomenclature,
-                    method: (await MasterDataService.getMethodById(task.releases[release].methodId)).name,
-                    below_reporting_threshold: true
-                };
-            } else if (isNumeric(task.releases[release].value)) {
-                return {
-                    substance_name: (await MasterDataService.getParameterById(Number.parseInt(release))).nomenclature,
-                    value: Number.parseFloat(task.releases[release].value),
-                    units: (await MasterDataService.getUnitById(task.releases[release].unitId)).nomenclature,
-                    method: (await MasterDataService.getMethodById(task.releases[release].methodId)).name,
-                    below_reporting_threshold: false,
-                    notifiable: task.releases[release].notifiable ? {
-                        value: task.releases[release].notifiable.value,
-                        units: (await MasterDataService.getUnitById(task.releases[release].notifiable.unitId)).nomenclature
-                    } : null
-                };
+            const rel = task.releases[release];
+            const result = {};
+
+            result.method = rel.method;
+            result.substance_name = (await MasterDataService.getParameterById(Number.parseInt(release))).nomenclature;
+
+            if (rel.brt) {
+                result.below_reporting_threshold = true;
             } else {
-                throw new CacheKeyError('Malformed release object: ' + JSON.stringify(release));
+                result.value = rel.value;
+                const unit = await MasterDataService.getUnitById(Number.parseInt(rel.unitId));
+                result.units = unit.name;
             }
+
+            if (rel.notifiable) {
+                result.notifiable = {
+                    value: rel.notifiable.value
+                };
+                const unit = await MasterDataService.getUnitById(Number.parseInt(rel.notifiable.unitId));
+                result.notifiable.units = unit.name;
+            }
+
+            return result;
         } catch (err) {
             logger.log('error', 'Error creating view object: ' + err);
             throw err;

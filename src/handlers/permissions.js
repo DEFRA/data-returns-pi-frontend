@@ -31,7 +31,7 @@ const editSubmission = [].concat(...[
     '/releases/{route}',
     '/releases/{route}/action',
     '/releases/{route}/add-substance',
-    '/releases/{route}/detail',
+    '/releases/{route}/details',
     '/releases/{route}/remove',
     '/transfers/off-site',
     '/transfers/off-site/confirm',
