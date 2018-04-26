@@ -488,6 +488,43 @@ internals.sortTransfer = (a, b) => {
     return 0;
 };
 
+class Confirm extends BaseStage {
+    constructor (...args) {
+        super(args);
+    }
+
+    async doGet (request, h, cacheState) {
+        const { route, tasks } = cacheState;
+        // If we have waste transfers then redirect directly to the waste handler summary page
+        if (tasks && tasks.transfers && tasks.transfers.length > 0) {
+            return h.redirect('/transfers/waste');
+        } else {
+            return h.view(this.path, {
+                route: route,
+                selected: false
+            });
+        }
+    }
+
+    async doPost (request, h, cacheState, errors) {
+        const { route, submissionContext } = cacheState;
+        // Process the confirmation - set the current route and redirect to the page
+        if (request.payload.confirmation === 'true') {
+            await setChallengeStatus(request, submissionContext, route, true);
+            return h.redirect(route.page);
+        } else {
+            // If the challenge page results in false then this is a confirmed route
+            await setConfirmation(request, submissionContext, route, true);
+
+            // Unset the confirmation status when viewing the page
+            await setChallengeStatus(request, submissionContext, route);
+
+            await request.server.app.userCache.cache(cacheNames.SUBMISSION_CONTEXT).set(request, submissionContext);
+            return h.redirect('/task-list');
+        }
+    }
+}
+
 class Codes extends BaseStage {
     constructor (...args) {
         super(args);
@@ -546,6 +583,117 @@ class Codes extends BaseStage {
             } else {
                 return h.redirect('/transfers/waste');
             }
+        }
+    }
+}
+
+class Waste extends BaseStage {
+    constructor (...args) {
+        super(args);
+    }
+
+    async doGet (request, h, cacheState) {
+        const { submissionContext, route, tasks } = cacheState;
+        if (tasks.currentWasteTransfer) {
+            delete tasks.currentWasteTransfer;
+            await request.server.app.userCache.cache(cacheNames.TASK_CONTEXT).set(request, tasks);
+        }
+
+        if (!tasks.transfers || tasks.transfers.length === 0) {
+            return h.redirect('/transfers/waste/codes');
+        } else {
+            // Remove any incomplete overseas transfers created by the back button usage
+            tasks.transfers.map(t => {
+                if (t.overseas) {
+                    const incompletes = Object.keys(t.overseas).filter(k => k !== 'currentKey').filter(os => !t.overseas[os].complete);
+                    for (const incomplete of incompletes) {
+                        delete t.overseas[incomplete];
+                    }
+                }
+            });
+            await request.server.app.userCache.cache(cacheNames.TASK_CONTEXT).set(request, tasks);
+
+            // Enrich the waste objects from the master data
+            const userContext = await request.server.app.userCache.cache(cacheNames.USER_CONTEXT).get(request);
+            const transfers = await Promise.all(tasks.transfers.map(async t => {
+                return internals.enrichWasteTransferObject(userContext, t);
+            }));
+
+            // Unset the confirmation status when viewing the page
+            await setConfirmation(request, submissionContext, route);
+            return h.view(this.path, { transfers: transfers });
+        }
+
+    }
+
+    async doPost (request, h, cacheState) {
+        const { submissionContext, route, tasks } = cacheState;
+        if (request.payload.add) {
+            // Add another transfer
+            delete tasks.currentWasteTransfer;
+            await request.server.app.userCache.cache(cacheNames.TASK_CONTEXT).set(request, tasks);
+            return h.redirect('/transfers/waste/codes');
+
+        } else if (Object.keys(request.payload).find(k => k.startsWith('delete'))) {
+            // Delete transfer
+            const transferKey = Object.keys(request.payload).find(k => k.startsWith('delete')).replace('delete-', '');
+            const currentTransferIdx = internals.findTransferFromPayloadString(tasks, transferKey);
+            tasks.currentTransferIdx = currentTransferIdx;
+            await request.server.app.userCache.cache(cacheNames.TASK_CONTEXT).set(request, tasks);
+            return h.redirect('/transfers/waste/remove');
+
+        } else if (Object.keys(request.payload).find(k => k.startsWith('change'))) {
+            // Change the transfer
+            const transferKey = Object.keys(request.payload).find(k => k.startsWith('change')).replace('change-', '');
+            const currentTransferIdx = internals.findTransferFromPayloadString(tasks, transferKey);
+            tasks.currentTransferIdx = currentTransferIdx;
+            await request.server.app.userCache.cache(cacheNames.TASK_CONTEXT).set(request, tasks);
+            return h.redirect('/transfers/waste/change');
+
+        } else if (Object.keys(request.payload).find(k => k.startsWith('overseas-add'))) {
+            // Add (more) overseas transfers
+            const transferKey = Object.keys(request.payload).find(k => k.startsWith('overseas-add')).replace('overseas-add-', '');
+            const currentTransferIdx = internals.findTransferFromPayloadString(tasks, transferKey);
+            tasks.currentTransferIdx = currentTransferIdx;
+            const overseasKey = uuid.v4();
+            const transfer = tasks.transfers[tasks.currentTransferIdx];
+            transfer.overseas = transfer.overseas || {};
+            transfer.overseas[overseasKey] = {};
+            transfer.overseas.currentKey = overseasKey;
+            await request.server.app.userCache.cache(cacheNames.TASK_CONTEXT).set(request, tasks);
+            return h.redirect('/transfers/waste/selectBusinessAddress');
+
+        } else if (Object.keys(request.payload).find(k => k.startsWith('overseas-delete'))) {
+            const compoundKey = Object.keys(request.payload).find(k => k.startsWith('overseas-delete')).replace('overseas-delete-', '');
+            const currentTransferIdx = internals.findTransferFromPayloadString(tasks, compoundKey.split('::')[0]);
+            tasks.currentTransferIdx = currentTransferIdx;
+            const transfer = tasks.transfers[tasks.currentTransferIdx];
+            transfer.overseas.currentKey = compoundKey.split('::')[1];
+            await request.server.app.userCache.cache(cacheNames.TASK_CONTEXT).set(request, tasks);
+            return h.redirect('/transfers/waste/overseas/remove');
+
+        } else if (Object.keys(request.payload).find(k => k.startsWith('overseas-change'))) {
+            const compoundKey = Object.keys(request.payload).find(k => k.startsWith('overseas-change')).replace('overseas-change-', '');
+            const currentTransferIdx = internals.findTransferFromPayloadString(tasks, compoundKey.split('::')[0]);
+            tasks.currentTransferIdx = currentTransferIdx;
+            const transfer = tasks.transfers[tasks.currentTransferIdx];
+            transfer.overseas.currentKey = compoundKey.split('::')[1];
+            tasks.currentWasteTransfer = {
+                incomplete: {
+                    page: {
+                        method: transfer.overseas[transfer.overseas.currentKey].method,
+                        value: transfer.overseas[transfer.overseas.currentKey].value
+                    }
+                }
+            };
+            await request.server.app.userCache.cache(cacheNames.TASK_CONTEXT).set(request, tasks);
+            return h.redirect('/transfers/waste/overseas/detail');
+        } else if (request.payload.continue) {
+            // Confirm
+            await setConfirmation(request, submissionContext, route, true);
+            await setValidationStatus(request, submissionContext, route, true);
+            await request.server.app.userCache.cache(cacheNames.TASK_CONTEXT).set(request, tasks);
+            return h.redirect('/task-list');
         }
     }
 }
@@ -882,7 +1030,65 @@ class OverseasDetail extends BaseStage {
     }
 }
 
+class Remove extends BaseStage {
+    constructor (...args) {
+        super(args);
+    }
+
+    async doGet (request, h, cacheState) {
+        const { route, tasks } = cacheState;
+        return h.view(this.path, {
+            route: route,
+            transfer: await internals.enrichWasteTransferObject(
+                await request.server.app.userCache.cache(cacheNames.USER_CONTEXT).get(request),
+                tasks.transfers[tasks.currentTransferIdx])
+        });
+    }
+
+    async doPost (request, h, cacheState) {
+        const { submissionContext, route, tasks } = cacheState;
+        tasks.transfers.splice(tasks.currentTransferIdx, 1);
+        await request.server.app.userCache.cache(cacheNames.TASK_CONTEXT).set(request, tasks);
+
+        if (tasks.transfers.length > 0) {
+            return h.redirect('/transfers/waste');
+        } else {
+            // Here we unset the challenge flag - the user must explicitly say no to the route
+            await setChallengeStatus(request, submissionContext, route);
+            return h.redirect('/task-list');
+        }
+    }
+}
+
+class OverseasRemove extends BaseStage {
+    constructor (...args) {
+        super(args);
+    }
+
+    async doGet (request, h, cacheState) {
+        const { tasks } = cacheState;
+        const currentTransfer = tasks.transfers[tasks.currentTransferIdx];
+        const userContext = await request.server.app.userCache.cache(cacheNames.USER_CONTEXT).get(request);
+        const transfer = await internals.enrichWasteTransferObject(userContext, currentTransfer);
+        const currentOverseas = transfer.overseas[currentTransfer.overseas.currentKey];
+        return h.view(this.path, {
+            route: { name: 'WASTE_TRANSFERS_OVERSEAS' },
+            overseas: currentOverseas
+        });
+    }
+
+    async doPost (request, h, cacheState) {
+        const { tasks } = cacheState;
+        const currentTransfer = tasks.transfers[tasks.currentTransferIdx];
+        delete currentTransfer.overseas[currentTransfer.overseas.currentKey];
+        await request.server.app.userCache.cache(cacheNames.TASK_CONTEXT).set(request, tasks);
+        return h.redirect('/transfers/waste');
+    }
+}
+
+internals.confirm = new Confirm('all-sectors/report/confirm', 'waste');
 internals.code = new Codes('all-sectors/report/waste-codes', 'waste', internals.validateCode);
+internals.waste = new Waste('all-sectors/report/waste', 'waste');
 internals.changeCode = new ChangeCodes('all-sectors/report/waste-codes', 'waste', internals.validateCodeChange);
 internals.confirmOverseas = new ConfirmOverseas('all-sectors/report/confirm', 'waste');
 internals.selectBusinessAddress = new SelectBusinessAddress('all-sectors/report/select-address', 'waste');
@@ -890,6 +1096,8 @@ internals.addbusinessAddress = new AddBusinessAddress('all-sectors/report/add-ad
 internals.selectSiteAddress = new SelectSiteAddress('all-sectors/report/select-address', 'waste');
 internals.addSiteAddress = new AddSiteAddress('all-sectors/report/add-address', 'waste', internals.validateSiteAddress);
 internals.overseasDetail = new OverseasDetail('all-sectors/report/overseas-waste-detail', 'waste', internals.validateOverseasDetail);
+internals.remove = new Remove('all-sectors/report/confirm-delete', 'waste');
+internals.overseasRemove = new OverseasRemove('all-sectors/report/confirm-delete', 'waste');
 
 module.exports = {
     /**
@@ -899,41 +1107,7 @@ module.exports = {
      * @return {Promise.<void>}
      */
     confirm: async (request, h) => {
-        try {
-            const { route, tasks, submissionContext } = await cacheHelper(request, 'waste');
-
-            if (request.method === 'get') {
-
-                // If we have waste transfers then redirect directly to the waste handler summary page
-                if (tasks && tasks.transfers && tasks.transfers.length > 0) {
-                    return h.redirect('/transfers/waste');
-                } else {
-                    return h.view('all-sectors/report/confirm', {
-                        route: route,
-                        selected: false
-                    });
-                }
-
-            } else {
-                // Process the confirmation - set the current route and redirect to the page
-                if (request.payload.confirmation === 'true') {
-                    await setChallengeStatus(request, submissionContext, route, true);
-                    return h.redirect(route.page);
-                } else {
-                    // If the challenge page results in false then this is a confirmed route
-                    await setConfirmation(request, submissionContext, route, true);
-
-                    // Unset the confirmation status when viewing the page
-                    await setChallengeStatus(request, submissionContext, route);
-
-                    await request.server.app.userCache.cache(cacheNames.SUBMISSION_CONTEXT).set(request, submissionContext);
-                    return h.redirect('/task-list');
-                }
-            }
-
-        } catch (err) {
-            return errHdlr(err, h);
-        }
+        return internals.confirm.handler(request, h);
     },
 
     /**
@@ -943,115 +1117,7 @@ module.exports = {
      * @returns {Promise<void>}
      */
     waste: async (request, h) => {
-        try {
-            const { submissionContext, route, tasks } = await cacheHelper(request, 'waste');
-
-            if (request.method === 'get') {
-
-                if (tasks.currentWasteTransfer) {
-                    delete tasks.currentWasteTransfer;
-                    await request.server.app.userCache.cache(cacheNames.TASK_CONTEXT).set(request, tasks);
-                }
-
-                if (!tasks.transfers || tasks.transfers.length === 0) {
-                    return h.redirect('/transfers/waste/codes');
-                } else {
-                    // Remove any incomplete overseas transfers created by the back button usage
-                    tasks.transfers.map(t => {
-                        if (t.overseas) {
-                            const incompletes = Object.keys(t.overseas).filter(k => k !== 'currentKey').filter(os => !t.overseas[os].complete);
-                            for (const incomplete of incompletes) {
-                                delete t.overseas[incomplete];
-                            }
-                        }
-                    });
-                    await request.server.app.userCache.cache(cacheNames.TASK_CONTEXT).set(request, tasks);
-
-                    // Enrich the waste objects from the master data
-                    const userContext = await request.server.app.userCache.cache(cacheNames.USER_CONTEXT).get(request);
-                    const transfers = await Promise.all(tasks.transfers.map(async t => {
-                        return internals.enrichWasteTransferObject(userContext, t);
-                    }));
-
-                    // Unset the confirmation status when viewing the page
-                    await setConfirmation(request, submissionContext, route);
-                    return h.view('all-sectors/report/waste', { transfers: transfers });
-                }
-
-            } else {
-                if (request.payload.add) {
-                    // Add another transfer
-                    delete tasks.currentWasteTransfer;
-                    await request.server.app.userCache.cache(cacheNames.TASK_CONTEXT).set(request, tasks);
-                    return h.redirect('/transfers/waste/codes');
-
-                } else if (Object.keys(request.payload).find(k => k.startsWith('delete'))) {
-                    // Delete transfer
-                    const transferKey = Object.keys(request.payload).find(k => k.startsWith('delete')).replace('delete-', '');
-                    const currentTransferIdx = internals.findTransferFromPayloadString(tasks, transferKey);
-                    tasks.currentTransferIdx = currentTransferIdx;
-                    await request.server.app.userCache.cache(cacheNames.TASK_CONTEXT).set(request, tasks);
-                    return h.redirect('/transfers/waste/remove');
-
-                } else if (Object.keys(request.payload).find(k => k.startsWith('change'))) {
-                    // Change the transfer
-                    const transferKey = Object.keys(request.payload).find(k => k.startsWith('change')).replace('change-', '');
-                    const currentTransferIdx = internals.findTransferFromPayloadString(tasks, transferKey);
-                    tasks.currentTransferIdx = currentTransferIdx;
-                    await request.server.app.userCache.cache(cacheNames.TASK_CONTEXT).set(request, tasks);
-                    return h.redirect('/transfers/waste/change');
-
-                } else if (Object.keys(request.payload).find(k => k.startsWith('overseas-add'))) {
-                    // Add (more) overseas transfers
-                    const transferKey = Object.keys(request.payload).find(k => k.startsWith('overseas-add')).replace('overseas-add-', '');
-                    const currentTransferIdx = internals.findTransferFromPayloadString(tasks, transferKey);
-                    tasks.currentTransferIdx = currentTransferIdx;
-                    const overseasKey = uuid.v4();
-                    const transfer = tasks.transfers[tasks.currentTransferIdx];
-                    transfer.overseas = transfer.overseas || {};
-                    transfer.overseas[overseasKey] = {};
-                    transfer.overseas.currentKey = overseasKey;
-                    await request.server.app.userCache.cache(cacheNames.TASK_CONTEXT).set(request, tasks);
-                    return h.redirect('/transfers/waste/selectBusinessAddress');
-
-                } else if (Object.keys(request.payload).find(k => k.startsWith('overseas-delete'))) {
-                    const compoundKey = Object.keys(request.payload).find(k => k.startsWith('overseas-delete')).replace('overseas-delete-', '');
-                    const currentTransferIdx = internals.findTransferFromPayloadString(tasks, compoundKey.split('::')[0]);
-                    tasks.currentTransferIdx = currentTransferIdx;
-                    const transfer = tasks.transfers[tasks.currentTransferIdx];
-                    transfer.overseas.currentKey = compoundKey.split('::')[1];
-                    await request.server.app.userCache.cache(cacheNames.TASK_CONTEXT).set(request, tasks);
-                    return h.redirect('/transfers/waste/overseas/remove');
-
-                } else if (Object.keys(request.payload).find(k => k.startsWith('overseas-change'))) {
-                    const compoundKey = Object.keys(request.payload).find(k => k.startsWith('overseas-change')).replace('overseas-change-', '');
-                    const currentTransferIdx = internals.findTransferFromPayloadString(tasks, compoundKey.split('::')[0]);
-                    tasks.currentTransferIdx = currentTransferIdx;
-                    const transfer = tasks.transfers[tasks.currentTransferIdx];
-                    transfer.overseas.currentKey = compoundKey.split('::')[1];
-                    tasks.currentWasteTransfer = {
-                        incomplete: {
-                            page: {
-                                method: transfer.overseas[transfer.overseas.currentKey].method,
-                                value: transfer.overseas[transfer.overseas.currentKey].value
-                            }
-                        }
-                    };
-                    await request.server.app.userCache.cache(cacheNames.TASK_CONTEXT).set(request, tasks);
-                    return h.redirect('/transfers/waste/overseas/detail');
-                } else if (request.payload.continue) {
-                    // Confirm
-                    await setConfirmation(request, submissionContext, route, true);
-                    await setValidationStatus(request, submissionContext, route, true);
-                    await request.server.app.userCache.cache(cacheNames.TASK_CONTEXT).set(request, tasks);
-                    return h.redirect('/task-list');
-
-                }
-            }
-
-        } catch (err) {
-            return errHdlr(err, h);
-        }
+        return internals.waste.handler(request, h);
     },
 
     /**
@@ -1061,54 +1127,17 @@ module.exports = {
      * @returns {Promise<*>}
      */
     remove: async (request, h) => {
-        try {
-            const { submissionContext, route, tasks } = await cacheHelper(request, 'waste');
-
-            if (request.method === 'get') {
-                return h.view('all-sectors/report/confirm-delete', {
-                    route: route,
-                    transfer: await internals.enrichWasteTransferObject(
-                        await request.server.app.userCache.cache(cacheNames.USER_CONTEXT).get(request),
-                        tasks.transfers[tasks.currentTransferIdx])
-                });
-            } else {
-                tasks.transfers.splice(tasks.currentTransferIdx, 1);
-                await request.server.app.userCache.cache(cacheNames.TASK_CONTEXT).set(request, tasks);
-
-                if (tasks.transfers.length > 0) {
-                    return h.redirect('/transfers/waste');
-                } else {
-                    // Here we unset the challenge flag - the user must explicitly say no to the route
-                    await setChallengeStatus(request, submissionContext, route);
-                    return h.redirect('/task-list');
-                }
-            }
-        } catch (err) {
-            return errHdlr(err, h);
-        }
+        return internals.remove.handler(request, h);
     },
 
+    /**
+     * Handle remove overseas transfer
+     * @param request
+     * @param h
+     * @returns {Promise<*>}
+     */
     overseasRemove: async (request, h) => {
-        try {
-            const { tasks } = await cacheHelper(request, 'waste');
-            const currentTransfer = tasks.transfers[tasks.currentTransferIdx];
-            const userContext = await request.server.app.userCache.cache(cacheNames.USER_CONTEXT).get(request);
-            const transfer = await internals.enrichWasteTransferObject(userContext, currentTransfer);
-            const currentOverseas = transfer.overseas[currentTransfer.overseas.currentKey];
-
-            if (request.method === 'get') {
-                return h.view('all-sectors/report/confirm-delete', {
-                    route: { name: 'WASTE_TRANSFERS_OVERSEAS' },
-                    overseas: currentOverseas
-                });
-            } else {
-                delete currentTransfer.overseas[currentTransfer.overseas.currentKey];
-                await request.server.app.userCache.cache(cacheNames.TASK_CONTEXT).set(request, tasks);
-                return h.redirect('/transfers/waste');
-            }
-        } catch (err) {
-            return errHdlr(err, h);
-        }
+        return internals.overseasRemove.handler(request, h);
     },
 
     /**
