@@ -9,9 +9,7 @@
 {% set postal_code_error = (address.errors | selectattr2("key", "postal-code"))  %}
 
 <main id="content">
-    <label id="page-name" hidden>address-add-{{ type }}</label>
     <a href="/task-list" class="link-back">Back to sections you must complete</a>
-
     <form action="{{ path }}" method="post" class="form">
 
         {% if address.errors and address.errors.length > 0 %}
@@ -128,7 +126,7 @@
             </fieldset>
         </div>
         <div class="form-group">
-            <input type="submit" class="button" value="Continue">
+            <input id="continueBtn" type="submit" class="button" value="Continue">
         </div>
     </form>
 </main>
