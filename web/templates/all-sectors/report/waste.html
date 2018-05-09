@@ -21,14 +21,25 @@
 {% endmacro %}
 
 {% macro displayTransfer(transfer) %}
-<table class="check-data table-control">
-    <tbody>
-        <tr><th style="width: 30%">EWC code</th><td>{{ transfer.ewc.chapter.code }} {{ transfer.ewc.subChapter.code }} {{ transfer.ewc.activity.code }}</td></tr>
-        <tr><th>Activity</th><td>{{ transfer.ewc.activity.description }}</td></tr>
-        <tr><th>Hazardous</th><td>{% if transfer.ewc.activity.hazardous %}Yes{% else %}No{% endif %}</td></tr>
-        <tr><th>Disposal or Recovery Code</th><td class="td-wfd-code">{% if transfer.wfd.disposal %}{{ transfer.wfd.disposal.code }}{% elif transfer.wfd.recovery %}{{ transfer.wfd.recovery.code }}{% endif %}</td></tr>
-        <tr><th>Disposal or Recovery Description</th><td class="td-wfd-code">{% if transfer.wfd.disposal %}{{ transfer.wfd.disposal.description }}{% elif transfer.wfd.recovery %}{{ transfer.wfd.recovery.description }}{% endif %}</td></tr>
-        <tr><th>Quantity</th><td><label class="form-label">{% if transfer.brt %}BRT{% else %}{{ transfer.value }} tonnes{% endif %}</label></td></tr>
+<h1 class="heading-medium">{{ transfer.ewc.chapter.code }} {{ transfer.ewc.subChapter.code }} {{ transfer.ewc.activity.code }} ({{ transfer.ewc.activity.description }})</h2>
+    <table class="check-data table-control">
+         <tr>
+            <th>Hazardous</th>
+            <td>{% if transfer.ewc.activity.hazardous %}Yes{% else %}No{% endif %}</td>
+        </tr>
+        <tr>
+            <th>Disposal or Recovery Code</th>
+            <td class="td-wfd-code">{% if transfer.wfd.disposal %}{{ transfer.wfd.disposal.code }}{% elif transfer.wfd.recovery %}{{ transfer.wfd.recovery.code }}{% endif %}
+            </td>
+        </tr>
+        <tr>
+            <th>Disposal or Recovery Description</th>
+            <td class="td-wfd-code">{% if transfer.wfd.disposal %}{{ transfer.wfd.disposal.description }}{% elif transfer.wfd.recovery %}{{ transfer.wfd.recovery.description }}{% endif %}</td>
+        </tr>
+        <tr>
+            <th>Quantity</th>
+            <td><label class="form-label">{% if transfer.brt %}BRT{% else %}{{ transfer.value }} tonnes{% endif %}</label></td>
+        </tr>
         <tr><th>Method</th><td>{{ transfer.method }}</td></tr>
 
         {% if transfer.overseas | length %}
@@ -38,35 +49,42 @@
         {% if transfer.ewc.activity.hazardous and transfer.wfd.recovery %}
             <tr><td></td><td><input class="link" type="submit" id="overseas" name="overseas-add-{{ encodeTransfer(transfer) }}" value="Add overseas transfer"/></td></tr>
         {% endif %}
-
-        <tr><td></td><td><input class="link" type="submit" id="change" name="change-{{ encodeTransfer(transfer) }}" value="Change the waste transfer"/></td></tr>
-        <tr><td></td><td><input class="link" type="submit" id="delete" name="delete-{{ encodeTransfer(transfer) }}" value="Delete the transfer"/></td></tr>
-
     </tbody>
 </table>
+<input class="link" type="submit" id="change" name="change-{{ encodeTransfer(transfer) }}" value="Change"/>&nbsp;|&nbsp;
+<input class="link" type="submit" id="delete" name="delete-{{ encodeTransfer(transfer) }}" value="Delete"/>
 {% endmacro %}
 
 <main id="content">
     <label id="page-name" hidden>off-site</label>
     <a href="/task-list" class="link-back">Back to sections you must complete</a>
+    <div class="grid-row">
+        <div class="column-full">
+            <header>
+                <h1 class="heading-xlarge">
+                    <span class="heading-secondary">Report your data</span>
+                    Your waste transfers
+                </h1>
+            </header>
+            <section>     
+                <form action="/transfers/waste" method="post" class="form">
+                    {% for transfer in transfers %}
+                        <div class="form-group">
+                            {{ displayTransfer(transfer) }}
+                        </div>
+                    {% endfor %}
 
-    <h1 class="heading-large">Your waste transfers</h1>
+                    <div class="form-group">
+                        <input class="link" type="submit" id="add" name="add" value="Add a new waste transfer"/>
+                    </div>
 
-    <form action="/transfers/waste" method="post" class="form">
-        {% for transfer in transfers %}
-            <div class="form-group">
-                {{ displayTransfer(transfer) }}
-            </div>
-        {% endfor %}
-
-        <div class="form-group">
-            <input class="link" type="submit" id="add" name="add" value="Add a new waste transfer"/>
+                    <div class="form-group">
+                        <input class="button" type="submit" id="continueBtn" name="continue" value="Continue"/>
+                    </div>
+                </form>
+            </section>
         </div>
-
-        <div class="form-group">
-            <input class="button" type="submit" id="continueBtn" name="continue" value="Continue"/>
-        </div>
-    </form>
+    </div>
 </main>
 
 {% endblock %}
