@@ -15,3 +15,10 @@ input {
 		width:100px;
 	}
 }
+
+
+span {
+	&.cas {
+		font-style: italic;
+	}
+}

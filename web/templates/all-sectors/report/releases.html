@@ -1,64 +1,75 @@
 {% extends 'layout/layout.html' %}
 
 {% macro detail(release) %}
-<table>
-    <tbody>
-        {% if release.subroute %}
-        <tr>
-            <th>Subroute</th><td>{{ release.subroute }}</td>
-        </tr>
-        {% endif %}
-        <tr><th>Amount</th>
-        {% if release.brt !== true %}
-            <td>{{ release.value }}{{ release.unit.name }}</td>
-        {% else %}
-            <td>BRT</td>
-        {% endif %}
-        </tr>
-        {% if release.parameter.threshold %}
-            <th>Threshold</th><td>{{ release.parameter.threshold.value }}{{ release.parameter.threshold.unit.nomenclature }}</td>
-        {% endif %}
-        <tr><th>Method</th><td>{{ release.method }}</td></tr>
-        {% if release.notifiable %}
-        <th>Notifiable Release</th><td>{{ release.notifiable.value }}{{ release.notifiable.unit.name }}</td>
-        {% endif %}
-    </tbody>
-</table>
+    {% if release.parameter.threshold %}
+        <td>{{ release.parameter.threshold.value }}{{ release.parameter.threshold.unit.nomenclature }}</td>
+    {% else %}
+        <td>n/a</td>
+    {% endif %}
+
+    {% if release.subroute %}
+        <td>{{ release.subroute }}</td>
+    {% endif %}
+
+    {% if release.brt !== true %}
+        <td>{{ release.value }}{{ release.unit.name }}</td>
+    {% else %}
+        <td>BRT</td>
+    {% endif %}
+    
+    {% if release.notifiable %}
+        <td>{{ release.notifiable.value }}{{ release.notifiable.unit.name }}</td>
+    {% else %}
+        <td>n/a</td>
+    {% endif %}
+
+        <td>{{ release.method }}</td>  
 {% endmacro %}
 
 {% block content %}
 <main id="content">
     <label id="page-name" hidden>releases-{{ route.pathParam }}</label>
-    <form id="main-form" action="{{ route.page }}" method="post" class="form">
-        <a href="/task-list" class="link-back">Back to sections you must complete</a>
-        <table class="check-data table-control">
-            <thead>
-                <tr>
-                    <th>Substance</th>
-                    <th>Details</th>
-                    <th></th>
-                </tr>
-            </thead>
-            <tbody>
-                {% for release in releases %}
-                    <tr>
-                        <td rowspan="2">{{ release.parameter.nomenclature  }} {{ release.parameter.cas }}</td>
-                        <td rowspan="2">{{ detail(release) }}</td>
-                        <td style="border-bottom:none;"><input class="link" type="submit" id="release-change" name="release-change:{{ release.parameter.id }}" value="Change"/></td>
-                    </tr>
-                    <tr>
-                        <td><input class="link" type="submit" id="release-delete" name="release-delete:{{ release.parameter.id }}" value="Delete"/></td>
-                    </tr>
-                {% endfor %}
-            </tbody>
-        </table>
-        <div class="form-group">
-            <input class="link" type="submit" id="add" name="add" value="Add new releases"/>
-        </div>
+    <a href="/task-list" class="link-back">Back to sections you must complete</a>
+    <header>
+        <h1 class="heading-xlarge">
+            <span class="heading-secondary">Report your data</span>
+            Your releases to air
+        </h1>
+    </header>
+    <section>
+        <form id="main-form" action="{{ route.page }}" method="post" class="form">
+            <div class="form-group">
+                <table class="table-control mobile-format summary-table">
+                    <thead>
+                        <tr>
+                            <th>Substance</th>
+                            <th>Threshold</th>
+                            <th>Amount</th>
+                            <th>Notifiable</th>
+                            <th>Method</th>
+                            <th colspan="2">Action</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                    {% for release in releases %}
+                        <tr id="carbon-dioxide">
+                            <td>{{ release.parameter.nomenclature  }}</td>
+                            {{ detail(release) }}
+                            <td class="td-action"><input class="link" type="submit" id="release-change" name="release-change:{{ release.parameter.id }}" value="Change"/></td>
+                            <td class="td-delete"><input class="link" type="submit" id="release-delete" name="release-delete:{{ release.parameter.id }}" value="Delete"/</td>
+                        </tr>
+                    {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+            <div class="form-group">
+                <input class="link" type="submit" id="add" name="add" value="Add new releases"/>
+            </div>
 
-        <div class="form-group">
-            <input class="button" type="submit" id="continueBtn" name="continue" value="Continue"/>
-        </div>
-    </form>
+            <div class="form-group">
+                <input class="button" type="submit" id="continueBtn" name="continue" value="Confirm"/>
+            </div>
+        </form>
+    </section>
 </main>
 {% endblock %}

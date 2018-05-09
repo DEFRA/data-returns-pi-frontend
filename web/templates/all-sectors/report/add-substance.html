@@ -12,54 +12,71 @@
 {% endmacro %}
 
 <main id="content">
-    <label id="page-name" hidden>substances-{{ route.pathParam }}</label>
-    <form action="{{ route.page }}/add-substance" method="post">
-        <a href="/task-list" class="link-back">Back to sections you must complete</a>
-
-        {% if release.errors and release.errors.length > 0 %}
-            {{ error('No substance selected?', 'Select the substances for ' + obligation.description | lower ) }}
-        {% endif %}
-
-        <h1 class="heading-large">{{ obligation.description }}
-            <span class="heading-secondary">Select the substances you need to report. You can add more later</span>
-        </h1>
-        {% if release.errors and release.errors.length > 0 %}
-            <span class="error-message">
-                Select the substances
-            </span>
-            <div id="search-results-err" class="grid-row">
-                {% for parameterGroup in parameterGroups %}
-                    <!--<h2>{{ parameterGroup.nomenclature }}</h2>-->
-                    <div class="form-group list form-group-error">
-                        {% for parameter in parameterGroup.parameters %}
-                            <div class="multiple-choice">
-                                <input id="parameter_{{ parameter.id }}_err" name="parameterId" value="{{ parameter.id }}" type="checkbox">
-                                <label for="parameter_{{ parameter.id }}_err"><span class="category"></span> <span class="name">{{ parameter.nomenclature }}</span></label>
-                                <label><span class="cas">{{ parameter.cas }}</span></label>
+    <div class="grid-row">
+        <div class="column-two-thirds">
+            <label id="page-name" hidden>substances-{{ route.pathParam }}</label>
+            <a href="/task-list" class="link-back">Back to sections you must complete</a>
+            {% if release.errors and release.errors.length > 0 %}
+                {{ error('No substance selected?', 'Select the substances for ' + obligation.description | lower ) }}
+            {% endif %}
+            <header>
+            <h1 class="heading-xlarge">
+                <span class="heading-secondary">Report your data</span>
+                Add a release to air
+            </h1>
+            <p class="lede">Select a substance you need to report</p>
+            </header>
+            <section>
+                <form action="{{ route.page }}/add-substance" method="post">
+                    <div class="form-group">
+                    {% if release.errors and release.errors.length > 0 %}
+                        <span class="error-message">
+                            Select the substances
+                        </span>
+                        <div id="search-results-err">
+                            {% for parameterGroup in parameterGroups %}
+                                <!-- <h2>{{ parameterGroup.nomenclature }}</h2> -->
+                                <div class="form-group list form-group-error">
+                                    {% for parameter in parameterGroup.parameters %}
+                                        <div class="multiple-choice">
+                                            <input id="parameter_{{ parameter.id }}_err" name="parameterId" value="{{ parameter.id }}" type="checkbox">
+                                            <label for="parameter_{{ parameter.id }}_err">
+                                                <span class="category"></span>
+                                                <span class="name">{{ parameter.nomenclature }}</span>
+                                                <!-- <span class="cas">{{ parameter.cas }}</span>-->
+                                            </label>
+                                        </div>
+                                    {% endfor %}
+                                </div>
+                            {% endfor %}
+                        </div>
+                    {% else %}
+                        <div id="search-results">
+                            {% for parameterGroup in parameterGroups %}
+                                <!-- <h2>{{ parameterGroup.nomenclature }}</h2> -->
+                                <div class="form-group list">
+                                    {% for parameter in parameterGroup.parameters %}
+                                        <div class="multiple-choice">
+                                            <input id="parameter_{{ parameter.id }}" name="parameterId" value="{{ parameter.id }}" type="checkbox">
+                                            <label for="parameter_{{ parameter.id }}">
+                                                <span class="category"></span>
+                                                <span class="name">{{ parameter.nomenclature }}</span>
+                                                <!-- <span class="cas">{{ parameter.cas }}</span> -->
+                                            </label>
+                                        </div>
+                                    {% endfor %}
+                                </div>
+                            {% endfor %}
                             </div>
-                        {% endfor %}
+                        {% endif %}
                     </div>
-                {% endfor %}
+
+                    <div class="form-group">
+                        <input id="continueBtn" type="submit" class="button" value="Continue">
+                    </div>
+                </form>
+            </section>
         </div>
-        {% else %}
-            <div id="search-results" class="grid-row">
-            {% for parameterGroup in parameterGroups %}
-                <!--<h2>{{ parameterGroup.nomenclature }}</h2>-->
-                    <div class="form-group list">
-                        {% for parameter in parameterGroup.parameters %}
-                            <div class="multiple-choice">
-                                <input id="parameter_{{ parameter.id }}" name="parameterId" value="{{ parameter.id }}" type="checkbox">
-                                <label for="parameter_{{ parameter.id }}"><span class="category"></span> <span class="name">{{ parameter.nomenclature }}</span></label>
-                                <label><span class="cas">{{ parameter.cas }}</span></label>
-                            </div>
-                        {% endfor %}
-                    </div>
-                {% endfor %}
-                </div>
-        {% endif %}
-
-
-        <div class="form-group"><input id="continueBtn" type="submit" class="button" value="Continue"> </div>
-    </form>
+    </div>
 </main>
 {% endblock %}
