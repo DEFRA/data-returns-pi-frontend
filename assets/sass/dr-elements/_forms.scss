@@ -1,19 +1,22 @@
 input {
 	&.ewc-code {
-	width:100px;
+	width:5em;
 	}
 	&.wfd-code {
-		width:50px;
+		width:5em;
 	}
 	&.total {
-		width:100px;
+		width:5em;
 	}
 	&.nace-code {
-		width:100px;
+		width:5em;
 	}
 	&.nose-code {
-		width:100px;
+		width:5em;
 	}
+	&.details-follow {
+    margin-bottom: 20px;
+  }
 }
 
 

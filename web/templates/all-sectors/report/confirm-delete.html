@@ -2,7 +2,9 @@
 {% import 'includes/macros.html' as macros %}
 
 {% macro form(header, action, back) %}
-<h1 class="heading-large">{{ header }}</h1>
+        {{ header }}
+    </h1>
+</header>
 <form action="{{ action }}" method="post" class="form">
     <div class="form-group">
         <input id="removeBtn" class="button" type="submit" value="Remove">
@@ -16,15 +18,18 @@
 {% block content %}
 <main id="content">
     <label id="page-name" hidden>confirm-delete-{{ route.pathParam }}</label>
-    {% if route.name === 'WASTE_TRANSFERS' %}
-        {% set hdr = 'Are you sure you don’t need to report this waste transfer of ' +  transfer | transferShortDesc + '?' %}
-        {{ form(hdr, '/transfers/waste/remove', '/transfers/waste') }}
-    {% elif route.name === 'WASTE_TRANSFERS_OVERSEAS' %}
-        {% set hdr = 'Are you sure you don’t need to report this overseas waste transfer to ' + macros.printAddr(overseas.siteAddress) + '?' %}
-        {{ form(hdr, '/transfers/waste/overseas/remove', '/transfers/waste') }}
-    {% else %}
-        {% set hdr = 'Are you sure you don’t need to report the ' + obligation.description | lower + ' of ' + parameter.nomenclature + '?' %}
-        {{ form(hdr, route.page + '/remove', route.page) }}
-    {% endif %}
+    <header>
+        <h1 class="heading-xlarge">
+            <span class="heading-secondary">Report your data</span>
+                {% if route.name === 'WASTE_TRANSFERS' %}
+                    {% set hdr = 'Are you sure you don’t need to report this waste transfer of ' +  transfer | transferShortDesc + '?' %}
+                    {{ form(hdr, '/transfers/waste/remove', '/transfers/waste') }}
+                {% elif route.name === 'WASTE_TRANSFERS_OVERSEAS' %}
+                    {% set hdr = 'Are you sure you don’t need to report this overseas waste transfer to ' + macros.printAddr(overseas.siteAddress) + '?' %}
+                    {{ form(hdr, '/transfers/waste/overseas/remove', '/transfers/waste') }}
+                {% else %}
+                    {% set hdr = 'Are you sure you don’t need to report any ' + obligation.description | lower + ' of ' + parameter.nomenclature + '?' %}
+                    {{ form(hdr, route.page + '/remove', route.page) }}
+                {% endif %}
 </main>
 {% endblock %}

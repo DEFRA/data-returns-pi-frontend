@@ -10,167 +10,189 @@
 
 <main id="content">
 	<label id="page-name" hidden>off-site-add</label>
+    <div class="grid-row">
+        <div class="column-two-thirds">
 
-	{% if count > 0 %}
-		<a href="/transfers/waste" class="link-back">Back to transfers</a>
-	{% else %}
-		<a href="/task-list" class="link-back">Back to sections you must complete</a>
-	{% endif %}
+    	{% if count > 0 %}
+    		<a href="/transfers/waste" class="link-back">Back to transfers</a>
+    	{% else %}
+    		<a href="/task-list" class="link-back">Back to sections you must complete</a>
+    	{% endif %}
+        {% if transfer.errors %}
+            <div class="error-summary" role="alert" aria-labelledby="check-your-report" tabindex="-1">
+                <h2 class="heading-medium error-summary-heading" id="check-your-report">
+                    Check what you’re reporting
+                </h2>
+                <ul class="error-summary-list">
+                    {% if ewc_error and ewc_error.errno === 'PI-2001' %}
+                        <li><a href=""><span class="error-message">Enter a correct EWC code</span></a>
+                    {% elif ewc_error and ewc_error.errno === 'PI-2008' %}
+                        <li><a href=""><span class="error-message">You selected a non-hazardous EWC code with overseas shipments</span></a>
+                    {% endif %}
 
-	<form action="{{ action }}" method="post" class="form">
+                    {% if wfd_error and wfd_error.errno === 'PI-2002' %}
+                        <li><a href=""><span class="error-message">Enter a correct WFD code</span></a>
+                    {% elif wfd_error and wfd_error.errno === 'PI-2009' %}
+                        <li><a href=""><span class="error-message">You have selected a disposal code where you have overseas waste transfers. Select a recovery code instead.</span></a>
+                    {% endif %}
 
-		<h1 class="heading-large">
-			Tell us about your transfer of waste off site
-		</h1>
+                    {% if value_error and value_error.errno === 'PI-2000' %}
+                        <li><a href=""><span class="error-message">Enter a (positive) tonnage (or select BRT)</span></a>
+                    {% elif value_error and value_error.errno === 'PI-2007' %}
+                        <li><a href=""><span class="error-message">The amount is less than the total for the overseas transfers. Give a larger total.</span></a>
+                    {% elif value_error and value_error.errno === 'PI-2003' %}
+                        <li><a href=""><span class="error-message">Either enter a number of select BRT</span></a>
+                    {% endif %}
 
-		{% if transfer.errors %}
-		<div class="error-summary" role="alert" aria-labelledby="check-your-report" tabindex="-1">
-			<h2 class="heading-medium error-summary-heading" id="check-your-report">
-				Check what you’re reporting
-			</h2>
-			<ul class="error-summary-list">
-				{% if ewc_error and ewc_error.errno === 'PI-2001' %}
-					<li><a href=""><span class="error-message">Enter a correct EWC code</span></a>
-				{% elif ewc_error and ewc_error.errno === 'PI-2008' %}
-					<li><a href=""><span class="error-message">You selected a non-hazardous EWC code with overseas shipments</span></a>
-				{% endif %}
+                    {% if brt_error %}
+                        <li><a href=""><span class="error-message">You must give a total for hazardous waste. Do not select BRT</span></a>
+                    {% endif %}
 
-				{% if wfd_error and wfd_error.errno === 'PI-2002' %}
-					<li><a href=""><span class="error-message">Enter a correct WFD code</span></a>
-				{% elif wfd_error and wfd_error.errno === 'PI-2009' %}
-					<li><a href=""><span class="error-message">You have selected a disposal code where you have overseas waste transfers. Select a recovery code instead.</span></a>
-				{% endif %}
-
-				{% if value_error and value_error.errno === 'PI-2000' %}
-					<li><a href=""><span class="error-message">Enter a (positive) tonnage (or select BRT)</span></a>
-				{% elif value_error and value_error.errno === 'PI-2007' %}
-					<li><a href=""><span class="error-message">The amount is less than the total for the overseas transfers. Give a larger total.</span></a>
-				{% elif value_error and value_error.errno === 'PI-2003' %}
-					<li><a href=""><span class="error-message">Either enter a number of select BRT</span></a>
-				{% endif %}
-
-				{% if brt_error %}
-					<li><a href=""><span class="error-message">You must give a total for hazardous waste. Do not select BRT</span></a>
-				{% endif %}
-
-				{% if dupe_error %}
-					<li><a href=""><span class="error-message">You have already entered a transfer for this EWC code and disposal or recovery code. You need to report all transfers of this type of waste and method as a single total for the year.</span></a>
-				{% endif %}
-			</ul>
-		</div>
-		{% endif %}
-
-		{% if ewc_error or dupe_error %}
-		<div class="form-group form-group-error">
-			{% if ewc_error and ewc_error.errno === 'PI-2001' %}
-			<span class="error-message">Enter a correct EWC code</span>
-			<span class="form-hint">For example, ‘01 01 01’.</span>
-			{% elif ewc_error and ewc_error.errno === 'PI-2008' %}
-			<span class="error-message">Enter a hazardous EWC code</span>
-			<span class="form-hint">For example, ‘01 03 05’.</span>
-			{% elseif dupe_error %}
-			<span class="error-message">Enter a correct EWC code</span>
-			{% endif %}
-			<label class="form-label" for="ewc-code-err">EWC code</label>
-			<input class="form-control form-control-error ewc-code" id="ewc-code-err" name="ewc" pattern="^\s*[0-9]{2} [0-9]{2} [0-9]{2}\s*$" value="{{ transfer.page.ewc }}">
-		</div>
-		{% else %}
-		<div class="form-group">
-			<label class="form-label" for="ewc-code">EWC code</label>
-			<span class="form-hint">For example, ‘01 01 01’.</span>
-			<input class="form-control form-control ewc-code" id="ewc-code" name="ewc" pattern="^\s*[0-9]{2} [0-9]{2} [0-9]{2}\s*$" value="{{ transfer.page.ewc }}">
-		</div>
-		{% endif %}
-
-		{% if wfd_error or dupe_error %}
-		<div class="form-group form-group-error wfd_error">
-			{% if wfd_error and wfd_error.errno === 'PI-2002' %}
-			<span class="error-message">Enter a correct WFD code</span>
-			<span class="form-hint">For example, ‘D5’ or ‘R13’.</span>
-			{% elif wfd_error and wfd_error.errno === 'PI-2009' %}
-			<span class="error-message">Enter a recovery code</span>
-			<span class="form-hint">For example, ‘R13’.</span>
-			{% elseif dupe_error %}
-			<span class="error-message">Or enter a correct WFD code</span>
-			{% endif %}
-			<label class="form-label" for="wfd-code-err">WFD code</label>
-			<input class="form-control form-control-error wfd-code" id="wfd-code-err" name="wfd" value="{{ transfer.page.wfd }}">
-		</div>
-		{% else %}
-		<div class="form-group">
-			<label class="form-label" for="wfd-code">WFD code</label>
-			<span class="form-hint">For example, ‘D5’ or ‘R13’.</span>
-			<input class="form-control wfd-code" id="wfd-code" name="wfd" value="{{ transfer.page.wfd }}">
-		</div>
-		{% endif %}
-
-		<div class="form-group">
-			<fieldset class="inline">
-				<label class="form-label">How was the mass of waste transferred decided?</label>
-				{% set first = true %}
-				{% for transferMethod in transferMethods %}
-					<div class="multiple-choice">
-						<input id="radio-inline-hd-{{ transferMethod }}" type="radio" name="method" value="{{ transferMethod }}" {% if transfer.page.method === transferMethod or (not transfer.page.method and first) %} checked {% endif %}>
-						<label for="radio-inline-hd-{{ transferMethod }}">{{ transferMethod }}</label>
-					</div>
-					{% set first = false %}
-				{% endfor %}
-			</fieldset>
-		</div>
-
-		{% if value_error %}
-			{% if value_error.errno === 'PI-2000' %}
-				<div class="form-group form-group-error">
-                    <label class="form-label" for="value-err">Total</label>
-                    <span class="error-message">Enter a positive total in digits</span>
-                    <input novalidate class="form-control form-control-error total" id="value-err" name="value" value="{{ transfer.page.value }}"> tonnes
-                </div>
-			{% elif value_error.errno === 'PI-2007' %}
-				<div class="form-group form-group-error">
-					<label class="form-label" for="value-err">Total</label>
-					<span class="error-message">Enter an amount greater than the sum over the overseas transfer ammount</span>
-					<input novalidate class="form-control form-control-error total" id="value-err3" name="value" value="{{ transfer.page.value }}"> tonnes
-				</div>
-			{% else %}
-				<div class="form-group form-group-error">
-                    <label class="form-label" for="value-err2">Total</label>
-                    <span class="error-message">Enter a total in digits or BRT</span>
-                    <input novalidate class="form-control form-control-error total" id="value-err2" name="value" value="{{ transfer.page.value }}"> tonnes
-                </div>
-			{% endif %}
-		{% else %}
-            <div class="form-group">
-                <label class="form-label" for="value">Total</label>
-                <input novalidate class="form-control total" id="value" name="value" value="{{ transfer.page.value }}"> tonnes
+                    {% if dupe_error %}
+                        <li><a href=""><span class="error-message">You have already entered a transfer for this EWC code and disposal or recovery code. You need to report all transfers of this type of waste and method as a single total for the year.</span></a>
+                    {% endif %}
+                </ul>
             </div>
-		{% endif %}
+            {% endif %}
+        	<header>
+                <h1 class="heading-xlarge">
+                    <span class="heading-secondary">Report your data</span>
+                    Tell us about your transfer of waste off site
+                </h1>
+            </header>
+            <section>
 
-		<p>Or</p>
+            	<form action="{{ action }}" method="post" class="form">
+                    <h2 class="heading-medium">Enter your waste transfer codes</h2>
+            		{% if ewc_error or dupe_error %}
+            		<div class="form-group form-group-error">
+            			{% if ewc_error and ewc_error.errno === 'PI-2001' %}
+            			<span class="error-message">Enter a correct EWC code</span>
+            			{% elif ewc_error and ewc_error.errno === 'PI-2008' %}
+            			<span class="error-message">Enter a hazardous EWC code</span>
+            			{% elseif dupe_error %}
+            			<span class="error-message">Enter a correct EWC code</span>
+            			{% endif %}
+            			<label class="form-label">European Waste Catalogue (EWC) code
+                        <span class="form-hint">For example ‘17 05 03’.</span></label>
+            			<input class="form-control form-control-error ewc-code details-follow" id="ewc-code-err" name="ewc" pattern="^\s*[0-9]{2} [0-9]{2} [0-9]{2}\s*$" value="{{ transfer.page.ewc }}">
+            		{% else %}
+            		
+                    <div class="form-group">
+                        <label class="form-label">European Waste Catalogue (EWC) code
+                        <span class="form-hint">For example ‘17 05 03’.</span></label>
+            			<input class="form-control form-control ewc-code details-follow" id="ewc-code" name="ewc" pattern="^\s*[0-9]{2} [0-9]{2} [0-9]{2}\s*$" value="{{ transfer.page.ewc }}">
+            		{% endif %}
+                        <details class="form-group">
+                            <summary><span class="summary">How can I find my EWC code?</span></summary>
+                            <div class="panel panel-border-narrow">
+                                <p>Check the <a href="https://www.gov.uk/government/publications/pollution-inventory-reporting-guidance-notes" target="_blank">reporting codes guidance</a> (opens in a new tab) to find the relevant 6-digit code for your site's industry and process.</p>
+                            </div>
+                        </details>
+                    </div>
 
-        {% if value_error and value_error.errno === 'PI-2003' %}
-            <div class="form-group form-group-error">
-                <span class="error-message">Enter a total or select BRT</span>
-                <input type="checkbox" id="brt-err" name="brt" {% if transfer.page.brt === 'true' %}checked{% endif %} value="true">
-                <label for="brt">Below reporting threshold?</label>
-            </div>
-		{% elseif brt_error and brt_error.errno === 'PI-2005' %}
-			<div class="form-group form-group-error">
-				<span class="error-message">Unselect BRT and enter a total for hazardous waste</span>
-				<input type="checkbox" id="brt-err-2" name="brt" {% if transfer.page.brt === 'true' %}checked{% endif %} value="true">
-				<label for="brt">Below reporting threshold?</label>
-			</div>
-        {% else %}
-            <div class="form-group">
-                <input type="checkbox" id="brt" name="brt" {% if transfer.page.brt === 'true' %}checked{% endif %} value="true">
-                <label for="brt">Below reporting threshold?</label>
-            </div>
-        {% endif %}
+            		{% if wfd_error or dupe_error %}
+            		<div class="form-group form-group-error wfd_error">
+            			{% if wfd_error and wfd_error.errno === 'PI-2002' %}
+            			<span class="error-message">Enter a correct WFD code</span>
+            			<span class="form-hint">For example, ‘D5’ or ‘R13’.</span>
+            			{% elif wfd_error and wfd_error.errno === 'PI-2009' %}
+            			<span class="error-message">Enter a recovery code</span>
+            			<span class="form-hint">For example, ‘R13’.</span>
+            			{% elseif dupe_error %}
+            			<span class="error-message">Or enter a correct WFD code</span>
+            			{% endif %}
+            			<label class="form-label">Waste Framework Directive (WFD) code</label>
+            			<input class="form-control form-control-error wfd-code details-follow" id="wfd-code-err" name="wfd" value="{{ transfer.page.wfd }}">
+            		{% else %}
+            		<div class="form-group">
+            			<label class="form-label">Waste Framework Directive (WFD) code
+                    <span class="form-hint">For example ‘D5’ or ‘R13’.</span></label>
+            			<input class="form-control wfd-code details-follow" id="wfd-code" name="wfd" value="{{ transfer.page.wfd }}">
+            		{% endif %}
+                        <details class="form-group">
+                            <summary><span class="summary">How can I find my WFD code?</span></summary>
+                            <div class="panel panel-border-narrow">
+                                <p>Check the <a href="https://www.gov.uk/government/publications/pollution-inventory-reporting-guidance-notes" target="_blank">reporting codes guidance</a> (opens in a new tab) to find the 2 or 3-digit recovery or disposal code that describes what happened to this waste.</p>
+                            </div>
+                        </details>
+                    </div>
+                    <h2 class="heading-medium">Total waste transferred under these codes</h2>
 
-		<div class="form-group">
-			<input id="continueBtn" type="submit" class="button" value="Continue">
-		</div>
-	</form>
-
+                     {% if value_error and value_error.errno === 'PI-2003' %}
+                        <div class="form-group form-group-error">
+                            <span class="error-message">Enter a total or select BRT</span>
+                            <div class="multiple-choice">
+                                <input type="checkbox" id="brt-err" name="brt" {% if transfer.page.brt === 'true' %}checked{% endif %} value="true">
+                                <label for="brt">My release is below the reporting threshold</label>
+                            </div>
+                        </div>
+                    {% elseif brt_error and brt_error.errno === 'PI-2005' %}
+                        <div class="form-group form-group-error">
+                            <span class="error-message">Unselect BRT and enter a total for hazardous waste</span>
+                            <div class="multiple-choice">
+                                <input type="checkbox" id="brt-err-2" name="brt" {% if transfer.page.brt === 'true' %}checked{% endif %} value="true">
+                                <label for="brt">My release is below the reporting threshold</label>
+                            </div>
+                        </div>
+                    {% else %}
+                        <div class="form-group">
+                            <div class="multiple-choice">
+                                <input type="checkbox" id="brt" name="brt" {% if transfer.page.brt === 'true' %}checked{% endif %} value="true">
+                                <label for="brt">My release is below the reporting threshold</label>
+                            </div>
+                        </div>
+                    {% endif %}
+                    
+                    {% if value_error %}
+                    {% if value_error.errno === 'PI-2000' %}
+                        <div class="form-group form-group-error">
+                            <label class="form-label" for="value-err">Total waste transferred</label>
+                            <span class="error-message">Enter a positive total in digits</span>
+                            <input novalidate class="form-control form-control-error total details-follow" id="value-err" name="value" value="{{ transfer.page.value }}"> tonnes
+                    {% elif value_error.errno === 'PI-2007' %}
+                        <div class="form-group form-group-error">
+                            <label class="form-label" for="value-err">Total waste transferred</label>
+                            <span class="error-message">Enter an amount greater than the sum over the overseas transfer ammount</span>
+                            <input novalidate class="form-control form-control-error total details-follow" id="value-err3" name="value" value="{{ transfer.page.value }}"> tonnes
+                    {% else %}
+                        <div class="form-group form-group-error">
+                            <label class="form-label" for="value-err2">Total waste transferred</label>
+                            <span class="error-message">Enter a total in digits or BRT</span>
+                            <input novalidate class="form-control form-control-error total details-follow" id="value-err2" name="value" value="{{ transfer.page.value }}"> tonnes
+                    {% endif %}
+                    {% else %}
+                        <div class="form-group">
+                            <label class="form-label" for="value">Total waste transferred</label>
+                            <input novalidate class="form-control total" id="value" name="value details-follow" value="{{ transfer.page.value }}"> tonnes
+                    {% endif %}
+                            <details class="form-group">
+                                <summary><span class="summary">How should I calculate this?</span></summary>
+                                    <div class="panel panel-border-narrow">
+                                        <p>TBC</p>
+                                    </div>
+                            </details>
+                        </div>
+                        <div class="form-group">
+                			<fieldset class="inline">
+                				<h2 class="heading-medium">How did you reach this total?</h2>
+                				{% set first = true %}
+                				{% for transferMethod in transferMethods %}
+                					<div class="multiple-choice">
+                						<input id="radio-inline-hd-{{ transferMethod }}" type="radio" name="method" value="{{ transferMethod }}" {% if transfer.page.method === transferMethod or (not transfer.page.method and first) %} checked {% endif %}>
+                						<label for="radio-inline-hd-{{ transferMethod }}">{{ transferMethod }}</label>
+                					</div>
+                					{% set first = false %}
+                				{% endfor %}
+                			</fieldset>
+                		</div>
+            		<div class="form-group">
+            			<input id="continueBtn" type="submit" class="button" value="Continue">
+            		</div>
+            	</form>
+            </section>
+        </div>
+    </div>
 </main>
 
 {% endblock %}
