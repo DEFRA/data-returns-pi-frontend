@@ -83,13 +83,13 @@ module.exports = {
 
                 // Determine the submission status
                 const submission = await Submission.getSubmissionForEaIdAndYear(userContext.eaId.id, userContext.year);
-                const submissionStatus = submission ? submission.status : Submission.submissionStatusCodes.UNSUBMITTED;
+                const submissionStatus = submission ? submission.status : Submission.submissionStatusCodes.INCOMPLETE;
 
                 Hoek.assert(Object.values(Submission.submissionStatusCodes).includes(submissionStatus),
                     `Unknown submission status: ${submissionStatus}`);
 
                 if (editSubmission.includes(request.path)) {
-                    if (submissionStatus === Submission.submissionStatusCodes.UNSUBMITTED) {
+                    if (submissionStatus === Submission.submissionStatusCodes.INCOMPLETE) {
                         if (!isOperator) {
                             return h.redirect('/');
                         }
@@ -102,7 +102,7 @@ module.exports = {
                     }
                 } else {
                     /*
-                     *if (submissionStatus === Submission.submissionStatusCodes.UNSUBMITTED) {
+                     *if (submissionStatus === Submission.submissionStatusCodes.INCOMPLETE) {
                      *    if (!isOperator) {
                      *        return h.redirect('/');
                      *    }

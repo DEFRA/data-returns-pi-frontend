@@ -31,7 +31,7 @@
 
                         {% if eaId.status %}
 
-                            {% if eaId.status === 'Unsubmitted' %}
+                            {% if eaId.status === 'Incomplete' %}
                                 <td>Open</td>
                             {% else %}
                                 <td class="numeric" id="task-status">
@@ -49,13 +49,13 @@
 
                         {% if eaId.status %}
                             {% if is_operator %}
-                                {% if eaId.status === 'Unsubmitted' %}
+                                {% if eaId.status === 'Incomplete' %}
                                     <td><input class="link" type="submit" id="o-open-{{ eaId.id }}" name="{{ eaId.id }}" value="Open"></td>
                                 {% elif eaId.status === 'Submitted' or eaId.status === 'Approved' %}
                                     <td><input class="link" type="submit" id="o-view-{{ eaId.id }}" name="{{ eaId.id }}" value="View"></td>
                                 {% endif %}
                             {% else %}
-                                {% if eaId.status === 'Unsubmitted' %}
+                                {% if eaId.status === 'Incomplete' %}
                                     <td><input class="link" type="submit" id="i-view{{ eaId.id }}" name="{{ eaId.id }}" value="View"></td>
                                 {% elif eaId.status === 'Submitted' %}
                                     <td><input class="link" type="submit" id="i-review-{{ eaId.id }}" name="{{ eaId.id }}" value="Review"></td>

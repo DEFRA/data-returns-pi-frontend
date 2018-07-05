@@ -24,9 +24,10 @@ const logger = require('./logging').logger;
 
 // Allowable submission status codes
 const submissionStatusCodes = {
-    UNSUBMITTED: 'Unsubmitted',
+    INCOMPLETE: 'Incomplete',
     SUBMITTED: 'Submitted',
-    APPROVED: 'Approved'
+    APPROVED: 'Approved',
+    REJECTED: 'Rejected'
 };
 
 const internals = {
@@ -203,7 +204,7 @@ const internals = {
         return Api.request('SUB', 'POST', 'submissions', null, {
             applicable_year: year,
             reporting_reference: eaIdId,
-            status: 'Unsubmitted'
+            status: 'Incomplete'
         });
     },
 
@@ -673,7 +674,7 @@ const internals = {
 
             // Fetch submission with children from the PI submissions API
             const submission = await internals.fetchSubmission(request, tasks, id);
-            Hoek.assert(['Unsubmitted', 'Submitted', 'Approved'].includes(submission.status), `Cannot restore submission: ${id}`);
+            Hoek.assert(['Incomplete', 'Submitted', 'Approved'].includes(submission.status), `Cannot restore submission: ${id}`);
 
             // Site codes etc
             await internals.setSubmissionCache(request, submission);
@@ -1009,7 +1010,7 @@ const internals = {
     setStatusForSubmission: async (request, status) => {
         try {
 
-            Hoek.assert(['Unsubmitted', 'Submitted', 'Approved'].includes(status), `Unknown status: ${status}`);
+            Hoek.assert(['Incomplete', 'Submitted', 'Approved'].includes(status), `Unknown status: ${status}`);
 
             const { eaId, year } = await request.server.app.userCache.cache(cacheNames.USER_CONTEXT).get(request);
             const submission = await internals.getSubmissionForEaIdAndYear(eaId.id, year);

@@ -67,7 +67,7 @@
     "clear-cache": "redis-cli flushdb",
     "coverage": "nyc --all npm start",
     "coverage-unittest": "nyc --all npm test",
-    "docker-build": "docker build -t defra/data-returns-pi-frontend . && docker images"
+    "docker-build": "docker build -t drp/pi_submissions_frontend . && docker images"
   },
   "keywords": [
     "Data Returns",

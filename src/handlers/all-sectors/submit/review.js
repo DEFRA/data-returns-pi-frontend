@@ -104,7 +104,7 @@ module.exports = {
                         return false;
                     }
 
-                    if (submissionContext.status === Submission.submissionStatusCodes.UNSUBMITTED ||
+                    if (submissionContext.status === Submission.submissionStatusCodes.INCOMPLETE ||
                         submissionContext.status === Submission.submissionStatusCodes.APPROVED) {
                         return false;
                     }
@@ -223,7 +223,7 @@ module.exports = {
                 } else if (reviewMode && !isOperator) {
 
                     if (Object.keys(request.payload).includes('notApprove')) {
-                        await Submission.setStatusForSubmission(request, 'Unsubmitted');
+                        await Submission.setStatusForSubmission(request, 'Incomplete');
                     } else {
                         await Submission.setStatusForSubmission(request, 'Approved');
                     }

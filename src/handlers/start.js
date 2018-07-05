@@ -182,7 +182,7 @@ module.exports = {
                     }
 
                 } else if (action === 'Open') {
-                    if (submissionContext.status === Submission.submissionStatusCodes.UNSUBMITTED) {
+                    if (submissionContext.status === Submission.submissionStatusCodes.INCOMPLETE) {
 
                         return h.redirect('/task-list');
                     } else {
